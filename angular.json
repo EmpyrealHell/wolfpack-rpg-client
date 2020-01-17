@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "lobot-rpg-client": {
+    "wolfpack-rpg-client": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/lobot-rpg-client",
+            "outputPath": "dist/wolfpack-rpg-client",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -63,18 +63,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "lobot-rpg-client:build"
+            "browserTarget": "wolfpack-rpg-client:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "lobot-rpg-client:build:production"
+              "browserTarget": "wolfpack-rpg-client:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "lobot-rpg-client:build"
+            "browserTarget": "wolfpack-rpg-client:build"
           }
         },
         "test": {
@@ -111,15 +111,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "lobot-rpg-client:serve"
+            "devServerTarget": "wolfpack-rpg-client:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "lobot-rpg-client:serve:production"
+              "devServerTarget": "wolfpack-rpg-client:serve:production"
             }
           }
         }
       }
-    }},
-  "defaultProject": "lobot-rpg-client"
+    }
+  },
+  "defaultProject": "wolfpack-rpg-client"
 }
