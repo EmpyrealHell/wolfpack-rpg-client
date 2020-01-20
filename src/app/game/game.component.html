@@ -1,5 +1,120 @@
-<div>
-    <div *ngFor="let line of lines">{{line}}</div>
-    <input [(ngModel)]="command" (keyup)="Send($event)" [disabled]="!isConnected" />
-    <button type="submit" [disabled]="!isConnected">Send</button>
+<div [class.dark-theme]="darkTheme">
+  <mat-toolbar color="primary" class="title">
+    <span class="title">Wolfpack RPG Client</span>
+    <span class="fill-space"></span>
+    <span *ngIf="isConnected">
+      <button mat-button [matMenuTriggerFor]="userMenu">{{username}}<mat-icon>arrow_drop_down
+        </mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="ToggleTheme()">Dark Theme</button>
+        <button mat-menu-item>Logout</button>
+      </mat-menu>
+    </span>
+  </mat-toolbar>
+  <mat-toolbar class="menu">
+    <span *ngIf="isConnected">
+      <button mat-button [matMenuTriggerFor]="infoMenu">
+        Info<mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #infoMenu="matMenu">
+        <button mat-menu-item (click)="Send('!stats')">Stats</button>
+        <button mat-menu-item (click)="Send('!inventory')">Inventory</button>
+        <button mat-menu-item (click)="TypeCommand('!item {id}')">Item</button>
+        <button mat-menu-item (click)="Send('!clases')">Class Data</button>
+        <button mat-menu-item (click)="TypeCommand('!bug {message}')">Bug</button>
+        <button mat-menu-item (click)="Send('!help')">Help</button>
+        <button mat-menu-item (click)="Send('1')">Wolfcoin Help</button>
+        <button mat-menu-item (click)="Send('2')">Leveling Help</button>
+      </mat-menu>
+      <button mat-button [matMenuTriggerFor]="characterMenu">
+        Character<mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #characterMenu="matMenu">
+        <button mat-menu-item (click)="TypeCommand('!equip {id}')">Equip</button>
+        <button mat-menu-item (click)="TypeCommand('!unequip {id}')">Unequip</button>
+        <button mat-menu-item (click)="Send('!respec')">Respec</button>
+        <button mat-menu-item (click)="Send('nevermind')">Cancel Respec</button>
+        <button mat-menu-item (click)="Send('!C1')">Warrior</button>
+        <button mat-menu-item (click)="Send('!C2')">Mage</button>
+        <button mat-menu-item (click)="Send('!C3')">Rogue</button>
+        <button mat-menu-item (click)="Send('!C4')">Ranger</button>
+        <button mat-menu-item (click)="Send('!C5')">Cleric</button>
+      </mat-menu>
+      <button mat-button [matMenuTriggerFor]="petsMenu">
+        Pets<mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #petsMenu="matMenu">
+        <button mat-menu-item (click)="Send('!pets')">Pet List</button>
+        <button mat-menu-item (click)="Send('!pet {id}')">Pet Info</button>
+        <button mat-menu-item (click)="TypeCommand('!rename {id} {name}')">Rename</button>
+        <button mat-menu-item (click)="TypeCommand('!feed {id}')">Feed</button>
+        <button mat-menu-item (click)="TypeCommand('!summon {id}')">Summon</button>
+        <button mat-menu-item (click)="TypeCommand('!dismiss {id}')">Dismiss</button>
+        <button mat-menu-item (click)="TypeCommand('!release {id}')">Release</button>
+        <button mat-menu-item (click)="Send('!petgloat')">Gloat</button>
+        <button mat-menu-item (click)="Send('!pethelp')">Pet Help</button>
+      </mat-menu>
+      <button mat-button [matMenuTriggerFor]="groupMenu">
+        Group<mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #groupMenu="matMenu">
+        <button mat-menu-item (click)="Send('!create')">Create</button>
+        <button mat-menu-item (click)="Send('!partydata')">Info</button>
+        <button mat-menu-item (click)="Send('!ready')">Ready</button>
+        <button mat-menu-item (click)="Send('!unready')">Unready</button>
+        <button mat-menu-item (click)="Send('!promote')">Promote</button>
+        <button mat-menu-item (click)="TypeCommand('!add {id}')">Invite</button>
+        <button mat-menu-item (click)="TypeCommand('!kick {id}')">Kick</button>
+        <button mat-menu-item (click)="Send('!leaveparty')">Leave</button>
+      </mat-menu>
+      <button mat-button [matMenuTriggerFor]="dungeonMenu">
+        Dungeon<mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #dungeonMenu="matMenu">
+        <button mat-menu-item (click)="Send('!daily')">Daily Timer</button>
+        <button mat-menu-item (click)="Send('!queue')">Queue</button>
+        <button mat-menu-item (click)="Send('!leavequeue')">Leave Queue</button>
+        <button mat-menu-item (click)="Send('!queuetime')">Queue Timer</button>
+        <button mat-menu-item (click)="TypeCommand('!dungeon {id}')">Dungeon #</button>
+        <button mat-menu-item (click)="Send('!start')">Start</button>
+        <button mat-menu-item (click)="Send('!dungeonlist')">List</button>
+      </mat-menu>
+      <button mat-button [matMenuTriggerFor]="fishMenu">
+        Fishing<mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #fishMenu="matMenu">
+        <button mat-menu-item (click)="Send('!cast')">Cast</button>
+        <button mat-menu-item (click)="Send('!reel')">Reel</button>
+        <button mat-menu-item (click)="Send('!fish')">Fish List</button>
+        <button mat-menu-item (click)="TypeCommand('!fish {id}')">Fish Info</button>
+        <button mat-menu-item (click)="TypeCommand('!releasefish {id}')">Release</button>
+        <button mat-menu-item (click)="Send('!gloatfish')">Gloat</button>
+        <button mat-menu-item (click)="Send('!fishleaders')">Fish Leaders</button>
+      </mat-menu>
+      <button mat-button [matMenuTriggerFor]="shopMenu">
+        Shop<mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #shopMenu="matMenu">
+        <button mat-menu-item (click)="Send('!shop')">Info</button>
+        <button mat-menu-item (click)="TypeCommand('!stats {username}')">Stats</button>
+        <button mat-menu-item (click)="Send('!gloat')">Gloat</button>
+      </mat-menu>
+    </span>
+  </mat-toolbar>
+  <mat-sidenav-container class="content">
+    <div class="app-content" #scrollable>
+      <mat-card>
+        <mat-card-content>
+          <div *ngFor="let line of lines">{{line}}</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </mat-sidenav-container>
+  <mat-toolbar color="primary" class="footer">
+    <mat-form-field appearance="standard" class="fill-space">
+      <input matInput [(ngModel)]="command" (keyup)="OnKeyUp($event)" [disabled]="!isConnected" width="100%" />
+    </mat-form-field>
+    <button mat-raised-button [disabled]="!isConnected" (click)="SendCommand">Send</button>
+  </mat-toolbar>
 </div>

@@ -1,0 +1,39 @@
+<div [class.dark-theme]="darkTheme">
+    <mat-toolbar color="primary" layout="fill" class="navbar">
+        <mat-toolbar-row>
+            <span>Wolfpack RPG Client</span>
+            <span class="fill-space"></span>
+            <span *ngIf="isConnected">
+                <button mat-button [matMenuTriggerFor]="userMenu">{{username}}<mat-icon>arrow_drop_down
+                    </mat-icon>
+                </button>
+                <mat-menu #userMenu="matMenu">
+                    <button mat-menu-item (click)="ToggleTheme()">Dark Theme</button>
+                    <button mat-menu-item>Logout</button>
+                </mat-menu>
+            </span>
+        </mat-toolbar-row>
+        <mat-toolbar-row>
+            <button mat-button [matMenuTriggerFor]="appMenu">Commands</button>
+            <mat-menu #appMenu="matMenu">
+                <button mat-menu-item>Commands</button>
+            </mat-menu>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container class="container">
+        <mat-sidenav-content class="content">
+            <mat-card>
+                <div *ngFor="let line of lines">{{line}}</div>
+                <mat-card-footer color="primary">
+                    <div class="fill">
+                        <mat-form-field appearance="standard" class="fill-space">
+                            <mat-label>Command</mat-label>
+                            <input matInput [(ngModel)]="command" (keyup)="Send($event)" [disabled]="!isConnected" />
+                        </mat-form-field>
+                        <button mat-raised-button [disabled]="!isConnected">Send</button>
+                    </div>
+                </mat-card-footer>
+            </mat-card>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>

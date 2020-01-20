@@ -1,0 +1,42 @@
+.app-content {
+  padding: 5px;
+}
+.app-content mat-card {
+  margin: 5px;
+}
+
+mat-card.content {
+  box-sizing: border-box;
+  height: calc(100%);
+}
+
+mat-toolbar.title {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+mat-toolbar.menu {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+}
+
+mat-toolbar.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+mat-sidenav-container.content {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 128px;
+  bottom: 64px;
+  left: 0;
+  right: 0;
+}
