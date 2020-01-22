@@ -20,14 +20,36 @@ $mat-dark-gray: (
   )
 );
 
+$mat-branded-black: (
+  100: #191a18,
+  500: #0e110e,
+  700: #060905,
+  contrast: (
+    100: #f4f7f3,
+    500: #cbceca,
+    700: #9b9e9a,
+  )
+);
+
+$mat-branded-gold: (
+  100: #e1c16b,
+  500: #ae9047,
+  700: #6c5b2b,
+  contrast: (
+    100: #191a18,
+    500: #0e110e,
+    700: #f4f7f3,
+  )
+);
+
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 // $wolfpack-rpg-client-primary: mat-palette($mat-dark-gray, 500, 100, 700);
 $wolfpack-rpg-client-primary: mat-palette($mat-gray);
-$wolfpack-rpg-client-dark-primary: mat-palette($mat-dark-gray);
-$wolfpack-rpg-client-accent: mat-palette($mat-amber, A200, A100, A400);
+$wolfpack-rpg-client-dark-primary: mat-palette($mat-branded-black);
+$wolfpack-rpg-client-accent: mat-palette($mat-branded-gold);
 
 // The warn palette is optional (defaults to red).
 $wolfpack-rpg-client-warn: mat-palette($mat-red);
@@ -43,4 +65,9 @@ $wolfpack-rpg-client-dark-theme: mat-dark-theme($wolfpack-rpg-client-dark-primar
 
 .dark-theme {
   @include angular-material-theme($wolfpack-rpg-client-dark-theme);
+}
+
+.mat-divider {
+  border-top-color: map-get($mat-branded-gold, 100) !important;
+  border-right-color: map-get($mat-branded-gold, 100) !important;
 }

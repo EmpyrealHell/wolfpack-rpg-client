@@ -2,5 +2,26 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.contain-space { display: flex }
 .fill-space { flex: 1 1 auto; }
 
+mat-divider.accent-divider {
+  height: 65%;
+  margin-left: 0;
+  margin-right: 8px;
+}
+
+cdk-virtual-scroll-viewport.card-content {
+  height: 400px;
+}
+
+div.scroll-item {
+  height: 20px;
+}
+
+.app-content {
+  padding: 5px;
+}
+.app-content mat-card {
+  margin: 5px;
+}

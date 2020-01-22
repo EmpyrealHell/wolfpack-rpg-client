@@ -9,8 +9,9 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { GameComponent } from './game/game.component';
 
-import { LayoutModule } from '@angular/cdk/layout';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { LayoutModule } from '@angular/cdk/layout';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import {
   MatButtonModule, MatCardModule, MatDividerModule, MatIconModule,
@@ -28,7 +29,7 @@ import {
     AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule,
     HttpClientModule,
 
-    FlexLayoutModule, LayoutModule,
+    FlexLayoutModule, LayoutModule, ScrollingModule,
 
     MatButtonModule, MatCardModule, MatDividerModule, MatIconModule, MatInputModule,
     MatListModule, MatMenuModule, MatSidenavModule, MatToolbarModule

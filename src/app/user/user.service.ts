@@ -19,16 +19,16 @@ export class UserService {
      * Validates an OAuth token and retrieves the user data contained within.
      * @param token An OAuth token
      */
-    public GetUserInfo(token: string): Observable<UserData> {
+    public async GetUserInfo(token: string): Promise<UserData> {
         if (UserService.cachedResponse) {
-            return of(UserService.cachedResponse);
+            return UserService.cachedResponse;
         }
         const options = {
             headers: {
                 Authorization: `OAuth ${token}`
             }
         };
-        return this.http.get<UserData>(UserService.tokenValidationUrl, options);
+        return this.http.get<UserData>(UserService.tokenValidationUrl, options).toPromise<UserData>();
     }
 
     /**

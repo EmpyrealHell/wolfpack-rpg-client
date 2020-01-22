@@ -1,3 +1,5 @@
+import { PromiseResponse } from './promise-response';
+
 export class Utils {
   /**
    * Determines if the source array contains all elements of the target array.
@@ -54,5 +56,21 @@ export class Utils {
       output += sep + value;
     }
     return output.substring(sep.length);
+  }
+
+  /**
+   * Awaits a response and handles promise rejection and any errors thrown.
+   * @param promise Any promise that can be rejected.
+   */
+  public static async PromiseWithReject<T>(promise: Promise<T>): Promise<PromiseResponse<T>> {
+    const response: PromiseResponse<T> = new PromiseResponse<T>();
+    try {
+      response.Response = await promise;
+      response.Success = true;
+    } catch (error) {
+      response.Error = error;
+      response.Success = false;
+    }
+    return response;
   }
 }

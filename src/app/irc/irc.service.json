@@ -1,0 +1,21 @@
+{
+  "botAccount": "lobotjr",
+  "connectOptions": {
+    "options": {
+      "clientId": ""
+    },
+    "connection": {
+      "server": "irc-ws.chat.twitch.tv",
+      "port": 443,
+      "reconnect": true,
+      "secure": true
+    },
+    "identity": {
+      "username": "",
+      "password": ""
+    },
+    "channels": [
+      "jtv"
+    ]
+  }
+}
