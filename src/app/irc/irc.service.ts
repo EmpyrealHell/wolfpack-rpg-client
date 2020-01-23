@@ -26,6 +26,7 @@ export class IrcService {
   }
 
   private onWhisper(from: string, userstate: ChatUserstate, message: string, self: boolean): void {
+    console.log(`${this.IsConnected}> ${message}`);
     if (!self) {
       this.history += message;
       for (const [key, value] of this.callbacks) {

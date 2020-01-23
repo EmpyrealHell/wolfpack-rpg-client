@@ -65,14 +65,9 @@ export class Utils {
   public static async PromiseWithReject<T>(promise: Promise<T>): Promise<PromiseResponse<T>> {
     const response: PromiseResponse<T> = new PromiseResponse<T>();
     try {
-      console.log('awaiting promise');
       response.Response = await promise;
-      console.log('promise resolved!');
-      console.log(response.Response);
       response.Success = true;
     } catch (error) {
-      console.log('promise threw exception');
-      console.log(error);
       response.Error = error;
       response.Success = false;
     }

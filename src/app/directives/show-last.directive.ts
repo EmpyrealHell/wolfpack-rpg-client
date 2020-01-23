@@ -8,7 +8,7 @@ import { NgModel } from '@angular/forms';
 export class ShowLastDirective implements OnInit {
   constructor(private elem: ElementRef, private model: NgModel) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.model.valueChanges.subscribe((event) => {
       this.elem.nativeElement.scrollTop = this.elem.nativeElement.scrollHeight;
     });

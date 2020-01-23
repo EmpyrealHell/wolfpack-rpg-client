@@ -1,6 +1,7 @@
 export class Config {
   public Settings = new ConfigSettings();
   public Authentication = new ConfigAuthentication();
+  public Layout = new Array<string>();
 }
 
 export class ConfigSettings {

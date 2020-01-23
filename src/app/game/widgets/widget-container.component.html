@@ -1,0 +1,5 @@
+<ng-template appWidgetContainer></ng-template>
+<div *ngFor="let factory of factories">
+  <app-widget-factory [factory]="factory" [ircService]="ircService" [configManager]="configManager">
+  </app-widget-factory>
+</div>

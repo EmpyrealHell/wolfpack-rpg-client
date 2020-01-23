@@ -1,9 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-.contain-space { display: flex }
-.fill-space { flex: 1 1 auto; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.contain-space {
+  display: flex;
+}
+
+.fill-space {
+  flex: 1 1 auto;
+}
 
 mat-divider.accent-divider {
   height: 65%;
@@ -11,17 +22,48 @@ mat-divider.accent-divider {
   margin-right: 8px;
 }
 
-cdk-virtual-scroll-viewport.card-content {
-  height: 400px;
+.app-container {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
 }
 
-div.scroll-item {
-  height: 20px;
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
 }
 
-.app-content {
-  padding: 5px;
+app-widget-container, app-widget-factory,
+app-widget-container > div, app-widget-factory > * {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1;
 }
-.app-content mat-card {
-  margin: 5px;
+
+mat-sidenav-content {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+}
+
+mat-card {
+  width: auto;
+  height: calc(100% - 1px);
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+}
+
+.flex-column mat-card {
+  margin: 10px;
+}
+
+textarea {
+  resize: none !important;
+  width: 100%;
+  height: 100%;
 }

@@ -4,10 +4,10 @@ import { ConfigManager } from 'src/app/data/config-manager';
 import { WidgetComponent } from '../widget.component';
 
 @Component({
-  selector: 'app-console-widget',
-  templateUrl: './console.widget.html',
+  selector: 'app-character-widget',
+  templateUrl: './character.widget.html',
 })
-export class ConsoleWidgetComponent implements WidgetComponent, OnInit {
+export class CharacterWidgetComponent implements WidgetComponent, OnInit {
   public consoleData = '';
   public command = '';
 
@@ -28,7 +28,7 @@ export class ConsoleWidgetComponent implements WidgetComponent, OnInit {
   }
 
   public ngOnInit(): void {
-    this.ircService.Register('console-widget', (message) => { this.onWhisper(message); }, true);
+    this.ircService.Register('character-widget', (message) => { this.onWhisper(message); }, true);
   }
 
   public OnKeyUp(event: KeyboardEvent) {
