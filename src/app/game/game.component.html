@@ -1,22 +1,26 @@
-<div [class.dark-theme]="configManager">
+<div [class.dark-theme]="config.Settings.UseDarkTheme">
   <mat-sidenav-container fullscreen>
     <mat-toolbar color="primary">
       <mat-divider [vertical]="true" class="accent-divider"></mat-divider>
       <span>Wolfpack RPG Client</span>
       <span class="fill-space"></span>
-      <span *ngIf="isConnected">
-        <button mat-button [matMenuTriggerFor]="userMenu">{{username}}<mat-icon>arrow_drop_down
+      <span *ngIf="ircService.IsConnected">
+        <button mat-button [matMenuTriggerFor]="userMenu">{{config.Authentication.User}}<mat-icon>arrow_drop_down
           </mat-icon>
         </button>
         <mat-menu #userMenu="matMenu">
-          <button mat-menu-item (click)="ToggleTheme()">Dark Theme</button>
+          <button mat-menu-item>
+            <mat-slide-toggle (click)="$event.stopPropagation();" color="accent"
+              [(checked)]="config.Settings.UseDarkTheme" (change)="ToggleTheme()">Dark
+              Theme</mat-slide-toggle>
+          </button>
           <button mat-menu-item>Logout</button>
         </mat-menu>
       </span>
     </mat-toolbar>
     <mat-divider></mat-divider>
     <mat-toolbar>
-      <span *ngIf="isConnected">
+      <span *ngIf="ircService.IsConnected">
         <button mat-button [matMenuTriggerFor]="infoMenu">
           Info<mat-icon>arrow_drop_down</mat-icon>
         </button>

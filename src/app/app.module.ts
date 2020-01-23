@@ -14,16 +14,22 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import {
-  MatButtonModule, MatCardModule, MatDividerModule, MatIconModule,
-  MatInputModule, MatListModule, MatMenuModule, MatSidenavModule, MatToolbarModule
+  MatButtonModule, MatCardModule, MatDividerModule, MatIconModule, MatInputModule,
+  MatListModule, MatMenuModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
 } from '@angular/material';
+import { ConsoleWidgetComponent } from './game/widgets/console/console.widget';
+import { ShowLastDirective } from './directives/show-last.directive';
 
 
 @NgModule({
   declarations: [
+    ShowLastDirective,
+
     AppComponent,
     AuthComponent,
-    GameComponent
+    GameComponent,
+
+    ConsoleWidgetComponent
   ],
   imports: [
     AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule,
@@ -32,7 +38,7 @@ import {
     FlexLayoutModule, LayoutModule, ScrollingModule,
 
     MatButtonModule, MatCardModule, MatDividerModule, MatIconModule, MatInputModule,
-    MatListModule, MatMenuModule, MatSidenavModule, MatToolbarModule
+    MatListModule, MatMenuModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

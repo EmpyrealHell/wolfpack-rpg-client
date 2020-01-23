@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { IrcService } from 'src/app/irc/irc.service';
 
 @Component({
@@ -18,12 +18,12 @@ export class ConsoleWidgetComponent implements OnInit {
   private sendCommand(): void {
     const message = this.command;
     this.command = '';
-    this.consoleData += `\n &gt; ${message}\n`;
+    this.consoleData += `\n >> ${message}\n\n`;
     this.ircService.Send(message);
   }
 
   public ngOnInit(): void {
-    this.ircService.Register(this.onWhisper);
+    this.ircService.Register('console-widget', (message) => { this.onWhisper(message); }, true);
   }
 
   public OnKeyUp(event: KeyboardEvent) {
