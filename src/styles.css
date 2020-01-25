@@ -44,6 +44,10 @@ app-widget-container > div, app-widget-factory > * {
   flex-grow: 1;
 }
 
+app-widget-container {
+  flex-wrap: wrap;
+}
+
 mat-sidenav-content {
   display: flex !important;
   flex-direction: column !important;

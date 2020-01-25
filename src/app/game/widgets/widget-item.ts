@@ -1,8 +1,9 @@
-import { WidgetComponent } from './widget.component';
 import { Type } from '@angular/core';
-import { IrcService } from 'src/app/irc/irc.service';
-import { ConfigManager } from 'src/app/data/config-manager';
+import { WidgetComponent } from './widget.component';
 
+/**
+ * Class used to pair widget components to id strings.
+ */
 export class WidgetItem {
   constructor(public component: Type<WidgetComponent>, public name: string) { }
 }

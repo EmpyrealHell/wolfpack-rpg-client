@@ -1,5 +1,8 @@
-import { ViewContainerRef, Directive } from '@angular/core';
+import { Directive, ViewContainerRef } from '@angular/core';
 
+/**
+ * Directive that can be applied to provide access to the view container.
+ */
 @Directive({
   selector: '[appWidgetContainer]'
 })

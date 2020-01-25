@@ -1,12 +1,14 @@
-import { Component, OnInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, ComponentFactory } from '@angular/core';
-import { WidgetService } from './widget.service';
-import { WidgetComponent } from './widget.component';
-import { ConfigManager } from 'src/app/data/config-manager';
+import { Component, ComponentFactory, ComponentFactoryResolver, OnInit } from '@angular/core';
 import { Config } from 'src/app/data/config-data';
-import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
-import { WidgetItem } from './widget-item';
+import { ConfigManager } from 'src/app/data/config-manager';
 import { IrcService } from 'src/app/irc/irc.service';
+import { WidgetItem } from './widget-item';
+import { WidgetComponent } from './widget.component';
+import { WidgetService } from './widget.service';
 
+/**
+ * Holds a list of widgets and renders them to the DOM, in order.
+ */
 @Component({
   selector: 'app-widget-container',
   templateUrl: './widget-container.component.html'
@@ -14,14 +16,23 @@ import { IrcService } from 'src/app/irc/irc.service';
 export class WidgetContainerComponent implements OnInit {
 
   private widgetMap: Map<string, WidgetItem> = new Map<string, WidgetItem>();
-  private widgets = new Array<string>('Console', 'Character');
   private config: Config;
 
+  private layouts = [
+    '', '"a0"', '"a0 a1"', '"a0 a1" "a0 a2"',
+    '"a0 a1" "a2 a3"', '"a0 a1 a2" "a0 a3 a4"',
+    '"a0 a1 a2" "a3 a4 a5"', '"a0 a1 a2" "a0 a1 a3" "a4 a5 a6"',
+    '"a0 a1 a2" "a0 a3 a4" "a5 a6 a7"', '"a0 a1 a2" "a3 a4 a5" "a6 a7 a8"'
+  ];
+
+  /**
+   * Grid template area string used to arrange the widgets.
+   */
+  public gridlayout: string;
+  /**
+   * List of factories used to create and attach the widgets.
+   */
   public factories = new Array<ComponentFactory<WidgetComponent>>();
-
-
-
-  @ViewChild(WidgetContainerDirective, { static: true }) container: WidgetContainerDirective;
 
   constructor(private widgetService: WidgetService, private configManager: ConfigManager,
     // tslint:disable-next-line:align
@@ -29,42 +40,28 @@ export class WidgetContainerComponent implements OnInit {
 
   public ngOnInit() {
     this.config = this.configManager.GetConfig();
+    this.configManager.Subscribe(() => { this.resetLayout(); });
+    this.resetLayout();
+  }
 
-    this.widgetMap.clear();
-    const widgets = this.widgetService.getWidgets();
-    for (const widget of widgets) {
-      this.widgetMap.set(widget.name, widget);
+  /**
+   * Reloads the list of widgets that should be hosted in the container from
+   * the user's config.
+   */
+  public resetLayout() {
+    if (this.widgetMap.size === 0) {
+      const widgets = this.widgetService.getWidgets();
+      for (const widget of widgets) {
+        this.widgetMap.set(widget.name, widget);
+      }
     }
 
-    const containerRef = this.container.viewContainerRef;
-    containerRef.clear();
-
-    // const items = this.config.Layout;
-    for (const item of this.widgets) {
+    this.factories = [];
+    const items = this.config.Layout;
+    for (const item of items) {
       this.factories.push(this.loadWidget(item));
     }
-  }
-
-  public getColSpan(): number {
-    switch (this.factories.length) {
-      case 1: case 2:
-        return 12;
-      case 3: case 4: case 5: case 6:
-        return 6;
-      default:
-        return 4;
-    }
-  }
-
-  public getRowSpan(): number {
-    switch (this.factories.length) {
-      case 1:
-        return 12;
-      case 2: case 3: case 4:
-        return 6;
-      default:
-        return 4;
-    }
+    this.gridlayout = this.layouts[this.factories.length];
   }
 
   private loadWidget(name: string): ComponentFactory<WidgetComponent> {
@@ -75,5 +72,4 @@ export class WidgetContainerComponent implements OnInit {
     }
     return null;
   }
-
 }

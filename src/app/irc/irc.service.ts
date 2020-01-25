@@ -1,10 +1,13 @@
+import { Injectable } from '@angular/core';
+import { ChatUserstate, Client } from 'tmi.js';
 import { ConfigManager } from '../data/config-manager';
 import { UserService } from '../user/user.service';
-import { Client, ChatUserstate } from 'tmi.js';
 import { Utils } from '../util/utils';
 import * as ircConfig from './irc.service.json';
-import { Injectable } from '@angular/core';
 
+/**
+ * Callback type used for broadcasting whisper messages received by the client.
+ */
 export type WhisperCallback = ((message: string) => void);
 
 /**
@@ -15,30 +18,30 @@ export type WhisperCallback = ((message: string) => void);
   providedIn: 'root',
 })
 export class IrcService {
-  private connection: Client;
-  private callbacks: Map<string, WhisperCallback>;
-  private history = '';
+  private static connection: Client;
+  private static callbacks: Map<string, WhisperCallback>;
+  private static history = '';
 
-  public IsConnected = false;
+  public static IsConnected = false;
+  public get IsConnected(): boolean { return IrcService.IsConnected; }
 
   constructor(public configManager: ConfigManager, public userService: UserService) {
-    this.callbacks = new Map<string, WhisperCallback>();
+    IrcService.callbacks = new Map<string, WhisperCallback>();
   }
 
   private onWhisper(from: string, userstate: ChatUserstate, message: string, self: boolean): void {
-    console.log(`${this.IsConnected}> ${message}`);
     if (!self) {
-      this.history += message;
-      for (const [key, value] of this.callbacks) {
+      IrcService.history += message;
+      for (const [key, value] of IrcService.callbacks) {
         value.call(value, message);
       }
     } else {
-      this.history += `\n >> ${message}\n\n`;
+      IrcService.history += `\n >> ${message}\n\n`;
     }
   }
 
   private reconnect(reason: string): void {
-    this.IsConnected = false;
+    IrcService.IsConnected = false;
     this.Connect();
   }
 
@@ -50,8 +53,8 @@ export class IrcService {
    * @returns The client history if requested, otherwise undefined.
    */
   public Register(id: string, callback: WhisperCallback, overwrite: boolean = false): void {
-    if (!this.callbacks.has(id) || overwrite) {
-      this.callbacks.set(id, callback);
+    if (!IrcService.callbacks.has(id) || overwrite) {
+      IrcService.callbacks.set(id, callback);
     }
   }
 
@@ -59,7 +62,7 @@ export class IrcService {
    * Returns the history of messages the connection has received up to this point.
    */
   public GetHistory(): string {
-    return this.history;
+    return IrcService.history;
   }
 
   /**
@@ -67,8 +70,8 @@ export class IrcService {
    * @param id The id of the callback function.
    */
   public Unregister(id: string): void {
-    if (this.callbacks.has(id)) {
-      this.callbacks.delete(id);
+    if (IrcService.callbacks.has(id)) {
+      IrcService.callbacks.delete(id);
     }
   }
 
@@ -77,7 +80,7 @@ export class IrcService {
    * @param message The message to send
    */
   public Send(message: string): void {
-    this.connection.whisper(ircConfig.botAccount, message);
+    IrcService.connection.whisper(ircConfig.botAccount, message);
   }
 
   /**
@@ -85,20 +88,22 @@ export class IrcService {
    * contains a valid token.
    */
   public async Connect(): Promise<boolean> {
-    if (!this.IsConnected) {
+    if (IrcService.IsConnected) {
+      return true;
+    } else {
       const token = this.configManager.GetConfig().Authentication.Token;
       const userData = await this.userService.GetUserInfo(token);
       const options = ircConfig.connectOptions;
       options.options.clientId = userData.client_id;
       options.identity.username = userData.login;
       options.identity.password = `oauth:${token}`;
-      this.connection = Client(options);
-      this.connection.on('whisper', (from, userstate, message, self) => {
+      IrcService.connection = Client(options);
+      IrcService.connection.on('whisper', (from, userstate, message, self) => {
         this.onWhisper(from, userstate, message, self);
       });
-      this.connection.on('disconnected', (reason) => { this.reconnect(reason); });
-      const response = await Utils.PromiseWithReject(this.connection.connect());
-      this.IsConnected = response.Success;
+      IrcService.connection.on('disconnected', (reason) => { this.reconnect(reason); });
+      const response = await Utils.PromiseWithReject(IrcService.connection.connect());
+      IrcService.IsConnected = response.Success;
       return response.Success;
     }
   }

@@ -1,5 +1,6 @@
-<ng-template appWidgetContainer></ng-template>
-<div *ngFor="let factory of factories">
-  <app-widget-factory [factory]="factory" [ircService]="ircService" [configManager]="configManager">
-  </app-widget-factory>
+<div [style.grid-template-areas]="gridlayout" style='display: grid !important'>
+  <div *ngFor="let factory of factories; index as i" [style.grid-area]="'a' + i" [style.display]="'flex'">
+    <app-widget-factory [factory]="factory" [ircService]="ircService" [configManager]="configManager">
+    </app-widget-factory>
+  </div>
 </div>

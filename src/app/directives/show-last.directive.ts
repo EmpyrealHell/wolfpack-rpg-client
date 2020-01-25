@@ -1,6 +1,10 @@
-import { Directive, ElementRef, HostListener, OnInit } from '@angular/core';
+import { Directive, ElementRef, OnInit } from '@angular/core';
 import { NgModel } from '@angular/forms';
 
+/**
+ * Directive that can be applied to a scrollable area to automatically scroll
+ * to the bottom when the model updates.
+ */
 @Directive({
   selector: '[appShowLast]',
   providers: [NgModel]

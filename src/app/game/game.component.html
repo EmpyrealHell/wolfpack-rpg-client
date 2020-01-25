@@ -5,24 +5,29 @@
         <mat-divider [vertical]="true" class="accent-divider"></mat-divider>
         <span>Wolfpack RPG Client</span>
         <span class="fill-space"></span>
-        <span *ngIf="ircService.IsConnected">
+        <span *ngIf="ircService.IsConnected else usernameLoggedOut">
           <button mat-button [matMenuTriggerFor]="userMenu">{{config.Authentication.User}}<mat-icon>arrow_drop_down
             </mat-icon>
           </button>
           <mat-menu #userMenu="matMenu">
             <button mat-menu-item>
               <mat-slide-toggle (click)="$event.stopPropagation();" color="accent"
-                [(checked)]="config.Settings.UseDarkTheme" (change)="ToggleTheme()">Dark
+                [(checked)]="config.Settings.UseDarkTheme" (change)="toggleTheme()">Dark
                 Theme</mat-slide-toggle>
             </button>
             <button mat-menu-item>Logout</button>
           </mat-menu>
         </span>
+        <ng-template #usernameLoggedOut>
+          <span>
+            <button mat-button (click)="router.navigate(['/'])">Log In</button>
+          </span>
+        </ng-template>
       </mat-toolbar>
       <mat-divider></mat-divider>
       <mat-toolbar>
-        <span *ngIf="ircService.IsConnected">
-          <button mat-button [matMenuTriggerFor]="infoMenu">
+        <span>
+          <button mat-button [matMenuTriggerFor]="infoMenu" [disabled]="!ircService.IsConnected">
             Info<mat-icon>arrow_drop_down</mat-icon>
           </button>
           <mat-menu #infoMenu="matMenu">
@@ -35,7 +40,7 @@
             <button mat-menu-item (click)="Send('1')">Wolfcoin Help</button>
             <button mat-menu-item (click)="Send('2')">Leveling Help</button>
           </mat-menu>
-          <button mat-button [matMenuTriggerFor]="characterMenu">
+          <button mat-button [matMenuTriggerFor]="characterMenu" [disabled]="!ircService.IsConnected">
             Character<mat-icon>arrow_drop_down</mat-icon>
           </button>
           <mat-menu #characterMenu="matMenu">
@@ -49,7 +54,7 @@
             <button mat-menu-item (click)="Send('!C4')">Ranger</button>
             <button mat-menu-item (click)="Send('!C5')">Cleric</button>
           </mat-menu>
-          <button mat-button [matMenuTriggerFor]="petsMenu">
+          <button mat-button [matMenuTriggerFor]="petsMenu" [disabled]="!ircService.IsConnected">
             Pets<mat-icon>arrow_drop_down</mat-icon>
           </button>
           <mat-menu #petsMenu="matMenu">
@@ -63,7 +68,7 @@
             <button mat-menu-item (click)="Send('!petgloat')">Gloat</button>
             <button mat-menu-item (click)="Send('!pethelp')">Pet Help</button>
           </mat-menu>
-          <button mat-button [matMenuTriggerFor]="groupMenu">
+          <button mat-button [matMenuTriggerFor]="groupMenu" [disabled]="!ircService.IsConnected">
             Group<mat-icon>arrow_drop_down</mat-icon>
           </button>
           <mat-menu #groupMenu="matMenu">
@@ -76,7 +81,7 @@
             <button mat-menu-item (click)="TypeCommand('!kick {id}')">Kick</button>
             <button mat-menu-item (click)="Send('!leaveparty')">Leave</button>
           </mat-menu>
-          <button mat-button [matMenuTriggerFor]="dungeonMenu">
+          <button mat-button [matMenuTriggerFor]="dungeonMenu" [disabled]="!ircService.IsConnected">
             Dungeon<mat-icon>arrow_drop_down</mat-icon>
           </button>
           <mat-menu #dungeonMenu="matMenu">
@@ -88,7 +93,7 @@
             <button mat-menu-item (click)="Send('!start')">Start</button>
             <button mat-menu-item (click)="Send('!dungeonlist')">List</button>
           </mat-menu>
-          <button mat-button [matMenuTriggerFor]="fishMenu">
+          <button mat-button [matMenuTriggerFor]="fishMenu" [disabled]="!ircService.IsConnected">
             Fishing<mat-icon>arrow_drop_down</mat-icon>
           </button>
           <mat-menu #fishMenu="matMenu">
@@ -100,7 +105,7 @@
             <button mat-menu-item (click)="Send('!gloatfish')">Gloat</button>
             <button mat-menu-item (click)="Send('!fishleaders')">Fish Leaders</button>
           </mat-menu>
-          <button mat-button [matMenuTriggerFor]="shopMenu">
+          <button mat-button [matMenuTriggerFor]="shopMenu" [disabled]="!ircService.IsConnected">
             Shop<mat-icon>arrow_drop_down</mat-icon>
           </button>
           <mat-menu #shopMenu="matMenu">
@@ -108,6 +113,15 @@
             <button mat-menu-item (click)="TypeCommand('!stats {username}')">Stats</button>
             <button mat-menu-item (click)="Send('!gloat')">Gloat</button>
           </mat-menu>
+          <button mat-button (click)="toggleWidget('Console')">Console</button>
+          <button mat-button (click)="toggleWidget('Character')">Character</button>
+          <button mat-button (click)="toggleWidget('Character2')">Character2</button>
+          <button mat-button (click)="toggleWidget('Character3')">Character3</button>
+          <button mat-button (click)="toggleWidget('Character4')">Character4</button>
+          <button mat-button (click)="toggleWidget('Character5')">Character5</button>
+          <button mat-button (click)="toggleWidget('Character6')">Character6</button>
+          <button mat-button (click)="toggleWidget('Character7')">Character7</button>
+          <button mat-button (click)="toggleWidget('Character8')">Character8</button>
         </span>
       </mat-toolbar>
       <div class="flex-column">
