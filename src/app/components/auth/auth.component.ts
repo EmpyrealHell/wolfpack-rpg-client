@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { ConfigAuthentication } from '../data/config-data';
-import { ConfigManager } from '../data/config-manager';
-import { UserData } from '../user/user.data';
-import { UserService } from '../user/user.service';
-import { Utils } from '../util/utils';
+import { ConfigAuthentication } from '../../services/data/config-data';
+import { ConfigManager } from '../../services/data/config-manager';
+import { UserData } from '../../services/user/user.data';
+import { UserService } from '../../services/user/user.service';
+import { Utils } from '../../util/utils';
 import * as authConfig from './auth.component.json';
 
 
@@ -92,7 +92,7 @@ export class AuthComponent implements OnInit {
    * @param auth Auth data that should be loaded from local storage.
    * @param configManager Used to update local data if authentication fails.
    */
-  public AuthenticateWithTwitch(auth: ConfigAuthentication, configManager: ConfigManager) {
+  public AuthenticateWithTwitch(auth: ConfigAuthentication, configManager: ConfigManager): void {
     const forceVerify = (auth.State === undefined);
     auth.State = Utils.GenerateState(16);
     auth.Token = undefined;

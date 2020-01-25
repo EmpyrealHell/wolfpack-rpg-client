@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ConfigManager } from 'src/app/data/config-manager';
-import { IrcService } from 'src/app/irc/irc.service';
-import { WidgetComponent } from '../widget.component';
+import { ConfigManager } from 'src/app/services/data/config-manager';
+import { IrcService } from 'src/app/services/irc/irc.service';
+import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
 
 /**
  * Widget that provides direct access to the communication channel between the
@@ -53,7 +53,7 @@ export class ConsoleWidgetComponent implements WidgetComponent, OnInit {
    * Listen to the key presses to check for enter being pressed.
    * @param event Keyboard event passed in by the browser.
    */
-  public OnKeyUp(event: KeyboardEvent) {
+  public OnKeyUp(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
       this.sendCommand();
     }
@@ -63,7 +63,7 @@ export class ConsoleWidgetComponent implements WidgetComponent, OnInit {
    * Click event for the send button.
    * @param event Mouse event passed in by the browser.
    */
-  public OnSendClick(event: MouseEvent) {
+  public OnSendClick(event: MouseEvent): void {
     this.sendCommand();
   }
 }

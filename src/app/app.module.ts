@@ -4,14 +4,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 
-import { AuthComponent } from './auth/auth.component';
+import { AuthComponent } from './components/auth/auth.component';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { GameComponent } from './game/game.component';
-import { ConsoleWidgetComponent } from './game/widgets/console/console.widget';
-import { CharacterWidgetComponent } from './game/widgets/character/character.widget';
-import { WidgetContainerComponent } from './game/widgets/widget-container.component';
-import { WidgetFactoryComponent } from './game/widgets/widget-factory.component';
+import { GameComponent } from './components/game/game.component';
+import { ConsoleWidgetComponent } from './widgets/console/console.widget';
+import { CharacterWidgetComponent } from './widgets/character/character.widget';
+import { WidgetContainerComponent } from './components/widget-container/widget-container.component';
+import { WidgetFactoryComponent } from './components/widget-factory/widget-factory.component';
 
 import { ShowLastDirective } from './directives/show-last.directive';
 import { WidgetContainerDirective } from './directives/widget-container.directive';
@@ -22,7 +22,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import {
   MatButtonModule, MatCardModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule,
-  MatListModule, MatMenuModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
+  MatListModule, MatMenuModule, MatProgressBarModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
 } from '@angular/material';
 
 
@@ -45,7 +45,7 @@ import {
     FlexLayoutModule, LayoutModule, ScrollingModule,
 
     MatButtonModule, MatCardModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule,
-    MatListModule, MatMenuModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
+    MatListModule, MatMenuModule, MatProgressBarModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
   ],
   entryComponents: [CharacterWidgetComponent, ConsoleWidgetComponent],
   providers: [],

@@ -1,10 +1,10 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, OnInit } from '@angular/core';
-import { Config } from 'src/app/data/config-data';
-import { ConfigManager } from 'src/app/data/config-manager';
-import { IrcService } from 'src/app/irc/irc.service';
-import { WidgetItem } from './widget-item';
-import { WidgetComponent } from './widget.component';
-import { WidgetService } from './widget.service';
+import { Config } from 'src/app/services/data/config-data';
+import { ConfigManager } from 'src/app/services/data/config-manager';
+import { IrcService } from 'src/app/services/irc/irc.service';
+import { WidgetItem } from '../../services/widget/widget-item';
+import { WidgetComponent } from '../widget-factory/widget.component';
+import { WidgetService } from '../../services/widget/widget.service';
 
 /**
  * Holds a list of widgets and renders them to the DOM, in order.
@@ -38,17 +38,26 @@ export class WidgetContainerComponent implements OnInit {
     // tslint:disable-next-line:align
     private ircService: IrcService, private componentFactoryResolver: ComponentFactoryResolver) { }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.config = this.configManager.GetConfig();
     this.configManager.Subscribe(() => { this.resetLayout(); });
     this.resetLayout();
   }
 
   /**
+   * Removes a widget from the container.
+   * @param index The index of the widget to close.
+   */
+  public closeWidget(index: number): void {
+    this.config.Layout.splice(index, 1);
+    this.configManager.Save();
+  }
+
+  /**
    * Reloads the list of widgets that should be hosted in the container from
    * the user's config.
    */
-  public resetLayout() {
+  public resetLayout(): void {
     if (this.widgetMap.size === 0) {
       const widgets = this.widgetService.getWidgets();
       for (const widget of widgets) {

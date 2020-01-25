@@ -1,5 +1,5 @@
 import { Type } from '@angular/core';
-import { WidgetComponent } from './widget.component';
+import { WidgetComponent } from '../../components/widget-factory/widget.component';
 
 /**
  * Class used to pair widget components to id strings.

@@ -1,5 +1,5 @@
-import { ConfigManager } from 'src/app/data/config-manager';
-import { IrcService } from 'src/app/irc/irc.service';
+import { ConfigManager } from 'src/app/services/data/config-manager';
+import { IrcService } from 'src/app/services/irc/irc.service';
 
 /**
  * Interface all widgets implement to receive access to app services.

@@ -1,7 +1,7 @@
 import { Component, ComponentFactory, Input, OnInit, ViewChild } from '@angular/core';
-import { ConfigManager } from 'src/app/data/config-manager';
+import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
-import { IrcService } from 'src/app/irc/irc.service';
+import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetComponent } from './widget.component';
 
 /**
@@ -9,7 +9,7 @@ import { WidgetComponent } from './widget.component';
  */
 @Component({
   selector: 'app-widget-factory',
-  template: '<ng-container appWidgetContainer></ng-container>'
+  template: '<ng-template appWidgetContainer></ng-template>'
 })
 export class WidgetFactoryComponent implements OnInit {
   /**

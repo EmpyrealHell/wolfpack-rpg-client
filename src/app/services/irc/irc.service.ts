@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
+import { ConfigManager } from 'src/app/services/data/config-manager';
+import { Utils } from 'src/app/util/utils';
 import { ChatUserstate, Client } from 'tmi.js';
-import { ConfigManager } from '../data/config-manager';
 import { UserService } from '../user/user.service';
-import { Utils } from '../util/utils';
 import * as ircConfig from './irc.service.json';
 
 /**

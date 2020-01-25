@@ -1,0 +1,21 @@
+<mat-card-content height="100%" class="flex-column">
+  <div>
+    <mat-icon>person</mat-icon> Level {{level}} {{class}}
+  </div>
+  <div>{{experienceInLevel}} / {{experienceForNext}}xp</div>
+  <div>
+    <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+  </div>
+  <div>
+    Armor:
+    <mat-card [style.background-color]="colorByRarity(armor.rarity)">
+      <mat-card-content>{{armor.name}}</mat-card-content>
+    </mat-card>
+  </div>
+  <div>
+    Weapon:
+    <mat-card [style.background-color]="colorByRarity(weapon.rarity)">
+      <mat-card-content>{{weapon.name}}</mat-card-content>
+    </mat-card>
+  </div>
+</mat-card-content>

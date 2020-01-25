@@ -1,10 +1,10 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AuthComponent } from './auth.component';
-import { ConfigManager } from '../data/config-manager';
+import { ConfigManager } from '../../services/data/config-manager';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UserService } from '../user/user.service';
-import { ConfigAuthentication } from '../data/config-data';
+import { UserService } from '../../services/user/user.service';
+import { ConfigAuthentication } from '../../services/data/config-data';
 
 const configManagerSpy = jasmine.createSpyObj('ConfigManager', ['Save']);
 const userServiceSpy = jasmine.createSpyObj('UserService', ['UpdateCache', 'GetUserInfo']);
@@ -35,8 +35,7 @@ describe('AppComponent', () => {
 
     const configAuth = new ConfigAuthentication();
     fixture.componentInstance.ValidateToken(configAuth, configManagerSpy, userServiceSpy, routerSpy);
-
-    expect(app).toBeTruthy();
+    expect(userServiceSpy).toHaveBeenCalled();
   });
 
   it(`should have as title 'wolfpack-rpg-client'`, () => {

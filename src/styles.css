@@ -37,8 +37,13 @@ mat-divider.accent-divider {
   overflow: hidden;
 }
 
-app-widget-container, app-widget-factory,
-app-widget-container > div, app-widget-factory > * {
+app-widget-container, app-widget-container > div {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1;
+}
+
+app-widget-factory, app-widget-factory > * {
   display: flex !important;
   flex-direction: column !important;
   flex-grow: 1;
@@ -56,7 +61,7 @@ mat-sidenav-content {
 
 mat-card {
   width: auto;
-  height: calc(100% - 1px);
+  height: auto;
   display: flex !important;
   flex-direction: column !important;
   flex-grow: 1 !important;

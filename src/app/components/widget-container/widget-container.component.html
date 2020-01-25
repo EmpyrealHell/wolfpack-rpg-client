@@ -1,0 +1,19 @@
+<div [style.grid-template-areas]="gridlayout" style='display: grid !important'>
+  <div *ngFor="let factory of factories; index as i" [style.grid-area]="'a' + i" [style.display]="'flex'">
+    <mat-card class="flex-column">
+      <mat-card-title>
+        <div class="contain-space">
+          <span>{{config.Layout[i]}}</span>
+          <span class="fill-space"></span>
+          <span>
+            <button mat-icon-button color="warn" (click)="closeWidget(i)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </span>
+        </div>
+      </mat-card-title>
+      <app-widget-factory [factory]="factory" [ircService]="ircService" [configManager]="configManager">
+      </app-widget-factory>
+    </mat-card>
+  </div>
+</div>

@@ -30,14 +30,14 @@ export class ConfigManager {
    * Subscribes a function to be called every time the config is saved.
    * @param subscriber A function to be called back during save.
    */
-  public Subscribe(subscriber: ConfigSubscriber) {
+  public Subscribe(subscriber: ConfigSubscriber): void {
     ConfigManager.subscribers.push(subscriber);
   }
 
   /**
    * Saves the config data to the client's local storage.
    */
-  public Save() {
+  public Save(): void {
     localStorage.setItem(ConfigManager.storageKey, JSON.stringify(ConfigManager.Data));
     for (const subscriber of ConfigManager.subscribers) {
       subscriber.call(subscriber);
@@ -47,7 +47,7 @@ export class ConfigManager {
   /**
    * Loads the config data from the client's local storage.
    */
-  public Load() {
+  public Load(): void {
     const temp = localStorage.getItem(ConfigManager.storageKey);
     Object.assign(ConfigManager.Data, JSON.parse(temp));
   }

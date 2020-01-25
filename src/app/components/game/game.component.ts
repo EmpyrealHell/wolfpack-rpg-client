@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Config } from '../data/config-data';
-import { ConfigManager } from '../data/config-manager';
-import { IrcService } from '../irc/irc.service';
-import { UserService } from '../user/user.service';
+import { Config } from '../../services/data/config-data';
+import { ConfigManager } from '../../services/data/config-manager';
+import { IrcService } from '../../services/irc/irc.service';
+import { UserService } from '../../services/user/user.service';
 
 /**
  * The main component holding the game UI.
@@ -53,7 +53,7 @@ export class GameComponent implements OnInit {
   /**
    * Toggles the theme between light and dark.
    */
-  public toggleTheme() {
+  public toggleTheme(): void {
     this.config.Settings.UseDarkTheme = !this.config.Settings.UseDarkTheme;
     this.configManager.Save();
   }
@@ -62,7 +62,7 @@ export class GameComponent implements OnInit {
    * Toggles a widget on or off in the widget container.
    * @param id The id of the widget to toggle, which must match a key in the widget service.
    */
-  public toggleWidget(id: string) {
+  public toggleWidget(id: string): void {
     const index = this.config.Layout.indexOf(id);
     if (index >= 0) {
       this.config.Layout.splice(index, 1);

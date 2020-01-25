@@ -8,5 +8,5 @@ export class ParserRule {
 }
 
 export class ParserResult {
-  constructor(public rule: ParserRule, public responseId: string) { }
+  constructor(public responseId: string, public values: Array<string>) { }
 }
