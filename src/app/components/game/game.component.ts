@@ -26,7 +26,7 @@ export class GameComponent implements OnInit {
     public ircService: IrcService,
     private configManager: ConfigManager,
     private userService: UserService,
-    private router: Router,
+    public router: Router,
   ) { }
 
   public async ngOnInit(): Promise<void> {

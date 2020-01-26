@@ -72,9 +72,9 @@ export class CharacterWidgetComponent implements WidgetComponent, OnInit {
     })
   );
 
-  private data = new Character();
-  private modifiedStats = new Stats();
-  private readingStats: Item;
+  public data = new Character();
+  public modifiedStats = new Stats();
+  public readingStats: Item;
   @Input() public ircService: IrcService;
   @Input() public configManager: ConfigManager;
 
@@ -89,11 +89,11 @@ export class CharacterWidgetComponent implements WidgetComponent, OnInit {
     }
   }
 
-  private colorByRarity(item: Item): string {
+  public colorByRarity(item: Item): string {
     return CharacterWidgetComponent.rarityColors.get(item.rarity);
   }
 
-  private itemTextColor(item: Item): string {
+  public itemTextColor(item: Item): string {
     return item.isSet() ? 'black' : '';
   }
 

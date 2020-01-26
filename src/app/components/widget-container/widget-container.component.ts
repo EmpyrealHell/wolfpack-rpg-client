@@ -16,7 +16,6 @@ import { WidgetService } from '../../services/widget/widget.service';
 export class WidgetContainerComponent implements OnInit {
 
   private widgetMap: Map<string, WidgetItem> = new Map<string, WidgetItem>();
-  private config: Config;
 
   private layouts = [
     '', '"a0"', '"a0 a1"', '"a0 a1" "a0 a2"',
@@ -24,7 +23,10 @@ export class WidgetContainerComponent implements OnInit {
     '"a0 a1 a2" "a3 a4 a5"', '"a0 a1 a2" "a0 a1 a3" "a4 a5 a6"',
     '"a0 a1 a2" "a0 a3 a4" "a5 a6 a7"', '"a0 a1 a2" "a3 a4 a5" "a6 a7 a8"'
   ];
-
+  /**
+   * User's config, which contains widget layout data.
+   */
+  public config: Config;
   /**
    * Grid template area string used to arrange the widgets.
    */
@@ -34,9 +36,9 @@ export class WidgetContainerComponent implements OnInit {
    */
   public factories = new Array<ComponentFactory<WidgetComponent>>();
 
-  constructor(private widgetService: WidgetService, private configManager: ConfigManager,
+  constructor(private widgetService: WidgetService, public configManager: ConfigManager,
     // tslint:disable-next-line:align
-    private ircService: IrcService, private componentFactoryResolver: ComponentFactoryResolver) { }
+    public ircService: IrcService, private componentFactoryResolver: ComponentFactoryResolver) { }
 
   public ngOnInit(): void {
     this.config = this.configManager.GetConfig();
