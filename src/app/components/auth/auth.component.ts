@@ -35,20 +35,23 @@ export class AuthComponent implements OnInit {
   public async ParseAuthResponse(auth: ConfigAuthentication, configManager: ConfigManager,
     // tslint:disable-next-line:align
     fragmentString: string, userService: UserService, router: Router): Promise<void> {
+    console.log('Parsing auth response');
     if (auth.State) {
       const fragmentMap = Utils.CreateMap('&', '=', fragmentString);
       const state = fragmentMap.get('state');
       const token = fragmentMap.get('access_token');
       if (state === auth.State && token) {
+        console.log('Token acquired!');
         auth.Token = token;
         await this.ValidateToken(auth, configManager, userService, router);
       } else {
-        window.alert('An error occurred in the authentication process, resetting authentication.\n' +
+        console.log('An error occurred in the authentication process, resetting authentication.\n' +
           'If you see this message more than once it may indicate an error between you and twitch.');
         auth.State = undefined;
         this.AuthenticateWithTwitch(auth, configManager);
       }
     } else {
+      console.log('No auth state found');
       this.AuthenticateWithTwitch(auth, configManager);
     }
   }
@@ -64,17 +67,24 @@ export class AuthComponent implements OnInit {
   public async ValidateToken(auth: ConfigAuthentication, configManager: ConfigManager,
     // tslint:disable-next-line:align
     userService: UserService, router: Router): Promise<void> {
+    console.log('Validating token');
     let data: UserData;
     try {
       data = await userService.GetUserInfo(auth.Token);
-    } catch { }
+    } catch (error) {
+      console.log('Encountered an error getting token validation data');
+      console.log(error);
+    }
 
     if (data && data.login && data.login.length > 0) {
       if ((auth.User && data.login !== auth.User) ||
         (auth.Scope && !Utils.HasAll(data.scopes, auth.Scope.split(' ')))) {
+        console.log('User or scope do not match saved data, resetting');
         auth.Scope = undefined;
+        auth.State = undefined;
         this.AuthenticateWithTwitch(auth, configManager);
       } else {
+        console.log('Success!')
         auth.User = data.login;
         auth.Scope = Utils.StringJoin(' ', data.scopes);
         configManager.Save();
@@ -82,6 +92,7 @@ export class AuthComponent implements OnInit {
         router.navigate(['/play']);
       }
     } else {
+      console.log('Unable to retrieve token validation data');
       this.AuthenticateWithTwitch(auth, configManager);
     }
   }
@@ -93,6 +104,7 @@ export class AuthComponent implements OnInit {
    * @param configManager Used to update local data if authentication fails.
    */
   public AuthenticateWithTwitch(auth: ConfigAuthentication, configManager: ConfigManager): void {
+    console.log('Heading to twitch to get a token');
     const forceVerify = (auth.State === undefined);
     auth.State = Utils.GenerateState(16);
     auth.Token = undefined;
@@ -115,8 +127,10 @@ export class AuthComponent implements OnInit {
    * user to the main interface.
    */
   public async ngOnInit(): Promise<void> {
+    console.log('Init!');
     this.configManager.Load();
     const config = this.configManager.GetConfig();
+    console.log(config);
     if (this.route.fragment && this.route.fragment.length > 0) {
       await this.ParseAuthResponse(config.Authentication, this.configManager,
         this.route.fragment, this.userService, this.router);
