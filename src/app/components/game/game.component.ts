@@ -71,4 +71,13 @@ export class GameComponent implements OnInit {
     }
     this.configManager.Save();
   }
+
+  /**
+   * Logs the user out of the app and re-initiates the authentication process.
+   */
+  public logOut(): void {
+    this.config.Authentication.Token = null;
+    this.configManager.Save();
+    this.router.navigate(['/']);
+  }
 }

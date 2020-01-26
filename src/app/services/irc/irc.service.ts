@@ -4,6 +4,7 @@ import { Utils } from 'src/app/util/utils';
 import { ChatUserstate, Client } from 'tmi.js';
 import { UserService } from '../user/user.service';
 import * as ircConfig from './irc.service.json';
+import { RollingTimer } from './rolling-timer';
 
 /**
  * Callback type used for broadcasting whisper messages received by the client.
@@ -21,22 +22,46 @@ export class IrcService {
   private static connection: Client;
   private static callbacks: Map<string, WhisperCallback>;
   private static history = '';
-
+  private static messageQueue = new Array<string>();
+  private static secondTimer = new RollingTimer(1, 3);
+  private static minuteTimer = new RollingTimer(60, 100);
+  private static maxRetries = 10;
   public static IsConnected = false;
+
+  private static processQueue(): void {
+    if (this.IsConnected && this.messageQueue.length > 0) {
+      const limit = Math.min(this.messageQueue.length,
+        this.secondTimer.availableOccurrences(),
+        this.minuteTimer.availableOccurrences());
+      if (limit > 0) {
+        const toSend = this.messageQueue.splice(0, limit);
+        for (const message of toSend) {
+          IrcService.connection.whisper(ircConfig.botAccount, message);
+          this.secondTimer.addOccurrence();
+          this.minuteTimer.addOccurrence();
+        }
+      }
+    }
+    setTimeout(() => {
+      if (--this.maxRetries >= 0) {
+        IrcService.processQueue();
+      }
+    }, 100);
+  }
+
   public get IsConnected(): boolean { return IrcService.IsConnected; }
 
   constructor(public configManager: ConfigManager, public userService: UserService) {
-    IrcService.callbacks = new Map<string, WhisperCallback>();
+    if (!IrcService.callbacks) {
+      IrcService.callbacks = new Map<string, WhisperCallback>();
+    }
   }
 
   private onWhisper(from: string, userstate: ChatUserstate, message: string, self: boolean): void {
-    if (!self) {
-      IrcService.history += message;
-      for (const [key, value] of IrcService.callbacks) {
-        value.call(value, message);
-      }
-    } else {
-      IrcService.history += `\n >> ${message}\n\n`;
+    const fullMessage = self ? `\n>> ${message}\n\n` : `${message}\n`;
+    IrcService.history += fullMessage;
+    for (const [key, value] of IrcService.callbacks) {
+      value.call(value, fullMessage);
     }
   }
 
@@ -76,11 +101,15 @@ export class IrcService {
   }
 
   /**
-   * Sends a whisper to the bot account the app is tied to.
+   * Queues a message to send as a whisper to the bot account the app is
+   * connected to. This is rate limited to avoid exceeding Twitch's whisper
+   * limits, as per https://dev.twitch.tv/docs/irc/guide#command--message-limits
    * @param message The message to send
    */
   public Send(message: string): void {
-    IrcService.connection.whisper(ircConfig.botAccount, message);
+    if (IrcService.messageQueue.indexOf(message) === -1) {
+      IrcService.messageQueue.push(message);
+    }
   }
 
   /**
@@ -91,6 +120,7 @@ export class IrcService {
     if (IrcService.IsConnected) {
       return true;
     } else {
+      IrcService.processQueue();
       const token = this.configManager.GetConfig().Authentication.Token;
       const userData = await this.userService.GetUserInfo(token);
       const options = ircConfig.connectOptions;

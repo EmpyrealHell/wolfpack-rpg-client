@@ -35,7 +35,7 @@ export class ConsoleWidgetComponent implements WidgetComponent, OnInit {
   constructor() { }
 
   private onWhisper(message: string): void {
-    this.consoleData += `${message}\n`;
+    this.consoleData += message;
   }
 
   private sendCommand(): void {
@@ -47,6 +47,7 @@ export class ConsoleWidgetComponent implements WidgetComponent, OnInit {
 
   public ngOnInit(): void {
     this.ircService.Register('console-widget', (message) => { this.onWhisper(message); }, true);
+    this.consoleData = this.ircService.GetHistory();
   }
 
   /**

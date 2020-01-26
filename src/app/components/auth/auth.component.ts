@@ -99,7 +99,7 @@ export class AuthComponent implements OnInit {
     configManager.Save();
 
     window.location.href = `${authConfig.url}?client_id=${authConfig.clientId}` +
-      `&redirect_uri${environment.redirectUri}&state=${auth.State}` +
+      `&redirect_uri=${environment.redirectUri}&state=${auth.State}` +
       (forceVerify ? '&force_verify=true' : '') +
       `&response_type=token&scope=${authConfig.scope}`;
   }

@@ -37,6 +37,13 @@ mat-divider.accent-divider {
   overflow: hidden;
 }
 
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
 app-widget-container, app-widget-container > div {
   display: flex !important;
   flex-direction: column !important;
@@ -75,4 +82,8 @@ textarea {
   resize: none !important;
   width: 100%;
   height: 100%;
+}
+
+.static-bar > mat-progress-bar {
+  height: 20px !important;
 }

@@ -1,21 +1,59 @@
 <mat-card-content height="100%" class="flex-column">
-  <div>
-    <mat-icon>person</mat-icon> Level {{level}} {{class}}
+  <div style="font-size: 18pt;" class="flex-row">
+    <span><img src="./assets/class-{{data.class.toLowerCase()}}.svg" width=32> Level {{data.experience.level}}
+      {{data.class}}</span>
+    <span class="fill-space"></span>
+    <span>{{data.experience.xpInLevel}} / {{data.experience.xpToNext}} XP</span>
   </div>
-  <div>{{experienceInLevel}} / {{experienceForNext}}xp</div>
-  <div>
-    <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+  <div class="static-bar">
+    <mat-progress-bar color="primary" mode="determinate" [value]="data.experience.progress">
+    </mat-progress-bar>
   </div>
-  <div>
-    Armor:
-    <mat-card [style.background-color]="colorByRarity(armor.rarity)">
-      <mat-card-content>{{armor.name}}</mat-card-content>
-    </mat-card>
-  </div>
-  <div>
-    Weapon:
-    <mat-card [style.background-color]="colorByRarity(weapon.rarity)">
-      <mat-card-content>{{weapon.name}}</mat-card-content>
-    </mat-card>
+  <p></p>
+  <div class="flex-row">
+    <div class="flex-column">
+      <span style="font-size: 18pt;">Stats:</span>
+      <mat-list>
+        <mat-list-item>Success Chance: {{modifiedStats.successChance}}%</mat-list-item>
+        <mat-list-item>XP Bonus: {{modifiedStats.xpBonus}}%</mat-list-item>
+        <mat-list-item>Wolfcoin Bonus: {{modifiedStats.wolfcoinBonus}}%</mat-list-item>
+        <mat-list-item>Item Find: {{modifiedStats.itemFind}}%</mat-list-item>
+        <mat-list-item>Prevent Death: {{modifiedStats.preventDeath}}%</mat-list-item>
+      </mat-list>
+    </div>
+    <div class="flex-column">
+      <div>
+        <span style="font-size: 18pt;">Armor:</span>
+      </div>
+      <div>
+        <mat-card [style.background-color]="colorByRarity(data.gear.armor)">
+          <mat-card-content [style.color]="itemTextColor(data.gear.armor)" style="font-size: 16pt;">
+            {{data.gear.armor.name}}
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <mat-list dense *ngIf="data.gear.armor.isSet()">
+        <mat-list-item *ngFor="let stat of data.gear.armor.stats.updatedStats">
+          <div>+{{data.gear.armor.stats[stat]}}% {{stat}}</div>
+        </mat-list-item>
+      </mat-list>
+    </div>
+    <div class="flex-column">
+      <div>
+        <span style="font-size: 18pt;">Weapon:</span>
+      </div>
+      <div>
+        <mat-card [style.background-color]="colorByRarity(data.gear.weapon)">
+          <mat-card-content [style.color]="itemTextColor(data.gear.weapon)" style="font-size: 16pt;">
+            {{data.gear.weapon.name}}
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <mat-list dense *ngIf="data.gear.weapon.isSet()">
+        <mat-list-item *ngFor="let stat of data.gear.weapon.stats.updatedStats">
+          <div>+{{data.gear.weapon.stats[stat]}}% {{stat}}</div>
+        </mat-list-item>
+      </mat-list>
+    </div>
   </div>
 </mat-card-content>
