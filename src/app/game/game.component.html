@@ -1,5 +1,0 @@
-<div>
-    <div *ngFor="let line of lines">{{line}}</div>
-    <input [(ngModel)]="command" (keyup)="Send($event)" [disabled]="!isConnected" />
-    <button type="submit" [disabled]="!isConnected">Send</button>
-</div>
