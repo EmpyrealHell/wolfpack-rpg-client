@@ -47,6 +47,10 @@ export class Item {
    */
   public name = Item.defaultName;
   /**
+   * The id of the item in the inventory.
+   */
+  public id = -1;
+  /**
    * The item's rarity.
    */
   public rarity = Rarity.none;

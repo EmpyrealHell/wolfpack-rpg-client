@@ -31,7 +31,7 @@ export class ResponseListener {
   selector: 'app-character-widget',
   templateUrl: './character.widget.html',
 })
-export class CharacterWidgetComponent implements WidgetComponent, OnInit {
+export class CharacterWidgetComponent implements WidgetComponent {
   private static rarityColors = new Map<Rarity, string>([
     [Rarity.none, '#404040'],
     [Rarity.uncommon, '#e4edde'],
@@ -54,14 +54,19 @@ export class CharacterWidgetComponent implements WidgetComponent, OnInit {
     new ResponseListener(characterConfig.patterns.Gear, (matches) => {
       if (matches[3] === 'Armor') {
         this.readingStats = this.data.gear.armor;
+        this.data.gear.armor.stats = new Stats(0);
       } else if (matches[3] === 'Weapon') {
         this.readingStats = this.data.gear.weapon;
-      } else {
-        this.readingStats = null;
+        this.data.gear.weapon.stats = new Stats(0);
       }
       if (this.readingStats) {
         this.readingStats.name = matches[1];
         this.readingStats.rarity = Rarity[matches[2].toLowerCase()];
+      }
+    }),
+    new ResponseListener(characterConfig.patterns.Id, (matches) => {
+      if (this.readingStats) {
+        this.readingStats.id = parseInt(matches[1], 10);
       }
     }),
     new ResponseListener(characterConfig.patterns.Stat, (matches) => {
@@ -69,6 +74,10 @@ export class CharacterWidgetComponent implements WidgetComponent, OnInit {
         this.readingStats.stats.updateStat(matches[2], parseInt(matches[1], 10));
         this.modifiedStats = this.data.calculatStats();
       }
+    }),
+    new ResponseListener(undefined, (matches) => {
+      console.log('No matches');
+      this.readingStats = null;
     })
   );
 
@@ -82,9 +91,14 @@ export class CharacterWidgetComponent implements WidgetComponent, OnInit {
 
   private onWhisper(message: string): void {
     for (const response of this.responses) {
-      const match = message.match(response.pattern);
-      if (match) {
-        response.callback.call(response.callback, match);
+      if (response.pattern) {
+        const match = message.match(response.pattern);
+        if (match) {
+          response.callback.call(response.callback, match);
+          return;
+        }
+      } else {
+        response.callback.call(response.callback, null);
       }
     }
   }
@@ -97,18 +111,17 @@ export class CharacterWidgetComponent implements WidgetComponent, OnInit {
     return item.isSet() ? 'black' : '';
   }
 
-  public ngOnInit(): void {
+  public onActivate(): void {
     this.ircService.Register('character-widget', (message) => { this.onWhisper(message); }, true);
     const history = this.ircService.GetHistory();
-    for (const response of this.responses) {
-      const match = history.match(response.global);
-      if (match) {
-        const groups = match[match.length - 1].match(response.pattern);
-        response.callback.call(response.callback, groups);
-      }
+    const queue = this.ircService.GetQueuedMessages();
+    const lines = history.split('\n');
+    for (const line of lines) {
+      this.onWhisper(line);
     }
     for (const command of characterConfig.loadCommands) {
-      if (history.indexOf(`>> ${command}`) === -1) {
+      if (history.indexOf(`>> ${command}`) === -1
+        && queue.indexOf(command) === -1) {
         this.ircService.Send(command);
       }
     }
