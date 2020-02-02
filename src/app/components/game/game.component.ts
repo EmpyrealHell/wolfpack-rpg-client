@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Config } from '../../services/data/config-data';
+import { Config, ConfigAuthentication } from '../../services/data/config-data';
 import { ConfigManager } from '../../services/data/config-manager';
 import { IrcService } from '../../services/irc/irc.service';
 import { UserService } from '../../services/user/user.service';
@@ -76,7 +76,7 @@ export class GameComponent implements OnInit {
    * Logs the user out of the app and re-initiates the authentication process.
    */
   public logOut(): void {
-    this.config.Authentication.Token = null;
+    this.config.Authentication = new ConfigAuthentication();
     this.configManager.Save();
     this.router.navigate(['/']);
   }

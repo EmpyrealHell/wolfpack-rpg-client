@@ -4,6 +4,7 @@
     "Level": "^You are Level (\\d+) \\(Total XP: (\\d+) \\| XP To Next Level: (\\d+)\\)$",
     "ClassLevel": "^You are a Level (\\d+) (\\w+), and you are Prestige Level (\\d+)\\. \\(Total XP: (\\d+) \\| XP To Next Level: (\\d+)\\)$",
     "Gear": "^(.*) \\((\\w+) (Armor|Weapon)\\) \\(Equipped\\)$",
+    "Id": "^Inventory Id\\: ([0-9]+)$",
     "Stat": "^\\+(\\d+)% (Success Chance|XP Bonus|Wolfcoin Bonus|Item Find|to Prevent Death)$"
   },
   "loadCommands": [

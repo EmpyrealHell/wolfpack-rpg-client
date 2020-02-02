@@ -13,4 +13,6 @@ export interface WidgetComponent {
    * Config manager used to save & load user config data.
    */
   configManager: ConfigManager;
+
+  onActivate(): void;
 }

@@ -45,6 +45,7 @@ export class WidgetFactoryComponent implements OnInit {
       const component = containerRef.createComponent(this.factory).instance as WidgetComponent;
       component.configManager = this.configManager;
       component.ircService = this.ircService;
+      component.onActivate();
     }
   }
 }

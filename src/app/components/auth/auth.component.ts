@@ -84,7 +84,7 @@ export class AuthComponent implements OnInit {
         auth.State = undefined;
         this.AuthenticateWithTwitch(auth, configManager);
       } else {
-        console.log('Success!')
+        console.log('Success!');
         auth.User = data.login;
         auth.Scope = Utils.StringJoin(' ', data.scopes);
         configManager.Save();

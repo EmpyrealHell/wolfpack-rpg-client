@@ -20,12 +20,11 @@ export type WhisperCallback = ((message: string) => void);
 })
 export class IrcService {
   private static connection: Client;
-  private static callbacks: Map<string, WhisperCallback>;
+  private static callbacks = new Map<string, WhisperCallback>();
   private static history = '';
   private static messageQueue = new Array<string>();
   private static secondTimer = new RollingTimer(1, 3);
   private static minuteTimer = new RollingTimer(60, 100);
-  private static maxRetries = 10;
   public static IsConnected = false;
 
   private static processQueue(): void {
@@ -42,20 +41,12 @@ export class IrcService {
         }
       }
     }
-    setTimeout(() => {
-      if (--this.maxRetries >= 0) {
-        IrcService.processQueue();
-      }
-    }, 100);
+    setTimeout(() => { IrcService.processQueue(); }, 100);
   }
 
   public get IsConnected(): boolean { return IrcService.IsConnected; }
 
-  constructor(public configManager: ConfigManager, public userService: UserService) {
-    if (!IrcService.callbacks) {
-      IrcService.callbacks = new Map<string, WhisperCallback>();
-    }
-  }
+  constructor(public configManager: ConfigManager, public userService: UserService) { }
 
   private onWhisper(from: string, userstate: ChatUserstate, message: string, self: boolean): void {
     const fullMessage = self ? `\n>> ${message}\n\n` : `${message}\n`;
@@ -88,6 +79,13 @@ export class IrcService {
    */
   public GetHistory(): string {
     return IrcService.history;
+  }
+
+  /**
+   * Returns a list of messages queued to send.
+   */
+  public GetQueuedMessages(): Array<string> {
+    return [...IrcService.messageQueue];
   }
 
   /**

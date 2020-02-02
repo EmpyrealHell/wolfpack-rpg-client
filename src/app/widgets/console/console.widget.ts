@@ -11,7 +11,7 @@ import { WidgetComponent } from 'src/app/components/widget-factory/widget.compon
   selector: 'app-console-widget',
   templateUrl: './console.widget.html',
 })
-export class ConsoleWidgetComponent implements WidgetComponent, OnInit {
+export class ConsoleWidgetComponent implements WidgetComponent {
   /**
    * The full chat history to render.
    */
@@ -45,7 +45,7 @@ export class ConsoleWidgetComponent implements WidgetComponent, OnInit {
     this.ircService.Send(message);
   }
 
-  public ngOnInit(): void {
+  public onActivate(): void {
     this.ircService.Register('console-widget', (message) => { this.onWhisper(message); }, true);
     this.consoleData = this.ircService.GetHistory();
   }
