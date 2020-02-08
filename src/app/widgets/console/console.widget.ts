@@ -35,13 +35,13 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   constructor() { }
 
   private onWhisper(message: string): void {
-    this.consoleData += message;
+    this.consoleData += `${message}\n`;
   }
 
   private sendCommand(): void {
     const message = this.command;
     this.command = '';
-    this.consoleData += `\n >> ${message}\n\n`;
+    this.consoleData += `\n>> ${message}\n`;
     this.ircService.Send(message);
   }
 

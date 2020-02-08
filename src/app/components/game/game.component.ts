@@ -4,6 +4,9 @@ import { Config, ConfigAuthentication } from '../../services/data/config-data';
 import { ConfigManager } from '../../services/data/config-manager';
 import { IrcService } from '../../services/irc/irc.service';
 import { UserService } from '../../services/user/user.service';
+import { WidgetService } from 'src/app/services/widget/widget.service';
+import { WidgetItem } from 'src/app/services/widget/widget-item';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 /**
  * The main component holding the game UI.
@@ -21,16 +24,24 @@ export class GameComponent implements OnInit {
    * Username from the validated token.
    */
   public username: string;
+  /**
+   * List of all widgets.
+   */
+  public widgets: Array<WidgetItem>;
 
   constructor(
     public ircService: IrcService,
     private configManager: ConfigManager,
     private userService: UserService,
+    private widgetService: WidgetService,
+    private overlayContainer: OverlayContainer,
     public router: Router,
   ) { }
 
   public async ngOnInit(): Promise<void> {
+    this.widgets = this.widgetService.getWidgets();
     const config = this.configManager.GetConfig();
+    this.updateOverlayTheme();
 
     const token = config.Authentication.Token;
     if (!token) {
@@ -50,26 +61,36 @@ export class GameComponent implements OnInit {
     }
   }
 
+  private updateOverlayTheme(): void {
+    if (this.config.Settings.UseDarkTheme) {
+      this.overlayContainer.getContainerElement().classList.add('dark-theme');
+    } else {
+      this.overlayContainer.getContainerElement().classList.remove('dark-theme');
+    }
+  }
+
   /**
-   * Toggles the theme between light and dark.
+   * Updates the user's settings.
    */
-  public toggleTheme(): void {
-    this.config.Settings.UseDarkTheme = !this.config.Settings.UseDarkTheme;
+  public updateSettings(): void {
     this.configManager.Save();
+    this.updateOverlayTheme();
   }
 
   /**
    * Toggles a widget on or off in the widget container.
-   * @param id The id of the widget to toggle, which must match a key in the widget service.
+   * @param widget The widget to toggle.
    */
-  public toggleWidget(id: string): void {
-    const index = this.config.Layout.indexOf(id);
-    if (index >= 0) {
-      this.config.Layout.splice(index, 1);
-    } else {
-      this.config.Layout.push(id);
+  public toggleWidget(widget: WidgetItem): void {
+    if (widget) {
+      const index = this.config.Layout.indexOf(widget.name);
+      if (index >= 0) {
+        this.config.Layout.splice(index, 1);
+      } else {
+        this.config.Layout.push(widget.name);
+      }
+      this.configManager.Save();
     }
-    this.configManager.Save();
   }
 
   /**

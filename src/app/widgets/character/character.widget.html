@@ -1,6 +1,6 @@
 <mat-card-content height="100%" class="flex-column">
   <div style="font-size: 18pt;" class="flex-row">
-    <span><img src="./assets/class-{{data.class.toLowerCase()}}.svg" width=32> Level {{data.experience.level}}
+    <span><img src="./assets/{{getClassIcon()}}" width="22px"> Level {{data.experience.level}}
       {{data.class}}</span>
     <span class="fill-space"></span>
     <span>{{data.experience.xpInLevel}} / {{data.experience.xpToNext}} XP</span>

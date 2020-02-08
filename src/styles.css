@@ -18,7 +18,7 @@ body {
 
 mat-divider.accent-divider {
   height: 65%;
-  margin-left: 0;
+  margin-left: 8px;
   margin-right: 8px;
 }
 

@@ -22,7 +22,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import {
   MatButtonModule, MatCardModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule,
-  MatListModule, MatMenuModule, MatProgressBarModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
+  MatListModule, MatMenuModule, MatProgressBarModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule, MatRadioModule
 } from '@angular/material';
 
 
@@ -45,7 +45,7 @@ import {
     FlexLayoutModule, LayoutModule, ScrollingModule,
 
     MatButtonModule, MatCardModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule,
-    MatListModule, MatMenuModule, MatProgressBarModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
+    MatListModule, MatMenuModule, MatProgressBarModule, MatRadioModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
   ],
   entryComponents: [CharacterWidgetComponent, ConsoleWidgetComponent],
   providers: [],

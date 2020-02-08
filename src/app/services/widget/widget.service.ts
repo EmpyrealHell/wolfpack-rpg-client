@@ -13,8 +13,18 @@ import { WidgetItem } from './widget-item';
 })
 export class WidgetService {
   private static widgets = new Array<WidgetItem>(
-    new WidgetItem(ConsoleWidgetComponent, 'Console'),
     new WidgetItem(CharacterWidgetComponent, 'Character'),
+    new WidgetItem(null, 'Inventory'),
+    new WidgetItem(null, 'Pets'),
+    new WidgetItem(null, 'Fishing'),
+    null,
+    new WidgetItem(null, 'Dungeon'),
+    new WidgetItem(null, 'Group'),
+    new WidgetItem(null, 'Group Chat'),
+    null,
+    new WidgetItem(null, 'Shop'),
+    new WidgetItem(null, 'Info'),
+    new WidgetItem(ConsoleWidgetComponent, 'Console'),
   );
 
   constructor(private ircService: IrcService, private configManager: ConfigManager) { }

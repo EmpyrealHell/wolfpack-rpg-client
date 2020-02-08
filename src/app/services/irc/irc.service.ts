@@ -22,6 +22,7 @@ export class IrcService {
   private static connection: Client;
   private static callbacks = new Map<string, WhisperCallback>();
   private static history = '';
+  private static lines = new Array<string>();
   private static messageQueue = new Array<string>();
   private static secondTimer = new RollingTimer(1, 3);
   private static minuteTimer = new RollingTimer(60, 100);
@@ -49,10 +50,11 @@ export class IrcService {
   constructor(public configManager: ConfigManager, public userService: UserService) { }
 
   private onWhisper(from: string, userstate: ChatUserstate, message: string, self: boolean): void {
-    const fullMessage = self ? `\n>> ${message}\n\n` : `${message}\n`;
-    IrcService.history += fullMessage;
+    const prefixedMessage = self ? `>> ${message}` : message;
+    IrcService.lines.push(prefixedMessage);
+    IrcService.history += `${self ? '\n' : ''}${message}\n`;
     for (const [key, value] of IrcService.callbacks) {
-      value.call(value, fullMessage);
+      value.call(value, prefixedMessage);
     }
   }
 
@@ -79,6 +81,10 @@ export class IrcService {
    */
   public GetHistory(): string {
     return IrcService.history;
+  }
+
+  public GetLines(): Array<string> {
+    return [...IrcService.lines];
   }
 
   /**

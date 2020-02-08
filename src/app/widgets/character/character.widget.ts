@@ -1,28 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService } from 'src/app/services/irc/irc.service';
 import * as characterConfig from './character.widget.json';
 import { Character } from './model/character.js';
 import { Item, Rarity } from './model/gear.js';
 import { Stats } from './model/stats.js';
-
-/**
- * Definition for callback function used in response listeners.
- */
-export type ResponseCallback = (matches: Array<string>) => void;
-/**
- * Provides functionality to listen for whispers that match a pattern and
- * execute a callback function when it finds a match.
- */
-export class ResponseListener {
-  public pattern: RegExp;
-  public global: RegExp;
-  constructor(pattern: string, public callback: ResponseCallback) {
-    this.pattern = new RegExp(pattern, 'mi');
-    this.global = new RegExp(pattern, 'gmi');
-  }
-}
+import { Config } from 'src/app/services/data/config-data.js';
+import { AbstractWidgetComponent } from '../abstract/abstract-widget.js';
+import { Responder } from '../abstract/responder.js';
 
 /**
  * Widget used to display character data.
@@ -31,7 +16,7 @@ export class ResponseListener {
   selector: 'app-character-widget',
   templateUrl: './character.widget.html',
 })
-export class CharacterWidgetComponent implements WidgetComponent {
+export class CharacterWidgetComponent extends AbstractWidgetComponent {
   private static rarityColors = new Map<Rarity, string>([
     [Rarity.none, '#404040'],
     [Rarity.uncommon, '#e4edde'],
@@ -39,19 +24,19 @@ export class CharacterWidgetComponent implements WidgetComponent {
     [Rarity.epic, '#e6deed']
   ]);
 
-  private responses = new Array<ResponseListener>(
-    new ResponseListener(characterConfig.patterns.Coins, (matches) => {
+  private responderArray = new Array<Responder>(
+    new Responder(characterConfig.patterns.Coins, (matches) => {
       this.data.coins = parseInt(matches[1], 10);
     }),
-    new ResponseListener(characterConfig.patterns.Level, (matches) => {
+    new Responder(characterConfig.patterns.Level, (matches) => {
       this.data.experience.updateStrings(matches[1], '0', matches[2], matches[3]);
     }),
-    new ResponseListener(characterConfig.patterns.ClassLevel, (matches) => {
+    new Responder(characterConfig.patterns.ClassLevel, (matches) => {
       this.data.setClass(matches[2]);
       this.data.experience.updateStrings(matches[1], matches[3], matches[4], matches[5]);
       this.modifiedStats = this.data.calculatStats();
     }),
-    new ResponseListener(characterConfig.patterns.Gear, (matches) => {
+    new Responder(characterConfig.patterns.Gear, (matches) => {
       if (matches[3] === 'Armor') {
         this.readingStats = this.data.gear.armor;
         this.data.gear.armor.stats = new Stats(0);
@@ -64,66 +49,70 @@ export class CharacterWidgetComponent implements WidgetComponent {
         this.readingStats.rarity = Rarity[matches[2].toLowerCase()];
       }
     }),
-    new ResponseListener(characterConfig.patterns.Id, (matches) => {
+    new Responder(characterConfig.patterns.Id, (matches) => {
       if (this.readingStats) {
         this.readingStats.id = parseInt(matches[1], 10);
       }
     }),
-    new ResponseListener(characterConfig.patterns.Stat, (matches) => {
+    new Responder(characterConfig.patterns.Stat, (matches) => {
       if (this.readingStats) {
         this.readingStats.stats.updateStat(matches[2], parseInt(matches[1], 10));
         this.modifiedStats = this.data.calculatStats();
       }
     }),
-    new ResponseListener(undefined, (matches) => {
-      console.log('No matches');
+    new Responder(undefined, (matches) => {
       this.readingStats = null;
     })
   );
+  public get responders(): Array<Responder> {
+    return this.responderArray;
+  }
+  public get name(): string {
+    return 'Character';
+  }
+  public get loadCommands(): Array<string> {
+    return characterConfig.loadCommands;
+  }
 
+  private config: Config;
+
+  /**
+   * The character data to display.
+   */
   public data = new Character();
+  /**
+   * The character's stats.
+   */
   public modifiedStats = new Stats();
+  /**
+   * The current item being updated by new messages.
+   */
   public readingStats: Item;
   @Input() public ircService: IrcService;
   @Input() public configManager: ConfigManager;
 
-  constructor() { }
+  constructor() { super(); }
 
-  private onWhisper(message: string): void {
-    for (const response of this.responses) {
-      if (response.pattern) {
-        const match = message.match(response.pattern);
-        if (match) {
-          response.callback.call(response.callback, match);
-          return;
-        }
-      } else {
-        response.callback.call(response.callback, null);
-      }
-    }
-  }
-
+  /**
+   * Gets the background color of an item based on its rarity.
+   * @param item The item to check.
+   */
   public colorByRarity(item: Item): string {
     return CharacterWidgetComponent.rarityColors.get(item.rarity);
   }
 
+  /**
+   * Gets the text color to use for an item.
+   * @param item The item to check.
+   */
   public itemTextColor(item: Item): string {
     return item.isSet() ? 'black' : '';
   }
 
-  public onActivate(): void {
-    this.ircService.Register('character-widget', (message) => { this.onWhisper(message); }, true);
-    const history = this.ircService.GetHistory();
-    const queue = this.ircService.GetQueuedMessages();
-    const lines = history.split('\n');
-    for (const line of lines) {
-      this.onWhisper(line);
-    }
-    for (const command of characterConfig.loadCommands) {
-      if (history.indexOf(`>> ${command}`) === -1
-        && queue.indexOf(command) === -1) {
-        this.ircService.Send(command);
-      }
-    }
+  /**
+   * Gets the name of the icon file to load for the current class.
+   */
+  public getClassIcon(): string {
+    return `class-${this.data.class.toLowerCase()}.svg`;
   }
 }
