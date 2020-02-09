@@ -67,9 +67,6 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
   public get responders(): Array<Responder> {
     return this.responderArray;
   }
-  public get name(): string {
-    return 'Character';
-  }
   public get loadCommands(): Array<string> {
     return characterConfig.loadCommands;
   }

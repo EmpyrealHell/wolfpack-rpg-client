@@ -6,10 +6,10 @@ import { Responder } from './responder';
 export abstract class AbstractWidgetComponent implements WidgetComponent {
   public ircService: IrcService;
   public configManager: ConfigManager;
+  public name: string;
 
   public abstract get loadCommands(): Array<string>;
   public abstract get responders(): Array<Responder>;
-  protected abstract get name(): string;
 
   protected onWhisper(message: string): void {
     const responders = this.responders;
@@ -28,15 +28,14 @@ export abstract class AbstractWidgetComponent implements WidgetComponent {
 
   public onActivate(): void {
     this.ircService.Register(`${this.name}-widget`, (message) => { this.onWhisper(message); }, true);
-    const history = this.ircService.GetHistory();
+    const lines = this.ircService.GetLines();
     const queue = this.ircService.GetQueuedMessages();
-    const lines = history.split('\n');
     for (const line of lines) {
       this.onWhisper(line);
     }
     const commands = this.loadCommands;
     for (const command of commands) {
-      if (history.indexOf(`>> ${command}`) === -1
+      if (lines.indexOf(`>> ${command}`) === -1
         && queue.indexOf(command) === -1) {
         this.ircService.Send(command);
       }

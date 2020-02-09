@@ -4,6 +4,7 @@ import { ConsoleWidgetComponent } from 'src/app/widgets/console/console.widget';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetItem } from './widget-item';
+import { FishingWidgetComponent } from 'src/app/widgets/fishing/fishing.widget';
 
 /**
  * Service containing the list of all available widgets.
@@ -16,7 +17,7 @@ export class WidgetService {
     new WidgetItem(CharacterWidgetComponent, 'Character'),
     new WidgetItem(null, 'Inventory'),
     new WidgetItem(null, 'Pets'),
-    new WidgetItem(null, 'Fishing'),
+    new WidgetItem(FishingWidgetComponent, 'Fishing'),
     null,
     new WidgetItem(null, 'Dungeon'),
     new WidgetItem(null, 'Group'),

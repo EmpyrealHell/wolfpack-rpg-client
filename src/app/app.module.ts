@@ -24,6 +24,7 @@ import {
   MatButtonModule, MatCardModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule,
   MatListModule, MatMenuModule, MatProgressBarModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule, MatRadioModule
 } from '@angular/material';
+import { FishingWidgetComponent } from './widgets/fishing/fishing.widget';
 
 
 @NgModule({
@@ -34,9 +35,10 @@ import {
 
     CharacterWidgetComponent,
     ConsoleWidgetComponent,
+    FishingWidgetComponent,
 
     WidgetContainerComponent,
-    WidgetFactoryComponent
+    WidgetFactoryComponent,
   ],
   imports: [
     AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule,
@@ -47,7 +49,7 @@ import {
     MatButtonModule, MatCardModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule,
     MatListModule, MatMenuModule, MatProgressBarModule, MatRadioModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
   ],
-  entryComponents: [CharacterWidgetComponent, ConsoleWidgetComponent],
+  entryComponents: [CharacterWidgetComponent, ConsoleWidgetComponent, FishingWidgetComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

@@ -20,6 +20,10 @@ export class ConsoleWidgetComponent implements WidgetComponent {
    * The command to send as input by the user.
    */
   public command = '';
+  /**
+   * The name of the widget;
+   */
+  public name = '';
 
   /**
    * Reference to the IRC chat service.
@@ -41,7 +45,6 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   private sendCommand(): void {
     const message = this.command;
     this.command = '';
-    this.consoleData += `\n>> ${message}\n`;
     this.ircService.Send(message);
   }
 

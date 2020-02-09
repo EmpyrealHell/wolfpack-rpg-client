@@ -10,6 +10,6 @@ export type ResponderCallback = (matches: Array<string>) => void;
 export class Responder {
   public pattern: RegExp;
   constructor(pattern: string, public callback: ResponderCallback) {
-    this.pattern = new RegExp(pattern, 'mi');
+    this.pattern = new RegExp(`^${pattern}$`, 'mi');
   }
 }

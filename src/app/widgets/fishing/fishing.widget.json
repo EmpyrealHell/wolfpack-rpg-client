@@ -1,0 +1,29 @@
+{
+  "patterns": {
+    "Leader": "Largest (\\w+) caught by (.*) at (\\d+(?:\\.\\d+)) lbs\\.",
+    "NoFish": "Your line is already cast! I'm sure a fish'll be along soon\\.\\.\\.",
+    "Hooked": "Something's already bit your line! Quick, type !catch to snag it!",
+    "Cast": "You cast your line out into the water\\."
+  },
+  "loadCommands": [
+    "!fishleaders"
+  ],
+  "eventCommands": {
+    "listFish": [
+      "!fish"
+    ],
+    "fishDetail": [
+      "!fish {id}"
+    ],
+    "cast": [
+      "!cast"
+    ],
+    "catch": [
+      "!catch",
+      "!reel"
+    ],
+    "release": [
+      "!releasefish {id}"
+    ]
+  }
+}

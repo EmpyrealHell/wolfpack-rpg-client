@@ -14,7 +14,8 @@
           </span>
         </div>
       </mat-card-title>
-      <app-widget-factory [factory]="factory" [ircService]="ircService" [configManager]="configManager">
+      <app-widget-factory [factory]="factory" [ircService]="ircService" [configManager]="configManager"
+        [name]="config.Layout[i]">
       </app-widget-factory>
     </mat-card>
   </div>
