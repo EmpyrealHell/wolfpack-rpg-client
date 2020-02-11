@@ -33,6 +33,57 @@
             "Info": "(?<Name>[^\\(]+) \\(Levels (?<MinLvl>\\d+) - (?<MaxLvl>\\d+)\\) -- (?<Description>.*)"
           }
         }
+      },
+      "Leave": {
+        "Command": "!leavequeue",
+        "Responses": {
+          "Success": {
+            "Confirmation": "You were removed from the Group Finder\\."
+          }
+        }
+      },
+      "List": {
+        "Command": "!dungeonlist",
+        "Responses": {
+          "Success": {
+            "Confirmation": "List of Wolfpack RPG Adventures: (?<Url>.*)"
+          }
+        }
+      },
+      "Queue": {
+        "Command": "!queue",
+        "Responses": {
+          "Error": {
+            "AlreadyInGroup": {
+              "Response": "You already have a party created! (?<Reason>.*)",
+              "SubGroups": "(?<Complete>just finished)|(?<Forming>currently forming)|(?<Ready>ready to adventure)|(?<Started>currently on an adventure)|(?<Unknown>no idea)"
+            },
+            "AlreadyInQueue": "You are already queue in the Group Finder! Type !queuetime for more information\\.",
+            "PendingInvite": "You currently have an outstanding invite to another party\\. Couldn't create new party!",
+            "UnableToJoin": {
+              "Response": "Unable to join queue\\. Reason\\(s\\): (?<Reasons>.*)",
+              "SubGroups": "(?:Not appropriate level\\. \\(ID: (?<LevelId>)\\))|(?:Invalid Dungeon ID provided\\. \\(ID: (?<DungeonId>)\\))|(?<InsufficientFunds>You don't have enough money)"
+            }
+          },
+          "Success": {
+            "Confirmation": "You have been placed in the Group Finder queue\\.",
+            "Matched": {
+              "Response": "You've been matched for (?<Dungeon>.*) with: (?<PartyList>)",
+              "SubGroups": "(?<User>[^ ]+) \\((?<ClassName>\\w+)\\)"
+            },
+            "Leader": "You are the party leader\\. Whisper me '!start' to begin!"
+          }
+        }
+      },
+      "QueueTime": {
+        "Command": "!queuetime",
+        "Responses": {
+          "Success": {
+            "DungeonList": "You are queued for the following dungeons: (?<Dungeons>.*)",
+            "WaitTime": "You've been waiting in the Group Finder queue for (?:(?<Hours>\\d+) hours, )?(?:(?<Minutes>\\d+) minutes, and)?(?<Seconds>\\d+) seconds\\.",
+            "LastFormed": "The last group was formed (?:(?<Hours>\\d+) hours, )?(?:(?<Minutes>\\d+) minutes, and)?(?<Seconds>\\d+) seconds ago\\."
+          }
+        }
       }
     },
     "Fishing": {
@@ -118,35 +169,54 @@
         }
       }
     },
-    "Shop": {
-      "Respec": {
-        "Command": "!respec",
-        "Responses": {
-          "Error": {
-            "InsufficientFunds": "It costs (?<Cost>\\d+) Wolfcoins to respect at your level. You have (?<Coins>\\d+) coins\\.",
-            "UserNotFound": "You have no coins to respec with\\.",
-            "InvalidOperation": "You can't respec while in a party!"
-          },
-          "Pending": {
-            "Warning": "You've chosen to respect your class! It will cost you (?<Cost>\\d+) coins to respec and you will lose all your items. Reply '(?<CancelCommand>\\w+)' to cancel or one of the following codes to select your new class: ",
-            "ClassList": {
-              "Response": "(?:,?(?: or )?'C\\d' \\(\\w+\\))+",
-              "SubGroups": "'C(?<Id>\\d)' \\((?<Name>\\w+)\\)"
-            }
-          }
-        },
-        "Options": [
-          "SetClass",
-          "Cancel"
-        ]
-      }
-    },
     "Info": {
       "BugReport": {
         "Command": "!bug {Message}",
         "Responses": {
           "Success": {
             "Confirmation": "Bug report submitted\\."
+          }
+        }
+      },
+      "Classes": {
+        "Command": "!classes",
+        "Responses": {
+          "Success": {
+            "Confirmation": "Class distribution for the Wolfpack RPG: ",
+            "ClassDistribution": "(?<ClassName>\\w+): (?<Value>\\d+(?:\\.\\d+)?)%"
+          }
+        }
+      },
+      "Coins": {
+        "Command": "!coins",
+        "Alternates": [
+          "coins"
+        ],
+        "Responses": {
+          "Error": {
+            "NotFound": "You don't have any coins yet! Stick around during the livestream to earn coins\\."
+          },
+          "Success": {
+            "Amount": "You have: (?<Coins>\\d+) coins."
+          }
+        }
+      },
+      "Experience": {
+        "Command": "!xp",
+        "Alternates": [
+          "xp",
+          "!level",
+          "level",
+          "!lvl",
+          "lvl"
+        ],
+        "Responses": {
+          "Error": {
+            "InvalidOperation": "You don't have any XP yet! Hang out in chat during the livestream to earn XP & coins\\."
+          },
+          "Success": {
+            "ClassLevel": "You are a Level (?<Level>\\d+) (?<ClassName>\\w+), and you are Prestige Level (?<Prestige>\\d+)\\. (Total XP: (?<Experience>\\d+) | XP To Next Level: (?<ToNext>\\d+))",
+            "Level": "You are Level (?<Level>\\d+) (Total XP: (?<Experience>\\d+) | XP To Next Level: (?<ToNext>\\d+))"
           }
         }
       },
@@ -172,6 +242,22 @@
             }
           }
         }
+      },
+      "LevelHelp": {
+        "Command": "2",
+        "Responses": {
+          "Success": {
+            "Confirmation": "Did you know you gain experience by watching the stream? You can level up as you get more XP! Max level is 20\\. To check your level & xp, message me '!xp' '!level' or '!stats'\\. Only Level 2\\+ viewers can post links\\. This helps prevent bot spam!"
+          }
+        }
+      },
+      "WolfcoinHelp": {
+        "Command": "1",
+        "Responses": {
+          "Success": {
+            "Confirmation": "Wolfcoins are a currency you earn by watching the stream! You can check your coins by whispering me '!coins' or '!stats'\\. To find out what you can spend coins on, message me '!shop'\\."
+          }
+        }
       }
     },
     "Inventory": {
@@ -184,6 +270,24 @@
           },
           "Success": {
             "Info": "(?<Name>.*) -- (?<Description>.*)"
+          }
+        }
+      },
+      "Equip": {
+        "Command": "!equip",
+        "Alternates": [
+          "!activate",
+          "activate",
+          "equip"
+        ],
+        "Responses": {
+          "Error": {
+            "AlreadyEquipped": "(?<Item>.*) is already equipped\\.",
+            "Empty": "You have no items\\."
+          },
+          "Success": {
+            "Confirmation": "Equipped (?<Item>.*)\\.",
+            "Removed": "Unequipped (?<Item>.*)\\."
           }
         }
       },
@@ -205,6 +309,22 @@
             "Stat": "\\+(?<Value>\\d+)%(?: to)? (?<Stat>.*)"
           }
         }
+      },
+      "Unequip": {
+        "Command": "!unequip",
+        "Alternates": [
+          "!deactivate",
+          "deactivate",
+          "unequip"
+        ],
+        "Responses": {
+          "Error": {
+            "Empty": "You have no items\\."
+          },
+          "Success": {
+            "Confirmation": "Unequipped (?<Item>.*)\\."
+          }
+        }
       }
     },
     "Party": {
@@ -221,6 +341,30 @@
           },
           "Success": {
             "Confirmation": "You invited (?<User>[^ ]+) to a group\\."
+          }
+        }
+      },
+      "Create": {
+        "Command": "!createparty",
+        "Responses": {
+          "Error": {
+            "AlreadyInGroup": {
+              "Response": "You already have a party created! (?<Reason>.*)",
+              "SubGroups": "(?<Complete>just finished)|(?<Forming>currently forming)|(?<Ready>ready to adventure)|(?<Started>currently on an adventure)|(?<Unknown>no idea)"
+            },
+            "AlreadyInQueue": "Can't create a party while queued with the Group Finder\\. Message me '!leavequeue' to exit\\.",
+            "PendingInvite": "You currently have an outstanding invite to another party\\. Couldn't create new party!"
+          },
+          "Success": {
+            "Confirmation": "Party created! Use '!add <username>' to invite party members\\."
+          }
+        }
+      },
+      "Data": {
+        "Command": "!partydata",
+        "Responses": {
+          "Public": {
+            "Details": "(?<User>[^ ]+) requested his Party Data\\. Group ID: (?<Id>\\w+); Members: (?<Members>.*); Status: (?<Status>.*)"
           }
         }
       },
@@ -375,7 +519,7 @@
             "Empty": "You don't have a pet\\."
           },
           "Pending": {
-            "Confirmation": "If you release (?<Name>[^ ]{1,16}), they will be gone forever. Are you sure you want to release them\\? \\(y/n\\)"
+            "Confirmation": "If you release (?<Name>[^ ]{1,16}), they will be gone forever\\. Are you sure you want to release them\\? \\(y/n\\)"
           }
         },
         "Options": [
@@ -404,7 +548,7 @@
           "Error": {
             "Syntax": "Invalid number of parameters\\. Syntax: !summon <stable ID>",
             "InvalidId": "Invalid Stable ID given\\. Check !pets for each pet's stable ID!",
-            "Corrupt": "Sorry, your stableId is corrupt. Lobos is working on this issue :\\(",
+            "Corrupt": "Sorry, your stableId is corrupt\\. Lobos is working on this issue :\\(",
             "InvalidOperation": "(?<Name>[^ ]{1,16}) is already summoned!",
             "Empty": "You don't have a pet\\."
           },
@@ -438,8 +582,114 @@
           }
         }
       },
-      "Cancel": {},
-      "SetClass": {}
+      "Cancel": {
+        "Command": "nevermind",
+        "Responses": {
+          "Success": {
+            "Confirmation": "Respec cancelled\\. No Wolfcoins deducted from your balance\\."
+          }
+        }
+      },
+      "SetClass": {
+        "Command": "C{Id}",
+        "Responses": {
+          "Error": {
+            "InsufficientFunds": "It costs (?<Cost>\\d+) Wolfcoins to respect at your level\\. You have (?<Coins>\\d+) coins\\."
+          },
+          "Success": {
+            "Confirmation": "Class successfully updated to (?<ClassName>\\w+)! (?<Cost>\\d+) deducted from your Wolfcoin balance\\."
+          }
+        }
+      }
+    },
+    "Shop": {
+      "Bet": {
+        "Command": "!bet {Value}",
+        "Responses": {
+          "Error": "There was an error placing your bet\\. \\(not enough coins\\?\\)"
+        }
+      },
+      "Gloat": {
+        "Command": "!gloat",
+        "Alternates": [
+          "gloat"
+        ],
+        "Responses": {
+          "Error": {
+            "InsufficientFunds": "You don't have enough coins to gloat (Cost: (?<Cost>\\d+) Wolfcoins)",
+            "InvalidOperation": "You don't have coins and/or xp yet!"
+          },
+          "Public": {
+            "Gloat": "(?<User>[^ ]+) has spent (?<Cost>\\d+) Wolfcoins to show off that they are  Level (?<Level>\\d+)(?:, Prestige Level (?<Level>\\d+))?! (?<Message>.*)"
+          }
+        }
+      },
+      "GloatFish": {
+        "Command": "!gloatfish",
+        "Alternates": [
+          "!fishgloat"
+        ],
+        "Responses": {
+          "Error": {
+            "Empty": "You don't have any fish! Type !cast to try and fish for some!",
+            "InsufficientFunds": "You don't have enough coins to gloat!",
+            "Syntax": "Invalid number of parameters\\. Syntax: !fish <Fish #>"
+          },
+          "Public": {
+            "Gloat": "(?<User>[^ ]+) gloats about the time they caught a  (?<Length>\\d+) in. long, (?<Weight>\\d+) pound (?<Fish>\\d+) lobosSmug"
+          },
+          "Success": {
+            "Confirmation": "You spent (?<Coins>\\d+) wolfcoins to brag about your biggest(?<Fish>\\w+)\\."
+          }
+        }
+      },
+      "GloatPet": {
+        "Command": "!gloatpet",
+        "Alternates": [
+          "!petgloat"
+        ],
+        "Responses": {
+          "Error": {
+            "Empty": "You don't have an active pet to show off! Activate one with !summon <id>",
+            "InsufficientFunds": "You don't have enough coins to gloat!"
+          },
+          "Public": {
+            "Gloat": "(?<User>[^ ]+) watches proudly as their level (?<Level>\\d+) (?<Sparkly>SPARKLY )?(?<Type>.*) named (?<Name>[^ ]{1,16}) struts around!"
+          },
+          "Success": {
+            "Confirmation": "You spent (?<Coins>\\d+) wolfcoins to brag about (?<Name>[^ ]{1,16})\\."
+          }
+        }
+      },
+      "Help": {
+        "Command": "!shop",
+        "Responses": {
+          "Success": {
+            "Confirmation": "Whisper me '!stats <username>' to check another users stats! (Cost: 1 coin)   Whisper me '!gloat' to spend 10 coins and show off your level! (Cost: 10 coins)"
+          }
+        }
+      },
+      "Respec": {
+        "Command": "!respec",
+        "Responses": {
+          "Error": {
+            "InsufficientFunds": "It costs (?<Cost>\\d+) Wolfcoins to respect at your level\\. You have (?<Coins>\\d+) coins\\.",
+            "UserNotFound": "You have no coins to respec with\\.",
+            "InvalidOperation": "You can't respec while in a party!"
+          },
+          "Pending": {
+            "Warning": "You've chosen to respect your class! It will cost you (?<Cost>\\d+) coins to respec and you will lose all your items\\. Reply '(?<CancelCommand>\\w+)' to cancel or one of the following codes to select your new class: ",
+            "ClassList": {
+              "Response": "(?:,?(?: or )?'C\\d' \\(\\w+\\))+",
+              "SubGroups": "'C(?<Id>\\d)' \\((?<Name>\\w+)\\)"
+            }
+          }
+        },
+        "Options": [
+          "SetClass",
+          "Cancel"
+        ]
+      }
     }
   },
   "Messages": {
