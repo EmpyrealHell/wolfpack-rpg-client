@@ -27,7 +27,6 @@ export class Character {
    * @param newClass The name of the class to set.
    */
   public setClass(newClass: string): void {
-    console.log(`Updating class to ${newClass}`);
     this.class = newClass;
     this.stats = BaseStats.byClass(newClass);
   }

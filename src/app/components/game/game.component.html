@@ -2,7 +2,7 @@
   <mat-sidenav-container class="app-container">
     <mat-sidenav-content class="flex-column">
       <mat-toolbar color="primary">
-        <mat-divider [vertical]="true" class="accent-divider"></mat-divider>
+        <mat-divider [vertical]="true" class="accent-divider" style="margin-left: 0px;"></mat-divider>
         <span>Wolfpack RPG Client</span>
         <span class="fill-space"></span>
         <span *ngIf="ircService.IsConnected else usernameLoggedOut">
@@ -12,9 +12,18 @@
           <mat-menu #userMenu="matMenu">
             <button mat-menu-item>
               <mat-slide-toggle (click)="$event.stopPropagation();" color="accent"
-                [(checked)]="config.Settings.UseDarkTheme" (change)="toggleTheme()">Dark
+                [(ngModel)]="config.Settings.UseDarkTheme" (change)="updateSettings()">Dark
                 Theme</mat-slide-toggle>
             </button>
+            <button *ngIf="configManager.IsTester()" mat-menu-item>
+              <mat-slide-toggle (click)="$event.stopPropagation();" color="accent"
+                [(ngModel)]="config.Settings.ToolbarNames" (change)="updateSettings()">Toolbar Names</mat-slide-toggle>
+            </button>
+            <button *ngIf="configManager.IsTester()" mat-menu-item>
+              <mat-slide-toggle (click)="$event.stopPropagation();" color="accent"
+                [(ngModel)]="config.Settings.ToolbarIcons" (change)="updateSettings()">Toolbar Icons</mat-slide-toggle>
+            </button>
+            <mat-divider></mat-divider>
             <button mat-menu-item (click)="logOut()">Logout</button>
           </mat-menu>
         </span>
@@ -25,19 +34,17 @@
         </ng-template>
       </mat-toolbar>
       <mat-divider></mat-divider>
-      <mat-toolbar>
-        <button mat-button (click)="toggleWidget('Character')">Character</button>
-        <button mat-button disabled (click)="toggleWidget('Inventory')">Inventory</button>
-        <button mat-button disabled (click)="toggleWidget('Pet')">Pets</button>
-        <button mat-button disabled (click)="toggleWidget('Fishing')">Fishing</button>
-        <mat-divider [vertical]="true" class="accent-divider"></mat-divider>
-        <button mat-button disabled (click)="toggleWidget('Group')">Group</button>
-        <button mat-button disabled (click)="toggleWidget('Group Chat')">Group Chat</button>
-        <button mat-button disabled (click)="toggleWidget('Dungeon')">Dungeon</button>
-        <mat-divider [vertical]="true" class="accent-divider"></mat-divider>
-        <button mat-button disabled (click)="toggleWidget('Shop')">Shop</button>
-        <button mat-button disabled (click)="toggleWidget('Info')">Info</button>
-        <button mat-button (click)="toggleWidget('Console')">Console</button>
+      <mat-toolbar *ngIf="configManager.IsTester()">
+        <ng-container *ngFor="let widget of widgets">
+          <button *ngIf="widget" mat-button [disabled]="!widget.component" (click)="toggleWidget(widget)">
+            <img *ngIf="config.Settings.ToolbarIcons" src="./assets/{{widget.getIcon()}}" width="32px">
+            <ng-container *ngIf="config.Settings.ToolbarNames || !config.Settings.ToolbarIcons">
+              <span>&nbsp;</span>
+              <span>{{widget.name}}</span>
+            </ng-container>
+          </button>
+          <mat-divider *ngIf="!widget" [vertical]="true" class="accent-divider"></mat-divider>
+        </ng-container>
       </mat-toolbar>
       <div class="flex-row">
         <app-widget-container></app-widget-container>

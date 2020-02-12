@@ -1,0 +1,756 @@
+{
+  "Commands": {
+    "Chat": {
+      "Message": {
+        "Command": "/p {Message}",
+        "Alternates": [
+          "/party {Message}"
+        ],
+        "Responses": {
+          "Success": {
+            "Confirmation": "You whisper: \" (?<Message>.*)\" "
+          }
+        }
+      }
+    },
+    "Dungeon": {
+      "Daily": {
+        "Command": "!daily",
+        "Responses": {
+          "Success": {
+            "Available": "You are eligible for daily Group Finder rewards! Go queue up!",
+            "TimeLeft": "Your daily Group Finder reward resets in (?<Hours>\\d+) hours and (?<Minutes>\\d+) minutes\\."
+          }
+        }
+      },
+      "Detail": {
+        "Command": "!dungeon {Id}",
+        "Responses": {
+          "Error": {
+            "InvalidId": "Invalid Dungeon ID provided\\."
+          },
+          "Success": {
+            "Info": "(?<Name>[^\\(]+) \\(Levels (?<MinLvl>\\d+) - (?<MaxLvl>\\d+)\\) -- (?<Description>.*)"
+          }
+        }
+      },
+      "Leave": {
+        "Command": "!leavequeue",
+        "Responses": {
+          "Success": {
+            "Confirmation": "You were removed from the Group Finder\\."
+          }
+        }
+      },
+      "List": {
+        "Command": "!dungeonlist",
+        "Responses": {
+          "Success": {
+            "Confirmation": "List of Wolfpack RPG Adventures: (?<Url>.*)"
+          }
+        }
+      },
+      "Queue": {
+        "Command": "!queue",
+        "Responses": {
+          "Error": {
+            "AlreadyInGroup": {
+              "Response": "You already have a party created! (?<Reason>.*)",
+              "SubGroups": "(?<Complete>just finished)|(?<Forming>currently forming)|(?<Ready>ready to adventure)|(?<Started>currently on an adventure)|(?<Unknown>no idea)"
+            },
+            "AlreadyInQueue": "You are already queue in the Group Finder! Type !queuetime for more information\\.",
+            "PendingInvite": "You currently have an outstanding invite to another party\\. Couldn't create new party!",
+            "UnableToJoin": {
+              "Response": "Unable to join queue\\. Reason\\(s\\): (?<Reasons>.*)",
+              "SubGroups": "(?:Not appropriate level\\. \\(ID: (?<LevelId>)\\))|(?:Invalid Dungeon ID provided\\. \\(ID: (?<DungeonId>)\\))|(?<InsufficientFunds>You don't have enough money)"
+            }
+          },
+          "Success": {
+            "Confirmation": "You have been placed in the Group Finder queue\\.",
+            "Matched": {
+              "Response": "You've been matched for (?<Dungeon>.*) with: (?<PartyList>)",
+              "SubGroups": "(?<User>[^ ]+) \\((?<ClassName>\\w+)\\)"
+            },
+            "Leader": "You are the party leader\\. Whisper me '!start' to begin!"
+          }
+        }
+      },
+      "QueueTime": {
+        "Command": "!queuetime",
+        "Responses": {
+          "Success": {
+            "DungeonList": "You are queued for the following dungeons: (?<Dungeons>.*)",
+            "WaitTime": "You've been waiting in the Group Finder queue for (?:(?<Hours>\\d+) hours, )?(?:(?<Minutes>\\d+) minutes, and)?(?<Seconds>\\d+) seconds\\.",
+            "LastFormed": "The last group was formed (?:(?<Hours>\\d+) hours, )?(?:(?<Minutes>\\d+) minutes, and)?(?<Seconds>\\d+) seconds ago\\."
+          }
+        }
+      }
+    },
+    "Fishing": {
+      "Cast": {
+        "Command": "!cast",
+        "Responses": {
+          "Error": {
+            "AlreadyCast": "Your line is already cast! I'm sure a fish'll be along soon\\.{3}",
+            "AlreadyHooked": "Something's already bit your line! Quick, type !catch to snag it!"
+          },
+          "Success": {
+            "Confirmation": "You cast your line out into the water\\."
+          }
+        }
+      },
+      "Catch": {
+        "Command": "!catch",
+        "Alternates": [
+          "!reel"
+        ],
+        "Responses": {
+          "Success": {
+            "Confirmation": "Congratulations! You caught a (?<Length>\\d+(?:\\.\\d+)?) inch, (?<Weight>\\d+(?:\\.\\d+)?) pound (?<Name>\\w+)!"
+          }
+        }
+      },
+      "Detail": {
+        "Command": "!fish {id}",
+        "Responses": {
+          "Error": {
+            "Syntax": "Invalid number of parameters\\. Syntax: !fish <Fish #>",
+            "Empty": "You don't have any fish! Type !cast to try and fish for some!"
+          },
+          "Success": {
+            "Name": "Name - (?<Name>[^ ]{1,16}",
+            "Length": "Length - (?<Length>\\d+(?:\\.\\d+)?) in\\.",
+            "Weight": "Weight - (?<Weight>\\d+(?:\\.\\d+)?) lbs\\.",
+            "Size": "Size Category - (?<Size>\\w+)",
+            "FlavorText": {
+              "Size": 1,
+              "After": {
+                "Type": "Response",
+                "Id": "Size"
+              }
+            }
+          }
+        }
+      },
+      "Leaderboard": {
+        "Command": "!fishleaders",
+        "Alternates": [
+          "!leaderboards"
+        ],
+        "Responses": {
+          "Success": {
+            "Record": "Largest (?<Fish>\\w+) caught by (?<User>[^ ]+) at (?<Size>\\d+(?:\\.\\d+)) lbs\\."
+          }
+        }
+      },
+      "List": {
+        "Command": "!fish",
+        "Responses": {
+          "Error": {
+            "Empty": "You haven't caught any fish yet!"
+          },
+          "Success": {
+            "Size": "You've caught (?<Size>\\d+) different types of fish: ",
+            "FishInfo": "(?<Id>\\d+): (?<Name>[^ ]{1,16}",
+            "Details": "Type !fish # for more information on the particular type of fish\\."
+          }
+        }
+      },
+      "Release": {
+        "Command": "!releasefish {id}",
+        "Responses": {
+          "Error": {
+            "Syntax": "Invalid number of parameters\\. Syntax: !fish <Fish #>",
+            "Empty": "You don't have any fish! Type !cast to try and fish for some!"
+          },
+          "Success": {
+            "Confirmation": "You released your (?<Name>\\w+)\\. Bye bye!"
+          }
+        }
+      }
+    },
+    "Info": {
+      "BugReport": {
+        "Command": "!bug {Message}",
+        "Responses": {
+          "Success": {
+            "Confirmation": "Bug report submitted\\."
+          }
+        }
+      },
+      "Classes": {
+        "Command": "!classes",
+        "Responses": {
+          "Success": {
+            "Confirmation": "Class distribution for the Wolfpack RPG: ",
+            "ClassDistribution": "(?<ClassName>\\w+): (?<Value>\\d+(?:\\.\\d+)?)%"
+          }
+        }
+      },
+      "Coins": {
+        "Command": "!coins",
+        "Alternates": [
+          "coins"
+        ],
+        "Responses": {
+          "Error": {
+            "NotFound": "You don't have any coins yet! Stick around during the livestream to earn coins\\."
+          },
+          "Success": {
+            "Amount": "You have: (?<Coins>\\d+) coins\\."
+          }
+        }
+      },
+      "Experience": {
+        "Command": "!xp",
+        "Alternates": [
+          "xp",
+          "!level",
+          "level",
+          "!lvl",
+          "lvl"
+        ],
+        "Responses": {
+          "Error": {
+            "InvalidOperation": "You don't have any XP yet! Hang out in chat during the livestream to earn XP & coins\\."
+          },
+          "Success": {
+            "ClassLevel": "You are a Level (?<Level>\\d+) (?<ClassName>\\w+), and you are Prestige Level (?<Prestige>\\d+)\\. (Total XP: (?<Experience>\\d+) | XP To Next Level: (?<ToNext>\\d+))",
+            "Level": "You are Level (?<Level>\\d+) (Total XP: (?<Experience>\\d+) | XP To Next Level: (?<ToNext>\\d+))"
+          }
+        }
+      },
+      "Help": {
+        "Command": "?",
+        "Alternates": [
+          "help",
+          "!help",
+          "faq",
+          "!faq"
+        ],
+        "Responses": {
+          "Success": {
+            "Info": {
+              "Size": 1,
+              "After": {
+                "Type": "Command"
+              }
+            },
+            "TopicList": {
+              "Response": "Here's a list of things you can ask me about: (?<Topics>[^\\(]+ \\(\\d+\\)(?: - [^\\(]+ \\(\\d+\\))*)",
+              "SubGroups": "(?<Topic>[^\\(]+) \\((?<Id>\\d+)\\)"
+            }
+          }
+        }
+      },
+      "LevelHelp": {
+        "Command": "2",
+        "Responses": {
+          "Success": {
+            "Confirmation": "Did you know you gain experience by watching the stream? You can level up as you get more XP! Max level is 20\\. To check your level & xp, message me '!xp' '!level' or '!stats'\\. Only Level 2\\+ viewers can post links\\. This helps prevent bot spam!"
+          }
+        }
+      },
+      "Stats": {
+        "Command": "!stats",
+        "Alternates": [
+          "stats"
+        ],
+        "Responses": {
+          "Error": {
+            "InvalidOperation": "You either don't have coins or xp yet\\. Hang out in chat during the livestream to earn them!"
+          },
+          "Success": {
+            "Coins": "You have: (?<Coins>\\d+) coins\\.",
+            "ClassLevel": "You are a Level (?<Level>\\d+) (?<ClassName>\\w+), and you are Prestige Level (?<Prestige>\\d+)\\. (Total XP: (?<Experience>\\d+) | XP To Next Level: (?<ToNext>\\d+))",
+            "Level": "You are Level (?<Level>\\d+) (Total XP: (?<Experience>\\d+) | XP To Next Level: (?<ToNext>\\d+))"
+          }
+        }
+      },
+      "WolfcoinHelp": {
+        "Command": "1",
+        "Responses": {
+          "Success": {
+            "Confirmation": "Wolfcoins are a currency you earn by watching the stream! You can check your coins by whispering me '!coins' or '!stats'\\. To find out what you can spend coins on, message me '!shop'\\."
+          }
+        }
+      }
+    },
+    "Inventory": {
+      "Detail": {
+        "Command": "!item {Id}",
+        "Responses": {
+          "Error": {
+            "Empty": "You have no items\\.",
+            "InvalidId": "Invalid Inventory ID provided\\."
+          },
+          "Success": {
+            "Info": "(?<Name>.*) -- (?<Description>.*)"
+          }
+        }
+      },
+      "Equip": {
+        "Command": "!equip",
+        "Alternates": [
+          "!activate",
+          "activate",
+          "equip"
+        ],
+        "Responses": {
+          "Error": {
+            "AlreadyEquipped": "(?<Item>.*) is already equipped\\.",
+            "Empty": "You have no items\\."
+          },
+          "Success": {
+            "Confirmation": "Equipped (?<Item>.*)\\.",
+            "Removed": "Unequipped (?<Item>.*)\\."
+          }
+        }
+      },
+      "List": {
+        "Command": "!inventory",
+        "Alternates": [
+          "inventory",
+          "!inv",
+          "inv"
+        ],
+        "Responses": {
+          "Error": {
+            "Empty": "You have no items\\."
+          },
+          "Success": {
+            "Size": "You have (?<Size>\\d+) items: ",
+            "Info": "(?<Name>[^\\(]+) \\((?<Rarity>[^ ]+) (?<Type>[^\\)]+)\\) \\((?<Status>\\w+)\\)",
+            "Id": "Inventory ID: (?<Id>\\d+)",
+            "Stat": "\\+(?<Value>\\d+)%(?: to)? (?<Stat>.*)"
+          }
+        }
+      },
+      "Unequip": {
+        "Command": "!unequip",
+        "Alternates": [
+          "!deactivate",
+          "deactivate",
+          "unequip"
+        ],
+        "Responses": {
+          "Error": {
+            "Empty": "You have no items\\."
+          },
+          "Success": {
+            "Confirmation": "Unequipped (?<Item>.*)\\."
+          }
+        }
+      }
+    },
+    "Party": {
+      "Add": {
+        "Command": "!add {Username}",
+        "Responses": {
+          "Error": {
+            "InvalidOperation": "You can't invite yourself to a group!",
+            "TooManyInvitations": "You have the amx number of invites already pending\\.",
+            "TooManyMembers": "You can't have more than 3 party members for a Group Finder dungeon\\.",
+            "UserInParty": "(?<User>[^ ]+) is already in a group\\.",
+            "UserInQueue": "(?<User>[^ ]+) is currently queued for a Group Finder and cannot be added to the group\\.",
+            "UserNoClass": "(?<User>[^ ]+) is high enough level, but has not picked a class!"
+          },
+          "Success": {
+            "Confirmation": "You invited (?<User>[^ ]+) to a group\\."
+          }
+        }
+      },
+      "Create": {
+        "Command": "!createparty",
+        "Responses": {
+          "Error": {
+            "AlreadyInGroup": {
+              "Response": "You already have a party created! (?<Reason>.*)",
+              "SubGroups": "(?<Complete>just finished)|(?<Forming>currently forming)|(?<Ready>ready to adventure)|(?<Started>currently on an adventure)|(?<Unknown>no idea)"
+            },
+            "AlreadyInQueue": "Can't create a party while queued with the Group Finder\\. Message me '!leavequeue' to exit\\.",
+            "PendingInvite": "You currently have an outstanding invite to another party\\. Couldn't create new party!"
+          },
+          "Success": {
+            "Confirmation": "Party created! Use '!add <username>' to invite party members\\."
+          }
+        }
+      },
+      "Data": {
+        "Command": "!partydata",
+        "Responses": {
+          "Public": {
+            "Details": "(?<User>[^ ]+) requested his Party Data\\. Group ID: (?<Id>\\w+); Members: (?<Members>.*); Status: (?<Status>.*)"
+          }
+        }
+      },
+      "Kick": {
+        "Command": "!kick {Username}",
+        "Responses": {
+          "Error": {
+            "DungeonInProgress": "You can't kick a party member in the middle of a dungeon!",
+            "InvalidOperation": "You can't kick yourself from a group! Do !leaveparty instead\\.",
+            "InvalidUser": "Couldn't find that party member to remove\\.",
+            "NotLeader": "You are not the party leader\\."
+          }
+        }
+      },
+      "Leave": {
+        "Command": "!leaveparty",
+        "Responses": {
+          "Error": {
+            "DungeonInProgress": "You can't leave your party while a dungeon is in progress!"
+          },
+          "Success": {
+            "Confirmation": "You left the party\\.",
+            "GroupDisbanded": "Your party has been disbanded\\."
+          }
+        }
+      },
+      "Promote": {
+        "Command": "!promote {Username}",
+        "Responses": {
+          "Error": {
+            "NotLeader": "You must be the party leader to promote\\.",
+            "UserNotFound": "Party member '(?<User>[^ ]+)' not found\\. You are sill the party leader\\."
+          },
+          "Success": {
+            "Confirmation": "You have promoted (?<User>[^ ]+) to Party Leader\\."
+          }
+        }
+      },
+      "Start": {
+        "Command": "!start {Id?}",
+        "Responses": {
+          "Error": {
+            "TooManyMembers": "You can't have more than 3 party members for a Dungeon\\.",
+            "InsufficientFunds": "The following party members to do not have enough money to run (?<Name>.*): (?<Users>[^ ]+(?: [^ ]+)*)",
+            "InvalidId": "Invalid Dungeon ID provided\\.",
+            "InvalidOperation": "You are not the party leader!"
+          }
+        }
+      },
+      "Ready": {
+        "Command": "!ready",
+        "Responses": {
+          "Success": {
+            "Confirmation": "Party set to 'Ready'\\. Be careful adventuring without a full party!"
+          }
+        }
+      },
+      "Unready": {
+        "Command": "!unready",
+        "Responses": {
+          "Success": {
+            "Confirmation": "Party 'Ready' status has been revoked\\."
+          }
+        }
+      }
+    },
+    "Pets": {
+      "Detail": {
+        "Command": "!pet {Id}",
+        "Responses": {
+          "Error": {
+            "Syntax": "Invalid number of parameters\\. Syntax: !pet <stable ID>",
+            "InvalidId": "Invalid Stable ID given\\. Check !pets for each pet's stable ID!",
+            "Empty": "You don't have any pets\\."
+          },
+          "Success": {
+            "InfoActive": "<\\[(?<Id>\\d+)\\]> (?<Name>[^ ]{1,16} the (?<Type>.*) \\((?<Rarity>\\w+)\\)",
+            "InfoInactive": "\\[(?<Id>\\d+)\\] (?<Name>[^ ]{1,16} the (?<Type>.*) \\((?<Rarity>\\w+)\\)",
+            "Status": "Status: (?<Status>[^\\|]+) \\| Sparkly\\? (?<Sparkly>No|Yes)\\!?",
+            "Stats": "Level: (?<Level>\\d+) \\| Affection: (?<Affection>\\d+) \\| Energy: (?<Energy>\\d+)"
+          }
+        }
+      },
+      "Dismiss": {
+        "Command": "!dismiss {Id}",
+        "Responses": {
+          "Error": {
+            "Syntax": "Invalid number of parameters\\. Syntax: !dismiss <stable ID>",
+            "InvalidId": "Invalid Stable ID given\\. Check !pets for each pet's stable ID!",
+            "InvalidOperation": "That pet is not currently summoned\\.",
+            "Empty": "You don't have a pet\\."
+          },
+          "Success": {
+            "Confirmation": "You dismissed (?<Name>[^ ]{1,16}\\."
+          }
+        }
+      },
+      "Feed": {
+        "Command": "!feed {Id}",
+        "Responses": {
+          "Error": {
+            "Syntax": "Invalid number of parameters\\. Syntax: !feed <stable ID>",
+            "InvalidId": "Invalid Stable ID given\\. Check !pets for each pet's stable ID!",
+            "InsufficientFunds": "You lack the (?<Cost>\\d+) wolfcoins to feed your pet! Hop in a Lobos stream soon!",
+            "Full": "(?<Name>[^ ]{1,16} is full and doesn't need to eat!"
+          },
+          "Success": {
+            "Confirmation": "You were charged (?<Cost>\\d+) wolfcoins to feed (?<Name>[^ ]{1,16}\\. They feel refreshed!",
+            "LevelUp": "(?<Name>[^ ]{1,16} leveled up! They are now level (?<Level>\\d+)\\."
+          }
+        }
+      },
+      "Help": {
+        "Command": "!pethelp",
+        "Responses": {
+          "Success": {
+            "Help": {
+              "Size": 4,
+              "After": {
+                "Type": "Command"
+              }
+            }
+          }
+        }
+      },
+      "List": {
+        "Command": "!pets",
+        "Alternates": [
+          "!stable",
+          "pets",
+          "stable"
+        ],
+        "Responses": {
+          "Error": {
+            "Empty": "You have no pets\\."
+          },
+          "Success": {
+            "Size": "You have (?<Size>\\d+) pets: ",
+            "InfoActive": "<\\[(?<Id>\\d+)\\]> (?<Name>[^ ]{1,16} the (?<Type>.*) \\((?<Rarity>\\w+)\\)",
+            "InfoInactive": "\\[(?<Id>\\d+)\\] (?<Name>[^ ]{1,16} the (?<Type>.*) \\((?<Rarity>\\w+)\\)",
+            "Status": "Status: (?<Status>[^\\|]+) \\| Sparkly\\? (?<Sparkly>No|Yes)\\!?",
+            "Stats": "Level: (?<Level>\\d+) \\| Affection: (?<Affection>\\d+) \\| Energy: (?<Energy>\\d+)"
+          }
+        }
+      },
+      "Release": {
+        "Command": "!release {Id}",
+        "Responses": {
+          "Error": {
+            "Syntax": "Invalid number of parameters\\. Syntax: !release <stable ID>",
+            "InvalidId": "Invalid Stable ID given\\. Check !pets for each pet's stable ID!",
+            "Empty": "You don't have a pet\\."
+          },
+          "Pending": {
+            "Confirmation": "If you release (?<Name>[^ ]{1,16}), they will be gone forever\\. Are you sure you want to release them\\? \\(y/n\\)"
+          }
+        },
+        "Options": [
+          "Yes",
+          "No"
+        ]
+      },
+      "Rename": {
+        "Command": "!rename {Id} {Name}",
+        "Responses": {
+          "Error": {
+            "Syntax": "Sorry, the data you provided didn't work\\. Syntax: !rename <stable id> <new name>",
+            "InvalidParameters": "Invalid number of parameters\\. Note: names cannot contain spaces\\.",
+            "InvalidId": "Sorry, the Stable ID given was invalid\\. Please try again\\.",
+            "TooLong": "Name can only be 16 characters max\\.",
+            "Empty": "You don't have any pets to rename\\. :\\("
+          },
+          "Success": {
+            "Confirmation": "(?<OldName>[^ ]{1,16}) was renamed to (?<Name>[^ ]{1,16})!"
+          }
+        }
+      },
+      "Summon": {
+        "Command": "!summon {Id}",
+        "Responses": {
+          "Error": {
+            "Syntax": "Invalid number of parameters\\. Syntax: !summon <stable ID>",
+            "InvalidId": "Invalid Stable ID given\\. Check !pets for each pet's stable ID!",
+            "Corrupt": "Sorry, your stableId is corrupt\\. Lobos is working on this issue :\\(",
+            "InvalidOperation": "(?<Name>[^ ]{1,16}) is already summoned!",
+            "Empty": "You don't have a pet\\."
+          },
+          "Success": {
+            "Confirmation": "You summoned (?<Name>[^ ]{1,16})\\.",
+            "DismissCurrent": "(?<Name>[^ ]{1,16}) was dismissed\\."
+          }
+        }
+      }
+    },
+    "Pending": {
+      "Yes": {
+        "Command": "y",
+        "Responses": {
+          "Error": {
+            "InvalidId": "Stable ID mismatch\\. Try !release again\\.",
+            "Unknown": "Something went wrong\\. (?<Name>[^ ]{1,16}) is still with you!"
+          },
+          "Success": {
+            "ReleasedPet": "You released (?<Name>[^ ]{1,16})\\. Goodbye, \\1!",
+            "JoinedParty": "You successfully joined a party with the following members: (?<First>[^ ]+)(?: (?<Second>[^ ]+))?(?: (?<Third>[^ ]+))?"
+          }
+        }
+      },
+      "No": {
+        "Command": "n",
+        "Responses": {
+          "Success": {
+            "KeepPet": "You decided to keep (?<Name>[^ ]{1,16}\\.",
+            "DeclineInvite": "You declined (?<User>[^ ]+)'s invite\\."
+          }
+        }
+      },
+      "Cancel": {
+        "Command": "nevermind",
+        "Responses": {
+          "Success": {
+            "Confirmation": "Respec cancelled\\. No Wolfcoins deducted from your balance\\."
+          }
+        }
+      },
+      "SetClass": {
+        "Command": "C{Id}",
+        "Responses": {
+          "Error": {
+            "InsufficientFunds": "It costs (?<Cost>\\d+) Wolfcoins to respect at your level\\. You have (?<Coins>\\d+) coins\\."
+          },
+          "Success": {
+            "Confirmation": "Class successfully updated to (?<ClassName>\\w+)! (?<Cost>\\d+) deducted from your Wolfcoin balance\\."
+          }
+        }
+      }
+    },
+    "Shop": {
+      "Bet": {
+        "Command": "!bet {Value}",
+        "Responses": {
+          "Error": "There was an error placing your bet\\. \\(not enough coins\\?\\)"
+        }
+      },
+      "Gloat": {
+        "Command": "!gloat",
+        "Alternates": [
+          "gloat"
+        ],
+        "Responses": {
+          "Error": {
+            "InsufficientFunds": "You don't have enough coins to gloat (Cost: (?<Cost>\\d+) Wolfcoins)",
+            "InvalidOperation": "You don't have coins and/or xp yet!"
+          },
+          "Public": {
+            "Gloat": "(?<User>[^ ]+) has spent (?<Cost>\\d+) Wolfcoins to show off that they are  Level (?<Level>\\d+)(?:, Prestige Level (?<Level>\\d+))?! (?<Message>.*)"
+          }
+        }
+      },
+      "GloatFish": {
+        "Command": "!gloatfish",
+        "Alternates": [
+          "!fishgloat"
+        ],
+        "Responses": {
+          "Error": {
+            "Empty": "You don't have any fish! Type !cast to try and fish for some!",
+            "InsufficientFunds": "You don't have enough coins to gloat!",
+            "Syntax": "Invalid number of parameters\\. Syntax: !fish <Fish #>"
+          },
+          "Public": {
+            "Gloat": "(?<User>[^ ]+) gloats about the time they caught a  (?<Length>\\d+) in. long, (?<Weight>\\d+) pound (?<Fish>\\d+) lobosSmug"
+          },
+          "Success": {
+            "Confirmation": "You spent (?<Coins>\\d+) wolfcoins to brag about your biggest(?<Fish>\\w+)\\."
+          }
+        }
+      },
+      "GloatPet": {
+        "Command": "!gloatpet",
+        "Alternates": [
+          "!petgloat"
+        ],
+        "Responses": {
+          "Error": {
+            "Empty": "You don't have an active pet to show off! Activate one with !summon <id>",
+            "InsufficientFunds": "You don't have enough coins to gloat!"
+          },
+          "Public": {
+            "Gloat": "(?<User>[^ ]+) watches proudly as their level (?<Level>\\d+) (?<Sparkly>SPARKLY )?(?<Type>.*) named (?<Name>[^ ]{1,16}) struts around!"
+          },
+          "Success": {
+            "Confirmation": "You spent (?<Coins>\\d+) wolfcoins to brag about (?<Name>[^ ]{1,16})\\."
+          }
+        }
+      },
+      "Help": {
+        "Command": "!shop",
+        "Responses": {
+          "Success": {
+            "Confirmation": "Whisper me '!stats <username>' to check another users stats! (Cost: 1 coin)   Whisper me '!gloat' to spend 10 coins and show off your level! (Cost: 10 coins)"
+          }
+        }
+      },
+      "Respec": {
+        "Command": "!respec",
+        "Responses": {
+          "Error": {
+            "InsufficientFunds": "It costs (?<Cost>\\d+) Wolfcoins to respect at your level\\. You have (?<Coins>\\d+) coins\\.",
+            "UserNotFound": "You have no coins to respec with\\.",
+            "InvalidOperation": "You can't respec while in a party!"
+          },
+          "Pending": {
+            "Warning": "You've chosen to respect your class! It will cost you (?<Cost>\\d+) coins to respec and you will lose all your items\\. Reply '(?<CancelCommand>\\w+)' to cancel or one of the following codes to select your new class: ",
+            "ClassList": {
+              "Response": "(?:,?(?: or )?'C\\d' \\(\\w+\\))+",
+              "SubGroups": "'C(?<Id>\\d)' \\((?<Name>\\w+)\\)"
+            }
+          }
+        },
+        "Options": [
+          "SetClass",
+          "Cancel"
+        ]
+      },
+      "Stats": {
+        "Command": "!stats {Username}",
+        "Alternates": [
+          "stats {Username}"
+        ],
+        "Responses": {
+          "Error": {
+            "UserNotFound": "User does not exist in database\\. You were charged no coins\\."
+          },
+          "Success": {
+            "ClassLevel": "(?<User>[^ ]+) is a Level (?<Level>\\d+) (?<ClassName>\\w+) \\((?<Experience>\\d+) XP\\), Prestige Level (?<Prestige>\\d+), and has (?<Coins>\\d+) Wolfcoins\\.",
+            "Cost": "It cost you (?<Cost>\\d+) Wolfcoins to discover this information\\.",
+            "Level": "(?<User>[^ ]+) is Level  (?<Level>\\d+) \\((?<Experience>\\d+) XP\\) and has (?<Coins>\\d+) Wolfcoins\\."
+          }
+        }
+      }
+    }
+  },
+  "Messages": {
+    "Chat": {
+      "Message": "(?<User>[^ ]+) says: \" (?<Message>.*)\" "
+    },
+    "Fishing": {
+      "NewRecord": "(?<User>[^ ]+) just caught the heaviest (?<Name>\\w+) ever! It weighs (?<Weight>\\d+(?:\\.\\d+)?) pounds!"
+    },
+    "Party": {
+      "Declined": "(?<User>[^ ]+) has declined your party invite\\.",
+      "Full": "Your party is now full\\.",
+      "GroupDisbanded": "The party leader \\((?<User>[^ ]+)\\) has left\\. Your party has been disbanded\\.",
+      "InvitationInParty": "(?<User>[^ ]+) tried to invite you to a group, but you are already in one! Type '!leaveparty' to abandon your current group\\.",
+      "InvitationInQueue": "(?<User>[^ ]+) tried to invite you to a group, but you are queued in the Group Finder\\. Type '!leavequeue' to leave the queue\\.",
+      "Invited": "(?<User>[^ ]+), Level(?<Level>\\d+) (?<Class>\\w+), has invited you to join a party\\. Accept\\? \\(y/n\\)",
+      "MemberLeft": "(?<User>[^ ]+) has left the party\\.",
+      "NewLeader": "(?<User>[^ ]+) has promoted (?:<Leader>[^ ]+) to Party Leader\\.",
+      "NewMember": "(?<User>[^ ]+), Level (?<Level>\\d+) (?<Class>\\w+) has joined your party! \\((?<Size>\\d+)/(?<Max>\\d+)\\)",
+      "PartyMembers": {
+        "Response": "Your party consists of: (?:(?:[^ ]+) \\(Level (?:\\d+) (?:\\w+)\\) )+",
+        "SubGroups": "(?<User>[^ ]+) \\(Level (?<Level>\\d+) (?<ClassName>.+)\\)"
+      },
+      "Promoted": "(?<User>[^ ]+) has promoted you to Party Leader\\.",
+      "Ready": "You've reached 3 party members! You're ready to dungeon!",
+      "Removed": "You were removed from (?<User>[^ ]+)'s party\\.",
+      "Started": "Successfully initiated (?<Name>.*)! Wolfcoins deducted\\.",
+      "Unready": "Party 'Ready' status has been revoked\\.",
+      "UserRemoved": "(?<User>[^ ]+) was removed from the party\\."
+    }
+  }
+}

@@ -25,6 +25,14 @@ export class ConfigSettings {
    * Whether or not to use the default dark theme.
    */
   public UseDarkTheme = true;
+  /**
+   * Whether or not to show names on the buttons in the toolbar.
+   */
+  public ToolbarNames = true;
+  /**
+   * Whether or not to show icons in the toolbar.
+   */
+  public ToolbarIcon = true;
 }
 
 /**

@@ -3,16 +3,19 @@
     <mat-card class="flex-column">
       <mat-card-title>
         <div class="contain-space">
+          <span><img src="./assets/{{getWidgetIcon(i)}}" width="32px"></span>
+          <span>&nbsp;</span>
           <span>{{config.Layout[i]}}</span>
           <span class="fill-space"></span>
           <span>
-            <button mat-icon-button color="warn" (click)="closeWidget(i)">
+            <button *ngIf="configManager.IsTester()" mat-icon-button color="warn" (click)="closeWidget(i)">
               <mat-icon>close</mat-icon>
             </button>
           </span>
         </div>
       </mat-card-title>
-      <app-widget-factory [factory]="factory" [ircService]="ircService" [configManager]="configManager">
+      <app-widget-factory [factory]="factory" [ircService]="ircService" [configManager]="configManager"
+        [name]="config.Layout[i]">
       </app-widget-factory>
     </mat-card>
   </div>

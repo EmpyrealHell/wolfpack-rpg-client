@@ -6,4 +6,12 @@ import { WidgetComponent } from '../../components/widget-factory/widget.componen
  */
 export class WidgetItem {
   constructor(public component: Type<WidgetComponent>, public name: string) { }
+
+  /**
+   * Gets the name of the icon file for this widget.
+   */
+  public getIcon(): string {
+    const title = this.name.toLowerCase().replace(' ', '');
+    return `widget-${title}.svg`;
+  }
 }

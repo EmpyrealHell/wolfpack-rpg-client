@@ -14,15 +14,14 @@ import { WidgetService } from '../../services/widget/widget.service';
   templateUrl: './widget-container.component.html'
 })
 export class WidgetContainerComponent implements OnInit {
-
-  private widgetMap: Map<string, WidgetItem> = new Map<string, WidgetItem>();
-
-  private layouts = [
+  private static layouts = [
     '', '"a0"', '"a0 a1"', '"a0 a1" "a0 a2"',
     '"a0 a1" "a2 a3"', '"a0 a1 a2" "a0 a3 a4"',
     '"a0 a1 a2" "a3 a4 a5"', '"a0 a1 a2" "a0 a1 a3" "a4 a5 a6"',
     '"a0 a1 a2" "a0 a3 a4" "a5 a6 a7"', '"a0 a1 a2" "a3 a4 a5" "a6 a7 a8"'
   ];
+
+  private widgetMap: Map<string, WidgetItem> = new Map<string, WidgetItem>();
   /**
    * User's config, which contains widget layout data.
    */
@@ -56,6 +55,15 @@ export class WidgetContainerComponent implements OnInit {
   }
 
   /**
+   * Returns the name of the icon file to use for the widget at an index.
+   * @param index Gets the name of to the icon file for a widget.
+   */
+  public getWidgetIcon(index: number): string {
+    const widget = this.widgetMap.get(this.config.Layout[index]);
+    return widget.getIcon();
+  }
+
+  /**
    * Reloads the list of widgets that should be hosted in the container from
    * the user's config.
    */
@@ -63,7 +71,9 @@ export class WidgetContainerComponent implements OnInit {
     if (this.widgetMap.size === 0) {
       const widgets = this.widgetService.getWidgets();
       for (const widget of widgets) {
-        this.widgetMap.set(widget.name, widget);
+        if (widget && widget.component) {
+          this.widgetMap.set(widget.name, widget);
+        }
       }
     }
 
@@ -72,7 +82,7 @@ export class WidgetContainerComponent implements OnInit {
     for (const item of items) {
       this.factories.push(this.loadWidget(item));
     }
-    this.gridlayout = this.layouts[this.factories.length];
+    this.gridlayout = WidgetContainerComponent.layouts[this.factories.length];
   }
 
   private loadWidget(name: string): ComponentFactory<WidgetComponent> {

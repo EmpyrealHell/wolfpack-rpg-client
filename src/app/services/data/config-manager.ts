@@ -15,6 +15,7 @@ export type ConfigSubscriber = () => void;
 export class ConfigManager {
   private static storageKey = 'Config';
   private static Data = new Config();
+  private static testers = new Array<string>('empyrealhell', 'lobosjr');
 
   private static subscribers = new Array<ConfigSubscriber>();
 
@@ -35,9 +36,19 @@ export class ConfigManager {
   }
 
   /**
+   * Determines if the logged-in user is a tester.
+   */
+  public IsTester(): boolean {
+    return ConfigManager.testers.indexOf(ConfigManager.Data.Authentication.User) >= 0;
+  }
+
+  /**
    * Saves the config data to the client's local storage.
    */
   public Save(): void {
+    if (!this.IsTester()) {
+      ConfigManager.Data.Layout = new Array<string>('Console');
+    }
     localStorage.setItem(ConfigManager.storageKey, JSON.stringify(ConfigManager.Data));
     for (const subscriber of ConfigManager.subscribers) {
       subscriber.call(subscriber);
@@ -50,5 +61,8 @@ export class ConfigManager {
   public Load(): void {
     const temp = localStorage.getItem(ConfigManager.storageKey);
     Object.assign(ConfigManager.Data, JSON.parse(temp));
+    if (!this.IsTester()) {
+      ConfigManager.Data.Layout = new Array<string>('Console');
+    }
   }
 }

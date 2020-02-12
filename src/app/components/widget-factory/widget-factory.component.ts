@@ -31,6 +31,12 @@ export class WidgetFactoryComponent implements OnInit {
   public configManager: ConfigManager;
 
   /**
+   * The name of the component.
+   */
+  @Input()
+  public name: string;
+
+  /**
    * Reference to the container in the dom that will house the internal widget.
    */
   @ViewChild(WidgetContainerDirective, { static: true })
@@ -45,6 +51,7 @@ export class WidgetFactoryComponent implements OnInit {
       const component = containerRef.createComponent(this.factory).instance as WidgetComponent;
       component.configManager = this.configManager;
       component.ircService = this.ircService;
+      component.name = this.name;
       component.onActivate();
     }
   }
