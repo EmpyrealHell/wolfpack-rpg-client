@@ -197,7 +197,7 @@
             "NotFound": "You don't have any coins yet! Stick around during the livestream to earn coins\\."
           },
           "Success": {
-            "Amount": "You have: (?<Coins>\\d+) coins."
+            "Amount": "You have: (?<Coins>\\d+) coins\\."
           }
         }
       },
@@ -248,6 +248,22 @@
         "Responses": {
           "Success": {
             "Confirmation": "Did you know you gain experience by watching the stream? You can level up as you get more XP! Max level is 20\\. To check your level & xp, message me '!xp' '!level' or '!stats'\\. Only Level 2\\+ viewers can post links\\. This helps prevent bot spam!"
+          }
+        }
+      },
+      "Stats": {
+        "Command": "!stats",
+        "Alternates": [
+          "stats"
+        ],
+        "Responses": {
+          "Error": {
+            "InvalidOperation": "You either don't have coins or xp yet\\. Hang out in chat during the livestream to earn them!"
+          },
+          "Success": {
+            "Coins": "You have: (?<Coins>\\d+) coins\\.",
+            "ClassLevel": "You are a Level (?<Level>\\d+) (?<ClassName>\\w+), and you are Prestige Level (?<Prestige>\\d+)\\. (Total XP: (?<Experience>\\d+) | XP To Next Level: (?<ToNext>\\d+))",
+            "Level": "You are Level (?<Level>\\d+) (Total XP: (?<Experience>\\d+) | XP To Next Level: (?<ToNext>\\d+))"
           }
         }
       },
@@ -689,6 +705,22 @@
           "SetClass",
           "Cancel"
         ]
+      },
+      "Stats": {
+        "Command": "!stats {Username}",
+        "Alternates": [
+          "stats {Username}"
+        ],
+        "Responses": {
+          "Error": {
+            "UserNotFound": "User does not exist in database\\. You were charged no coins\\."
+          },
+          "Success": {
+            "ClassLevel": "(?<User>[^ ]+) is a Level (?<Level>\\d+) (?<ClassName>\\w+) \\((?<Experience>\\d+) XP\\), Prestige Level (?<Prestige>\\d+), and has (?<Coins>\\d+) Wolfcoins\\.",
+            "Cost": "It cost you (?<Cost>\\d+) Wolfcoins to discover this information\\.",
+            "Level": "(?<User>[^ ]+) is Level  (?<Level>\\d+) \\((?<Experience>\\d+) XP\\) and has (?<Coins>\\d+) Wolfcoins\\."
+          }
+        }
       }
     }
   },
