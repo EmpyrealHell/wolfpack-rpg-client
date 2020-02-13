@@ -116,6 +116,8 @@ THE SOFTWARE.
 
 @angular/material/core
 
+@angular/material/dialog
+
 @angular/material/divider
 
 @angular/material/form-field
