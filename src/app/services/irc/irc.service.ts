@@ -37,8 +37,7 @@ export class IrcService {
       if (limit > 0) {
         const toSend = this.messageQueue.splice(0, limit);
         for (const message of toSend) {
-          IrcService.connection.say(ircConfig.streamerAccount, `/w ${ircConfig.botAccount} ${message}`);
-          // await IrcService.connection.whisper(ircConfig.botAccount, message);
+          await IrcService.connection.whisper(ircConfig.botAccount, message);
           this.secondTimer.addOccurrence();
           this.minuteTimer.addOccurrence();
         }
