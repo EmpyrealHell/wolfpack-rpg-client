@@ -12,6 +12,9 @@ import { WidgetComponent } from 'src/app/components/widget-factory/widget.compon
   templateUrl: './console.widget.html',
 })
 export class ConsoleWidgetComponent implements WidgetComponent {
+  private static maxHistory = 100;
+  private index = -1;
+
   /**
    * The full chat history to render.
    */
@@ -46,11 +49,35 @@ export class ConsoleWidgetComponent implements WidgetComponent {
     const message = this.command;
     this.command = '';
     this.ircService.Send(message);
+
+    const history = this.configManager.GetConfig().History;
+    history.push(message);
+    if (history.length > ConsoleWidgetComponent.maxHistory) {
+      history.splice(0, 1);
+    }
+    this.configManager.Save();
+    this.index = -1;
   }
 
   public onActivate(): void {
     this.ircService.Register('console-widget', (message) => { this.onWhisper(message); }, true);
     this.consoleData = this.ircService.GetHistory();
+  }
+
+  private commandFromHistory(index: number): { message: string, index: number } {
+    const history = this.configManager.GetConfig().History;
+    const clampedIndex = Math.max(Math.min(index, history.length), 0);
+    if (clampedIndex <= 0) {
+      return {
+        message: '',
+        index: clampedIndex
+      };
+    } else {
+      return {
+        message: history[history.length - clampedIndex],
+        index: clampedIndex
+      };
+    }
   }
 
   /**
@@ -60,6 +87,14 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   public OnKeyUp(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
       this.sendCommand();
+    } else if (event.key === 'ArrowUp') {
+      const command = this.commandFromHistory(this.index + 1);
+      this.command = command.message;
+      this.index = command.index;
+    } else if (event.key === 'ArrowDown') {
+      const command = this.commandFromHistory(this.index - 1);
+      this.command = command.message;
+      this.index = command.index;
     }
   }
 

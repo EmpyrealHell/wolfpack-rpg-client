@@ -4,8 +4,8 @@
 <mat-card-footer>
   <mat-toolbar>
     <mat-form-field appearance="standard" class="fill-space">
-      <input matInput [(ngModel)]="command" (keyup)="OnKeyUp($event)" [disabled]="!ircService.IsConnected"
-        width="100%" />
+      <input matInput [(ngModel)]="command" (keyup)="OnKeyUp($event)" [disabled]="!ircService.IsConnected" width="100%"
+        appFocusOnLoad />
     </mat-form-field>
     <button mat-raised-button [disabled]="!ircService.IsConnected" (click)="OnSendClick($event)">Send</button>
   </mat-toolbar>

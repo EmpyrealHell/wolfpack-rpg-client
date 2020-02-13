@@ -1,5 +1,6 @@
 {
   "botAccount": "lobotjr",
+  "streamerAccount": "lobosjr",
   "connectOptions": {
     "options": {
       "clientId": ""
@@ -15,7 +16,8 @@
       "password": ""
     },
     "channels": [
-      "jtv"
+      "jtv",
+      "lobosjr"
     ]
   }
 }

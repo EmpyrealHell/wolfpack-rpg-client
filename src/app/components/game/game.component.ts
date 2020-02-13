@@ -1,12 +1,14 @@
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
+import { WidgetItem } from 'src/app/services/widget/widget-item';
+import { WidgetService } from 'src/app/services/widget/widget.service';
 import { Config, ConfigAuthentication } from '../../services/data/config-data';
 import { ConfigManager } from '../../services/data/config-manager';
 import { IrcService } from '../../services/irc/irc.service';
 import { UserService } from '../../services/user/user.service';
-import { WidgetService } from 'src/app/services/widget/widget.service';
-import { WidgetItem } from 'src/app/services/widget/widget-item';
-import { OverlayContainer } from '@angular/cdk/overlay';
+import { ErrorDialog } from '../error-dialog/error-dialog';
 
 /**
  * The main component holding the game UI.
@@ -31,10 +33,11 @@ export class GameComponent implements OnInit {
 
   constructor(
     public ircService: IrcService,
-    private configManager: ConfigManager,
+    public configManager: ConfigManager,
     private userService: UserService,
     private widgetService: WidgetService,
     private overlayContainer: OverlayContainer,
+    public dialog: MatDialog,
     public router: Router,
   ) { }
 
@@ -52,6 +55,7 @@ export class GameComponent implements OnInit {
         config.Authentication.User = userData.login;
         this.configManager.Save();
         this.config = config;
+        this.ircService.RegisterForError('game', (message) => { this.onError(message); }, true);
         this.ircService.Connect();
       } else {
         config.Authentication.Token = undefined;
@@ -67,6 +71,19 @@ export class GameComponent implements OnInit {
     } else {
       this.overlayContainer.getContainerElement().classList.remove('dark-theme');
     }
+  }
+
+  /**
+   * Callback used for handling failed outgoing messages.
+   * @param message The error message received.
+   */
+  public onError(message: string): void {
+    this.dialog.open(ErrorDialog, {
+      data: {
+        message: `An error occurred trying to send a message: "${message}"\n` +
+          'If you continue to see this issue, you may need to whisper the bot directly, or your account might be too new.'
+      }
+    });
   }
 
   /**

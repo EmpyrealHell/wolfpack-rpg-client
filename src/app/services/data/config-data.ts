@@ -15,6 +15,10 @@ export class Config {
    * List of widget ids, in order, to render to the widget container.
    */
   public Layout = new Array<string>();
+  /**
+   * History of commands typed into the console.
+   */
+  public History = new Array<string>();
 }
 
 /**
@@ -32,7 +36,7 @@ export class ConfigSettings {
   /**
    * Whether or not to show icons in the toolbar.
    */
-  public ToolbarIcon = true;
+  public ToolbarIcons = true;
 }
 
 /**

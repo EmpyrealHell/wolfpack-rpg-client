@@ -13,6 +13,7 @@ import { CharacterWidgetComponent } from './widgets/character/character.widget';
 import { WidgetContainerComponent } from './components/widget-container/widget-container.component';
 import { WidgetFactoryComponent } from './components/widget-factory/widget-factory.component';
 
+import { FocusOnLoadDirective } from './directives/focus-on-load.directive';
 import { ShowLastDirective } from './directives/show-last.directive';
 import { WidgetContainerDirective } from './directives/widget-container.directive';
 
@@ -22,16 +23,18 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import {
   MatButtonModule, MatCardModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule,
-  MatListModule, MatMenuModule, MatProgressBarModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule, MatRadioModule
+  MatListModule, MatMenuModule, MatProgressBarModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
 } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
 import { FishingWidgetComponent } from './widgets/fishing/fishing.widget';
+import { ErrorDialog } from './components/error-dialog/error-dialog';
 
 
 @NgModule({
   declarations: [
-    ShowLastDirective, WidgetContainerDirective,
+    FocusOnLoadDirective, ShowLastDirective, WidgetContainerDirective,
 
-    AppComponent, AuthComponent, GameComponent,
+    AppComponent, AuthComponent, GameComponent, ErrorDialog,
 
     CharacterWidgetComponent,
     ConsoleWidgetComponent,
@@ -46,10 +49,10 @@ import { FishingWidgetComponent } from './widgets/fishing/fishing.widget';
 
     FlexLayoutModule, LayoutModule, ScrollingModule,
 
-    MatButtonModule, MatCardModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule,
-    MatListModule, MatMenuModule, MatProgressBarModule, MatRadioModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
+    MatButtonModule, MatCardModule, MatDialogModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule,
+    MatListModule, MatMenuModule, MatProgressBarModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
   ],
-  entryComponents: [CharacterWidgetComponent, ConsoleWidgetComponent, FishingWidgetComponent],
+  entryComponents: [CharacterWidgetComponent, ConsoleWidgetComponent, FishingWidgetComponent, ErrorDialog],
   providers: [],
   bootstrap: [AppComponent]
 })
