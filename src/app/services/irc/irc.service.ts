@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { Utils } from 'src/app/util/utils';
-import { ChatUserstate, Client } from 'tmi.js';
+import { Client } from 'tmi.js';
 import { UserService } from '../user/user.service';
+// @ts-ignore
 import * as ircConfig from './irc.service.json';
 import { RollingTimer } from './rolling-timer';
 

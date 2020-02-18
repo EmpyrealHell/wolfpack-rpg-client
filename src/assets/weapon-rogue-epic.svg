@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   style="height: 45px; width: 45px;"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="bone-knife.svg"
+   inkscape:version="0.92.1 r15371">
+  <metadata
+     id="metadata14">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs12">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4521">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="0"
+         id="stop4517" />
+      <stop
+         style="stop-color:#fffcdb;stop-opacity:1"
+         offset="1"
+         id="stop4519" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4521"
+       id="linearGradient4523"
+       x1="236.562"
+       y1="388.72101"
+       x2="322.4407"
+       y2="322.49539"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1057"
+     id="namedview10"
+     showgrid="false"
+     inkscape:zoom="0.0625"
+     inkscape:cx="1557.6002"
+     inkscape:cy="905.7857"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg8" />
+  <rect
+     fill="#000"
+     fill-opacity="1"
+     height="512"
+     width="512"
+     rx="64"
+     ry="64"
+     id="rect2" />
+  <path
+     style="fill:#a79a5f;fill-opacity:1"
+     d="m 81.875,17.375 -17.094,6.688 -39.968,34.812 -2.625,38.28 23.344,9.157 63.19,-54.406 -5.657,-25.218 -21.188,-9.313 z"
+     id="path4514"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccccc" />
+  <path
+     style="fill:#fffcdb;fill-opacity:1"
+     d="M 110.22,75.25 71.624,108.5 88.28,120.47 121.906,99.53 110.219,75.25 Z"
+     id="path4512"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="cccccc" />
+  <path
+     style="fill:#fffcdb;fill-opacity:1"
+     d="m 131.75,115.406 -28.344,17.688 20.22,19.187 21.624,-19.25 c -0.196,-0.126 -0.398,-0.246 -0.594,-0.374 l -12.906,-17.25 z"
+     id="path4510"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccc" />
+  <path
+     style="fill:#fffcdb;fill-opacity:1"
+     d="m 162.094,143.031 -29.22,26.032 12.69,33.938 43.874,-46.97 z"
+     id="path4508"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     style="fill:#a79a5f;fill-opacity:1"
+     d="m 208.438,163.031 -59.75,64 34.156,46.75 15.812,-10.25 -2.03,-44.592 -6.095,-19.875 18.907,8.625 52.532,-5.75 -2.064,-16.25 -29.094,-16.313 c -7.53,-1.796 -14.994,-3.922 -22.375,-6.344 z"
+     id="path4506"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="cccccccccccc" />
+  <path
+     style="fill:url(#linearGradient4523);fill-opacity:1"
+     d="m 253.813,230.501 c -9.954,3.04 -21.965,3.365 -35.125,0.125 2.97,16.655 1.766,30.126 -3.032,40.656 -0.087,0.193 -0.19,0.374 -0.28,0.564 29.997,31.006 42.134,75.278 21.186,116.875 38.333,69.668 145.578,127.334 256.844,96.217 C 313.382,411.608 377.091,325.258 253.812,230.501 Z"
+     id="path4" />
+  <path
+     sodipodi:nodetypes="ccccccccc"
+     inkscape:connector-curvature="0"
+     id="path4656"
+     d="m 81.875,17.375 -17.094,6.688 -39.968,34.812 -2.625,38.28 23.344,9.157 63.19,-54.406 -5.657,-25.218 -21.188,-9.313 z"
+     style="fill:#a79a5f;fill-opacity:1" />
+</svg>

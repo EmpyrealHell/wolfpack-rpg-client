@@ -1,13 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Config } from 'src/app/services/data/config-data.js';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService } from 'src/app/services/irc/irc.service';
+import { AbstractWidgetComponent } from '../abstract/abstract-widget.js';
+import { Responder } from '../abstract/responder.js';
+// @ts-ignore
 import * as characterConfig from './character.widget.json';
 import { Character } from './model/character.js';
 import { Item, Rarity } from './model/gear.js';
 import { Stats } from './model/stats.js';
-import { Config } from 'src/app/services/data/config-data.js';
-import { AbstractWidgetComponent } from '../abstract/abstract-widget.js';
-import { Responder } from '../abstract/responder.js';
 
 /**
  * Widget used to display character data.

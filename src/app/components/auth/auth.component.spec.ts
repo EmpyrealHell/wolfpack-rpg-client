@@ -5,13 +5,24 @@ import { ConfigManager } from '../../services/data/config-manager';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
 import { ConfigAuthentication } from '../../services/data/config-data';
+import { Utils } from 'src/app/util/utils';
 
+
+const userInfo = {
+  login: 'testuser',
+  scopes: ['chat:read']
+};
 const configManagerSpy = jasmine.createSpyObj('ConfigManager', ['Save']);
-const userServiceSpy = jasmine.createSpyObj('UserService', ['UpdateCache', 'GetUserInfo']);
+const userServiceSpy = jasmine.createSpyObj('UserService', ['GetUserInfo', 'UpdateCache']);
+userServiceSpy.GetUserInfo.and.returnValue(userInfo);
 const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-const routeSpy = jasmine.createSpyObj('ActivatedRoute', ['snapshot']);
+const activatedRouteSpy = {
+  snapshot: {
+    fragment: 'state=test&access_token=token'
+  }
+} as ActivatedRoute;
 
-describe('AppComponent', () => {
+describe('AuthComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -24,30 +35,22 @@ describe('AppComponent', () => {
         { provide: ConfigManager, use: configManagerSpy },
         { provide: UserService, use: userServiceSpy },
         { provide: Router, use: routerSpy },
-        { provide: ActivatedRoute, use: routeSpy }
+        { provide: ActivatedRoute, useValue: activatedRouteSpy }
       ]
     }).compileComponents();
   }));
 
-  it('should validate saved tokens', () => {
+  it('should validate saved tokens', async () => {
     const fixture = TestBed.createComponent(AuthComponent);
     const router = TestBed.get<Router>(Router);
 
     const configAuth = new ConfigAuthentication();
-    fixture.componentInstance.ValidateToken(configAuth, configManagerSpy, userServiceSpy, routerSpy);
-    expect(userServiceSpy).toHaveBeenCalled();
-  });
-
-  it(`should have as title 'wolfpack-rpg-client'`, () => {
-    const fixture = TestBed.createComponent(AuthComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('wolfpack-rpg-client');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AuthComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('wolfpack-rpg-client app is running!');
+    configAuth.State = 'test';
+    await fixture.componentInstance.ValidateToken(configAuth, configManagerSpy, userServiceSpy, routerSpy);
+    expect(userServiceSpy.GetUserInfo).toHaveBeenCalled();
+    expect(configAuth.User).toBe(userInfo.login);
+    expect(configAuth.Scope).toBe(Utils.StringJoin(' ', userInfo.scopes));
+    expect(userServiceSpy.UpdateCache).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/play']);
   });
 });

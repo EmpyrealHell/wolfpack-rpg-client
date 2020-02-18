@@ -6,7 +6,8 @@ import { ConfigManager } from '../../services/data/config-manager';
 import { UserData } from '../../services/user/user.data';
 import { UserService } from '../../services/user/user.service';
 import { Utils } from '../../util/utils';
-import * as authConfig from './auth.component.json';
+// @ts-ignore
+import authConfig from './auth.component.json';
 
 
 
@@ -102,10 +103,19 @@ export class AuthComponent implements OnInit {
     auth.Token = undefined;
     configManager.Save();
 
-    window.location.href = `${authConfig.url}?client_id=${authConfig.clientId}` +
+    const url = `${authConfig.url}?client_id=${authConfig.clientId}` +
       `&redirect_uri=${environment.redirectUri}&state=${auth.State}` +
       (forceVerify ? '&force_verify=true' : '') +
       `&response_type=token&scope=${authConfig.scope}`;
+    this.Redirect(url);
+  }
+
+  /**
+   * Redirects the browser to a url, which can be outside of teh angular zone.
+   * @param url The url to send to the browser.
+   */
+  public Redirect(url: string): void {
+    window.location.href = url;
   }
 
   constructor(public configManager: ConfigManager, public userService: UserService,
