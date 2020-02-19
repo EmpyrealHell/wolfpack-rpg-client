@@ -69,7 +69,7 @@ export class WidgetContainerComponent implements OnInit {
    */
   public resetLayout(): void {
     if (this.widgetMap.size === 0) {
-      const widgets = this.widgetService.getWidgets();
+      const widgets = this.widgetService.GetWidgets();
       for (const widget of widgets) {
         if (widget && widget.component) {
           this.widgetMap.set(widget.name, widget);

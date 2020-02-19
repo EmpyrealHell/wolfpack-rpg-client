@@ -21,7 +21,7 @@ import authConfig from './auth.component.json';
   template: 'Authenticating...'
 })
 export class AuthComponent implements OnInit {
-  private route: ActivatedRouteSnapshot;
+  public Route: ActivatedRouteSnapshot;
 
   /**
    * Parses the auth response from twitch. This handles the app loading after
@@ -121,7 +121,7 @@ export class AuthComponent implements OnInit {
   constructor(public configManager: ConfigManager, public userService: UserService,
     // tslint:disable-next-line:align
     private router: Router, route: ActivatedRoute) {
-    this.route = route.snapshot;
+    this.Route = route.snapshot;
   }
 
   /**
@@ -131,9 +131,9 @@ export class AuthComponent implements OnInit {
   public async ngOnInit(): Promise<void> {
     this.configManager.Load();
     const config = this.configManager.GetConfig();
-    if (this.route.fragment && this.route.fragment.length > 0) {
+    if (this.Route.fragment && this.Route.fragment.length > 0) {
       await this.ParseAuthResponse(config.Authentication, this.configManager,
-        this.route.fragment, this.userService, this.router);
+        this.Route.fragment, this.userService, this.router);
     } else if (config.Authentication.Token) {
       await this.ValidateToken(config.Authentication, this.configManager,
         this.userService, this.router);

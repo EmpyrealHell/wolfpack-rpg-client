@@ -33,7 +33,7 @@ export class WidgetService {
   /**
    * Returns a collection of all available widgets.
    */
-  public getWidgets(): Array<WidgetItem> {
+  public GetWidgets(): Array<WidgetItem> {
     return WidgetService.widgets;
   }
 }

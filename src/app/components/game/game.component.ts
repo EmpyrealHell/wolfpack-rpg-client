@@ -34,15 +34,15 @@ export class GameComponent implements OnInit {
   constructor(
     public ircService: IrcService,
     public configManager: ConfigManager,
-    private userService: UserService,
-    private widgetService: WidgetService,
-    private overlayContainer: OverlayContainer,
+    public userService: UserService,
+    public widgetService: WidgetService,
+    public overlayContainer: OverlayContainer,
     public dialog: MatDialog,
     public router: Router,
   ) { }
 
   public async ngOnInit(): Promise<void> {
-    this.widgets = this.widgetService.getWidgets();
+    this.widgets = this.widgetService.GetWidgets();
     const config = this.configManager.GetConfig();
     this.updateOverlayTheme();
 
@@ -65,7 +65,11 @@ export class GameComponent implements OnInit {
     }
   }
 
-  private updateOverlayTheme(): void {
+  /**
+   * Updates the overlay container with the appropriate theme based on the
+   * user's preferences.
+   */
+  public updateOverlayTheme(): void {
     if (this.config.Settings.UseDarkTheme) {
       this.overlayContainer.getContainerElement().classList.add('dark-theme');
     } else {
