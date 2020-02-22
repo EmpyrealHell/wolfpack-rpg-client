@@ -1,8 +1,9 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { async, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import {
-  MatDialog, MatSidenavModule, MatDividerModule, MatMenuModule, MatIconModule,
-  MatSlideToggleModule, MatToolbarModule, MatCardModule
+  MatCardModule, MatDialog, MatDividerModule, MatIconModule, MatMenuModule,
+  MatSidenavModule, MatSlideToggleModule, MatToolbarModule
 } from '@angular/material';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -12,10 +13,9 @@ import { WidgetService } from 'src/app/services/widget/widget.service';
 import { ConfigManager } from '../../services/data/config-manager';
 import { UserService } from '../../services/user/user.service';
 import { ErrorDialog } from '../error-dialog/error-dialog';
-import { GameComponent } from './game.component';
 import { WidgetContainerComponent } from '../widget-container/widget-container.component';
-import { FormsModule } from '@angular/forms';
 import { WidgetFactoryComponent } from '../widget-factory/widget-factory.component';
+import { GameComponent } from './game.component';
 
 export class ClassList {
   public items = new Array<string>();
@@ -34,16 +34,6 @@ export class ClassList {
 
 const ircServiceSpy = jasmine.createSpyObj('IrcService', ['RegisterForError', 'Connect']);
 const configManagerSpy = jasmine.createSpyObj('ConfigManager', ['Save', 'GetConfig']);
-configManagerSpy.GetConfig.and.returnValue({
-  Authentication: {
-    User: 'configManager',
-    Token: 'token'
-  },
-  Settings: {
-    UseDarkTheme: true
-  },
-  Layout: []
-});
 const userServiceSpy = jasmine.createSpyObj('UserService', ['GetUserInfo']);
 userServiceSpy.GetUserInfo.and.returnValue({
   login: 'userService'
@@ -85,6 +75,16 @@ describe('GameComponent', () => {
         { provide: Router, useValue: routerSpy },
       ]
     }).compileComponents();
+    configManagerSpy.GetConfig.and.returnValue({
+      Authentication: {
+        User: 'configManager',
+        Token: 'token'
+      },
+      Settings: {
+        UseDarkTheme: true
+      },
+      Layout: []
+    });
   }));
 
   it('should redirect if not authenticated', async () => {
@@ -121,8 +121,8 @@ describe('GameComponent', () => {
     const fixture = TestBed.createComponent(GameComponent);
 
     await fixture.componentInstance.ngOnInit();
-    const user = fixture.componentInstance.configManager.GetConfig().Authentication.User;
-    const target = (await fixture.componentInstance.userService.GetUserInfo(null)).login;
+    const user = fixture.componentInstance.config.Authentication.User;
+    const target = (await userServiceSpy.GetUserInfo(null)).login;
     expect(user).toBe(target);
     expect(configManagerSpy.Save).toHaveBeenCalled();
     expect(ircServiceSpy.RegisterForError).toHaveBeenCalled();
