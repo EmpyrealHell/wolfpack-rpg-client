@@ -1,10 +1,10 @@
-import { TestBed, async } from '@angular/core/testing';
-import { WidgetFactoryComponent } from './widget-factory.component';
-import { Directive, ComponentFactory, ViewContainerRef } from '@angular/core';
+import { ComponentFactory, Directive, ViewContainerRef } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
-import { WidgetComponent } from './widget.component';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService } from 'src/app/services/irc/irc.service';
+import { WidgetFactoryComponent } from './widget-factory.component';
+import { WidgetComponent } from './widget.component';
 
 const spyContainer = jasmine.createSpyObj('viewContainerRef', ['clear', 'createComponent']);
 spyContainer.createComponent.and.returnValue({

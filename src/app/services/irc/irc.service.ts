@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { Utils } from 'src/app/util/utils';
-import { Client } from 'tmi.js';
+import { Client, Options } from 'tmi.js';
 import { UserService } from '../user/user.service';
 // @ts-ignore
 import * as ircConfig from './irc.service.json';
@@ -149,10 +149,18 @@ export class IrcService {
   }
 
   /**
-   * Connects the client to twitch. This will only succeed if the config data
-   * contains a valid token.
+   * Connects the client to twitch using the tmi.js library. This will only
+   * succeed if the config data contains a valid token.
    */
   public async Connect(): Promise<boolean> {
+    return this.ConnectUsing(Client);
+  }
+
+  /**
+   * Connects the client to twitch using the specified client constructor. This
+   * will only succeed if the config data contains a valid token.
+   */
+  public async ConnectUsing(client: (opts: Options) => Client): Promise<boolean> {
     if (IrcService.IsConnected) {
       return true;
     } else {
@@ -163,7 +171,7 @@ export class IrcService {
       options.options.clientId = userData.client_id;
       options.identity.username = userData.login;
       options.identity.password = `oauth:${token}`;
-      IrcService.connection = Client(options);
+      IrcService.connection = client.call(client, options) as Client;
       IrcService.connection.on('raw_message', (message) => {
         const tag = message.tags['msg-id'] ? message.tags['msg-id'] : undefined;
         if (message.command === 'NOTICE' && tag === 'whisper_restricted') {

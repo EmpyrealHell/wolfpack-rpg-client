@@ -28,18 +28,11 @@ export class RollingTimer {
   public availableOccurrences(): number {
     const now = Date.now();
     const threshold = now - this.period * 1000;
-    let trimmed = false;
     for (let i = 0; i < this.hits.length; i++) {
       if (this.hits[i] >= threshold) {
-        if (i > 0) {
-          this.hits.splice(0, i);
-          trimmed = true;
-        }
+        this.hits.splice(0, i);
         break;
       }
-    }
-    if (!trimmed) {
-      this.hits.splice(0, this.hits.length);
     }
     return this.max - this.hits.length;
   }
