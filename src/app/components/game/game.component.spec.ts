@@ -32,7 +32,7 @@ export class ClassList {
   }
 }
 
-const ircServiceSpy = jasmine.createSpyObj('IrcService', ['RegisterForError', 'Connect']);
+const ircServiceSpy = jasmine.createSpyObj('IrcService', ['registerForError', 'connect']);
 const configManagerSpy = jasmine.createSpyObj('ConfigManager', ['Save', 'GetConfig']);
 const userServiceSpy = jasmine.createSpyObj('UserService', ['GetUserInfo']);
 userServiceSpy.GetUserInfo.and.returnValue({
@@ -125,8 +125,8 @@ describe('GameComponent', () => {
     const target = (await userServiceSpy.GetUserInfo(null)).login;
     expect(user).toBe(target);
     expect(configManagerSpy.Save).toHaveBeenCalled();
-    expect(ircServiceSpy.RegisterForError).toHaveBeenCalled();
-    expect(ircServiceSpy.Connect).toHaveBeenCalled();
+    expect(ircServiceSpy.registerForError).toHaveBeenCalled();
+    expect(ircServiceSpy.connect).toHaveBeenCalled();
   });
 
   it('should add the dark theme', () => {

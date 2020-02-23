@@ -27,9 +27,9 @@ export abstract class AbstractWidgetComponent implements WidgetComponent {
   }
 
   public onActivate(): void {
-    this.ircService.Register(`${this.name}-widget`, (message) => { this.onWhisper(message); }, true);
-    const lines = this.ircService.GetLines();
-    const queue = this.ircService.GetQueuedMessages();
+    this.ircService.register(`${this.name}-widget`, (message) => { this.onWhisper(message); }, true);
+    const lines = this.ircService.getLines();
+    const queue = this.ircService.getQueuedMessages();
     for (const line of lines) {
       this.onWhisper(line);
     }
@@ -37,7 +37,7 @@ export abstract class AbstractWidgetComponent implements WidgetComponent {
     for (const command of commands) {
       if (lines.indexOf(`>> ${command}`) === -1
         && queue.indexOf(command) === -1) {
-        this.ircService.Send(command);
+        this.ircService.send(command);
       }
     }
   }

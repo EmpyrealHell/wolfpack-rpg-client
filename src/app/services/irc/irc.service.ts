@@ -28,26 +28,43 @@ export class IrcService {
   private static messageQueue = new Array<string>();
   private static secondTimer = new RollingTimer(1, 3);
   private static minuteTimer = new RollingTimer(60, 100);
-  public static IsConnected = false;
+  public static isConnected = false;
 
-  private static async processQueue(): Promise<void> {
-    if (this.IsConnected && this.messageQueue.length > 0) {
-      const limit = Math.min(this.messageQueue.length,
-        this.secondTimer.availableOccurrences(),
-        this.minuteTimer.availableOccurrences());
+  private static async processQueue(continuous: boolean = true): Promise<void> {
+    if (IrcService.isConnected && IrcService.messageQueue.length > 0) {
+      const limit = Math.min(IrcService.messageQueue.length,
+        IrcService.secondTimer.availableOccurrences(),
+        IrcService.minuteTimer.availableOccurrences());
       if (limit > 0) {
-        const toSend = this.messageQueue.splice(0, limit);
+        const toSend = IrcService.messageQueue.splice(0, limit);
         for (const message of toSend) {
           await IrcService.connection.whisper(ircConfig.botAccount, message);
-          this.secondTimer.addOccurrence();
-          this.minuteTimer.addOccurrence();
+          IrcService.secondTimer.addOccurrence();
+          IrcService.minuteTimer.addOccurrence();
         }
       }
     }
-    setTimeout(async () => { await IrcService.processQueue(); }, 100);
+    if (continuous) {
+      setTimeout(async () => { await IrcService.processQueue(); }, 100);
+    }
   }
 
-  public get IsConnected(): boolean { return IrcService.IsConnected; }
+  /**
+   * Resets the static properties of the IrcService to their default state.
+   */
+  public static reset(): void {
+    IrcService.connection = undefined;
+    IrcService.callbacks.clear();
+    IrcService.errorHandlers.clear();
+    IrcService.history = '';
+    IrcService.lines.length = 0;
+    IrcService.messageQueue.length = 0;
+    IrcService.secondTimer.reset();
+    IrcService.minuteTimer.reset();
+    IrcService.isConnected = false;
+  }
+
+  public get isConnected(): boolean { return IrcService.isConnected; }
 
   constructor(public configManager: ConfigManager, public userService: UserService) { }
 
@@ -67,8 +84,8 @@ export class IrcService {
   }
 
   private reconnect(reason: string): void {
-    IrcService.IsConnected = false;
-    this.Connect();
+    IrcService.isConnected = false;
+    this.connect();
   }
 
   /**
@@ -77,7 +94,7 @@ export class IrcService {
    * @param callback A function to be called when a message is received.
    * @param overwrite If true, will replace any previous references with the same id.
    */
-  public Register(id: string, callback: WhisperCallback, overwrite: boolean = false): void {
+  public register(id: string, callback: WhisperCallback, overwrite: boolean = false): void {
     if (!IrcService.callbacks.has(id) || overwrite) {
       IrcService.callbacks.set(id, callback);
     }
@@ -87,7 +104,7 @@ export class IrcService {
    * Removes the reference to a registered callback function.
    * @param id The id of the callback function.
    */
-  public Unregister(id: string): void {
+  public unregister(id: string): void {
     if (IrcService.callbacks.has(id)) {
       IrcService.callbacks.delete(id);
     }
@@ -99,7 +116,7 @@ export class IrcService {
    * @param callback A function to be called when an error occurs while sending a message.
    * @param overwrite If true, will replace any previous references with the same id.
    */
-  public RegisterForError(id: string, callback: WhisperCallback, overwrite: boolean = false): void {
+  public registerForError(id: string, callback: WhisperCallback, overwrite: boolean = false): void {
     if (!IrcService.errorHandlers.has(id) || overwrite) {
       IrcService.errorHandlers.set(id, callback);
     }
@@ -109,7 +126,7 @@ export class IrcService {
    * Removes the reference to a registered callback function.
    * @param id The id of the callback function.
    */
-  public UnregisterForError(id: string): void {
+  public unregisterForError(id: string): void {
     if (IrcService.errorHandlers.has(id)) {
       IrcService.errorHandlers.delete(id);
     }
@@ -118,21 +135,21 @@ export class IrcService {
   /**
    * Returns the history of messages the connection has received up to this point.
    */
-  public GetHistory(): string {
+  public getHistory(): string {
     return IrcService.history;
   }
 
   /**
    * Returns each message the connection has received in an array.
    */
-  public GetLines(): Array<string> {
+  public getLines(): Array<string> {
     return [...IrcService.lines];
   }
 
   /**
    * Returns a list of messages queued to send.
    */
-  public GetQueuedMessages(): Array<string> {
+  public getQueuedMessages(): Array<string> {
     return [...IrcService.messageQueue];
   }
 
@@ -142,7 +159,7 @@ export class IrcService {
    * limits, as per https://dev.twitch.tv/docs/irc/guide#command--message-limits
    * @param message The message to send
    */
-  public Send(message: string): void {
+  public send(message: string): void {
     if (IrcService.messageQueue.indexOf(message) === -1) {
       IrcService.messageQueue.push(message);
     }
@@ -152,16 +169,16 @@ export class IrcService {
    * Connects the client to twitch using the tmi.js library. This will only
    * succeed if the config data contains a valid token.
    */
-  public async Connect(): Promise<boolean> {
-    return this.ConnectUsing(Client);
+  public async connect(): Promise<boolean> {
+    return this.connectUsing(Client);
   }
 
   /**
    * Connects the client to twitch using the specified client constructor. This
    * will only succeed if the config data contains a valid token.
    */
-  public async ConnectUsing(client: (opts: Options) => Client): Promise<boolean> {
-    if (IrcService.IsConnected) {
+  public async connectUsing(client: (opts: Options) => Client): Promise<boolean> {
+    if (IrcService.isConnected) {
       return true;
     } else {
       IrcService.processQueue();
@@ -186,7 +203,7 @@ export class IrcService {
       });
       IrcService.connection.on('disconnected', (reason) => { this.reconnect(reason); });
       const response = await Utils.PromiseWithReject(IrcService.connection.connect());
-      IrcService.IsConnected = response.Success;
+      IrcService.isConnected = response.Success;
       return response.Success;
     }
   }

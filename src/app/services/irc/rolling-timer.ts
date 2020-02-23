@@ -14,6 +14,13 @@ export class RollingTimer {
   constructor(private period: number, private max: number) { }
 
   /**
+   * Resets the timer.
+   */
+  public reset(): void {
+    this.hits.length = 0;
+  }
+
+  /**
    * Adds an occurrence to the timer.
    */
   public addOccurrence(): void {

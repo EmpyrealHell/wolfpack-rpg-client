@@ -55,8 +55,8 @@ export class GameComponent implements OnInit {
         config.Authentication.User = userData.login;
         this.configManager.Save();
         this.config = config;
-        this.ircService.RegisterForError('game', (message) => { this.onError(message); }, true);
-        this.ircService.Connect();
+        this.ircService.registerForError('game', (message) => { this.onError(message); }, true);
+        this.ircService.connect();
       } else {
         config.Authentication.Token = undefined;
         this.configManager.Save();

@@ -48,7 +48,7 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   private sendCommand(): void {
     const message = this.command;
     this.command = '';
-    this.ircService.Send(message);
+    this.ircService.send(message);
 
     const history = this.configManager.GetConfig().History;
     history.push(message);
@@ -60,8 +60,8 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   }
 
   public onActivate(): void {
-    this.ircService.Register('console-widget', (message) => { this.onWhisper(message); }, true);
-    this.consoleData = this.ircService.GetHistory();
+    this.ircService.register('console-widget', (message) => { this.onWhisper(message); }, true);
+    this.consoleData = this.ircService.getHistory();
   }
 
   private commandFromHistory(index: number): { message: string, index: number } {
