@@ -7,6 +7,9 @@ export class Utils {
    * @param target An array containing values to check against the source.
    */
   public static HasAll(source: Array<string>, target: Array<string>): boolean {
+    if (!source || !target) {
+      return false;
+    }
     for (const value of target) {
       if (!source.includes(value)) {
         return false;
@@ -22,8 +25,14 @@ export class Utils {
    * @param kvString A string with a list of key-value pairs.
    */
   public static CreateMap(itemSep: string, kvSep: string, kvString: string): Map<string, string> {
-    const keyValuePairs = kvString.split(itemSep);
     const map = new Map<string, string>();
+    if (!kvString || kvString.length === 0 ||
+      !itemSep || itemSep.length === 0 ||
+      !kvSep || kvSep.length === 0 ||
+      kvString.indexOf(kvSep) === -1) {
+      return map;
+    }
+    const keyValuePairs = kvString.split(itemSep);
     for (const pair of keyValuePairs) {
       const [key, value] = pair.split(kvSep);
       map.set(key, value);
@@ -52,10 +61,14 @@ export class Utils {
    */
   public static StringJoin(sep: string, values: Array<string>): string {
     let output = '';
-    for (const value of values) {
-      output += sep + value;
+    if (!values || values.length === 0) {
+      return output;
     }
-    return output.substring(sep.length);
+    const delimiter = sep ? sep : '';
+    for (const value of values) {
+      output += delimiter + value;
+    }
+    return output.substring(delimiter.length);
   }
 
   /**
