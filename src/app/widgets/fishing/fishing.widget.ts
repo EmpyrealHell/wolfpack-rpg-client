@@ -12,35 +12,36 @@ import * as fishConfig from './fishing.widget.json';
   templateUrl: './fishing.widget.html',
 })
 export class FishingWidgetComponent extends AbstractWidgetComponent {
-  private responderArray = new Array<Responder>(
+  private responderArray: Responder[] = [
     new Responder(fishConfig.patterns.Leader, (data) => {
       for (const record of this.records) {
-        if (record.Fish === data[1]) {
-          record.Update(data[2], data[3]);
+        if (record.fish === data[1]) {
+          record.update(data[2], data[3]);
           return;
         }
       }
       this.records.push(new FishingRecord(data[1], data[2], data[3]));
     })
-  );
-  public get responders(): Array<Responder> {
+  ];
+  get responders(): Responder[] {
     return this.responderArray;
   }
-  public get loadCommands(): Array<string> {
+  get loadCommands(): string[] {
     return fishConfig.loadCommands;
   }
 
-  public records = new Array<FishingRecord>();
+  records = new Array<FishingRecord>();
 }
 
 export class FishingRecord {
-  public Size: number;
-  constructor(public Fish: string, public Name: string, size: string) {
-    this.Size = parseFloat(size);
+  size: number;
+
+  constructor(public fish: string, public name: string, size: string) {
+    this.size = Number(size);
   }
 
-  public Update(name: string, size: string): void {
-    this.Name = name;
-    this.Size = parseFloat(size);
+  update(name: string, size: string): void {
+    this.name = name;
+    this.size = Number(size);
   }
 }

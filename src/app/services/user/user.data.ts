@@ -18,5 +18,5 @@ export interface UserData {
   /**
    * Scopes the token provides access to.
    */
-  scopes: Array<string>;
+  scopes: string[];
 }

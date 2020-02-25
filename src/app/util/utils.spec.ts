@@ -4,24 +4,18 @@ describe('Utils', () => {
   it('should return true if all items in the target array exist in the source', () => {
     const source = ['a', 'b', 'c'];
     const target = ['a', 'b'];
-    expect(Utils.HasAll(source, target)).toBeTruthy();
+    expect(Utils.hasAll(source, target)).toBeTruthy();
   });
 
   it('should return false if all items in the target array do not exist in the source', () => {
     const source = ['a', 'b', 'c'];
     const target = ['a', 'b', 'd'];
-    expect(Utils.HasAll(source, target)).toBeFalsy();
-  });
-
-  it('should return false if either item is not an array', () => {
-    const array = ['a', 'b', 'c'];
-    expect(Utils.HasAll(array, null)).toBeFalsy();
-    expect(Utils.HasAll(null, array)).toBeFalsy();
+    expect(Utils.hasAll(source, target)).toBeFalsy();
   });
 
   it('should create a map from a delimited list of key-value pairs', () => {
     const input = 'a=1&b=2&c=3';
-    const map = Utils.CreateMap('&', '=', input);
+    const map = Utils.createMap('&', '=', input);
     expect(map.has('a') && map.has('b') && map.has('c')).toBeTruthy();
     expect(map.get('a')).toEqual('1');
     expect(map.get('b')).toEqual('2');
@@ -30,34 +24,22 @@ describe('Utils', () => {
 
   it('should return an empty map if the input string is invalid', () => {
     const input = 'a=1&b=2&c=3';
-    let map = Utils.CreateMap('|', '-', input);
-    expect(map.size).toBe(0);
-    map = Utils.CreateMap('&', '=', null);
-    expect(map.size).toBe(0);
-    map = Utils.CreateMap('&', null, input);
-    expect(map.size).toBe(0);
-    map = Utils.CreateMap(null, '=', input);
+    const map = Utils.createMap('|', '-', input);
     expect(map.size).toBe(0);
   });
 
   it('should generate a random state of the correct size', () => {
     const size = 32;
-    const state = Utils.GenerateState(size);
+    const state = Utils.generateState(size);
     expect(state.length).toBe(size * 2);
-    const otherState = Utils.GenerateState(size);
+    const otherState = Utils.generateState(size);
     expect(state).not.toEqual(otherState);
   });
 
   it('should join an array of strings with a delimiter', () => {
     const array = ['one', 'two', 'three'];
     const joined = 'one, two, three';
-    expect(Utils.StringJoin(', ', array)).toEqual(joined);
-  });
-
-  it('should join an array of strings without a delimiter', () => {
-    const array = ['one', 'two', 'three'];
-    const joined = 'onetwothree';
-    expect(Utils.StringJoin(null, array)).toEqual(joined);
+    expect(Utils.stringJoin(', ', array)).toEqual(joined);
   });
 
   it('should await a promise', async () => {
@@ -69,9 +51,9 @@ describe('Utils', () => {
       }, 50);
     });
 
-    const response = await Utils.PromiseWithReject(promise);
-    expect(response.Success).toBeTruthy();
-    expect(response.Response).toBeTruthy();
+    const response = await Utils.promiseWithReject(promise);
+    expect(response.success).toBeTruthy();
+    expect(response.response).toBeTruthy();
     expect(called).toBeTruthy();
   });
 
@@ -87,9 +69,9 @@ describe('Utils', () => {
       }, 50);
     });
 
-    const response = await Utils.PromiseWithReject(promise);
-    expect(response.Success).toBeFalsy();
-    expect(response.Response).toBeFalsy();
+    const response = await Utils.promiseWithReject(promise);
+    expect(response.success).toBeFalsy();
+    expect(response.response).toBeFalsy();
     expect(called).toBeFalsy();
   });
 });

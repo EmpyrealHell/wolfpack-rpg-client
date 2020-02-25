@@ -29,10 +29,14 @@ describe('ConfigManager', () => {
       const testData = manager.GetConfig();
       testData.Authentication.User = `TestUser${Date.now()}`;
       manager.Save();
-      const loadedData = JSON.parse(localStorage.getItem(storageKey));
+      const loadedJson = localStorage.getItem(storageKey);
+      expect(loadedJson).toBeTruthy();
+      const loadedData = JSON.parse(loadedJson!);
       expect(loadedData.Authentication.User).toBe(testData.Authentication.User);
     } finally {
-      localStorage.setItem(storageKey, current);
+      if (current) {
+        localStorage.setItem(storageKey, current);
+      }
     }
   });
 
@@ -48,7 +52,9 @@ describe('ConfigManager', () => {
       loadedData = manager.GetConfig();
       expect(loadedData.Authentication.User).toBe(testData.Authentication.User);
     } finally {
-      localStorage.setItem(storageKey, current);
+      if (current) {
+        localStorage.setItem(storageKey, current);
+      }
     }
   });
 });

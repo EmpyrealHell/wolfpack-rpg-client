@@ -5,7 +5,7 @@ export class Stats {
   /**
    * Maps a display name sent in a whisper to the name of the stat property.
    */
-  public static variableNameMap = new Map<string, string>([
+  static variableNameMap = new Map<string, string>([
     ['Success Chance', 'successChance'],
     ['XP Bonus', 'xpBonus'],
     ['Wolfcoin Bonus', 'wolfcoinBonus'],
@@ -16,7 +16,7 @@ export class Stats {
   /**
    * Maps a variable name to the display name used in the UI.
    */
-  public static displayNameMap = new Map<string, string>([
+  static displayNameMap = new Map<string, string>([
     ['successChance', 'Success Chance'],
     ['xpBonus', 'XP Bonus'],
     ['wolfcoinBonus', 'Wolfcoin Bonus'],
@@ -24,35 +24,43 @@ export class Stats {
     ['preventDeath', 'Prevent Death'],
   ]);
 
+  static variableUpdateMap = new Map<string, (ref: Stats, value: number) => void>([
+    ['successChance', (ref, value) => { ref.successChance = value; }],
+    ['xpBonus', (ref, value) => { ref.xpBonus = value; }],
+    ['wolfcoinBonus', (ref, value) => { ref.wolfcoinBonus = value; }],
+    ['itemFind', (ref, value) => { ref.itemFind = value; }],
+    ['preventDeath', (ref, value) => { ref.preventDeath = value; }]
+  ]);
+
   /**
    * Bonus chance for success on dungeon fights.
    */
-  public successChance = 0;
+  successChance = 0;
   /**
    * Bonus to experience earned.
    */
-  public xpBonus = 0;
+  xpBonus = 0;
   /**
    * Bonus to wolfcoins rewards.
    */
-  public wolfcoinBonus = 0;
+  wolfcoinBonus = 0;
   /**
    * Bonus to chance of getting a drop.
    */
-  public itemFind = 0;
+  itemFind = 0;
   /**
    * Chance to avoid death on a failed dungeon attempt.
    */
-  public preventDeath = 0;
+  preventDeath = 0;
   /**
    * Stats that have been updated from their defaults.
    */
-  public updatedStats = new Array<string>();
+  updatedStats = new Array<string>();
 
   /**
    * @param base The value to assign to each stat.
    */
-  constructor(base: number = 0) {
+  constructor(base = 0) {
     this.successChance = base;
     this.xpBonus = base;
     this.wolfcoinBonus = base;
@@ -63,7 +71,7 @@ export class Stats {
   /**
    * Determines if any of this object's stats have been updated.
    */
-  public hasStats(): boolean {
+  hasStats(): boolean {
     return this.updatedStats.length > 0;
   }
 
@@ -72,11 +80,27 @@ export class Stats {
    * @param name The name of the stat to update.
    * @param value The value to assign the stat.
    */
-  public updateStat(name: string, value: number): void {
-    if (Stats.variableNameMap.has(name)) {
-      const varName = Stats.variableNameMap.get(name);
+  updateStat(name: string, value: number): void {
+    const updater = Stats.variableUpdateMap.get(name);
+    if (updater) {
+      this.updatedStats.push(name);
+      updater(this, value);
+    }
+  }
+
+  /**
+   * Sets a stat's value by the chat description.
+   * @param description The description of the stat to update.
+   * @param value The value to assign the stat.
+   */
+  updateStatByDescription(description: string, value: number): void {
+    const varName = Stats.variableNameMap.get(description);
+    if (varName) {
       this.updatedStats.push(varName);
-      this[varName] = value;
+      const updater = Stats.variableUpdateMap.get(varName);
+      if (updater) {
+        updater(this, value);
+      }
     }
   }
 
@@ -84,7 +108,7 @@ export class Stats {
    * Adds another stat block's values to this one.
    * @param other A stat block to add to this one.
    */
-  public add(other: Stats) {
+  add(other: Stats) {
     this.successChance += other.successChance;
     this.xpBonus += other.xpBonus;
     this.wolfcoinBonus += other.wolfcoinBonus;

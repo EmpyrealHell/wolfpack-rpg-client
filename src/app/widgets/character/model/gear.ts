@@ -7,11 +7,11 @@ export class Gear {
   /**
    * The armor slot. Provides small bonuses, but to more stats.
    */
-  public armor = new Item();
+  armor = new Item();
   /**
    * The weapon slot. Provides larger bonuses, but to fewer stats.
    */
-  public weapon = new Item();
+  weapon = new Item();
 }
 
 /**
@@ -45,24 +45,24 @@ export class Item {
   /**
    * The display name of the item.
    */
-  public name = Item.defaultName;
+  name = Item.defaultName;
   /**
    * The id of the item in the inventory.
    */
-  public id = -1;
+  id = -1;
   /**
    * The item's rarity.
    */
-  public rarity = Rarity.none;
+  rarity = Rarity.none;
   /**
    * The bonus stats the item confers while equipped.
    */
-  public stats = new Stats();
+  stats = new Stats();
 
   /**
    * Return true if the item has been updated.
    */
-  public isSet(): boolean {
+  isSet(): boolean {
     return this.name !== Item.defaultName;
   }
 }

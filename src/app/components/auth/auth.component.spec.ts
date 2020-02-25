@@ -66,7 +66,7 @@ describe('AuthComponent', () => {
     configAuth.User = `Not${username}`;
     await fixture.componentInstance.ValidateToken(configAuth, configManagerSpy, userServiceSpy, routerSpy);
     expect(userServiceSpy.GetUserInfo).toHaveBeenCalled();
-    expect(configAuth.Scope).toBe(undefined);
+    expect(configAuth.Scope).toBe(null);
     expect(authSpy).toHaveBeenCalledWith(configAuth, configManagerSpy);
   });
 
@@ -78,8 +78,8 @@ describe('AuthComponent', () => {
     configAuth.Scope = `${scopes} test:execute`;
     await fixture.componentInstance.ValidateToken(configAuth, configManagerSpy, userServiceSpy, routerSpy);
     expect(userServiceSpy.GetUserInfo).toHaveBeenCalled();
-    expect(configAuth.User).toBe(undefined);
-    expect(configAuth.Scope).toBe(undefined);
+    expect(configAuth.User).toBeFalsy();
+    expect(configAuth.Scope).toBeFalsy();
     expect(authSpy).toHaveBeenCalledWith(configAuth, configManagerSpy);
   });
 
@@ -131,8 +131,8 @@ describe('AuthComponent', () => {
     const tokenProvider = jasmine.createSpyObj<ConfigManager>('ConfigManager', ['Load', 'GetConfig']);
     tokenProvider.GetConfig.and.returnValue(configValue);
     fixture.componentInstance.configManager = tokenProvider;
-    fixture.componentInstance.Route = new ActivatedRouteSnapshot();
-    fixture.componentInstance.Route.fragment = undefined;
+    fixture.componentInstance.route = new ActivatedRouteSnapshot();
+    fixture.componentInstance.route.fragment = '';
 
     await fixture.componentInstance.ngOnInit();
     expect(tokenProvider.Load).toHaveBeenCalled();
@@ -143,8 +143,8 @@ describe('AuthComponent', () => {
   it('should begin authentication on load', async () => {
     const fixture = TestBed.createComponent(AuthComponent);
     const authSpy = spyOn(fixture.componentInstance, 'AuthenticateWithTwitch');
-    fixture.componentInstance.Route = new ActivatedRouteSnapshot();
-    fixture.componentInstance.Route.fragment = undefined;
+    fixture.componentInstance.route = new ActivatedRouteSnapshot();
+    fixture.componentInstance.route.fragment = '';
 
     await fixture.componentInstance.ngOnInit();
     expect(configManagerSpy.Load).toHaveBeenCalled();

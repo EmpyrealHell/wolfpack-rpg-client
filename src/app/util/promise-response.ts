@@ -2,18 +2,18 @@
  * Holds responses from utility method for handling promise rejection in the
  * async/await pattern.
  */
-export class PromiseResponse<T> {
+export interface PromiseResponse<T, E> {
   /**
    * Whether the promise was resolved (true) or rejected (false).
    */
-  Success: boolean;
+  success: boolean;
   /**
    * The response from the promise. This should match the same generic type as
    * the promise being resolved.
    */
-  Response: T;
+  response?: T;
   /**
    * The error thrown if the promise is rejected.
    */
-  Error: any;
+  error?: E;
 }

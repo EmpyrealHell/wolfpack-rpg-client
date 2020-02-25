@@ -12,12 +12,12 @@ import { WidgetComponent } from '../widget-factory/widget.component';
 import { WidgetContainerComponent } from './widget-container.component';
 
 export class FirstWidget extends AbstractWidgetComponent {
-  public get loadCommands(): string[] { return []; }
-  public get responders(): Responder[] { return []; }
+  get loadCommands(): string[] { return []; }
+  get responders(): Responder[] { return []; }
 }
 export class SecondWidget extends AbstractWidgetComponent {
-  public get loadCommands(): string[] { return []; }
-  public get responders(): Responder[] { return []; }
+  get loadCommands(): string[] { return []; }
+  get responders(): Responder[] { return []; }
 }
 
 const firstWidgetItem = new WidgetItem(FirstWidget, 'First');
@@ -78,8 +78,9 @@ describe('WidgetContainerComponent', () => {
 
     fixture.componentInstance.ngOnInit();
     fixture.componentInstance.closeWidget(0);
-    expect(fixture.componentInstance.config.Layout).not.toContain('First');
-    expect(fixture.componentInstance.config.Layout).toContain('Second');
+    expect(fixture.componentInstance.config).toBeTruthy();
+    expect(fixture.componentInstance.config!.Layout).not.toContain('First');
+    expect(fixture.componentInstance.config!.Layout).toContain('Second');
     expect(configManagerSpy.Save).toHaveBeenCalled();
   });
 

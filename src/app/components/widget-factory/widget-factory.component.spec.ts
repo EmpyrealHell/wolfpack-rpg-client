@@ -9,9 +9,9 @@ import { WidgetComponent } from './widget.component';
 const spyContainer = jasmine.createSpyObj('viewContainerRef', ['clear', 'createComponent']);
 spyContainer.createComponent.and.returnValue({
   instance: {
-    configManager: undefined,
-    ircService: undefined,
-    name: undefined,
+    configManager: null,
+    ircService: null,
+    name: '',
     onActivate: () => { }
   } as WidgetComponent
 });
@@ -26,7 +26,7 @@ spyContainer.createComponent.and.returnValue({
   ],
 })
 export class WidgetContainerStubDirective {
-  public viewContainerRef: ViewContainerRef;
+  viewContainerRef: ViewContainerRef;
   constructor() {
     this.viewContainerRef = spyContainer;
   }

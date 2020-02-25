@@ -1,3 +1,5 @@
+// tslint:disable: variable-name
+
 /**
  * Class representing the user's config data. An instance is not used as a
  * class allows for default values without needing a separate defaults json.
@@ -6,19 +8,19 @@ export class Config {
   /**
    * The user's app-wide settings.
    */
-  public Settings = new ConfigSettings();
+  Settings = new ConfigSettings();
   /**
    * The cached authentication data.
    */
-  public Authentication = new ConfigAuthentication();
+  Authentication = new ConfigAuthentication();
   /**
    * List of widget ids, in order, to render to the widget container.
    */
-  public Layout = new Array<string>();
+  Layout = new Array<string>();
   /**
    * History of commands typed into the console.
    */
-  public History = new Array<string>();
+  History = new Array<string>();
 }
 
 /**
@@ -28,15 +30,15 @@ export class ConfigSettings {
   /**
    * Whether or not to use the default dark theme.
    */
-  public UseDarkTheme = true;
+  UseDarkTheme = true;
   /**
    * Whether or not to show names on the buttons in the toolbar.
    */
-  public ToolbarNames = true;
+  ToolbarNames = true;
   /**
    * Whether or not to show icons in the toolbar.
    */
-  public ToolbarIcons = true;
+  ToolbarIcons = true;
 }
 
 /**
@@ -46,17 +48,17 @@ export class ConfigAuthentication {
   /**
    * The uniquely-generated state data used to verify the token's authenticity.
    */
-  public State: string;
+  State: string | null = null;
   /**
    * OAuth token provided by Twitch.
    */
-  public Token: string;
+  Token: string | null = null;
   /**
    * Authenticated user's username.
    */
-  public User: string;
+  User: string | null = null;
   /**
    * List of scopes the token provides access to.
    */
-  public Scope: string;
+  Scope: string | null = null;
 }

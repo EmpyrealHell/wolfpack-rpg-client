@@ -3,7 +3,6 @@ import { UserService } from './user.service';
 import { TestUtils, ClassSpy } from 'src/test/test-utils';
 import { HttpClient } from '@angular/common/http';
 
-
 describe('UserService', () => {
   const cachedResponseKey = 'cachedResponse';
 
@@ -11,7 +10,7 @@ describe('UserService', () => {
   let userService: UserService;
 
   beforeEach(() => {
-    userService = new UserService(httpObj as any);
+    userService = new UserService(httpObj as jasmine.SpyObj<HttpClient>);
   });
 
   it('should call the twitch oauth validation service', async () => {
@@ -19,9 +18,9 @@ describe('UserService', () => {
       toPromise: () => new Promise(resolve => resolve())
     });
     const token = `token-${Date.now()}`;
-    userService.UpdateCache(undefined);
+    userService.updateCache({} as UserData);
 
-    await userService.GetUserInfo(token);
+    await userService.getUserInfo(token);
     expect(httpObj.get).toHaveBeenCalled();
     const call = httpObj.get.calls.mostRecent();
     const opts = call.args[1];
@@ -30,14 +29,14 @@ describe('UserService', () => {
 
   it('should update the user cache', () => {
     const newCache = {} as UserData;
-    userService.UpdateCache(newCache);
+    userService.updateCache(newCache);
     expect(UserService[cachedResponseKey]).toBe(newCache);
   });
 
   it('should use the user cache', async () => {
     const newCache = {} as UserData;
-    userService.UpdateCache(newCache);
-    const userInfo = await userService.GetUserInfo(null);
+    userService.updateCache(newCache);
+    const userInfo = await userService.getUserInfo('');
     expect(userInfo).toBe(newCache);
   });
 });

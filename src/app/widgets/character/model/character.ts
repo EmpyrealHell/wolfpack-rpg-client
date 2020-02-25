@@ -10,23 +10,23 @@ export class Character {
   /**
    * Number of wolfcoins the character has.
    */
-  public coins = 0;
+  coins = 0;
   /**
    * The character's current class name.
    */
-  public class = 'Adventurer';
+  class = 'Adventurer';
   /**
    * Object holding level, prestige, and experience data.
    */
-  public experience = new Experience();
-  public stats = new Stats();
-  public gear = new Gear();
+  experience = new Experience();
+  stats = new Stats();
+  gear = new Gear();
 
   /**
    * Sets the class and applies its base stats to this object.
    * @param newClass The name of the class to set.
    */
-  public setClass(newClass: string): void {
+  setClass(newClass: string): void {
     this.class = newClass;
     this.stats = BaseStats.byClass(newClass);
   }
@@ -35,7 +35,7 @@ export class Character {
    * Calculates the final stats for this character, accounting for base stats
    * and any equipped gear.
    */
-  public calculatStats(): Stats {
+  calculatStats(): Stats {
     const stats = new Stats();
     stats.add(this.stats);
     stats.add(this.gear.armor.stats);

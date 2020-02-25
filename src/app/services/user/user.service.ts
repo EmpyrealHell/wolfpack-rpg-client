@@ -18,7 +18,7 @@ export class UserService {
    * Validates an OAuth token and retrieves the user data contained within.
    * @param token An OAuth token
    */
-  public async GetUserInfo(token: string): Promise<UserData> {
+  async getUserInfo(token: string): Promise<UserData> {
     if (UserService.cachedResponse) {
       return UserService.cachedResponse;
     }
@@ -34,7 +34,7 @@ export class UserService {
    * Updates the chache of the user service to prevent unneccesary API calls
    * @param data A resolved UserData object.
    */
-  public UpdateCache(data: UserData): void {
+  updateCache(data: UserData): void {
     UserService.cachedResponse = data;
   }
 }

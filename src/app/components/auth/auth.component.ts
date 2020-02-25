@@ -6,8 +6,7 @@ import { ConfigManager } from '../../services/data/config-manager';
 import { UserData } from '../../services/user/user.data';
 import { UserService } from '../../services/user/user.service';
 import { Utils } from '../../util/utils';
-// @ts-ignore
-import authConfig from './auth.component.json';
+import * as authConfig from './auth.component.json';
 
 
 
@@ -21,7 +20,7 @@ import authConfig from './auth.component.json';
   template: 'Authenticating...'
 })
 export class AuthComponent implements OnInit {
-  public Route: ActivatedRouteSnapshot;
+  route: ActivatedRouteSnapshot;
 
   /**
    * Parses the auth response from twitch. This handles the app loading after
@@ -33,11 +32,11 @@ export class AuthComponent implements OnInit {
    * @param userService Service to validate token if one is received.
    * @param router Router to redirect app once authentication is validated.
    */
-  public async ParseAuthResponse(auth: ConfigAuthentication, configManager: ConfigManager,
+  async ParseAuthResponse(auth: ConfigAuthentication, configManager: ConfigManager,
     // tslint:disable-next-line:align
     fragmentString: string, userService: UserService, router: Router): Promise<void> {
     if (auth.State) {
-      const fragmentMap = Utils.CreateMap('&', '=', fragmentString);
+      const fragmentMap = Utils.createMap('&', '=', fragmentString);
       const state = fragmentMap.get('state');
       const token = fragmentMap.get('access_token');
       if (state === auth.State && token) {
@@ -46,7 +45,7 @@ export class AuthComponent implements OnInit {
       } else {
         alert('An error occurred in the authentication process, resetting authentication.\n' +
           'If you see this message more than once it may indicate an error between you and twitch.');
-        auth.State = undefined;
+        auth.State = null;
         this.AuthenticateWithTwitch(auth, configManager);
       }
     } else {
@@ -62,12 +61,14 @@ export class AuthComponent implements OnInit {
    * @param userService Service to validate token if one is received.
    * @param router Router to redirect app once authentication is validated.
    */
-  public async ValidateToken(auth: ConfigAuthentication, configManager: ConfigManager,
+  async ValidateToken(auth: ConfigAuthentication, configManager: ConfigManager,
     // tslint:disable-next-line:align
     userService: UserService, router: Router): Promise<void> {
-    let data: UserData;
+    let data: UserData | null = null;
     try {
-      data = await userService.GetUserInfo(auth.Token);
+      if (auth.Token) {
+        data = await userService.getUserInfo(auth.Token);
+      }
     } catch (error) {
       console.log('Encountered an error getting token validation data');
       console.log(error);
@@ -75,15 +76,15 @@ export class AuthComponent implements OnInit {
 
     if (data && data.login && data.login.length > 0) {
       if ((auth.User && data.login !== auth.User) ||
-        (auth.Scope && !Utils.HasAll(data.scopes, auth.Scope.split(' ')))) {
-        auth.Scope = undefined;
-        auth.State = undefined;
+        (auth.Scope && !Utils.hasAll(data.scopes, auth.Scope.split(' ')))) {
+        auth.Scope = null;
+        auth.State = null;
         this.AuthenticateWithTwitch(auth, configManager);
       } else {
         auth.User = data.login;
-        auth.Scope = Utils.StringJoin(' ', data.scopes);
+        auth.Scope = Utils.stringJoin(' ', data.scopes);
         configManager.Save();
-        userService.UpdateCache(data);
+        userService.updateCache(data);
         router.navigate(['/play']);
       }
     } else {
@@ -97,10 +98,10 @@ export class AuthComponent implements OnInit {
    * @param auth Auth data that should be loaded from local storage.
    * @param configManager Used to update local data if authentication fails.
    */
-  public AuthenticateWithTwitch(auth: ConfigAuthentication, configManager: ConfigManager): void {
+  AuthenticateWithTwitch(auth: ConfigAuthentication, configManager: ConfigManager): void {
     const forceVerify = (auth.State === undefined);
-    auth.State = Utils.GenerateState(16);
-    auth.Token = undefined;
+    auth.State = Utils.generateState(16);
+    auth.Token = null;
     configManager.Save();
 
     const url = `${authConfig.url}?client_id=${authConfig.clientId}` +
@@ -114,26 +115,26 @@ export class AuthComponent implements OnInit {
    * Redirects the browser to a url, which can be outside of teh angular zone.
    * @param url The url to send to the browser.
    */
-  public Redirect(url: string): void {
+  Redirect(url: string): void {
     window.location.href = url;
   }
 
   constructor(public configManager: ConfigManager, public userService: UserService,
     // tslint:disable-next-line:align
     private router: Router, route: ActivatedRoute) {
-    this.Route = route.snapshot;
+    this.route = route.snapshot;
   }
 
   /**
    * Handles authentication and OAuth token verification before routing the
    * user to the main interface.
    */
-  public async ngOnInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {
     this.configManager.Load();
     const config = this.configManager.GetConfig();
-    if (this.Route.fragment && this.Route.fragment.length > 0) {
+    if (this.route.fragment && this.route.fragment.length > 0) {
       await this.ParseAuthResponse(config.Authentication, this.configManager,
-        this.Route.fragment, this.userService, this.router);
+        this.route.fragment, this.userService, this.router);
     } else if (config.Authentication.Token) {
       await this.ValidateToken(config.Authentication, this.configManager,
         this.userService, this.router);

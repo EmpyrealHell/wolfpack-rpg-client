@@ -18,13 +18,13 @@ import { WidgetFactoryComponent } from '../widget-factory/widget-factory.compone
 import { GameComponent } from './game.component';
 
 export class ClassList {
-  public items = new Array<string>();
+  items = new Array<string>();
 
-  public add(value: string): void {
+  add(value: string): void {
     this.items.push(value);
   }
 
-  public remove(value: string): void {
+  remove(value: string): void {
     const index = this.items.indexOf(value);
     if (index >= 0) {
       this.items.splice(index);
@@ -161,7 +161,7 @@ describe('GameComponent', () => {
     const toAdd = new WidgetItem(null, 'toAdd');
 
     fixture.componentInstance.toggleWidget(toAdd);
-    expect(fixture.componentInstance.config.Layout).toContain(toAdd.name);
+    expect(fixture.componentInstance.config.Layout).toContain(toAdd.name!);
     expect(configManagerSpy.Save).toHaveBeenCalled();
   });
 
@@ -169,9 +169,9 @@ describe('GameComponent', () => {
     const fixture = TestBed.createComponent(GameComponent);
     const toRemove = new WidgetItem(null, 'toRemove');
 
-    fixture.componentInstance.config.Layout.push(toRemove.name);
+    fixture.componentInstance.config.Layout.push(toRemove.name!);
     fixture.componentInstance.toggleWidget(toRemove);
-    expect(fixture.componentInstance.config.Layout).not.toContain(toRemove.name);
+    expect(fixture.componentInstance.config.Layout).not.toContain(toRemove.name!);
     expect(configManagerSpy.Save).toHaveBeenCalled();
   });
 });

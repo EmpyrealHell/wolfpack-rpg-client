@@ -5,7 +5,7 @@ export type ClassSpy<T> = {
 };
 
 export class TestUtils {
-  public static spyOnClass<T>(classType: Type<T>): ClassSpy<T> {
+  static spyOnClass<T>(classType: Type<T>): ClassSpy<T> {
     const prototype = classType.prototype;
     const methods = Object.getOwnPropertyNames(prototype)
       .map(name => [name, Object.getOwnPropertyDescriptor(prototype, name)])

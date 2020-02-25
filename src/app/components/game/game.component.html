@@ -36,14 +36,14 @@
       <mat-divider></mat-divider>
       <mat-toolbar *ngIf="configManager.IsTester()">
         <ng-container *ngFor="let widget of widgets">
-          <button *ngIf="widget" mat-button [disabled]="!widget.component" (click)="toggleWidget(widget)">
+          <button *ngIf="widget.name" mat-button [disabled]="!widget.component" (click)="toggleWidget(widget)">
             <img *ngIf="config.Settings.ToolbarIcons" src="./assets/{{widget.getIcon()}}" width="32px">
             <ng-container *ngIf="config.Settings.ToolbarNames || !config.Settings.ToolbarIcons">
               <span>&nbsp;</span>
               <span>{{widget.name}}</span>
             </ng-container>
           </button>
-          <mat-divider *ngIf="!widget" [vertical]="true" class="accent-divider"></mat-divider>
+          <mat-divider *ngIf="!widget.name" [vertical]="true" class="accent-divider"></mat-divider>
         </ng-container>
       </mat-toolbar>
       <div class="flex-row">

@@ -16,42 +16,42 @@ export class WidgetFactoryComponent implements OnInit {
    * Component factory used to create the internal widget component.
    */
   @Input()
-  public factory: ComponentFactory<WidgetComponent>;
+  factory: ComponentFactory<WidgetComponent> | null = null;
 
   /**
    * Reference to the singleton IRC service.
    */
   @Input()
-  public ircService: IrcService;
+  ircService: IrcService | null = null;
 
   /**
    * Reference to the user config manager.
    */
   @Input()
-  public configManager: ConfigManager;
+  configManager: ConfigManager | null = null;
 
   /**
    * The name of the component.
    */
   @Input()
-  public name: string;
+  name: string | null = null;
 
   /**
    * Reference to the container in the dom that will house the internal widget.
    */
   @ViewChild(WidgetContainerDirective, { static: true })
-  public container: WidgetContainerDirective;
+  container: WidgetContainerDirective | null = null;
 
   constructor() { }
 
-  public ngOnInit(): void {
+  ngOnInit(): void {
     if (this.factory && this.container) {
       const containerRef = this.container.viewContainerRef;
       containerRef.clear();
       const component = containerRef.createComponent(this.factory).instance as WidgetComponent;
       component.configManager = this.configManager;
       component.ircService = this.ircService;
-      component.name = this.name;
+      component.name = this.name!;
       component.onActivate();
     }
   }

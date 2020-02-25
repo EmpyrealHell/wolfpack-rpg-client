@@ -18,53 +18,59 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   /**
    * The full chat history to render.
    */
-  public consoleData = '';
+  consoleData = '';
   /**
    * The command to send as input by the user.
    */
-  public command = '';
+  command = '';
   /**
    * The name of the widget;
    */
-  public name = '';
+  name = '';
 
   /**
    * Reference to the IRC chat service.
    */
   @Input()
-  public ircService: IrcService;
+  ircService: IrcService | null;
   /**
    * Reference to the user's config data manager.
    */
   @Input()
-  public configManager: ConfigManager;
+  configManager: ConfigManager | null;
 
-  constructor() { }
+  constructor() {
+    this.ircService = null;
+    this.configManager = null;
+  }
 
   private onWhisper(message: string): void {
     this.consoleData += `${message}\n`;
   }
 
   private sendCommand(): void {
-    const message = this.command;
-    this.command = '';
-    this.ircService.send(message);
+    if (this.ircService && this.configManager) {
+      const message = this.command;
+      this.command = '';
+      this.ircService.send(message);
 
-    const history = this.configManager.GetConfig().History;
-    history.push(message);
-    if (history.length > ConsoleWidgetComponent.maxHistory) {
-      history.splice(0, 1);
+      const history = this.configManager.GetConfig().History;
+      history.push(message);
+      if (history.length > ConsoleWidgetComponent.maxHistory) {
+        history.splice(0, 1);
+      }
+      this.configManager.Save();
+      this.index = -1;
     }
-    this.configManager.Save();
-    this.index = -1;
-  }
-
-  public onActivate(): void {
-    this.ircService.register('console-widget', (message) => { this.onWhisper(message); }, true);
-    this.consoleData = this.ircService.getHistory();
   }
 
   private commandFromHistory(index: number): { message: string, index: number } {
+    if (!this.configManager) {
+      return {
+        message: '',
+        index
+      }
+    }
     const history = this.configManager.GetConfig().History;
     const clampedIndex = Math.max(Math.min(index, history.length), 0);
     if (clampedIndex <= 0) {
@@ -80,11 +86,18 @@ export class ConsoleWidgetComponent implements WidgetComponent {
     }
   }
 
+  onActivate(): void {
+    if (this.ircService) {
+      this.ircService.register('console-widget', (message) => { this.onWhisper(message); }, true);
+      this.consoleData = this.ircService.getHistory();
+    }
+  }
+
   /**
    * Listen to the key presses to check for enter being pressed.
    * @param event Keyboard event passed in by the browser.
    */
-  public OnKeyUp(event: KeyboardEvent): void {
+  onKeyUp(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
       this.sendCommand();
     } else if (event.key === 'ArrowUp') {
@@ -102,7 +115,7 @@ export class ConsoleWidgetComponent implements WidgetComponent {
    * Click event for the send button.
    * @param event Mouse event passed in by the browser.
    */
-  public OnSendClick(event: MouseEvent): void {
+  onSendClick(event: MouseEvent): void {
     this.sendCommand();
   }
 }

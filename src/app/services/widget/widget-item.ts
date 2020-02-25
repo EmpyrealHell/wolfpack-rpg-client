@@ -5,13 +5,16 @@ import { WidgetComponent } from '../../components/widget-factory/widget.componen
  * Class used to pair widget components to id strings.
  */
 export class WidgetItem {
-  constructor(public component: Type<WidgetComponent>, public name: string) { }
+  constructor(public component: Type<WidgetComponent> | null, public name: string | null) { }
 
   /**
    * Gets the name of the icon file for this widget.
    */
-  public getIcon(): string {
-    const title = this.name.toLowerCase().replace(' ', '');
-    return `widget-${title}.svg`;
+  getIcon(): string {
+    if (this.name) {
+      const title = this.name.toLowerCase().replace(' ', '');
+      return `widget-${title}.svg`;
+    }
+    return '';
   }
 }

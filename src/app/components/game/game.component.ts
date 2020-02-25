@@ -21,15 +21,15 @@ export class GameComponent implements OnInit {
   /**
    * Reference to the user config object.
    */
-  public config = new Config();
+  config = new Config();
   /**
    * Username from the validated token.
    */
-  public username: string;
+  username = '';
   /**
    * List of all widgets.
    */
-  public widgets: Array<WidgetItem>;
+  widgets: WidgetItem[] = [];
 
   constructor(
     public ircService: IrcService,
@@ -41,8 +41,8 @@ export class GameComponent implements OnInit {
     public router: Router,
   ) { }
 
-  public async ngOnInit(): Promise<void> {
-    this.widgets = this.widgetService.GetWidgets();
+  async ngOnInit(): Promise<void> {
+    this.widgets = this.widgetService.getWidgets();
     const config = this.configManager.GetConfig();
     this.updateOverlayTheme();
 
@@ -50,7 +50,7 @@ export class GameComponent implements OnInit {
     if (!token) {
       this.router.navigate(['/']);
     } else {
-      const userData = await this.userService.GetUserInfo(token);
+      const userData = await this.userService.getUserInfo(token);
       if (userData && userData.login) {
         config.Authentication.User = userData.login;
         this.configManager.Save();
@@ -58,7 +58,7 @@ export class GameComponent implements OnInit {
         this.ircService.registerForError('game', (message) => { this.onError(message); }, true);
         this.ircService.connect();
       } else {
-        config.Authentication.Token = undefined;
+        config.Authentication.Token = null;
         this.configManager.Save();
         this.router.navigate(['/']);
       }
@@ -69,7 +69,7 @@ export class GameComponent implements OnInit {
    * Updates the overlay container with the appropriate theme based on the
    * user's preferences.
    */
-  public updateOverlayTheme(): void {
+  updateOverlayTheme(): void {
     if (this.config.Settings.UseDarkTheme) {
       this.overlayContainer.getContainerElement().classList.add('dark-theme');
     } else {
@@ -81,7 +81,7 @@ export class GameComponent implements OnInit {
    * Callback used for handling failed outgoing messages.
    * @param message The error message received.
    */
-  public onError(message: string): void {
+  onError(message: string): void {
     this.dialog.open(ErrorDialog, {
       data: {
         message: `An error occurred trying to send a message: "${message}"\n` +
@@ -93,7 +93,7 @@ export class GameComponent implements OnInit {
   /**
    * Updates the user's settings.
    */
-  public updateSettings(): void {
+  updateSettings(): void {
     this.configManager.Save();
     this.updateOverlayTheme();
   }
@@ -102,8 +102,8 @@ export class GameComponent implements OnInit {
    * Toggles a widget on or off in the widget container.
    * @param widget The widget to toggle.
    */
-  public toggleWidget(widget: WidgetItem): void {
-    if (widget) {
+  toggleWidget(widget: WidgetItem): void {
+    if (widget && widget.name) {
       const index = this.config.Layout.indexOf(widget.name);
       if (index >= 0) {
         this.config.Layout.splice(index, 1);
@@ -117,7 +117,7 @@ export class GameComponent implements OnInit {
   /**
    * Logs the user out of the app and re-initiates the authentication process.
    */
-  public logOut(): void {
+  logOut(): void {
     this.config.Authentication = new ConfigAuthentication();
     this.configManager.Save();
     this.router.navigate(['/']);
