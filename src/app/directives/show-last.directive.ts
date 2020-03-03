@@ -13,8 +13,10 @@ export class ShowLastDirective implements OnInit {
   constructor(private elem: ElementRef, private model: NgModel) { }
 
   public ngOnInit(): void {
-    this.model.valueChanges.subscribe((event) => {
-      this.elem.nativeElement.scrollTop = this.elem.nativeElement.scrollHeight;
-    });
+    if (this.model && this.model.valueChanges) {
+      this.model.valueChanges.subscribe((event) => {
+        this.elem.nativeElement.scrollTop = this.elem.nativeElement.scrollHeight;
+      });
+    }
   }
 }

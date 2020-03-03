@@ -89,7 +89,7 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   onActivate(): void {
     if (this.ircService) {
       this.ircService.register('console-widget', (message) => { this.onWhisper(message); }, true);
-      this.consoleData = this.ircService.getHistory();
+      this.consoleData = this.ircService.history;
     }
   }
 

@@ -1,20 +1,10 @@
-import { Options } from 'tmi.js';
+import { ClassSpy, TestUtils } from 'src/test/test-utils';
+import { Client, Options } from 'tmi.js';
 import { Config } from '../data/config-data';
-import { UserData } from '../user/user.data';
-import { IrcService } from './irc.service';
-import { TestUtils, ClassSpy } from 'src/test/test-utils';
 import { ConfigManager } from '../data/config-manager';
+import { UserData } from '../user/user.data';
 import { UserService } from '../user/user.service';
-
-const userServiceSpy = jasmine.createSpyObj('UserService', ['getUserInfo']);
-const userData = {
-  client_id: 'clientid',
-  login: 'TestUser',
-  user_id: 'userid',
-  scopes: []
-} as UserData;
-userServiceSpy.getUserInfo.and.returnValue(userData);
-
+import { IrcService } from './irc.service';
 
 describe('IrcService', () => {
   let service: IrcService;
@@ -43,6 +33,8 @@ describe('IrcService', () => {
   it('should connect to IRC', async () => {
     const queueSpy = spyOn(service.messageQueue, 'start');
     const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
+    const userData = userServiceSpy.getUserInfo();
+    const configData = configManagerSpy.GetConfig();
     let optsUsed: Options = {};
     await service.connectUsing((opts: Options) => {
       optsUsed = opts;
@@ -84,9 +76,8 @@ describe('IrcService', () => {
   });
 
   it('should return a copy of the queued messages', () => {
-    const queue = service.messageQueue.queuedMessages;
     const message = `test message at ${Date.now()}`;
-    queue.push(message);
+    service.send(message);
     let queueCopy = service.messageQueue.queuedMessages;
     expect(queueCopy).toContain(message);
     queueCopy.length = 0;
@@ -94,9 +85,8 @@ describe('IrcService', () => {
     expect(queueCopy).toContain(message);
   });
 
-  it('should return a copy of received messages', async () => {
+  async function attachAndSend(message: string): Promise<jasmine.SpyObj<Client>> {
     const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
-    const message = `test message at ${Date.now()}`;
     clientInstance.on.and.callFake((event: string, callback: Function) => {
       if (event === 'whisper') {
         callback('', null, message, false);
@@ -105,24 +95,30 @@ describe('IrcService', () => {
     await service.connectUsing((opts: Options) => {
       return clientInstance;
     });
-    let linesCopy = service.getLines();
+    return clientInstance;
+  }
+
+  it('should return a copy of received messages', async () => {
+    const message = `test message at ${Date.now()}`;
+    await attachAndSend(message);
+    let linesCopy = service.lines;
     expect(linesCopy).toContain(message);
     linesCopy.length = 0;
-    linesCopy = service.getLines();
+    linesCopy = service.lines;
     expect(linesCopy).toContain(message);
   });
 
-  it('should return the full history', () => {
+  it('should return the full history', async () => {
     const message = `test message at ${Date.now()}`;
-    IrcService[historyKey] = message;
-    expect(service.getHistory()).toBe(message);
+    await attachAndSend(message);
+    expect(service.history).toBe(`${message}\n`);
   });
 
   it('should register an error handler for an id', () => {
     const errorHandler = (message: string) => { };
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
-    const errorHandlers = IrcService[errorHandlersKey];
+    const errorHandlers = service.errorHandlers;
     expect(errorHandlers.get(handlerKey)).toBe(errorHandler);
   });
 
@@ -130,18 +126,29 @@ describe('IrcService', () => {
     const errorHandler = (message: string) => { };
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
-    const errorHandlers = IrcService[errorHandlersKey];
-    expect(errorHandlers.get(handlerKey)).toBe(errorHandler);
+    expect(service.errorHandlers.get(handlerKey)).toBe(errorHandler);
     service.unregisterForError(handlerKey);
-    expect(errorHandlers.has(handlerKey)).toBeFalsy();
+    expect(service.errorHandlers.has(handlerKey)).toBeFalsy();
   });
 
-  it('should call registered error handlers on error', () => {
+  it('should call registered error handlers on error', async () => {
     const errorHandlerObj = { onError: (message: string) => { } };
     const errorSpy = spyOn(errorHandlerObj, 'onError');
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandlerObj.onError);
-    service[onErrorKey]('');
+    const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
+    clientInstance.on.and.callFake((event: string, callback: Function) => {
+      if (event === 'raw_message') {
+        callback({
+          tags: {'msg-id': 'whisper_restricted'},
+          command: 'NOTICE',
+          params: ['test']
+        });
+      }
+    });
+    await service.connectUsing((opts: Options) => {
+      return clientInstance;
+    });
     expect(errorSpy).toHaveBeenCalled();
   });
 
@@ -151,7 +158,7 @@ describe('IrcService', () => {
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     service.registerForError(handlerKey, errorHandler2);
-    const errorHandlers = IrcService[errorHandlersKey];
+    const errorHandlers = service.errorHandlers;
     expect(errorHandlers.get(handlerKey)).toBe(errorHandler);
     expect(errorHandlers.get(handlerKey)).not.toBe(errorHandler2);
   });
@@ -162,7 +169,7 @@ describe('IrcService', () => {
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     service.registerForError(handlerKey, errorHandler2, true);
-    const errorHandlers = IrcService[errorHandlersKey];
+    const errorHandlers = service.errorHandlers;
     expect(errorHandlers.get(handlerKey)).toBe(errorHandler2);
     expect(errorHandlers.get(handlerKey)).not.toBe(errorHandler);
   });
@@ -171,26 +178,26 @@ describe('IrcService', () => {
     const callback = (message: string) => { };
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
-    const callbacks = IrcService[callbacksKey];
-    expect(callbacks.get(handlerKey)).toBe(callback);
+    expect(service.callbacks.get(handlerKey)).toBe(callback);
   });
 
   it('should remove a whisper handler for an id', () => {
     const callback = (message: string) => { };
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
-    const callbacks = IrcService[callbacksKey];
-    expect(callbacks.get(handlerKey)).toBe(callback);
+    expect(service.callbacks.get(handlerKey)).toBe(callback);
     service.unregister(handlerKey);
-    expect(callbacks.has(handlerKey)).toBeFalsy();
+    expect(service.callbacks.has(handlerKey)).toBeFalsy();
   });
 
-  it('should call registered callbacks on whisper', () => {
+  it('should call registered callbacks on whisper', async () => {
     const callbackObj = { onWhisper: (message: string) => { } };
     const callbackSpy = spyOn(callbackObj, 'onWhisper');
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callbackObj.onWhisper);
-    service[onWhisperKey]('');
+    attachAndSend('test');
+    service.send('test');
+    await service.messageQueue.processQueue();
     expect(callbackSpy).toHaveBeenCalled();
   });
 
@@ -200,7 +207,7 @@ describe('IrcService', () => {
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2);
-    const callbacks = IrcService[callbacksKey];
+    const callbacks = service.callbacks;
     expect(callbacks.get(handlerKey)).toBe(callback);
     expect(callbacks.get(handlerKey)).not.toBe(callback2);
   });
@@ -211,52 +218,62 @@ describe('IrcService', () => {
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2, true);
-    const callbacks = IrcService[callbacksKey];
+    const callbacks = service.callbacks;
     expect(callbacks.get(handlerKey)).toBe(callback2);
     expect(callbacks.get(handlerKey)).not.toBe(callback);
   });
 
   it('should send queued messages', async () => {
-    const clientInstance = jasmine.createSpyObj('Client', ['whisper']);
-    IrcService[connectionKey] = clientInstance;
     const message = `test message sent at ${Date.now()}`;
-    IrcService.isConnected = true;
-    IrcService[messageQueueKey].length = 0;
-
+    const sendFn = {
+      send: async (account: string, message: string):Promise<[string, string]> => {
+        return new Promise(resolve => { resolve(['', '']); });
+      }
+    };
+    const spy = spyOn(sendFn, 'send');
     service.send(message);
-    await IrcService[processQueueKey](false);
-    expect(clientInstance.whisper).toHaveBeenCalled();
-    const call = clientInstance.whisper.calls.mostRecent();
+    service.messageQueue.setSendFunction(sendFn.send);
+    await service.messageQueue.processQueue();
+    expect(spy).toHaveBeenCalled();
+    const call = spy.calls.mostRecent();
     expect(call.args[1]).toBe(message);
   });
 
   it('should not send more than 3 messages each second', async () => {
-    const clientInstance = jasmine.createSpyObj('Client', ['whisper']);
-    IrcService[connectionKey] = clientInstance;
     const message = `test message sent at ${Date.now()}`;
-    IrcService.isConnected = true;
-    const timer = IrcService[secondtimerKey];
-    for (let i = 0; i < 3; i++) {
-      timer.addOccurrence();
-    }
-
+    const sendFn = {
+      send: (account: string, message: string):Promise<[string, string]> => {
+        return new Promise(resolve => { ['', ''] });
+      }
+    };
+    const spy = spyOn(sendFn, 'send');
     service.send(message);
-    await IrcService[processQueueKey](false);
-    expect(clientInstance.whisper).not.toHaveBeenCalled();
+    service.messageQueue.setSendFunction(sendFn.send);
+    await attachAndSend(message);
+    for (let i = 0; i < 3; i++) {
+      service.messageQueue.addSent(Date.now());
+    }
+    service.send(message);
+    await service.messageQueue.processQueue();
+    expect(spy).not.toHaveBeenCalled();
   });
 
   it('should not send more than 100 messages each minute', async () => {
-    const clientInstance = jasmine.createSpyObj('Client', ['whisper']);
-    IrcService[connectionKey] = clientInstance;
     const message = `test message sent at ${Date.now()}`;
-    IrcService.isConnected = true;
-    const timer = IrcService[minuteTimerKey];
-    for (let i = 0; i < 100; i++) {
-      timer.addOccurrence();
-    }
-
+    const sendFn = {
+      send: (account: string, message: string):Promise<[string, string]> => {
+        return new Promise(resolve => { ['', ''] });
+      }
+    };
+    const spy = spyOn(sendFn, 'send');
     service.send(message);
-    await IrcService[processQueueKey](false);
-    expect(clientInstance.whisper).not.toHaveBeenCalled();
+    service.messageQueue.setSendFunction(sendFn.send);
+    await attachAndSend(message);
+    for (let i = 0; i < 100; i++) {
+      service.messageQueue.addSent(Date.now() - 5000);
+    }
+    service.send(message);
+    await service.messageQueue.processQueue();
+    expect(spy).not.toHaveBeenCalled();
   });
 });

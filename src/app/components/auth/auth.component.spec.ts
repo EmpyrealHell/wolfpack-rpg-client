@@ -1,25 +1,18 @@
 import { async, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TestUtils } from 'src/test/test-utils';
 import { Config, ConfigAuthentication } from '../../services/data/config-data';
 import { ConfigManager } from '../../services/data/config-manager';
+import { UserData } from '../../services/user/user.data';
 import { UserService } from '../../services/user/user.service';
 import { AuthComponent } from './auth.component';
 
 const username = 'testuser';
 const scopes = 'chat:read';
 
-const configManagerSpy = jasmine.createSpyObj('ConfigManager', ['Save', 'Load', 'GetConfig']);
-configManagerSpy.GetConfig.and.returnValue({
-  Authentication: {
-    Token: undefined
-  }
-});
-const userServiceSpy = jasmine.createSpyObj('UserService', ['GetUserInfo', 'UpdateCache']);
-userServiceSpy.GetUserInfo.and.returnValue({
-  login: username,
-  scopes: [scopes]
-});
+const configManagerSpy = TestUtils.spyOnClass(ConfigManager);
+const userServiceSpy = TestUtils.spyOnClass(UserService) as jasmine.SpyObj<UserService>;
 const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 const activatedRouteSpy = {
   snapshot: {
@@ -43,41 +36,57 @@ describe('AuthComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteSpy }
       ]
     }).compileComponents();
+    configManagerSpy.GetConfig.and.returnValue({
+      Authentication: {
+        Token: 'token'
+      }
+    });
+    userServiceSpy.getUserInfo.and.returnValue(new Promise<UserData>(resolve => {
+      resolve({
+        client_id: '',
+        login: username,
+        user_id: '',
+        scopes: [scopes]
+      });
+    }));
   }));
 
   it('should validate saved tokens', async () => {
     const fixture = TestBed.createComponent(AuthComponent);
-
     const configAuth = new ConfigAuthentication();
+    configAuth.Token = 'token';
+
     await fixture.componentInstance.ValidateToken(configAuth, configManagerSpy, userServiceSpy, routerSpy);
-    expect(userServiceSpy.GetUserInfo).toHaveBeenCalled();
+    expect(userServiceSpy.getUserInfo).toHaveBeenCalled();
     expect(configAuth.User).toBe(username);
     expect(configAuth.Scope).toBe(scopes);
     expect(configManagerSpy.Save).toHaveBeenCalled();
-    expect(userServiceSpy.UpdateCache).toHaveBeenCalled();
+    expect(userServiceSpy.updateCache).toHaveBeenCalled();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/play']);
   });
 
   it('should clear authentication if username changes', async () => {
     const fixture = TestBed.createComponent(AuthComponent);
-
     const configAuth = new ConfigAuthentication();
     const authSpy = spyOn(fixture.componentInstance, 'AuthenticateWithTwitch');
     configAuth.User = `Not${username}`;
+    configAuth.Token = 'token';
+
     await fixture.componentInstance.ValidateToken(configAuth, configManagerSpy, userServiceSpy, routerSpy);
-    expect(userServiceSpy.GetUserInfo).toHaveBeenCalled();
+    expect(userServiceSpy.getUserInfo).toHaveBeenCalled();
     expect(configAuth.Scope).toBe(null);
     expect(authSpy).toHaveBeenCalledWith(configAuth, configManagerSpy);
   });
 
   it('should clear authentication if scopes change', async () => {
     const fixture = TestBed.createComponent(AuthComponent);
-
     const configAuth = new ConfigAuthentication();
     const authSpy = spyOn(fixture.componentInstance, 'AuthenticateWithTwitch');
     configAuth.Scope = `${scopes} test:execute`;
+    configAuth.Token = 'token';
+
     await fixture.componentInstance.ValidateToken(configAuth, configManagerSpy, userServiceSpy, routerSpy);
-    expect(userServiceSpy.GetUserInfo).toHaveBeenCalled();
+    expect(userServiceSpy.getUserInfo).toHaveBeenCalled();
     expect(configAuth.User).toBeFalsy();
     expect(configAuth.Scope).toBeFalsy();
     expect(authSpy).toHaveBeenCalledWith(configAuth, configManagerSpy);
@@ -126,17 +135,12 @@ describe('AuthComponent', () => {
   it('should validate an existing token on load', async () => {
     const fixture = TestBed.createComponent(AuthComponent);
     const validateSpy = spyOn(fixture.componentInstance, 'ValidateToken');
-    const configValue = new Config();
-    configValue.Authentication.Token = 'token';
-    const tokenProvider = jasmine.createSpyObj<ConfigManager>('ConfigManager', ['Load', 'GetConfig']);
-    tokenProvider.GetConfig.and.returnValue(configValue);
-    fixture.componentInstance.configManager = tokenProvider;
     fixture.componentInstance.route = new ActivatedRouteSnapshot();
     fixture.componentInstance.route.fragment = '';
 
     await fixture.componentInstance.ngOnInit();
-    expect(tokenProvider.Load).toHaveBeenCalled();
-    expect(tokenProvider.GetConfig).toHaveBeenCalled();
+    expect(configManagerSpy.Load).toHaveBeenCalled();
+    expect(configManagerSpy.GetConfig).toHaveBeenCalled();
     expect(validateSpy).toHaveBeenCalled();
   });
 
@@ -145,10 +149,13 @@ describe('AuthComponent', () => {
     const authSpy = spyOn(fixture.componentInstance, 'AuthenticateWithTwitch');
     fixture.componentInstance.route = new ActivatedRouteSnapshot();
     fixture.componentInstance.route.fragment = '';
+    const tokenProvider = TestUtils.spyOnClass(ConfigManager);
+    tokenProvider.GetConfig.and.returnValue(new Config());
+    fixture.componentInstance.configManager = tokenProvider;
 
     await fixture.componentInstance.ngOnInit();
-    expect(configManagerSpy.Load).toHaveBeenCalled();
-    expect(configManagerSpy.GetConfig).toHaveBeenCalled();
+    expect(tokenProvider.Load).toHaveBeenCalled();
+    expect(tokenProvider.GetConfig).toHaveBeenCalled();
     expect(authSpy).toHaveBeenCalled();
   });
 });

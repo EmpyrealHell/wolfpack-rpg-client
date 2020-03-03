@@ -22,9 +22,10 @@ export class RollingTimer {
 
   /**
    * Adds an occurrence to the timer.
+   * @param time The time of the occurrence, defaults to the current time.
    */
-  addOccurrence(): void {
-    this.hits.push(Date.now());
+  addOccurrence(time: number = Date.now()): void {
+    this.hits.push(time);
   }
 
   /**

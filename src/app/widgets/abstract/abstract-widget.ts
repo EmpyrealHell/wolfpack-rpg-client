@@ -29,7 +29,7 @@ export abstract class AbstractWidgetComponent implements WidgetComponent {
   onActivate(): void {
     if (this.ircService) {
       this.ircService.register(`${this.name}-widget`, (message) => { this.onWhisper(message); }, true);
-      const lines = this.ircService.getLines();
+      const lines = this.ircService.lines;
       const queue = this.ircService.messageQueue.queuedMessages;
       for (const line of lines) {
         this.onWhisper(line);

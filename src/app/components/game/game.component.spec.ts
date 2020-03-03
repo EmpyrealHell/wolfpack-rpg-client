@@ -1,15 +1,14 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { async, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import {
-  MatCardModule, MatDialog, MatDividerModule, MatIconModule, MatMenuModule,
-  MatSidenavModule, MatSlideToggleModule, MatToolbarModule
-} from '@angular/material';
+import { MatCardModule, MatDialog, MatDividerModule, MatIconModule, MatMenuModule,
+  MatSidenavModule, MatSlideToggleModule, MatToolbarModule } from '@angular/material';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
 import { WidgetService } from 'src/app/services/widget/widget.service';
+import { TestUtils } from 'src/test/test-utils';
 import { ConfigManager } from '../../services/data/config-manager';
 import { UserService } from '../../services/user/user.service';
 import { ErrorDialog } from '../error-dialog/error-dialog';
@@ -32,13 +31,13 @@ export class ClassList {
   }
 }
 
-const ircServiceSpy = jasmine.createSpyObj('IrcService', ['registerForError', 'connect']);
-const configManagerSpy = jasmine.createSpyObj('ConfigManager', ['Save', 'GetConfig']);
-const userServiceSpy = jasmine.createSpyObj('UserService', ['GetUserInfo']);
-userServiceSpy.GetUserInfo.and.returnValue({
+const ircServiceSpy = TestUtils.spyOnClass(IrcService);
+const configManagerSpy = TestUtils.spyOnClass(ConfigManager);
+const userServiceSpy = TestUtils.spyOnClass(UserService);
+userServiceSpy.getUserInfo.and.returnValue({
   login: 'userService'
 });
-const widgetServiceSpy = jasmine.createSpyObj('WidgetService', ['GetWidgets']);
+const widgetServiceSpy = TestUtils.spyOnClass(WidgetService);
 const overlayContainerSpy = jasmine.createSpyObj('OverlayContainer', ['getContainerElement']);
 overlayContainerSpy.getContainerElement.and.returnValue({
   classList: new ClassList()
@@ -89,7 +88,7 @@ describe('GameComponent', () => {
 
   it('should redirect if not authenticated', async () => {
     const fixture = TestBed.createComponent(GameComponent);
-    const tokenlessSpy = jasmine.createSpyObj('ConfigManager', ['GetConfig']);
+    const tokenlessSpy = TestUtils.spyOnClass(ConfigManager);
     tokenlessSpy.GetConfig.and.returnValue({
       Authentication: {
         User: 'testuser',
@@ -104,15 +103,20 @@ describe('GameComponent', () => {
 
   it('should redirect if token cannot be validated', async () => {
     const fixture = TestBed.createComponent(GameComponent);
-    const invalidTokenSpy = jasmine.createSpyObj('UserService', ['GetUserInfo']);
-    invalidTokenSpy.GetUserInfo.and.returnValue({
-      login: undefined
-    });
+    const invalidTokenSpy = TestUtils.spyOnClass(UserService) as jasmine.SpyObj<UserService>;
+    invalidTokenSpy.getUserInfo.and.returnValue(new Promise(resolve => {
+      resolve({
+        client_id: '',
+        login: '',
+        user_id: '',
+        scopes: []
+      });
+    }));
     const auth = fixture.componentInstance.configManager.GetConfig();
 
     fixture.componentInstance.userService = invalidTokenSpy;
     await fixture.componentInstance.ngOnInit();
-    expect(auth.Authentication.Token).toBeUndefined();
+    expect(auth.Authentication.Token).toBeNull();
     expect(configManagerSpy.Save).toHaveBeenCalled();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
   });
@@ -122,7 +126,7 @@ describe('GameComponent', () => {
 
     await fixture.componentInstance.ngOnInit();
     const user = fixture.componentInstance.config.Authentication.User;
-    const target = (await userServiceSpy.GetUserInfo(null)).login;
+    const target = (await userServiceSpy.getUserInfo(null)).login;
     expect(user).toBe(target);
     expect(configManagerSpy.Save).toHaveBeenCalled();
     expect(ircServiceSpy.registerForError).toHaveBeenCalled();

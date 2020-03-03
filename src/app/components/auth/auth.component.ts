@@ -99,7 +99,7 @@ export class AuthComponent implements OnInit {
    * @param configManager Used to update local data if authentication fails.
    */
   AuthenticateWithTwitch(auth: ConfigAuthentication, configManager: ConfigManager): void {
-    const forceVerify = (auth.State === undefined);
+    const forceVerify = (auth.State === null);
     auth.State = Utils.generateState(16);
     auth.Token = null;
     configManager.Save();

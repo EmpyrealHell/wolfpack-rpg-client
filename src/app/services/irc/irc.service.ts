@@ -80,7 +80,7 @@ export class IrcService {
   private onWhisper(message: string, self = false): void {
     const prefixedMessage = self ? `>> ${message}` : message;
     IrcService.lines.push(prefixedMessage);
-    IrcService.history += `${self ? '\n' : ''}${message}\n`;
+    IrcService.history += `${self ? '\n' : ''}${prefixedMessage}\n`;
     for (const [key, value] of IrcService.callbacks) {
       value.call(value, prefixedMessage);
     }
@@ -142,27 +142,13 @@ export class IrcService {
   }
 
   /**
-   * Returns the history of messages the connection has received up to this point.
-   */
-  getHistory(): string {
-    return IrcService.history;
-  }
-
-  /**
-   * Returns each message the connection has received in an array.
-   */
-  getLines(): string[] {
-    return [...IrcService.lines];
-  }
-
-  /**
    * Queues a message to send as a whisper to the bot account the app is
    * connected to. This is rate limited to avoid exceeding Twitch's whisper
    * limits, as per https://dev.twitch.tv/docs/irc/guide#command--message-limits
    * @param message The message to send
    */
   send(message: string): void {
-    IrcService.messageQueue.send(message);
+    this.messageQueue.send(message);
   }
 
   /**

@@ -6,6 +6,7 @@ import { WidgetItem } from 'src/app/services/widget/widget-item';
 import { WidgetService } from 'src/app/services/widget/widget.service';
 import { AbstractWidgetComponent } from 'src/app/widgets/abstract/abstract-widget';
 import { Responder } from 'src/app/widgets/abstract/responder';
+import { TestUtils } from 'src/test/test-utils';
 import { ConfigManager } from '../../services/data/config-manager';
 import { WidgetFactoryComponent } from '../widget-factory/widget-factory.component';
 import { WidgetComponent } from '../widget-factory/widget.component';
@@ -23,13 +24,13 @@ export class SecondWidget extends AbstractWidgetComponent {
 const firstWidgetItem = new WidgetItem(FirstWidget, 'First');
 const secondwidgetItem = new WidgetItem(SecondWidget, 'Second');
 
-const widgetServiceSpy = jasmine.createSpyObj('WidgetService', ['GetWidgets']);
-widgetServiceSpy.GetWidgets.and.returnValue(new Array<WidgetItem>(firstWidgetItem, secondwidgetItem));
-const configManagerSpy = jasmine.createSpyObj('ConfigManager', ['Save', 'GetConfig', 'Subscribe']);
+const widgetServiceSpy = TestUtils.spyOnClass(WidgetService);
+widgetServiceSpy.getWidgets.and.returnValue(new Array<WidgetItem>(firstWidgetItem, secondwidgetItem));
+const configManagerSpy = TestUtils.spyOnClass(ConfigManager);
 configManagerSpy.Subscribe.and.callFake((delegate: () => void) => {
   delegate.call(delegate);
 });
-const ircServiceSpy = jasmine.createSpyObj('IrcService', ['']);
+const ircServiceSpy = TestUtils.spyOnClass(IrcService);
 const componentFactoryResolverSpy = jasmine.createSpyObj('ComponentFactoryResolver', ['resolveComponentFactory']);
 componentFactoryResolverSpy.resolveComponentFactory.and.callFake((component: Type<WidgetComponent>) => {
   if (component === FirstWidget) {

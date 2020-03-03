@@ -1,12 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { UserData } from './user.data';
 import { UserService } from './user.service';
-import { TestUtils, ClassSpy } from 'src/test/test-utils';
-import { HttpClient } from '@angular/common/http';
 
 describe('UserService', () => {
   const cachedResponseKey = 'cachedResponse';
 
-  const httpObj = TestUtils.spyOnClass(HttpClient);
+  const httpObj = jasmine.createSpyObj('HttpClient', ['get']);
   let userService: UserService;
 
   beforeEach(() => {
@@ -18,7 +17,7 @@ describe('UserService', () => {
       toPromise: () => new Promise(resolve => resolve())
     });
     const token = `token-${Date.now()}`;
-    userService.updateCache({} as UserData);
+    userService.updateCache(null);
 
     await userService.getUserInfo(token);
     expect(httpObj.get).toHaveBeenCalled();

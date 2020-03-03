@@ -1,4 +1,3 @@
-import * as ircConfig from './irc.service.json';
 import { RollingTimer } from './rolling-timer';
 
 export type SendFunction = (account: string, message: string) => Promise<[string, string]>;
@@ -10,7 +9,7 @@ export class MessageQueue {
   private queue: string[] = [];
   private secondTimer = new RollingTimer(1, 3);
   private minuteTimer = new RollingTimer(60, 100);
-  private timer: NodeJS.Timeout | null = null;
+  private timer: number | null = null;
   private sendFn: SendFunction | null = null;
 
   /**
@@ -29,7 +28,7 @@ export class MessageQueue {
   }
 
   constructor(private account: string, private rate: number) { }
-
+  
   private async sendMessages(count: number): Promise<void> {
     if (this.sendFn) {
       const toSend = this.queue.splice(0, count);
@@ -41,20 +40,23 @@ export class MessageQueue {
     }
   }
 
-  private async processQueue(): Promise<void> {
+  private continue(): void {
+    this.timer = window.setTimeout(async () => { await this.processQueue(); }, this.rate);
+  }
+
+  /**
+   * Sends any pending messages that can be sent based on the timers.
+   */
+  async processQueue(): Promise<void> {
     if (this.queue.length > 0) {
       const limit = Math.min(this.queue.length, this.availableOccurrences);
       if (limit > 0) {
-        this.sendMessages(limit);
+        await this.sendMessages(limit);
       }
     }
     if (this.timer) {
       this.continue();
     }
-  }
-
-  private continue(): void {
-    this.timer = setTimeout(async () => { await this.processQueue(); }, this.rate);
   }
 
   /**
@@ -85,6 +87,16 @@ export class MessageQueue {
     if (allowDupes || this.queue.indexOf(message) === -1) {
       this.queue.push(message);
     }
+  }
+
+  /**
+   * Adds a message occurrence to the timers, which can be used to force a
+   * timer delay.
+   * @param time The time the send occurred.
+   */
+  addSent(time: number): void {
+    this.minuteTimer.addOccurrence(time);
+    this.secondTimer.addOccurrence(time);
   }
 
   /**

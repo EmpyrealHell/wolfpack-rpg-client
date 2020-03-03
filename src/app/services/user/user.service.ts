@@ -10,7 +10,7 @@ import { UserData } from './user.data';
 })
 export class UserService {
   private static tokenValidationUrl = 'https://id.twitch.tv/oauth2/validate';
-  private static cachedResponse: UserData;
+  private static cachedResponse: UserData | null;
 
   constructor(private http: HttpClient) { }
 
@@ -34,7 +34,7 @@ export class UserService {
    * Updates the chache of the user service to prevent unneccesary API calls
    * @param data A resolved UserData object.
    */
-  updateCache(data: UserData): void {
+  updateCache(data: UserData | null): void {
     UserService.cachedResponse = data;
   }
 }
