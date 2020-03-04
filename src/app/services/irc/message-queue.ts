@@ -1,4 +1,5 @@
 import { RollingTimer } from './rolling-timer';
+import { Client } from 'tmi.js';
 
 export type SendFunction = (account: string, message: string) => Promise<[string, string]>;
 
@@ -11,6 +12,7 @@ export class MessageQueue {
   private minuteTimer = new RollingTimer(60, 100);
   private timer: number | null = null;
   private sendFn: SendFunction | null = null;
+  private sendThis: Client | null = null;
 
   /**
    * The list of messages to send through the queue.
@@ -32,11 +34,13 @@ export class MessageQueue {
   private async sendMessages(count: number): Promise<void> {
     if (this.sendFn) {
       const toSend = this.queue.splice(0, count);
+      console.log(toSend);
       for (const message of toSend) {
-        await this.sendFn.call(this.sendFn, this.account, message);
+        await this.sendFn.call(this.sendThis ? this.sendThis : this.sendFn, this.account, message);
         this.secondTimer.addOccurrence();
         this.minuteTimer.addOccurrence();
       }
+      console.log('sent!');
     }
   }
 
@@ -72,9 +76,11 @@ export class MessageQueue {
   /**
    * Sets the function to call when a message is available in the queue.
    * @param sendFn The function to send the messages to.
+   * @param sendThis The object to set as 'this' for the send function.
    */
-  setSendFunction(sendFn: SendFunction) {
+  setSendFunction(sendFn: SendFunction, sendThis?: Client) {
     this.sendFn = sendFn;
+    this.sendThis = sendThis ? sendThis : null;
   }
 
   /**

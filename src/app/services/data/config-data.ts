@@ -8,19 +8,19 @@ export class Config {
   /**
    * The user's app-wide settings.
    */
-  Settings = new ConfigSettings();
+  settings = new ConfigSettings();
   /**
    * The cached authentication data.
    */
-  Authentication = new ConfigAuthentication();
+  authentication = new ConfigAuthentication();
   /**
    * List of widget ids, in order, to render to the widget container.
    */
-  Layout = new Array<string>();
+  layout = new Array<string>();
   /**
    * History of commands typed into the console.
    */
-  History = new Array<string>();
+  history = new Array<string>();
 }
 
 /**
@@ -30,15 +30,15 @@ export class ConfigSettings {
   /**
    * Whether or not to use the default dark theme.
    */
-  UseDarkTheme = true;
+  useDarkTheme = true;
   /**
    * Whether or not to show names on the buttons in the toolbar.
    */
-  ToolbarNames = true;
+  toolbarNames = true;
   /**
    * Whether or not to show icons in the toolbar.
    */
-  ToolbarIcons = true;
+  toolbarIcons = true;
 }
 
 /**
@@ -48,17 +48,17 @@ export class ConfigAuthentication {
   /**
    * The uniquely-generated state data used to verify the token's authenticity.
    */
-  State: string | null = null;
+  state: string | null = null;
   /**
    * OAuth token provided by Twitch.
    */
-  Token: string | null = null;
+  token: string | null = null;
   /**
    * Authenticated user's username.
    */
-  User: string | null = null;
+  user: string | null = null;
   /**
    * List of scopes the token provides access to.
    */
-  Scope: string | null = null;
+  scope: string | null = null;
 }

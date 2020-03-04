@@ -35,17 +35,17 @@ export class AuthComponent implements OnInit {
   async ParseAuthResponse(auth: ConfigAuthentication, configManager: ConfigManager,
     // tslint:disable-next-line:align
     fragmentString: string, userService: UserService, router: Router): Promise<void> {
-    if (auth.State) {
+    if (auth.state) {
       const fragmentMap = Utils.createMap('&', '=', fragmentString);
       const state = fragmentMap.get('state');
       const token = fragmentMap.get('access_token');
-      if (state === auth.State && token) {
-        auth.Token = token;
+      if (state === auth.state && token) {
+        auth.token = token;
         await this.ValidateToken(auth, configManager, userService, router);
       } else {
         alert('An error occurred in the authentication process, resetting authentication.\n' +
           'If you see this message more than once it may indicate an error between you and twitch.');
-        auth.State = null;
+        auth.state = null;
         this.AuthenticateWithTwitch(auth, configManager);
       }
     } else {
@@ -66,8 +66,8 @@ export class AuthComponent implements OnInit {
     userService: UserService, router: Router): Promise<void> {
     let data: UserData | null = null;
     try {
-      if (auth.Token) {
-        data = await userService.getUserInfo(auth.Token);
+      if (auth.token) {
+        data = await userService.getUserInfo(auth.token);
       }
     } catch (error) {
       console.log('Encountered an error getting token validation data');
@@ -75,14 +75,14 @@ export class AuthComponent implements OnInit {
     }
 
     if (data && data.login && data.login.length > 0) {
-      if ((auth.User && data.login !== auth.User) ||
-        (auth.Scope && !Utils.hasAll(data.scopes, auth.Scope.split(' ')))) {
-        auth.Scope = null;
-        auth.State = null;
+      if ((auth.user && data.login !== auth.user) ||
+        (auth.scope && !Utils.hasAll(data.scopes, auth.scope.split(' ')))) {
+        auth.scope = null;
+        auth.state = null;
         this.AuthenticateWithTwitch(auth, configManager);
       } else {
-        auth.User = data.login;
-        auth.Scope = Utils.stringJoin(' ', data.scopes);
+        auth.user = data.login;
+        auth.scope = Utils.stringJoin(' ', data.scopes);
         configManager.Save();
         userService.updateCache(data);
         router.navigate(['/play']);
@@ -99,13 +99,13 @@ export class AuthComponent implements OnInit {
    * @param configManager Used to update local data if authentication fails.
    */
   AuthenticateWithTwitch(auth: ConfigAuthentication, configManager: ConfigManager): void {
-    const forceVerify = (auth.State === null);
-    auth.State = Utils.generateState(16);
-    auth.Token = null;
+    const forceVerify = (auth.state === null);
+    auth.state = Utils.generateState(16);
+    auth.token = null;
     configManager.Save();
 
     const url = `${authConfig.url}?client_id=${authConfig.clientId}` +
-      `&redirect_uri=${environment.redirectUri}&state=${auth.State}` +
+      `&redirect_uri=${environment.redirectUri}&state=${auth.state}` +
       (forceVerify ? '&force_verify=true' : '') +
       `&response_type=token&scope=${authConfig.scope}`;
     this.Redirect(url);
@@ -133,13 +133,13 @@ export class AuthComponent implements OnInit {
     this.configManager.Load();
     const config = this.configManager.GetConfig();
     if (this.route.fragment && this.route.fragment.length > 0) {
-      await this.ParseAuthResponse(config.Authentication, this.configManager,
+      await this.ParseAuthResponse(config.authentication, this.configManager,
         this.route.fragment, this.userService, this.router);
-    } else if (config.Authentication.Token) {
-      await this.ValidateToken(config.Authentication, this.configManager,
+    } else if (config.authentication.token) {
+      await this.ValidateToken(config.authentication, this.configManager,
         this.userService, this.router);
     } else {
-      this.AuthenticateWithTwitch(config.Authentication, this.configManager);
+      this.AuthenticateWithTwitch(config.authentication, this.configManager);
     }
   }
 }

@@ -51,7 +51,7 @@ export class WidgetContainerComponent implements OnInit {
    */
   closeWidget(index: number): void {
     if (this.config) {
-      this.config.Layout.splice(index, 1);
+      this.config.layout.splice(index, 1);
       this.configManager.Save();
     }
   }
@@ -61,7 +61,7 @@ export class WidgetContainerComponent implements OnInit {
    * @param index Gets the name of to the icon file for a widget.
    */
   getWidgetIcon(index: number): string {
-    const name = this.config ? this.config.Layout[index] : '';
+    const name = this.config ? this.config.layout[index] : '';
     const widget = this.widgetMap.get(name);
     return widget ? widget.getIcon() : '';
   }
@@ -82,7 +82,7 @@ export class WidgetContainerComponent implements OnInit {
 
     this.factories = [];
     if (this.config) {
-      const items = this.config.Layout;
+      const items = this.config.layout;
       for (const item of items) {
         const widget = this.loadWidget(item);
         if (widget) {

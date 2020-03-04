@@ -39,8 +39,8 @@ export class ConfigManager {
    * Determines if the logged-in user is a tester.
    */
   IsTester(): boolean {
-    if (ConfigManager.data.Authentication.User) {
-      return ConfigManager.testers.indexOf(ConfigManager.data.Authentication.User) >= 0;
+    if (ConfigManager.data.authentication.user) {
+      return ConfigManager.testers.indexOf(ConfigManager.data.authentication.user) >= 0;
     }
     return false;
   }
@@ -50,7 +50,7 @@ export class ConfigManager {
    */
   Save(): void {
     if (!this.IsTester()) {
-      ConfigManager.data.Layout = new Array<string>('Console');
+      ConfigManager.data.layout = new Array<string>('Console');
     }
     localStorage.setItem(ConfigManager.storageKey, JSON.stringify(ConfigManager.data));
     for (const subscriber of ConfigManager.subscribers) {
@@ -66,7 +66,7 @@ export class ConfigManager {
     if (temp) {
       Object.assign(ConfigManager.data, JSON.parse(temp));
       if (!this.IsTester()) {
-        ConfigManager.data.Layout = new Array<string>('Console');
+        ConfigManager.data.layout = new Array<string>('Console');
       }
     }
   }

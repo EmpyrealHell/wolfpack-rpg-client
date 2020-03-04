@@ -54,12 +54,12 @@ describe('AuthComponent', () => {
   it('should validate saved tokens', async () => {
     const fixture = TestBed.createComponent(AuthComponent);
     const configAuth = new ConfigAuthentication();
-    configAuth.Token = 'token';
+    configAuth.token = 'token';
 
     await fixture.componentInstance.ValidateToken(configAuth, configManagerSpy, userServiceSpy, routerSpy);
     expect(userServiceSpy.getUserInfo).toHaveBeenCalled();
-    expect(configAuth.User).toBe(username);
-    expect(configAuth.Scope).toBe(scopes);
+    expect(configAuth.user).toBe(username);
+    expect(configAuth.scope).toBe(scopes);
     expect(configManagerSpy.Save).toHaveBeenCalled();
     expect(userServiceSpy.updateCache).toHaveBeenCalled();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/play']);
@@ -69,12 +69,12 @@ describe('AuthComponent', () => {
     const fixture = TestBed.createComponent(AuthComponent);
     const configAuth = new ConfigAuthentication();
     const authSpy = spyOn(fixture.componentInstance, 'AuthenticateWithTwitch');
-    configAuth.User = `Not${username}`;
-    configAuth.Token = 'token';
+    configAuth.user = `Not${username}`;
+    configAuth.token = 'token';
 
     await fixture.componentInstance.ValidateToken(configAuth, configManagerSpy, userServiceSpy, routerSpy);
     expect(userServiceSpy.getUserInfo).toHaveBeenCalled();
-    expect(configAuth.Scope).toBe(null);
+    expect(configAuth.scope).toBe(null);
     expect(authSpy).toHaveBeenCalledWith(configAuth, configManagerSpy);
   });
 
@@ -82,20 +82,20 @@ describe('AuthComponent', () => {
     const fixture = TestBed.createComponent(AuthComponent);
     const configAuth = new ConfigAuthentication();
     const authSpy = spyOn(fixture.componentInstance, 'AuthenticateWithTwitch');
-    configAuth.Scope = `${scopes} test:execute`;
-    configAuth.Token = 'token';
+    configAuth.scope = `${scopes} test:execute`;
+    configAuth.token = 'token';
 
     await fixture.componentInstance.ValidateToken(configAuth, configManagerSpy, userServiceSpy, routerSpy);
     expect(userServiceSpy.getUserInfo).toHaveBeenCalled();
-    expect(configAuth.User).toBeFalsy();
-    expect(configAuth.Scope).toBeFalsy();
+    expect(configAuth.user).toBeFalsy();
+    expect(configAuth.scope).toBeFalsy();
     expect(authSpy).toHaveBeenCalledWith(configAuth, configManagerSpy);
   });
 
   it('should call twitch oauth', async () => {
     const fixture = TestBed.createComponent(AuthComponent);
     const configAuth = new ConfigAuthentication();
-    configAuth.State = '';
+    configAuth.state = '';
     const redirectSpy = spyOn(fixture.componentInstance, 'Redirect');
 
     await fixture.componentInstance.AuthenticateWithTwitch(configAuth, configManagerSpy);

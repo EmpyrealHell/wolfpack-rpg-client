@@ -7,7 +7,7 @@ describe('ConfigManager', () => {
   it('should return a reference to the global config data', () => {
     const firstRef = new ConfigManager().GetConfig();
     const secondRef = new ConfigManager().GetConfig();
-    firstRef.Authentication.User = `TestUser${Date.now()}`;
+    firstRef.authentication.user = `TestUser${Date.now()}`;
     expect(secondRef).toBe(firstRef);
   });
 
@@ -27,12 +27,12 @@ describe('ConfigManager', () => {
     const current = localStorage.getItem(storageKey);
     try {
       const testData = manager.GetConfig();
-      testData.Authentication.User = `TestUser${Date.now()}`;
+      testData.authentication.user = `TestUser${Date.now()}`;
       manager.Save();
       const loadedJson = localStorage.getItem(storageKey);
       expect(loadedJson).toBeTruthy();
       const loadedData = JSON.parse(loadedJson!);
-      expect(loadedData.Authentication.User).toBe(testData.Authentication.User);
+      expect(loadedData.Authentication.User).toBe(testData.authentication.user);
     } finally {
       if (current) {
         localStorage.setItem(storageKey, current);
@@ -45,12 +45,12 @@ describe('ConfigManager', () => {
     const current = localStorage.getItem(storageKey);
     try {
       const testData = new Config();
-      testData.Authentication.User = `TestUser${Date.now()}`;
+      testData.authentication.user = `TestUser${Date.now()}`;
       let loadedData: Config;
       localStorage.setItem(storageKey, JSON.stringify(testData));
       manager.Load();
       loadedData = manager.GetConfig();
-      expect(loadedData.Authentication.User).toBe(testData.Authentication.User);
+      expect(loadedData.authentication.user).toBe(testData.authentication.user);
     } finally {
       if (current) {
         localStorage.setItem(storageKey, current);

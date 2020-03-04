@@ -9,6 +9,7 @@ import { ConfigManager } from '../../services/data/config-manager';
 import { IrcService } from '../../services/irc/irc.service';
 import { UserService } from '../../services/user/user.service';
 import { ErrorDialog } from '../error-dialog/error-dialog';
+import * as PackageJson from '../../../../package.json';
 
 /**
  * The main component holding the game UI.
@@ -30,6 +31,10 @@ export class GameComponent implements OnInit {
    * List of all widgets.
    */
   widgets: WidgetItem[] = [];
+  /**
+   * The current version of the app.
+   */
+  version = PackageJson.version
 
   constructor(
     public ircService: IrcService,
@@ -46,23 +51,27 @@ export class GameComponent implements OnInit {
     const config = this.configManager.GetConfig();
     this.updateOverlayTheme();
 
-    const token = config.Authentication.Token;
+    const token = config.authentication.token;
     if (!token) {
       this.router.navigate(['/']);
     } else {
       const userData = await this.userService.getUserInfo(token);
       if (userData && userData.login) {
-        config.Authentication.User = userData.login;
+        config.authentication.user = userData.login;
         this.configManager.Save();
         this.config = config;
         this.ircService.registerForError('game', (message) => { this.onError(message); }, true);
         this.ircService.connect();
       } else {
-        config.Authentication.Token = null;
+        config.authentication.token = null;
         this.configManager.Save();
         this.router.navigate(['/']);
       }
     }
+  }
+
+  openIssuesPage(): void {
+    window.open('https://github.com/EmpyrealHell/wolfpack-rpg-client/issues/new', '_blank');
   }
 
   /**
@@ -70,7 +79,7 @@ export class GameComponent implements OnInit {
    * user's preferences.
    */
   updateOverlayTheme(): void {
-    if (this.config.Settings.UseDarkTheme) {
+    if (this.config.settings.useDarkTheme) {
       this.overlayContainer.getContainerElement().classList.add('dark-theme');
     } else {
       this.overlayContainer.getContainerElement().classList.remove('dark-theme');
@@ -104,11 +113,11 @@ export class GameComponent implements OnInit {
    */
   toggleWidget(widget: WidgetItem): void {
     if (widget && widget.name) {
-      const index = this.config.Layout.indexOf(widget.name);
+      const index = this.config.layout.indexOf(widget.name);
       if (index >= 0) {
-        this.config.Layout.splice(index, 1);
+        this.config.layout.splice(index, 1);
       } else {
-        this.config.Layout.push(widget.name);
+        this.config.layout.push(widget.name);
       }
       this.configManager.Save();
     }
@@ -118,7 +127,7 @@ export class GameComponent implements OnInit {
    * Logs the user out of the app and re-initiates the authentication process.
    */
   logOut(): void {
-    this.config.Authentication = new ConfigAuthentication();
+    this.config.authentication = new ConfigAuthentication();
     this.configManager.Save();
     this.router.navigate(['/']);
   }

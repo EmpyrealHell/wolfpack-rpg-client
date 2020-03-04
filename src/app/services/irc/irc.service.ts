@@ -167,7 +167,7 @@ export class IrcService {
     if (IrcService.isConnected) {
       return true;
     } else {
-      const token = this.configManager.GetConfig().Authentication.Token;
+      const token = this.configManager.GetConfig().authentication.token;
       if (!token) {
         return false;
       }
@@ -177,7 +177,7 @@ export class IrcService {
       options.identity.username = userData.login;
       options.identity.password = `oauth:${token}`;
       IrcService.connection = client.call(client, options) as Client;
-      IrcService.messageQueue.setSendFunction(IrcService.connection.whisper);
+      IrcService.messageQueue.setSendFunction(IrcService.connection.whisper, IrcService.connection);
       IrcService.messageQueue.start();
       IrcService.connection.on('raw_message', (message) => {
         const tag = message.tags['msg-id'] ? message.tags['msg-id'] : undefined;

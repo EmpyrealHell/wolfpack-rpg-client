@@ -116,7 +116,7 @@ describe('GameComponent', () => {
 
     fixture.componentInstance.userService = invalidTokenSpy;
     await fixture.componentInstance.ngOnInit();
-    expect(auth.Authentication.Token).toBeNull();
+    expect(auth.authentication.token).toBeNull();
     expect(configManagerSpy.Save).toHaveBeenCalled();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
   });
@@ -125,7 +125,7 @@ describe('GameComponent', () => {
     const fixture = TestBed.createComponent(GameComponent);
 
     await fixture.componentInstance.ngOnInit();
-    const user = fixture.componentInstance.config.Authentication.User;
+    const user = fixture.componentInstance.config.authentication.user;
     const target = (await userServiceSpy.getUserInfo(null)).login;
     expect(user).toBe(target);
     expect(configManagerSpy.Save).toHaveBeenCalled();
@@ -165,7 +165,7 @@ describe('GameComponent', () => {
     const toAdd = new WidgetItem(null, 'toAdd');
 
     fixture.componentInstance.toggleWidget(toAdd);
-    expect(fixture.componentInstance.config.Layout).toContain(toAdd.name!);
+    expect(fixture.componentInstance.config.layout).toContain(toAdd.name!);
     expect(configManagerSpy.Save).toHaveBeenCalled();
   });
 
@@ -173,9 +173,9 @@ describe('GameComponent', () => {
     const fixture = TestBed.createComponent(GameComponent);
     const toRemove = new WidgetItem(null, 'toRemove');
 
-    fixture.componentInstance.config.Layout.push(toRemove.name!);
+    fixture.componentInstance.config.layout.push(toRemove.name!);
     fixture.componentInstance.toggleWidget(toRemove);
-    expect(fixture.componentInstance.config.Layout).not.toContain(toRemove.name!);
+    expect(fixture.componentInstance.config.layout).not.toContain(toRemove.name!);
     expect(configManagerSpy.Save).toHaveBeenCalled();
   });
 });

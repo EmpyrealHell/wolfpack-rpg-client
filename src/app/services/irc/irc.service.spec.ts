@@ -14,7 +14,7 @@ describe('IrcService', () => {
   beforeEach(() => {
     configManagerSpy = TestUtils.spyOnClass(ConfigManager);
     const configData = new Config();
-    configData.Authentication.Token = `token${Date.now()}`;
+    configData.authentication.token = `token${Date.now()}`;
     configManagerSpy.GetConfig.and.returnValue(configData);
 
     userServiceSpy = TestUtils.spyOnClass(UserService);

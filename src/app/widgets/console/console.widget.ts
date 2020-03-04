@@ -54,7 +54,7 @@ export class ConsoleWidgetComponent implements WidgetComponent {
       this.command = '';
       this.ircService.send(message);
 
-      const history = this.configManager.GetConfig().History;
+      const history = this.configManager.GetConfig().history;
       history.push(message);
       if (history.length > ConsoleWidgetComponent.maxHistory) {
         history.splice(0, 1);
@@ -71,7 +71,7 @@ export class ConsoleWidgetComponent implements WidgetComponent {
         index
       }
     }
-    const history = this.configManager.GetConfig().History;
+    const history = this.configManager.GetConfig().history;
     const clampedIndex = Math.max(Math.min(index, history.length), 0);
     if (clampedIndex <= 0) {
       return {

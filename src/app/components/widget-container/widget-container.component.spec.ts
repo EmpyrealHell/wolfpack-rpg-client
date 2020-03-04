@@ -80,8 +80,8 @@ describe('WidgetContainerComponent', () => {
     fixture.componentInstance.ngOnInit();
     fixture.componentInstance.closeWidget(0);
     expect(fixture.componentInstance.config).toBeTruthy();
-    expect(fixture.componentInstance.config!.Layout).not.toContain('First');
-    expect(fixture.componentInstance.config!.Layout).toContain('Second');
+    expect(fixture.componentInstance.config!.layout).not.toContain('First');
+    expect(fixture.componentInstance.config!.layout).toContain('Second');
     expect(configManagerSpy.Save).toHaveBeenCalled();
   });
 
