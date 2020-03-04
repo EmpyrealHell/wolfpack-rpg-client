@@ -18,11 +18,11 @@ export class WidgetService {
     new WidgetItem(null, 'Inventory'),
     new WidgetItem(null, 'Pets'),
     new WidgetItem(FishingWidgetComponent, 'Fishing'),
-    null,
+    new WidgetItem(null, null),
     new WidgetItem(null, 'Dungeon'),
     new WidgetItem(null, 'Group'),
     new WidgetItem(null, 'Group Chat'),
-    null,
+    new WidgetItem(null, null),
     new WidgetItem(null, 'Shop'),
     new WidgetItem(null, 'Info'),
     new WidgetItem(ConsoleWidgetComponent, 'Console'),
@@ -33,7 +33,7 @@ export class WidgetService {
   /**
    * Returns a collection of all available widgets.
    */
-  public getWidgets(): Array<WidgetItem> {
+  getWidgets(): WidgetItem[] {
     return WidgetService.widgets;
   }
 }

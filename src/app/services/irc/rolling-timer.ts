@@ -3,7 +3,7 @@
  * are within a rolling limit.
  */
 export class RollingTimer {
-  private hits = new Array<number>();
+  private hits: number[] = [];
 
   /**
    * Creates a rolling timer that can tell if a new event occurrence would
@@ -14,10 +14,18 @@ export class RollingTimer {
   constructor(private period: number, private max: number) { }
 
   /**
-   * Adds an occurrence to the timer.
+   * Resets the timer.
    */
-  public addOccurrence(): void {
-    this.hits.push(Date.now());
+  reset(): void {
+    this.hits.length = 0;
+  }
+
+  /**
+   * Adds an occurrence to the timer.
+   * @param time The time of the occurrence, defaults to the current time.
+   */
+  addOccurrence(time: number = Date.now()): void {
+    this.hits.push(time);
   }
 
   /**
@@ -25,21 +33,14 @@ export class RollingTimer {
    * but not exceed its limit.
    * @returns Number of occurrences required to hit the limit.
    */
-  public availableOccurrences(): number {
+  availableOccurrences(): number {
     const now = Date.now();
     const threshold = now - this.period * 1000;
-    let trimmed = false;
     for (let i = 0; i < this.hits.length; i++) {
       if (this.hits[i] >= threshold) {
-        if (i > 0) {
-          this.hits.splice(0, i);
-          trimmed = true;
-        }
+        this.hits.splice(0, i);
         break;
       }
-    }
-    if (!trimmed) {
-      this.hits.splice(0, this.hits.length);
     }
     return this.max - this.hits.length;
   }

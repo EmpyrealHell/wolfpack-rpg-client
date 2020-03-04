@@ -8,11 +8,11 @@ export interface WidgetComponent {
   /**
    * IRC service used to receive whisper events.
    */
-  ircService: IrcService;
+  ircService: IrcService | null;
   /**
    * Config manager used to save & load user config data.
    */
-  configManager: ConfigManager;
+  configManager: ConfigManager | null;
   /**
    * The name of the component.
    */

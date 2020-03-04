@@ -1,27 +1,76 @@
-# WolfpackRpgClient
+# Wolfpack Rpg Client
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.22.
+An angular web app that acts as a client for interacting with the Wolfpack RPG. The Wolfpack RPG was developed by Twitch streamer LobosJr, as part of the custom bot he wrote. This app was developed for and in collaboration with LobosJr, to act as the official client for the game to get around the issues with the Twitch whisper system.
 
-## Development server
+[The Wolfpack RPG code](http://www.dropwizard.io/1.0.2/docs/)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Running the Client
 
-## Code scaffolding
+The app is hosted on Github, and requires a Twitch account to log in. The app communicates directly with LobotJr, and as such will not work if that bot is not running in the LobosJr channel.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+If your Twitch account is still new, you may not be able to send messages through a stand-alone client. This is due to a security measure Twitch takes against spam bots. Twitch will not say how long an account must be active before this feature is enabled.
 
-## Build
+[Launch the client](https://empyrealhell.github.io/wolfpack-rpg-client/)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## Development Requirements
 
-## Running unit tests
+This app was created using [Angular CLI](https://github.com/angular/angular-cli) CLI 8.3.22. It requires Node 8.9 or higher, and NPM 5.5.1 or higher.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Building Locally
 
-## Running end-to-end tests
+Before attempting to build the app locally, make sure you have installed all development requirements and cloned this repository.
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+In the repository root folder, run the start NPM command.
 
-## Further help
+    NPM run start
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+This will build the application and host it locally. Once it's finished compiling, you can access the app at `http://localhost:4200/`. Since this is an Angular project, it will detect changes in the code and update the server automatically as long as the command is still running.
+
+## Running the tests
+
+To run the unit tests for this project, run the test NPM command.
+
+    NPM run test
+
+To run the style tests for this project, run the check NPM command.
+
+    NPM run check
+
+Due to the dependency on Lobot being up and running, there are no e2e tests. Additional focus is placed on unit testing to compensate.
+
+## Deployment
+
+For deployment of a local version, run the deploy NPM command. This will create a dist folder containing everything you need to host the app.
+
+    NPM run deploy
+
+To update the main app hosted on Github, run the deploy-to-ghpages NPM command.
+
+    NPM run deploy-to-ghpages
+
+Note that only authorized users are able to publish to the Github-hosted page.
+
+## Built With
+
+* [Angular](https://angular.io/) - The web framework used
+* [NPM](https://www.npmjs.com/) - Dependency management
+* [GTS](https://github.com/google/gts) - Style guide and linter
+
+## Contributing
+
+Please read [CONTRIBUTING.md](https://github.com/EmpyrealHell/wolfpack-rpg-client/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/EmpyrealHell/wolfpack-rpg-client/tags). 
+
+## Authors
+
+* **[LobosJr](https://twitch.tv/LobosJr)** - *Lead Designer*
+* **[EmpyrealHell](https://github.com/EmpyrealHell)** - *Lead/Primary Developer*
+
+See also the list of [contributors](https://github.com/EmpyrealHell/wolfpack-rpg-client/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/EmpyrealHell/wolfpack-rpg-client/blob/master/LICENSE.md) file for details

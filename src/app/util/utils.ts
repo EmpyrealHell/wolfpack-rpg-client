@@ -6,7 +6,10 @@ export class Utils {
    * @param source An array check the contents of.
    * @param target An array containing values to check against the source.
    */
-  public static HasAll(source: Array<string>, target: Array<string>): boolean {
+  static hasAll(source: string[], target: string[]): boolean {
+    if (!source || !target) {
+      return false;
+    }
     for (const value of target) {
       if (!source.includes(value)) {
         return false;
@@ -21,9 +24,15 @@ export class Utils {
    * @param kvSep The character used to separate the key and value.
    * @param kvString A string with a list of key-value pairs.
    */
-  public static CreateMap(itemSep: string, kvSep: string, kvString: string): Map<string, string> {
-    const keyValuePairs = kvString.split(itemSep);
+  static createMap(itemSep: string, kvSep: string, kvString: string): Map<string, string> {
     const map = new Map<string, string>();
+    if (!kvString || kvString.length === 0 ||
+      !itemSep || itemSep.length === 0 ||
+      !kvSep || kvSep.length === 0 ||
+      kvString.indexOf(kvSep) === -1) {
+      return map;
+    }
+    const keyValuePairs = kvString.split(itemSep);
     for (const pair of keyValuePairs) {
       const [key, value] = pair.split(kvSep);
       map.set(key, value);
@@ -35,7 +44,7 @@ export class Utils {
    * Generates a random string of hexadecimal bytes.
    * @param size The number of bytes of randomness to generate.
    */
-  public static GenerateState(size: number): string {
+  static generateState(size: number): string {
     let state = '';
     for (let i = 0; i < size; i++) {
       const value = Math.round((Math.random() * 255));
@@ -50,26 +59,34 @@ export class Utils {
    * @param sep The string to place between each value in the array.
    * @param values An array of strings to join together.
    */
-  public static StringJoin(sep: string, values: Array<string>): string {
+  static stringJoin(sep: string, values: string[]): string {
     let output = '';
-    for (const value of values) {
-      output += sep + value;
+    if (!values || values.length === 0) {
+      return output;
     }
-    return output.substring(sep.length);
+    const delimiter = sep ? sep : '';
+    for (const value of values) {
+      output += delimiter + value;
+    }
+    return output.substring(delimiter.length);
   }
 
   /**
    * Awaits a response and handles promise rejection and any errors thrown.
    * @param promise Any promise that can be rejected.
    */
-  public static async PromiseWithReject<T>(promise: Promise<T>): Promise<PromiseResponse<T>> {
-    const response: PromiseResponse<T> = new PromiseResponse<T>();
+  static async promiseWithReject<T, E>(promise: Promise<T>): Promise<PromiseResponse<T, E>> {
+    const response: PromiseResponse<T, E> = {
+      response: undefined,
+      success: false,
+      error: undefined
+    };
     try {
-      response.Response = await promise;
-      response.Success = true;
+      response.response = await promise;
+      response.success = true;
     } catch (error) {
-      response.Error = error;
-      response.Success = false;
+      response.error = error;
+      response.success = false;
     }
     return response;
   }

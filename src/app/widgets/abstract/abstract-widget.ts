@@ -4,12 +4,12 @@ import { IrcService } from 'src/app/services/irc/irc.service';
 import { Responder } from './responder';
 
 export abstract class AbstractWidgetComponent implements WidgetComponent {
-  public ircService: IrcService;
-  public configManager: ConfigManager;
-  public name: string;
+  ircService: IrcService | null = null;
+  configManager: ConfigManager | null = null;
+  name = 'abstract';
 
-  public abstract get loadCommands(): Array<string>;
-  public abstract get responders(): Array<Responder>;
+  abstract get loadCommands(): string[];
+  abstract get responders(): Responder[];
 
   protected onWhisper(message: string): void {
     const responders = this.responders;
@@ -21,23 +21,25 @@ export abstract class AbstractWidgetComponent implements WidgetComponent {
           return;
         }
       } else {
-        responder.callback.call(responder.callback, null);
+        responder.callback.call(responder.callback, []);
       }
     }
   }
 
-  public onActivate(): void {
-    this.ircService.Register(`${this.name}-widget`, (message) => { this.onWhisper(message); }, true);
-    const lines = this.ircService.GetLines();
-    const queue = this.ircService.GetQueuedMessages();
-    for (const line of lines) {
-      this.onWhisper(line);
-    }
-    const commands = this.loadCommands;
-    for (const command of commands) {
-      if (lines.indexOf(`>> ${command}`) === -1
-        && queue.indexOf(command) === -1) {
-        this.ircService.Send(command);
+  onActivate(): void {
+    if (this.ircService) {
+      this.ircService.register(`${this.name}-widget`, (message) => { this.onWhisper(message); }, true);
+      const lines = this.ircService.lines;
+      const queue = this.ircService.messageQueue.queuedMessages;
+      for (const line of lines) {
+        this.onWhisper(line);
+      }
+      const commands = this.loadCommands;
+      for (const command of commands) {
+        if (lines.indexOf(`>> ${command}`) === -1
+          && queue.indexOf(command) === -1) {
+          this.ircService.send(command);
+        }
       }
     }
   }

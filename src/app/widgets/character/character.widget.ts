@@ -1,13 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Config } from 'src/app/services/data/config-data.js';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService } from 'src/app/services/irc/irc.service';
+import { AbstractWidgetComponent } from '../abstract/abstract-widget.js';
+import { Responder } from '../abstract/responder.js';
 import * as characterConfig from './character.widget.json';
 import { Character } from './model/character.js';
 import { Item, Rarity } from './model/gear.js';
 import { Stats } from './model/stats.js';
-import { Config } from 'src/app/services/data/config-data.js';
-import { AbstractWidgetComponent } from '../abstract/abstract-widget.js';
-import { Responder } from '../abstract/responder.js';
 
 /**
  * Widget used to display character data.
@@ -25,18 +25,18 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
   ]);
 
   private responderArray = new Array<Responder>(
-    new Responder(characterConfig.patterns.Coins, (matches) => {
-      this.data.coins = parseInt(matches[1], 10);
+    new Responder(characterConfig.patterns.coins, (matches) => {
+      this.data.coins = Number(matches[1]);
     }),
-    new Responder(characterConfig.patterns.Level, (matches) => {
+    new Responder(characterConfig.patterns.level, (matches) => {
       this.data.experience.updateStrings(matches[1], '0', matches[2], matches[3]);
     }),
-    new Responder(characterConfig.patterns.ClassLevel, (matches) => {
+    new Responder(characterConfig.patterns.classLevel, (matches) => {
       this.data.setClass(matches[2]);
       this.data.experience.updateStrings(matches[1], matches[3], matches[4], matches[5]);
       this.modifiedStats = this.data.calculatStats();
     }),
-    new Responder(characterConfig.patterns.Gear, (matches) => {
+    new Responder(characterConfig.patterns.gear, (matches) => {
       if (matches[3] === 'Armor') {
         this.readingStats = this.data.gear.armor;
         this.data.gear.armor.stats = new Stats(0);
@@ -46,47 +46,49 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       }
       if (this.readingStats) {
         this.readingStats.name = matches[1];
-        this.readingStats.rarity = Rarity[matches[2].toLowerCase()];
+        const rarity = matches[2].toLowerCase();
+        this.readingStats.rarity = Rarity[rarity as keyof typeof Rarity];
       }
     }),
-    new Responder(characterConfig.patterns.Id, (matches) => {
+    new Responder(characterConfig.patterns.id, (matches) => {
       if (this.readingStats) {
-        this.readingStats.id = parseInt(matches[1], 10);
+        this.readingStats.id = Number(matches[1]);
       }
     }),
-    new Responder(characterConfig.patterns.Stat, (matches) => {
+    new Responder(characterConfig.patterns.stat, (matches) => {
       if (this.readingStats) {
-        this.readingStats.stats.updateStat(matches[2], parseInt(matches[1], 10));
+        this.readingStats.stats.updateStatByDescription(matches[2], Number(matches[1]));
         this.modifiedStats = this.data.calculatStats();
       }
     }),
-    new Responder(undefined, (matches) => {
+    new Responder(null, (matches) => {
       this.readingStats = null;
     })
   );
-  public get responders(): Array<Responder> {
+
+  get responders(): Responder[] {
     return this.responderArray;
   }
-  public get loadCommands(): Array<string> {
+
+  get loadCommands(): string[] {
     return characterConfig.loadCommands;
   }
-
-  private config: Config;
 
   /**
    * The character data to display.
    */
-  public data = new Character();
+  data = new Character();
   /**
    * The character's stats.
    */
-  public modifiedStats = new Stats();
+  modifiedStats = new Stats();
   /**
    * The current item being updated by new messages.
    */
-  public readingStats: Item;
-  @Input() public ircService: IrcService;
-  @Input() public configManager: ConfigManager;
+  readingStats: Item | null = null;
+
+  @Input() ircService: IrcService | null = null;
+  @Input() configManager: ConfigManager | null = null;
 
   constructor() { super(); }
 
@@ -94,22 +96,23 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
    * Gets the background color of an item based on its rarity.
    * @param item The item to check.
    */
-  public colorByRarity(item: Item): string {
-    return CharacterWidgetComponent.rarityColors.get(item.rarity);
+  colorByRarity(item: Item): string {
+    const color = CharacterWidgetComponent.rarityColors.get(item.rarity);
+    return color ? color : '';
   }
 
   /**
    * Gets the text color to use for an item.
    * @param item The item to check.
    */
-  public itemTextColor(item: Item): string {
+  itemTextColor(item: Item): string {
     return item.isSet() ? 'black' : '';
   }
 
   /**
    * Gets the name of the icon file to load for the current class.
    */
-  public getClassIcon(): string {
+  getClassIcon(): string {
     return `class-${this.data.class.toLowerCase()}.svg`;
   }
 }

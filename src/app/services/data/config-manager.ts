@@ -14,7 +14,7 @@ export type ConfigSubscriber = () => void;
 })
 export class ConfigManager {
   private static storageKey = 'Config';
-  private static Data = new Config();
+  private static data = new Config();
   private static testers = new Array<string>('empyrealhell', 'lobosjr');
 
   private static subscribers = new Array<ConfigSubscriber>();
@@ -23,33 +23,36 @@ export class ConfigManager {
    * Gets the client-side config data. This is a static reference and can be
    * stored and manipulated without the need to call this method again.
    */
-  public GetConfig(): Config {
-    return ConfigManager.Data;
+  GetConfig(): Config {
+    return ConfigManager.data;
   }
 
   /**
    * Subscribes a function to be called every time the config is saved.
    * @param subscriber A function to be called back during save.
    */
-  public Subscribe(subscriber: ConfigSubscriber): void {
+  Subscribe(subscriber: ConfigSubscriber): void {
     ConfigManager.subscribers.push(subscriber);
   }
 
   /**
    * Determines if the logged-in user is a tester.
    */
-  public IsTester(): boolean {
-    return ConfigManager.testers.indexOf(ConfigManager.Data.Authentication.User) >= 0;
+  IsTester(): boolean {
+    if (ConfigManager.data.authentication.user) {
+      return ConfigManager.testers.indexOf(ConfigManager.data.authentication.user) >= 0;
+    }
+    return false;
   }
 
   /**
    * Saves the config data to the client's local storage.
    */
-  public Save(): void {
+  Save(): void {
     if (!this.IsTester()) {
-      ConfigManager.Data.Layout = new Array<string>('Console');
+      ConfigManager.data.layout = new Array<string>('Console');
     }
-    localStorage.setItem(ConfigManager.storageKey, JSON.stringify(ConfigManager.Data));
+    localStorage.setItem(ConfigManager.storageKey, JSON.stringify(ConfigManager.data));
     for (const subscriber of ConfigManager.subscribers) {
       subscriber.call(subscriber);
     }
@@ -58,11 +61,13 @@ export class ConfigManager {
   /**
    * Loads the config data from the client's local storage.
    */
-  public Load(): void {
+  Load(): void {
     const temp = localStorage.getItem(ConfigManager.storageKey);
-    Object.assign(ConfigManager.Data, JSON.parse(temp));
-    if (!this.IsTester()) {
-      ConfigManager.Data.Layout = new Array<string>('Console');
+    if (temp) {
+      Object.assign(ConfigManager.data, JSON.parse(temp));
+      if (!this.IsTester()) {
+        ConfigManager.data.layout = new Array<string>('Console');
+      }
     }
   }
 }

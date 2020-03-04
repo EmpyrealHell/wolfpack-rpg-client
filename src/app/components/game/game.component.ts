@@ -9,6 +9,7 @@ import { ConfigManager } from '../../services/data/config-manager';
 import { IrcService } from '../../services/irc/irc.service';
 import { UserService } from '../../services/user/user.service';
 import { ErrorDialog } from '../error-dialog/error-dialog';
+import * as PackageJson from '../../../../package.json';
 
 /**
  * The main component holding the game UI.
@@ -21,52 +22,64 @@ export class GameComponent implements OnInit {
   /**
    * Reference to the user config object.
    */
-  public config = new Config();
+  config = new Config();
   /**
    * Username from the validated token.
    */
-  public username: string;
+  username = '';
   /**
    * List of all widgets.
    */
-  public widgets: Array<WidgetItem>;
+  widgets: WidgetItem[] = [];
+  /**
+   * The current version of the app.
+   */
+  version = PackageJson.version
 
   constructor(
     public ircService: IrcService,
     public configManager: ConfigManager,
-    private userService: UserService,
-    private widgetService: WidgetService,
-    private overlayContainer: OverlayContainer,
+    public userService: UserService,
+    public widgetService: WidgetService,
+    public overlayContainer: OverlayContainer,
     public dialog: MatDialog,
     public router: Router,
   ) { }
 
-  public async ngOnInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {
     this.widgets = this.widgetService.getWidgets();
     const config = this.configManager.GetConfig();
     this.updateOverlayTheme();
 
-    const token = config.Authentication.Token;
+    const token = config.authentication.token;
     if (!token) {
       this.router.navigate(['/']);
     } else {
-      const userData = await this.userService.GetUserInfo(token);
+      const userData = await this.userService.getUserInfo(token);
       if (userData && userData.login) {
-        config.Authentication.User = userData.login;
+        config.authentication.user = userData.login;
         this.configManager.Save();
         this.config = config;
-        this.ircService.RegisterForError('game', (message) => { this.onError(message); }, true);
-        this.ircService.Connect();
+        this.ircService.registerForError('game', (message) => { this.onError(message); }, true);
+        this.ircService.connect();
       } else {
-        config.Authentication.Token = undefined;
+        config.authentication.token = null;
         this.configManager.Save();
         this.router.navigate(['/']);
       }
     }
   }
 
-  private updateOverlayTheme(): void {
-    if (this.config.Settings.UseDarkTheme) {
+  openIssuesPage(): void {
+    window.open('https://github.com/EmpyrealHell/wolfpack-rpg-client/issues/new', '_blank');
+  }
+
+  /**
+   * Updates the overlay container with the appropriate theme based on the
+   * user's preferences.
+   */
+  updateOverlayTheme(): void {
+    if (this.config.settings.useDarkTheme) {
       this.overlayContainer.getContainerElement().classList.add('dark-theme');
     } else {
       this.overlayContainer.getContainerElement().classList.remove('dark-theme');
@@ -77,7 +90,7 @@ export class GameComponent implements OnInit {
    * Callback used for handling failed outgoing messages.
    * @param message The error message received.
    */
-  public onError(message: string): void {
+  onError(message: string): void {
     this.dialog.open(ErrorDialog, {
       data: {
         message: `An error occurred trying to send a message: "${message}"\n` +
@@ -89,7 +102,7 @@ export class GameComponent implements OnInit {
   /**
    * Updates the user's settings.
    */
-  public updateSettings(): void {
+  updateSettings(): void {
     this.configManager.Save();
     this.updateOverlayTheme();
   }
@@ -98,13 +111,13 @@ export class GameComponent implements OnInit {
    * Toggles a widget on or off in the widget container.
    * @param widget The widget to toggle.
    */
-  public toggleWidget(widget: WidgetItem): void {
-    if (widget) {
-      const index = this.config.Layout.indexOf(widget.name);
+  toggleWidget(widget: WidgetItem): void {
+    if (widget && widget.name) {
+      const index = this.config.layout.indexOf(widget.name);
       if (index >= 0) {
-        this.config.Layout.splice(index, 1);
+        this.config.layout.splice(index, 1);
       } else {
-        this.config.Layout.push(widget.name);
+        this.config.layout.push(widget.name);
       }
       this.configManager.Save();
     }
@@ -113,8 +126,8 @@ export class GameComponent implements OnInit {
   /**
    * Logs the user out of the app and re-initiates the authentication process.
    */
-  public logOut(): void {
-    this.config.Authentication = new ConfigAuthentication();
+  logOut(): void {
+    this.config.authentication = new ConfigAuthentication();
     this.configManager.Save();
     this.router.navigate(['/']);
   }

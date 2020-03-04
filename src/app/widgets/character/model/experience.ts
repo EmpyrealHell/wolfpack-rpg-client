@@ -5,27 +5,27 @@ export class Experience {
   /**
    * The character's experience level.
    */
-  public level: number;
+  level = 0;
   /**
    * The character's prestige level.
    */
-  public prestige: number;
+  prestige = 0;
   /**
    * The total amount of experience the character has earned.
    */
-  public xpTotal = 0;
+  xpTotal = 0;
   /**
    * The amount of experience the character has earned toward the next level.
    */
-  public xpInLevel = 0;
+  xpInLevel = 0;
   /**
    * The total experience the character needs to reach the next level.
    */
-  public xpToNext = 10;
+  xpToNext = 10;
   /**
    * The percent of experience earned in the current level towards the next.
    */
-  public progress = 0;
+  progress = 0;
 
   private minimumForLevel(level: number): number {
     return 4 * Math.pow(level + 1, 3) + 50;
@@ -39,7 +39,7 @@ export class Experience {
    * @param current The total amount of experience the character has earned.
    * @param toNext The amount needed to reach the next level.
    */
-  public update(level: number, prestige: number, current: number, toNext: number): void {
+  update(level: number, prestige: number, current: number, toNext: number): void {
     this.level = level;
     this.prestige = prestige;
     this.xpTotal = current;
@@ -48,10 +48,10 @@ export class Experience {
     this.progress = (this.xpToNext > 0) ? (this.xpInLevel / this.xpToNext * 100) : 0;
   }
 
-  public updateStrings(level: string, prestige: string, current: string, toNext: string): void {
-    this.update(parseInt(level, 10),
-      parseInt(prestige, 10),
-      parseInt(current, 10),
-      parseInt(toNext, 10));
+  updateStrings(level: string, prestige: string, current: string, toNext: string): void {
+    this.update(Number(level),
+      Number(prestige),
+      Number(current),
+      Number(toNext));
   }
 }
