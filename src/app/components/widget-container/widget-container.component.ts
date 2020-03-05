@@ -40,8 +40,8 @@ export class WidgetContainerComponent implements OnInit {
     public ircService: IrcService, private componentFactoryResolver: ComponentFactoryResolver) { }
 
   ngOnInit(): void {
-    this.config = this.configManager.GetConfig();
-    this.configManager.Subscribe(() => { this.resetLayout(); });
+    this.config = this.configManager.getConfig();
+    this.configManager.subscribe(() => { this.resetLayout(); });
     this.resetLayout();
   }
 
@@ -52,7 +52,7 @@ export class WidgetContainerComponent implements OnInit {
   closeWidget(index: number): void {
     if (this.config) {
       this.config.layout.splice(index, 1);
-      this.configManager.Save();
+      this.configManager.save();
     }
   }
 
@@ -91,6 +91,17 @@ export class WidgetContainerComponent implements OnInit {
       }
     }
     this.gridlayout = WidgetContainerComponent.layouts[this.factories.length];
+  }
+
+  /**
+   * Gets the name of a widget in the layout by index.
+   * @param index The index of the widget.
+   */
+  getWidgetName(index: number): string {
+    if (this.config && this.config.layout) {
+      return this.config.layout[index];
+    }
+    return '';
   }
 
   private loadWidget(name: string): ComponentFactory<WidgetComponent> | null {

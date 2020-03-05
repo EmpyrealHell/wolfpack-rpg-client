@@ -15,7 +15,7 @@ describe('IrcService', () => {
     configManagerSpy = TestUtils.spyOnClass(ConfigManager);
     const configData = new Config();
     configData.authentication.token = `token${Date.now()}`;
-    configManagerSpy.GetConfig.and.returnValue(configData);
+    configManagerSpy.getConfig.and.returnValue(configData);
 
     userServiceSpy = TestUtils.spyOnClass(UserService);
     const userData = {
@@ -34,7 +34,7 @@ describe('IrcService', () => {
     const queueSpy = spyOn(service.messageQueue, 'start');
     const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
     const userData = userServiceSpy.getUserInfo();
-    const configData = configManagerSpy.GetConfig();
+    const configData = configManagerSpy.getConfig();
     let optsUsed: Options = {};
     await service.connectUsing((opts: Options) => {
       optsUsed = opts;

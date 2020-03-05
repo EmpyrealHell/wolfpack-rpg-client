@@ -74,7 +74,7 @@ describe('GameComponent', () => {
         { provide: Router, useValue: routerSpy },
       ]
     }).compileComponents();
-    configManagerSpy.GetConfig.and.returnValue({
+    configManagerSpy.getConfig.and.returnValue({
       Authentication: {
         User: 'configManager',
         Token: 'token'
@@ -89,7 +89,7 @@ describe('GameComponent', () => {
   it('should redirect if not authenticated', async () => {
     const fixture = TestBed.createComponent(GameComponent);
     const tokenlessSpy = TestUtils.spyOnClass(ConfigManager);
-    tokenlessSpy.GetConfig.and.returnValue({
+    tokenlessSpy.getConfig.and.returnValue({
       Authentication: {
         User: 'testuser',
         Token: undefined
@@ -112,12 +112,12 @@ describe('GameComponent', () => {
         scopes: []
       });
     }));
-    const auth = fixture.componentInstance.configManager.GetConfig();
+    const auth = fixture.componentInstance.configManager.getConfig();
 
     fixture.componentInstance.userService = invalidTokenSpy;
     await fixture.componentInstance.ngOnInit();
     expect(auth.authentication.token).toBeNull();
-    expect(configManagerSpy.Save).toHaveBeenCalled();
+    expect(configManagerSpy.save).toHaveBeenCalled();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
   });
 
@@ -128,7 +128,7 @@ describe('GameComponent', () => {
     const user = fixture.componentInstance.config.authentication.user;
     const target = (await userServiceSpy.getUserInfo(null)).login;
     expect(user).toBe(target);
-    expect(configManagerSpy.Save).toHaveBeenCalled();
+    expect(configManagerSpy.save).toHaveBeenCalled();
     expect(ircServiceSpy.registerForError).toHaveBeenCalled();
     expect(ircServiceSpy.connect).toHaveBeenCalled();
   });
@@ -156,7 +156,7 @@ describe('GameComponent', () => {
     const overlaySpy = spyOn(fixture.componentInstance, 'updateOverlayTheme');
 
     fixture.componentInstance.updateSettings();
-    expect(configManagerSpy.Save).toHaveBeenCalled();
+    expect(configManagerSpy.save).toHaveBeenCalled();
     expect(overlaySpy).toHaveBeenCalled();
   });
 
@@ -166,7 +166,7 @@ describe('GameComponent', () => {
 
     fixture.componentInstance.toggleWidget(toAdd);
     expect(fixture.componentInstance.config.layout).toContain(toAdd.name!);
-    expect(configManagerSpy.Save).toHaveBeenCalled();
+    expect(configManagerSpy.save).toHaveBeenCalled();
   });
 
   it('should remove a widget to the layout', () => {
@@ -176,6 +176,6 @@ describe('GameComponent', () => {
     fixture.componentInstance.config.layout.push(toRemove.name!);
     fixture.componentInstance.toggleWidget(toRemove);
     expect(fixture.componentInstance.config.layout).not.toContain(toRemove.name!);
-    expect(configManagerSpy.Save).toHaveBeenCalled();
+    expect(configManagerSpy.save).toHaveBeenCalled();
   });
 });

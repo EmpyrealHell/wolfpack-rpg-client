@@ -36,7 +36,7 @@ describe('AuthComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteSpy }
       ]
     }).compileComponents();
-    configManagerSpy.GetConfig.and.returnValue({
+    configManagerSpy.getConfig.and.returnValue({
       Authentication: {
         Token: 'token'
       }
@@ -60,7 +60,7 @@ describe('AuthComponent', () => {
     expect(userServiceSpy.getUserInfo).toHaveBeenCalled();
     expect(configAuth.user).toBe(username);
     expect(configAuth.scope).toBe(scopes);
-    expect(configManagerSpy.Save).toHaveBeenCalled();
+    expect(configManagerSpy.save).toHaveBeenCalled();
     expect(userServiceSpy.updateCache).toHaveBeenCalled();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/play']);
   });
@@ -99,7 +99,7 @@ describe('AuthComponent', () => {
     const redirectSpy = spyOn(fixture.componentInstance, 'Redirect');
 
     await fixture.componentInstance.AuthenticateWithTwitch(configAuth, configManagerSpy);
-    expect(configManagerSpy.Save).toHaveBeenCalled();
+    expect(configManagerSpy.save).toHaveBeenCalled();
     expect(redirectSpy).toHaveBeenCalled();
     const redirectUrl = redirectSpy.calls.mostRecent().args[0];
     expect(redirectUrl).toContain('client_id');
@@ -116,7 +116,7 @@ describe('AuthComponent', () => {
     const redirectSpy = spyOn(fixture.componentInstance, 'Redirect');
 
     await fixture.componentInstance.AuthenticateWithTwitch(configAuth, configManagerSpy);
-    expect(configManagerSpy.Save).toHaveBeenCalled();
+    expect(configManagerSpy.save).toHaveBeenCalled();
     expect(redirectSpy).toHaveBeenCalled();
     const redirectUrl = redirectSpy.calls.mostRecent().args[0];
     expect(redirectUrl).toContain('force_verify=true');
@@ -127,8 +127,8 @@ describe('AuthComponent', () => {
     const parseSpy = spyOn(fixture.componentInstance, 'ParseAuthResponse');
 
     await fixture.componentInstance.ngOnInit();
-    expect(configManagerSpy.Load).toHaveBeenCalled();
-    expect(configManagerSpy.GetConfig).toHaveBeenCalled();
+    expect(configManagerSpy.load).toHaveBeenCalled();
+    expect(configManagerSpy.getConfig).toHaveBeenCalled();
     expect(parseSpy).toHaveBeenCalled();
   });
 
@@ -139,8 +139,8 @@ describe('AuthComponent', () => {
     fixture.componentInstance.route.fragment = '';
 
     await fixture.componentInstance.ngOnInit();
-    expect(configManagerSpy.Load).toHaveBeenCalled();
-    expect(configManagerSpy.GetConfig).toHaveBeenCalled();
+    expect(configManagerSpy.load).toHaveBeenCalled();
+    expect(configManagerSpy.getConfig).toHaveBeenCalled();
     expect(validateSpy).toHaveBeenCalled();
   });
 
@@ -150,12 +150,12 @@ describe('AuthComponent', () => {
     fixture.componentInstance.route = new ActivatedRouteSnapshot();
     fixture.componentInstance.route.fragment = '';
     const tokenProvider = TestUtils.spyOnClass(ConfigManager);
-    tokenProvider.GetConfig.and.returnValue(new Config());
+    tokenProvider.getConfig.and.returnValue(new Config());
     fixture.componentInstance.configManager = tokenProvider;
 
     await fixture.componentInstance.ngOnInit();
-    expect(tokenProvider.Load).toHaveBeenCalled();
-    expect(tokenProvider.GetConfig).toHaveBeenCalled();
+    expect(tokenProvider.load).toHaveBeenCalled();
+    expect(tokenProvider.getConfig).toHaveBeenCalled();
     expect(authSpy).toHaveBeenCalled();
   });
 });

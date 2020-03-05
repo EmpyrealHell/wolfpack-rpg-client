@@ -48,7 +48,7 @@ export class GameComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.widgets = this.widgetService.getWidgets();
-    const config = this.configManager.GetConfig();
+    const config = this.configManager.getConfig();
     this.updateOverlayTheme();
 
     const token = config.authentication.token;
@@ -58,13 +58,13 @@ export class GameComponent implements OnInit {
       const userData = await this.userService.getUserInfo(token);
       if (userData && userData.login) {
         config.authentication.user = userData.login;
-        this.configManager.Save();
+        this.configManager.save();
         this.config = config;
         this.ircService.registerForError('game', (message) => { this.onError(message); }, true);
         this.ircService.connect();
       } else {
         config.authentication.token = null;
-        this.configManager.Save();
+        this.configManager.save();
         this.router.navigate(['/']);
       }
     }
@@ -103,7 +103,7 @@ export class GameComponent implements OnInit {
    * Updates the user's settings.
    */
   updateSettings(): void {
-    this.configManager.Save();
+    this.configManager.save();
     this.updateOverlayTheme();
   }
 
@@ -119,7 +119,7 @@ export class GameComponent implements OnInit {
       } else {
         this.config.layout.push(widget.name);
       }
-      this.configManager.Save();
+      this.configManager.save();
     }
   }
 
@@ -128,7 +128,7 @@ export class GameComponent implements OnInit {
    */
   logOut(): void {
     this.config.authentication = new ConfigAuthentication();
-    this.configManager.Save();
+    this.configManager.save();
     this.router.navigate(['/']);
   }
 }

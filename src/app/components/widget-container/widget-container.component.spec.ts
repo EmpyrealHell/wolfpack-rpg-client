@@ -27,7 +27,7 @@ const secondwidgetItem = new WidgetItem(SecondWidget, 'Second');
 const widgetServiceSpy = TestUtils.spyOnClass(WidgetService);
 widgetServiceSpy.getWidgets.and.returnValue(new Array<WidgetItem>(firstWidgetItem, secondwidgetItem));
 const configManagerSpy = TestUtils.spyOnClass(ConfigManager);
-configManagerSpy.Subscribe.and.callFake((delegate: () => void) => {
+configManagerSpy.subscribe.and.callFake((delegate: () => void) => {
   delegate.call(delegate);
 });
 const ircServiceSpy = TestUtils.spyOnClass(IrcService);
@@ -59,7 +59,7 @@ describe('WidgetContainerComponent', () => {
         { provide: ComponentFactoryResolver, useValue: componentFactoryResolverSpy }
       ]
     }).compileComponents();
-    configManagerSpy.GetConfig.and.returnValue({
+    configManagerSpy.getConfig.and.returnValue({
       Layout: ['First', 'Second']
     });
   }));
@@ -69,8 +69,8 @@ describe('WidgetContainerComponent', () => {
     const layoutSpy = spyOn(fixture.componentInstance, 'resetLayout');
 
     fixture.componentInstance.ngOnInit();
-    expect(configManagerSpy.GetConfig).toHaveBeenCalled();
-    expect(configManagerSpy.Subscribe).toHaveBeenCalled();
+    expect(configManagerSpy.getConfig).toHaveBeenCalled();
+    expect(configManagerSpy.subscribe).toHaveBeenCalled();
     expect(layoutSpy).toHaveBeenCalledTimes(2);
   });
 
@@ -82,7 +82,7 @@ describe('WidgetContainerComponent', () => {
     expect(fixture.componentInstance.config).toBeTruthy();
     expect(fixture.componentInstance.config!.layout).not.toContain('First');
     expect(fixture.componentInstance.config!.layout).toContain('Second');
-    expect(configManagerSpy.Save).toHaveBeenCalled();
+    expect(configManagerSpy.save).toHaveBeenCalled();
   });
 
   it('should get widget icons', () => {

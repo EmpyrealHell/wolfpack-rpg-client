@@ -39,6 +39,16 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   @Input()
   configManager: ConfigManager | null;
 
+  /**
+   * Whether the irc service is connected.
+   */
+  get isConnected(): boolean {
+    if (!this.ircService) {
+      return false;
+    }
+    return this.ircService.isConnected;
+  }
+
   constructor() {
     this.ircService = null;
     this.configManager = null;
@@ -54,12 +64,12 @@ export class ConsoleWidgetComponent implements WidgetComponent {
       this.command = '';
       this.ircService.send(message);
 
-      const history = this.configManager.GetConfig().history;
+      const history = this.configManager.getConfig().history;
       history.push(message);
       if (history.length > ConsoleWidgetComponent.maxHistory) {
         history.splice(0, 1);
       }
-      this.configManager.Save();
+      this.configManager.save();
       this.index = -1;
     }
   }
@@ -71,7 +81,7 @@ export class ConsoleWidgetComponent implements WidgetComponent {
         index
       }
     }
-    const history = this.configManager.GetConfig().history;
+    const history = this.configManager.getConfig().history;
     const clampedIndex = Math.max(Math.min(index, history.length), 0);
     if (clampedIndex <= 0) {
       return {

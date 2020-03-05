@@ -34,13 +34,11 @@ export class MessageQueue {
   private async sendMessages(count: number): Promise<void> {
     if (this.sendFn) {
       const toSend = this.queue.splice(0, count);
-      console.log(toSend);
       for (const message of toSend) {
         await this.sendFn.call(this.sendThis ? this.sendThis : this.sendFn, this.account, message);
         this.secondTimer.addOccurrence();
         this.minuteTimer.addOccurrence();
       }
-      console.log('sent!');
     }
   }
 

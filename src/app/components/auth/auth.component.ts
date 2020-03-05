@@ -83,7 +83,7 @@ export class AuthComponent implements OnInit {
       } else {
         auth.user = data.login;
         auth.scope = Utils.stringJoin(' ', data.scopes);
-        configManager.Save();
+        configManager.save();
         userService.updateCache(data);
         router.navigate(['/play']);
       }
@@ -102,7 +102,7 @@ export class AuthComponent implements OnInit {
     const forceVerify = (auth.state === null);
     auth.state = Utils.generateState(16);
     auth.token = null;
-    configManager.Save();
+    configManager.save();
 
     const url = `${authConfig.url}?client_id=${authConfig.clientId}` +
       `&redirect_uri=${environment.redirectUri}&state=${auth.state}` +
@@ -130,8 +130,8 @@ export class AuthComponent implements OnInit {
    * user to the main interface.
    */
   async ngOnInit(): Promise<void> {
-    this.configManager.Load();
-    const config = this.configManager.GetConfig();
+    this.configManager.load();
+    const config = this.configManager.getConfig();
     if (this.route.fragment && this.route.fragment.length > 0) {
       await this.ParseAuthResponse(config.authentication, this.configManager,
         this.route.fragment, this.userService, this.router);

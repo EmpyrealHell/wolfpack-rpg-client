@@ -167,7 +167,7 @@ export class IrcService {
     if (IrcService.isConnected) {
       return true;
     } else {
-      const token = this.configManager.GetConfig().authentication.token;
+      const token = this.configManager.getConfig().authentication.token;
       if (!token) {
         return false;
       }
