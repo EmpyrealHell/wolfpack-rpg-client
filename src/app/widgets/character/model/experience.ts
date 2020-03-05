@@ -39,19 +39,32 @@ export class Experience {
    * @param current The total amount of experience the character has earned.
    * @param toNext The amount needed to reach the next level.
    */
-  update(level: number, prestige: number, current: number, toNext: number): void {
+  update(
+    level: number,
+    prestige: number,
+    current: number,
+    toNext: number
+  ): void {
     this.level = level;
     this.prestige = prestige;
     this.xpTotal = current;
     this.xpInLevel = current - this.minimumForLevel(this.level - 1);
     this.xpToNext = this.xpInLevel + toNext;
-    this.progress = (this.xpToNext > 0) ? (this.xpInLevel / this.xpToNext * 100) : 0;
+    this.progress =
+      this.xpToNext > 0 ? (this.xpInLevel / this.xpToNext) * 100 : 0;
   }
 
-  updateStrings(level: string, prestige: string, current: string, toNext: string): void {
-    this.update(Number(level),
+  updateStrings(
+    level: string,
+    prestige: string,
+    current: string,
+    toNext: string
+  ): void {
+    this.update(
+      Number(level),
       Number(prestige),
       Number(current),
-      Number(toNext));
+      Number(toNext)
+    );
   }
 }

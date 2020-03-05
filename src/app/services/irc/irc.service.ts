@@ -9,7 +9,7 @@ import { MessageQueue } from './message-queue';
 /**
  * Callback type used for broadcasting whisper messages received by the client.
  */
-export type WhisperCallback = ((message: string) => void);
+export type WhisperCallback = (message: string) => void;
 
 /**
  * Provides a connection to the Twitch IRC chat servers via two-way
@@ -43,39 +43,56 @@ export class IrcService {
   /**
    * The tmi.js client that handles the IRC connection.
    */
-  get connection(): Client | null { return IrcService.connection; }
+  get connection(): Client | null {
+    return IrcService.connection;
+  }
 
   /**
    * A map of all registered callback functions to receive whisper events.
    */
-  get callbacks(): Map<string, WhisperCallback> { return new Map<string, WhisperCallback>(IrcService.callbacks.entries()); }
+  get callbacks(): Map<string, WhisperCallback> {
+    return new Map<string, WhisperCallback>(IrcService.callbacks.entries());
+  }
 
   /**
    * A map of all registered callback functions to receive error events.
    */
-  get errorHandlers(): Map<string, WhisperCallback> { return new Map<string, WhisperCallback>(IrcService.errorHandlers.entries()); }
+  get errorHandlers(): Map<string, WhisperCallback> {
+    return new Map<string, WhisperCallback>(IrcService.errorHandlers.entries());
+  }
 
   /**
    * The entire history of received messages as a single string.
    */
-  get history(): string { return IrcService.history; }
+  get history(): string {
+    return IrcService.history;
+  }
 
   /**
    * An array containing a record of every message received.
    */
-  get lines(): string[] { return [...IrcService.lines]; }
+  get lines(): string[] {
+    return [...IrcService.lines];
+  }
 
   /**
    * The message queue that handles rate limits on messages sent.
    */
-  get messageQueue(): MessageQueue { return IrcService.messageQueue; }
+  get messageQueue(): MessageQueue {
+    return IrcService.messageQueue;
+  }
 
   /**
    * Whether or not the IRC client is connected.
    */
-  get isConnected(): boolean { return IrcService.isConnected; }
+  get isConnected(): boolean {
+    return IrcService.isConnected;
+  }
 
-  constructor(public configManager: ConfigManager, public userService: UserService) { }
+  constructor(
+    public configManager: ConfigManager,
+    public userService: UserService
+  ) {}
 
   private onWhisper(message: string, self = false): void {
     const prefixedMessage = self ? `>> ${message}` : message;
@@ -125,7 +142,11 @@ export class IrcService {
    * @param callback A function to be called when an error occurs while sending a message.
    * @param overwrite If true, will replace any previous references with the same id.
    */
-  registerForError(id: string, callback: WhisperCallback, overwrite = false): void {
+  registerForError(
+    id: string,
+    callback: WhisperCallback,
+    overwrite = false
+  ): void {
     if (!IrcService.errorHandlers.has(id) || overwrite) {
       IrcService.errorHandlers.set(id, callback);
     }
@@ -167,7 +188,7 @@ export class IrcService {
     if (IrcService.isConnected) {
       return true;
     } else {
-      const token = this.configManager.GetConfig().authentication.token;
+      const token = this.configManager.getConfig().authentication.token;
       if (!token) {
         return false;
       }
@@ -177,22 +198,32 @@ export class IrcService {
       options.identity.username = userData.login;
       options.identity.password = `oauth:${token}`;
       IrcService.connection = client.call(client, options) as Client;
-      IrcService.messageQueue.setSendFunction(IrcService.connection.whisper, IrcService.connection);
+      IrcService.messageQueue.setSendFunction(
+        IrcService.connection.whisper,
+        IrcService.connection
+      );
       IrcService.messageQueue.start();
-      IrcService.connection.on('raw_message', (message) => {
+      IrcService.connection.on('raw_message', message => {
         const tag = message.tags['msg-id'] ? message.tags['msg-id'] : undefined;
         if (message.command === 'NOTICE' && tag === 'whisper_restricted') {
           this.onError(message.params[1]);
         }
       });
-      IrcService.connection.on('message', (channel, userstate, message, self) => {
-        // console.log(`${userstate.username}: ${message}`);
-      });
+      IrcService.connection.on(
+        'message',
+        (channel, userstate, message, self) => {
+          // console.log(`${userstate.username}: ${message}`);
+        }
+      );
       IrcService.connection.on('whisper', (from, userstate, message, self) => {
         this.onWhisper(message, self);
       });
-      IrcService.connection.on('disconnected', (reason) => { this.reconnect(reason); });
-      const response = await Utils.promiseWithReject(IrcService.connection.connect());
+      IrcService.connection.on('disconnected', reason => {
+        this.reconnect(reason);
+      });
+      const response = await Utils.promiseWithReject(
+        IrcService.connection.connect()
+      );
       IrcService.isConnected = response.success;
       return response.success;
     }

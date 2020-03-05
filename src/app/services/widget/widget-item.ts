@@ -5,7 +5,10 @@ import { WidgetComponent } from '../../components/widget-factory/widget.componen
  * Class used to pair widget components to id strings.
  */
 export class WidgetItem {
-  constructor(public component: Type<WidgetComponent> | null, public name: string | null) { }
+  constructor(
+    public component: Type<WidgetComponent> | null,
+    public name: string | null
+  ) {}
 
   /**
    * Gets the name of the icon file for this widget.

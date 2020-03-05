@@ -6,14 +6,17 @@ import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetFactoryComponent } from './widget-factory.component';
 import { WidgetComponent } from './widget.component';
 
-const spyContainer = jasmine.createSpyObj('viewContainerRef', ['clear', 'createComponent']);
+const spyContainer = jasmine.createSpyObj('viewContainerRef', [
+  'clear',
+  'createComponent',
+]);
 spyContainer.createComponent.and.returnValue({
   instance: {
     configManager: null,
     ircService: null,
     name: '',
-    onActivate: () => { }
-  } as WidgetComponent
+    onActivate: () => {},
+  } as WidgetComponent,
 });
 
 @Directive({
@@ -21,8 +24,8 @@ spyContainer.createComponent.and.returnValue({
   providers: [
     {
       provide: WidgetContainerDirective,
-      useClass: WidgetContainerStubDirective
-    }
+      useClass: WidgetContainerStubDirective,
+    },
   ],
 })
 export class WidgetContainerStubDirective {
@@ -35,10 +38,7 @@ export class WidgetContainerStubDirective {
 describe('WidgetContainerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        WidgetFactoryComponent,
-        WidgetContainerStubDirective
-      ]
+      declarations: [WidgetFactoryComponent, WidgetContainerStubDirective],
     }).compileComponents();
   }));
 
@@ -54,7 +54,9 @@ describe('WidgetContainerComponent', () => {
 
     component.ngOnInit();
     expect(spyContainer.clear).toHaveBeenCalled();
-    expect(spyContainer.createComponent).toHaveBeenCalledWith(component.factory);
+    expect(spyContainer.createComponent).toHaveBeenCalledWith(
+      component.factory
+    );
     expect(internalComponent.configManager).toBe(component.configManager);
     expect(internalComponent.ircService).toBe(component.ircService);
     expect(internalComponent.name).toBe(component.name);

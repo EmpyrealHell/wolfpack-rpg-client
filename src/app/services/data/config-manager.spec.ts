@@ -5,8 +5,8 @@ const storageKey = 'Config';
 
 describe('ConfigManager', () => {
   it('should return a reference to the global config data', () => {
-    const firstRef = new ConfigManager().GetConfig();
-    const secondRef = new ConfigManager().GetConfig();
+    const firstRef = new ConfigManager().getConfig();
+    const secondRef = new ConfigManager().getConfig();
     firstRef.authentication.user = `TestUser${Date.now()}`;
     expect(secondRef).toBe(firstRef);
   });
@@ -14,11 +14,13 @@ describe('ConfigManager', () => {
   it('should alert subscribers when the config is saved', () => {
     const manager = new ConfigManager();
     const subscriber = {
-      alert: () => { }
+      alert: () => {},
     };
     const alertSpy = spyOn(subscriber, 'alert');
-    manager.Subscribe(() => { subscriber.alert(); });
-    manager.Save();
+    manager.subscribe(() => {
+      subscriber.alert();
+    });
+    manager.save();
     expect(alertSpy).toHaveBeenCalled();
   });
 
@@ -26,13 +28,13 @@ describe('ConfigManager', () => {
     const manager = new ConfigManager();
     const current = localStorage.getItem(storageKey);
     try {
-      const testData = manager.GetConfig();
+      const testData = manager.getConfig();
       testData.authentication.user = `TestUser${Date.now()}`;
-      manager.Save();
+      manager.save();
       const loadedJson = localStorage.getItem(storageKey);
       expect(loadedJson).toBeTruthy();
-      const loadedData = JSON.parse(loadedJson!);
-      expect(loadedData.Authentication.User).toBe(testData.authentication.user);
+      const loadedData = JSON.parse(loadedJson!) as Config;
+      expect(loadedData.authentication.user).toBe(testData.authentication.user);
     } finally {
       if (current) {
         localStorage.setItem(storageKey, current);
@@ -48,8 +50,8 @@ describe('ConfigManager', () => {
       testData.authentication.user = `TestUser${Date.now()}`;
       let loadedData: Config;
       localStorage.setItem(storageKey, JSON.stringify(testData));
-      manager.Load();
-      loadedData = manager.GetConfig();
+      manager.load();
+      loadedData = manager.getConfig();
       expect(loadedData.authentication.user).toBe(testData.authentication.user);
     } finally {
       if (current) {
@@ -58,4 +60,3 @@ describe('ConfigManager', () => {
     }
   });
 });
-

@@ -24,12 +24,48 @@ export class Stats {
     ['preventDeath', 'Prevent Death'],
   ]);
 
-  static variableUpdateMap = new Map<string, (ref: Stats, value: number) => void>([
-    ['successChance', (ref, value) => { ref.successChance = value; }],
-    ['xpBonus', (ref, value) => { ref.xpBonus = value; }],
-    ['wolfcoinBonus', (ref, value) => { ref.wolfcoinBonus = value; }],
-    ['itemFind', (ref, value) => { ref.itemFind = value; }],
-    ['preventDeath', (ref, value) => { ref.preventDeath = value; }]
+  static variableGetMap = new Map<string, (ref: Stats) => number>([
+    ['successChance', ref => ref.successChance],
+    ['xpBonus', ref => ref.xpBonus],
+    ['wolfcoinBonus', ref => ref.wolfcoinBonus],
+    ['itemFind', ref => ref.itemFind],
+    ['preventDeath', ref => ref.preventDeath],
+  ]);
+
+  static variableUpdateMap = new Map<
+    string,
+    (ref: Stats, value: number) => void
+  >([
+    [
+      'successChance',
+      (ref, value) => {
+        ref.successChance = value;
+      },
+    ],
+    [
+      'xpBonus',
+      (ref, value) => {
+        ref.xpBonus = value;
+      },
+    ],
+    [
+      'wolfcoinBonus',
+      (ref, value) => {
+        ref.wolfcoinBonus = value;
+      },
+    ],
+    [
+      'itemFind',
+      (ref, value) => {
+        ref.itemFind = value;
+      },
+    ],
+    [
+      'preventDeath',
+      (ref, value) => {
+        ref.preventDeath = value;
+      },
+    ],
   ]);
 
   /**
@@ -86,6 +122,18 @@ export class Stats {
       this.updatedStats.push(name);
       updater(this, value);
     }
+  }
+
+  /**
+   * Gets the value of a stat by its name.
+   * @param name The name of the stat to retrieve.
+   */
+  getStat(name: string): number {
+    const getter = Stats.variableGetMap.get(name);
+    if (getter) {
+      return getter(this);
+    }
+    return 0;
   }
 
   /**

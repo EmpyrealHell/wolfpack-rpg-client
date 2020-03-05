@@ -8,7 +8,7 @@
         <span>
           <button mat-button (click)="openIssuesPage()">Report a Bug</button>
         </span>
-        <span *ngIf="ircService.IsConnected else usernameLoggedOut">
+        <span *ngIf="ircService.isConnected else usernameLoggedOut">
           <button mat-button [matMenuTriggerFor]="userMenu">{{config.authentication.user}}<mat-icon>arrow_drop_down
             </mat-icon>
           </button>
@@ -18,11 +18,11 @@
                 [(ngModel)]="config.settings.useDarkTheme" (change)="updateSettings()">Dark
                 Theme</mat-slide-toggle>
             </button>
-            <button *ngIf="configManager.IsTester()" mat-menu-item>
+            <button *ngIf="configManager.isTester()" mat-menu-item>
               <mat-slide-toggle (click)="$event.stopPropagation();" color="accent"
                 [(ngModel)]="config.settings.toolbarNames" (change)="updateSettings()">Toolbar Names</mat-slide-toggle>
             </button>
-            <button *ngIf="configManager.IsTester()" mat-menu-item>
+            <button *ngIf="configManager.isTester()" mat-menu-item>
               <mat-slide-toggle (click)="$event.stopPropagation();" color="accent"
                 [(ngModel)]="config.settings.toolbarIcons" (change)="updateSettings()">Toolbar Icons</mat-slide-toggle>
             </button>
@@ -37,7 +37,7 @@
         </ng-template>
       </mat-toolbar>
       <mat-divider></mat-divider>
-      <mat-toolbar *ngIf="configManager.IsTester()">
+      <mat-toolbar *ngIf="configManager.isTester()">
         <ng-container *ngFor="let widget of widgets">
           <button *ngIf="widget.name" mat-button [disabled]="!widget.component" (click)="toggleWidget(widget)">
             <img *ngIf="config.settings.toolbarIcons" src="./assets/{{widget.getIcon()}}" width="32px">

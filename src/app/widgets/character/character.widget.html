@@ -34,7 +34,7 @@
       </div>
       <mat-list dense *ngIf="data.gear.armor.isSet()">
         <mat-list-item *ngFor="let stat of data.gear.armor.stats.updatedStats">
-          <div>+{{data.gear.armor.stats[stat]}}% {{stat}}</div>
+          <div>+{{data.gear.armor.stats.getStat(stat)}}% {{stat}}</div>
         </mat-list-item>
       </mat-list>
     </div>
@@ -51,7 +51,7 @@
       </div>
       <mat-list dense *ngIf="data.gear.weapon.isSet()">
         <mat-list-item *ngFor="let stat of data.gear.weapon.stats.updatedStats">
-          <div>+{{data.gear.weapon.stats[stat]}}% {{stat}}</div>
+          <div>+{{data.gear.weapon.stats.getStat(stat)}}% {{stat}}</div>
         </mat-list-item>
       </mat-list>
     </div>

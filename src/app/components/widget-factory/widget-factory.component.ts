@@ -1,4 +1,10 @@
-import { Component, ComponentFactory, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ComponentFactory,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
 import { IrcService } from 'src/app/services/irc/irc.service';
@@ -9,7 +15,7 @@ import { WidgetComponent } from './widget.component';
  */
 @Component({
   selector: 'app-widget-factory',
-  template: '<ng-template appWidgetContainer></ng-template>'
+  template: '<ng-template appWidgetContainer></ng-template>',
 })
 export class WidgetFactoryComponent implements OnInit {
   /**
@@ -42,13 +48,14 @@ export class WidgetFactoryComponent implements OnInit {
   @ViewChild(WidgetContainerDirective, { static: true })
   container: WidgetContainerDirective | null = null;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     if (this.factory && this.container) {
       const containerRef = this.container.viewContainerRef;
       containerRef.clear();
-      const component = containerRef.createComponent(this.factory).instance as WidgetComponent;
+      const component = containerRef.createComponent(this.factory)
+        .instance as WidgetComponent;
       component.configManager = this.configManager;
       component.ircService = this.ircService;
       component.name = this.name!;

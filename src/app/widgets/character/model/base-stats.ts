@@ -9,7 +9,7 @@ export class BaseStats {
     ['Mage', new BaseStats('itemfind', 'xpBonus', 'successChance')],
     ['Rogue', new BaseStats('wolfcoinBonus', 'itemFind', 'xpBonus')],
     ['Ranger', new BaseStats('xpBonus', 'successChance', 'wolfcoinBonus')],
-    ['Cleric', new BaseStats('preventDeath', '', '', 3)]
+    ['Cleric', new BaseStats('preventDeath', '', '', 3)],
   ]);
 
   /**

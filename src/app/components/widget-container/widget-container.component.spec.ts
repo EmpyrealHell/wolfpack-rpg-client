@@ -1,4 +1,8 @@
-import { ComponentFactory, ComponentFactoryResolver, Type } from '@angular/core';
+import {
+  ComponentFactory,
+  ComponentFactoryResolver,
+  Type,
+} from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { MatCardModule, MatIconModule } from '@angular/material';
 import { IrcService } from 'src/app/services/irc/irc.service';
@@ -11,57 +15,70 @@ import { ConfigManager } from '../../services/data/config-manager';
 import { WidgetFactoryComponent } from '../widget-factory/widget-factory.component';
 import { WidgetComponent } from '../widget-factory/widget.component';
 import { WidgetContainerComponent } from './widget-container.component';
+import { Config } from 'src/app/services/data/config-data';
 
 export class FirstWidget extends AbstractWidgetComponent {
-  get loadCommands(): string[] { return []; }
-  get responders(): Responder[] { return []; }
+  get loadCommands(): string[] {
+    return [];
+  }
+  get responders(): Responder[] {
+    return [];
+  }
 }
 export class SecondWidget extends AbstractWidgetComponent {
-  get loadCommands(): string[] { return []; }
-  get responders(): Responder[] { return []; }
+  get loadCommands(): string[] {
+    return [];
+  }
+  get responders(): Responder[] {
+    return [];
+  }
 }
 
 const firstWidgetItem = new WidgetItem(FirstWidget, 'First');
 const secondwidgetItem = new WidgetItem(SecondWidget, 'Second');
 
 const widgetServiceSpy = TestUtils.spyOnClass(WidgetService);
-widgetServiceSpy.getWidgets.and.returnValue(new Array<WidgetItem>(firstWidgetItem, secondwidgetItem));
+widgetServiceSpy.getWidgets.and.returnValue(
+  new Array<WidgetItem>(firstWidgetItem, secondwidgetItem)
+);
 const configManagerSpy = TestUtils.spyOnClass(ConfigManager);
-configManagerSpy.Subscribe.and.callFake((delegate: () => void) => {
+configManagerSpy.subscribe.and.callFake((delegate: () => void) => {
   delegate.call(delegate);
 });
 const ircServiceSpy = TestUtils.spyOnClass(IrcService);
-const componentFactoryResolverSpy = jasmine.createSpyObj('ComponentFactoryResolver', ['resolveComponentFactory']);
-componentFactoryResolverSpy.resolveComponentFactory.and.callFake((component: Type<WidgetComponent>) => {
-  if (component === FirstWidget) {
-    return { componentType: FirstWidget } as ComponentFactory<FirstWidget>;
-  } else if (component === SecondWidget) {
-    return { componentType: SecondWidget } as ComponentFactory<SecondWidget>;
+const componentFactoryResolverSpy = jasmine.createSpyObj(
+  'ComponentFactoryResolver',
+  ['resolveComponentFactory']
+);
+componentFactoryResolverSpy.resolveComponentFactory.and.callFake(
+  (component: Type<WidgetComponent>) => {
+    if (component === FirstWidget) {
+      return { componentType: FirstWidget } as ComponentFactory<FirstWidget>;
+    } else if (component === SecondWidget) {
+      return { componentType: SecondWidget } as ComponentFactory<SecondWidget>;
+    }
+    return null;
   }
-  return null;
-});
+);
 
 describe('WidgetContainerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MatIconModule,
-        MatCardModule
-      ],
-      declarations: [
-        WidgetContainerComponent,
-        WidgetFactoryComponent
-      ],
+      imports: [MatIconModule, MatCardModule],
+      declarations: [WidgetContainerComponent, WidgetFactoryComponent],
       providers: [
         { provide: WidgetService, useValue: widgetServiceSpy },
         { provide: ConfigManager, useValue: configManagerSpy },
         { provide: IrcService, useValue: ircServiceSpy },
-        { provide: ComponentFactoryResolver, useValue: componentFactoryResolverSpy }
-      ]
+        {
+          provide: ComponentFactoryResolver,
+          useValue: componentFactoryResolverSpy,
+        },
+      ],
     }).compileComponents();
-    configManagerSpy.GetConfig.and.returnValue({
-      Layout: ['First', 'Second']
-    });
+    configManagerSpy.getConfig.and.returnValue({
+      layout: ['First', 'Second'],
+    } as Partial<Config>);
   }));
 
   it('should update layout on config update', () => {
@@ -69,8 +86,8 @@ describe('WidgetContainerComponent', () => {
     const layoutSpy = spyOn(fixture.componentInstance, 'resetLayout');
 
     fixture.componentInstance.ngOnInit();
-    expect(configManagerSpy.GetConfig).toHaveBeenCalled();
-    expect(configManagerSpy.Subscribe).toHaveBeenCalled();
+    expect(configManagerSpy.getConfig).toHaveBeenCalled();
+    expect(configManagerSpy.subscribe).toHaveBeenCalled();
     expect(layoutSpy).toHaveBeenCalledTimes(2);
   });
 
@@ -82,7 +99,7 @@ describe('WidgetContainerComponent', () => {
     expect(fixture.componentInstance.config).toBeTruthy();
     expect(fixture.componentInstance.config!.layout).not.toContain('First');
     expect(fixture.componentInstance.config!.layout).toContain('Second');
-    expect(configManagerSpy.Save).toHaveBeenCalled();
+    expect(configManagerSpy.save).toHaveBeenCalled();
   });
 
   it('should get widget icons', () => {

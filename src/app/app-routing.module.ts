@@ -7,11 +7,11 @@ const routes: Routes = [
   { path: 'play', component: GameComponent },
   { path: 'auth', component: AuthComponent },
   { path: '', redirectTo: '/auth', pathMatch: 'full' },
-  { path: '**', redirectTo: '/auth', pathMatch: 'full' }
+  { path: '**', redirectTo: '/auth', pathMatch: 'full' },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

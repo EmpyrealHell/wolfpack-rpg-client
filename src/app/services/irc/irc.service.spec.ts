@@ -15,18 +15,21 @@ describe('IrcService', () => {
     configManagerSpy = TestUtils.spyOnClass(ConfigManager);
     const configData = new Config();
     configData.authentication.token = `token${Date.now()}`;
-    configManagerSpy.GetConfig.and.returnValue(configData);
+    configManagerSpy.getConfig.and.returnValue(configData);
 
     userServiceSpy = TestUtils.spyOnClass(UserService);
     const userData = {
       client_id: 'clientid',
       login: 'TestUser',
       user_id: 'userid',
-      scopes: []
+      scopes: [],
     } as UserData;
     userServiceSpy.getUserInfo.and.returnValue(userData);
 
-    service = new IrcService(configManagerSpy, userServiceSpy as jasmine.SpyObj<UserService>);
+    service = new IrcService(
+      configManagerSpy,
+      userServiceSpy as jasmine.SpyObj<UserService>
+    );
     IrcService.reset();
   });
 
@@ -34,7 +37,7 @@ describe('IrcService', () => {
     const queueSpy = spyOn(service.messageQueue, 'start');
     const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
     const userData = userServiceSpy.getUserInfo();
-    const configData = configManagerSpy.GetConfig();
+    const configData = configManagerSpy.getConfig() as Config;
     let optsUsed: Options = {};
     await service.connectUsing((opts: Options) => {
       optsUsed = opts;
@@ -46,7 +49,9 @@ describe('IrcService', () => {
     expect(optsUsed.options!.clientId).toBe(userData.client_id);
     expect(optsUsed.identity).toBeTruthy();
     expect(optsUsed.identity!.username).toBe(userData.login);
-    expect(optsUsed.identity!.password).toBe(`oauth:${configData.Authentication.Token}`);
+    expect(optsUsed.identity!.password).toBe(
+      `oauth:${configData.authentication.token}`
+    );
     expect(clientInstance.connect).toHaveBeenCalled();
     const onCalls = clientInstance.on.calls.all();
     expect(onCalls.length).toBe(4);
@@ -85,7 +90,9 @@ describe('IrcService', () => {
     expect(queueCopy).toContain(message);
   });
 
-  async function attachAndSend(message: string): Promise<jasmine.SpyObj<Client>> {
+  async function attachAndSend(
+    message: string
+  ): Promise<jasmine.SpyObj<Client>> {
     const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
     clientInstance.on.and.callFake((event: string, callback: Function) => {
       if (event === 'whisper') {
@@ -115,7 +122,7 @@ describe('IrcService', () => {
   });
 
   it('should register an error handler for an id', () => {
-    const errorHandler = (message: string) => { };
+    const errorHandler = (message: string) => {};
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     const errorHandlers = service.errorHandlers;
@@ -123,7 +130,7 @@ describe('IrcService', () => {
   });
 
   it('should remove an error handler for an id', () => {
-    const errorHandler = (message: string) => { };
+    const errorHandler = (message: string) => {};
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     expect(service.errorHandlers.get(handlerKey)).toBe(errorHandler);
@@ -132,7 +139,7 @@ describe('IrcService', () => {
   });
 
   it('should call registered error handlers on error', async () => {
-    const errorHandlerObj = { onError: (message: string) => { } };
+    const errorHandlerObj = { onError: (message: string) => {} };
     const errorSpy = spyOn(errorHandlerObj, 'onError');
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandlerObj.onError);
@@ -140,9 +147,9 @@ describe('IrcService', () => {
     clientInstance.on.and.callFake((event: string, callback: Function) => {
       if (event === 'raw_message') {
         callback({
-          tags: {'msg-id': 'whisper_restricted'},
+          tags: { 'msg-id': 'whisper_restricted' },
           command: 'NOTICE',
-          params: ['test']
+          params: ['test'],
         });
       }
     });
@@ -153,8 +160,8 @@ describe('IrcService', () => {
   });
 
   it('should not overwrite error handlers with the same key by default', () => {
-    const errorHandler = (message: string) => { };
-    const errorHandler2 = (message: string) => { };
+    const errorHandler = (message: string) => {};
+    const errorHandler2 = (message: string) => {};
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     service.registerForError(handlerKey, errorHandler2);
@@ -164,8 +171,8 @@ describe('IrcService', () => {
   });
 
   it('should overwrite error handlers with the same key when forced', () => {
-    const errorHandler = (message: string) => { };
-    const errorHandler2 = (message: string) => { };
+    const errorHandler = (message: string) => {};
+    const errorHandler2 = (message: string) => {};
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     service.registerForError(handlerKey, errorHandler2, true);
@@ -175,14 +182,14 @@ describe('IrcService', () => {
   });
 
   it('should register a whisper handler for an id', () => {
-    const callback = (message: string) => { };
+    const callback = (message: string) => {};
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     expect(service.callbacks.get(handlerKey)).toBe(callback);
   });
 
   it('should remove a whisper handler for an id', () => {
-    const callback = (message: string) => { };
+    const callback = (message: string) => {};
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     expect(service.callbacks.get(handlerKey)).toBe(callback);
@@ -191,7 +198,7 @@ describe('IrcService', () => {
   });
 
   it('should call registered callbacks on whisper', async () => {
-    const callbackObj = { onWhisper: (message: string) => { } };
+    const callbackObj = { onWhisper: (message: string) => {} };
     const callbackSpy = spyOn(callbackObj, 'onWhisper');
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callbackObj.onWhisper);
@@ -202,8 +209,8 @@ describe('IrcService', () => {
   });
 
   it('should not overwrite whisper handlers with the same key by default', () => {
-    const callback = (message: string) => { };
-    const callback2 = (message: string) => { };
+    const callback = (message: string) => {};
+    const callback2 = (message: string) => {};
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2);
@@ -213,8 +220,8 @@ describe('IrcService', () => {
   });
 
   it('should overwrite whisper handlers with the same key when forced', () => {
-    const callback = (message: string) => { };
-    const callback2 = (message: string) => { };
+    const callback = (message: string) => {};
+    const callback2 = (message: string) => {};
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2, true);
@@ -226,9 +233,14 @@ describe('IrcService', () => {
   it('should send queued messages', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
-      send: async (account: string, message: string):Promise<[string, string]> => {
-        return new Promise(resolve => { resolve(['', '']); });
-      }
+      send: async (
+        account: string,
+        message: string
+      ): Promise<[string, string]> => {
+        return new Promise(resolve => {
+          resolve(['', '']);
+        });
+      },
     };
     const spy = spyOn(sendFn, 'send');
     service.send(message);
@@ -242,9 +254,11 @@ describe('IrcService', () => {
   it('should not send more than 3 messages each second', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
-      send: (account: string, message: string):Promise<[string, string]> => {
-        return new Promise(resolve => { ['', ''] });
-      }
+      send: (account: string, message: string): Promise<[string, string]> => {
+        return new Promise(resolve => {
+          resolve(['', '']);
+        });
+      },
     };
     const spy = spyOn(sendFn, 'send');
     service.send(message);
@@ -261,9 +275,11 @@ describe('IrcService', () => {
   it('should not send more than 100 messages each minute', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
-      send: (account: string, message: string):Promise<[string, string]> => {
-        return new Promise(resolve => { ['', ''] });
-      }
+      send: (account: string, message: string): Promise<[string, string]> => {
+        return new Promise(resolve => {
+          resolve(['', '']);
+        });
+      },
     };
     const spy = spyOn(sendFn, 'send');
     service.send(message);

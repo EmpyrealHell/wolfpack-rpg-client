@@ -10,7 +10,7 @@ export type ConfigSubscriber = () => void;
  * Service that provides access to the client-side configuration data.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConfigManager {
   private static storageKey = 'Config';
@@ -23,7 +23,7 @@ export class ConfigManager {
    * Gets the client-side config data. This is a static reference and can be
    * stored and manipulated without the need to call this method again.
    */
-  GetConfig(): Config {
+  getConfig(): Config {
     return ConfigManager.data;
   }
 
@@ -31,16 +31,19 @@ export class ConfigManager {
    * Subscribes a function to be called every time the config is saved.
    * @param subscriber A function to be called back during save.
    */
-  Subscribe(subscriber: ConfigSubscriber): void {
+  subscribe(subscriber: ConfigSubscriber): void {
     ConfigManager.subscribers.push(subscriber);
   }
 
   /**
    * Determines if the logged-in user is a tester.
    */
-  IsTester(): boolean {
+  isTester(): boolean {
     if (ConfigManager.data.authentication.user) {
-      return ConfigManager.testers.indexOf(ConfigManager.data.authentication.user) >= 0;
+      return (
+        ConfigManager.testers.indexOf(ConfigManager.data.authentication.user) >=
+        0
+      );
     }
     return false;
   }
@@ -48,11 +51,14 @@ export class ConfigManager {
   /**
    * Saves the config data to the client's local storage.
    */
-  Save(): void {
-    if (!this.IsTester()) {
+  save(): void {
+    if (!this.isTester()) {
       ConfigManager.data.layout = new Array<string>('Console');
     }
-    localStorage.setItem(ConfigManager.storageKey, JSON.stringify(ConfigManager.data));
+    localStorage.setItem(
+      ConfigManager.storageKey,
+      JSON.stringify(ConfigManager.data)
+    );
     for (const subscriber of ConfigManager.subscribers) {
       subscriber.call(subscriber);
     }
@@ -61,11 +67,11 @@ export class ConfigManager {
   /**
    * Loads the config data from the client's local storage.
    */
-  Load(): void {
+  load(): void {
     const temp = localStorage.getItem(ConfigManager.storageKey);
     if (temp) {
       Object.assign(ConfigManager.data, JSON.parse(temp));
-      if (!this.IsTester()) {
+      if (!this.isTester()) {
         ConfigManager.data.layout = new Array<string>('Console');
       }
     }

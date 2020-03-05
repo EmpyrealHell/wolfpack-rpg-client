@@ -34,7 +34,7 @@ export class GameComponent implements OnInit {
   /**
    * The current version of the app.
    */
-  version = PackageJson.version
+  version = PackageJson.version;
 
   constructor(
     public ircService: IrcService,
@@ -43,12 +43,12 @@ export class GameComponent implements OnInit {
     public widgetService: WidgetService,
     public overlayContainer: OverlayContainer,
     public dialog: MatDialog,
-    public router: Router,
-  ) { }
+    public router: Router
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.widgets = this.widgetService.getWidgets();
-    const config = this.configManager.GetConfig();
+    const config = this.configManager.getConfig();
     this.updateOverlayTheme();
 
     const token = config.authentication.token;
@@ -58,20 +58,29 @@ export class GameComponent implements OnInit {
       const userData = await this.userService.getUserInfo(token);
       if (userData && userData.login) {
         config.authentication.user = userData.login;
-        this.configManager.Save();
+        this.configManager.save();
         this.config = config;
-        this.ircService.registerForError('game', (message) => { this.onError(message); }, true);
+        this.ircService.registerForError(
+          'game',
+          message => {
+            this.onError(message);
+          },
+          true
+        );
         this.ircService.connect();
       } else {
         config.authentication.token = null;
-        this.configManager.Save();
+        this.configManager.save();
         this.router.navigate(['/']);
       }
     }
   }
 
   openIssuesPage(): void {
-    window.open('https://github.com/EmpyrealHell/wolfpack-rpg-client/issues/new', '_blank');
+    window.open(
+      'https://github.com/EmpyrealHell/wolfpack-rpg-client/issues/new',
+      '_blank'
+    );
   }
 
   /**
@@ -82,7 +91,9 @@ export class GameComponent implements OnInit {
     if (this.config.settings.useDarkTheme) {
       this.overlayContainer.getContainerElement().classList.add('dark-theme');
     } else {
-      this.overlayContainer.getContainerElement().classList.remove('dark-theme');
+      this.overlayContainer
+        .getContainerElement()
+        .classList.remove('dark-theme');
     }
   }
 
@@ -93,9 +104,10 @@ export class GameComponent implements OnInit {
   onError(message: string): void {
     this.dialog.open(ErrorDialog, {
       data: {
-        message: `An error occurred trying to send a message: "${message}"\n` +
-          'If you continue to see this issue, you may need to whisper the bot directly, or your account might be too new.'
-      }
+        message:
+          `An error occurred trying to send a message: "${message}"\n` +
+          'If you continue to see this issue, you may need to whisper the bot directly, or your account might be too new.',
+      },
     });
   }
 
@@ -103,7 +115,7 @@ export class GameComponent implements OnInit {
    * Updates the user's settings.
    */
   updateSettings(): void {
-    this.configManager.Save();
+    this.configManager.save();
     this.updateOverlayTheme();
   }
 
@@ -119,7 +131,7 @@ export class GameComponent implements OnInit {
       } else {
         this.config.layout.push(widget.name);
       }
-      this.configManager.Save();
+      this.configManager.save();
     }
   }
 
@@ -128,7 +140,7 @@ export class GameComponent implements OnInit {
    */
   logOut(): void {
     this.config.authentication = new ConfigAuthentication();
-    this.configManager.Save();
+    this.configManager.save();
     this.router.navigate(['/']);
   }
 }
