@@ -21,22 +21,32 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     [Rarity.none, '#404040'],
     [Rarity.uncommon, '#e4edde'],
     [Rarity.rare, '#dee8ed'],
-    [Rarity.epic, '#e6deed']
+    [Rarity.epic, '#e6deed'],
   ]);
 
   private responderArray = new Array<Responder>(
-    new Responder(characterConfig.patterns.coins, (matches) => {
+    new Responder(characterConfig.patterns.coins, matches => {
       this.data.coins = Number(matches[1]);
     }),
-    new Responder(characterConfig.patterns.level, (matches) => {
-      this.data.experience.updateStrings(matches[1], '0', matches[2], matches[3]);
+    new Responder(characterConfig.patterns.level, matches => {
+      this.data.experience.updateStrings(
+        matches[1],
+        '0',
+        matches[2],
+        matches[3]
+      );
     }),
-    new Responder(characterConfig.patterns.classLevel, (matches) => {
+    new Responder(characterConfig.patterns.classLevel, matches => {
       this.data.setClass(matches[2]);
-      this.data.experience.updateStrings(matches[1], matches[3], matches[4], matches[5]);
+      this.data.experience.updateStrings(
+        matches[1],
+        matches[3],
+        matches[4],
+        matches[5]
+      );
       this.modifiedStats = this.data.calculatStats();
     }),
-    new Responder(characterConfig.patterns.gear, (matches) => {
+    new Responder(characterConfig.patterns.gear, matches => {
       if (matches[3] === 'Armor') {
         this.readingStats = this.data.gear.armor;
         this.data.gear.armor.stats = new Stats(0);
@@ -50,18 +60,21 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
         this.readingStats.rarity = Rarity[rarity as keyof typeof Rarity];
       }
     }),
-    new Responder(characterConfig.patterns.id, (matches) => {
+    new Responder(characterConfig.patterns.id, matches => {
       if (this.readingStats) {
         this.readingStats.id = Number(matches[1]);
       }
     }),
-    new Responder(characterConfig.patterns.stat, (matches) => {
+    new Responder(characterConfig.patterns.stat, matches => {
       if (this.readingStats) {
-        this.readingStats.stats.updateStatByDescription(matches[2], Number(matches[1]));
+        this.readingStats.stats.updateStatByDescription(
+          matches[2],
+          Number(matches[1])
+        );
         this.modifiedStats = this.data.calculatStats();
       }
     }),
-    new Responder(null, (matches) => {
+    new Responder(null, matches => {
       this.readingStats = null;
     })
   );
@@ -90,7 +103,9 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
   @Input() ircService: IrcService | null = null;
   @Input() configManager: ConfigManager | null = null;
 
-  constructor() { super(); }
+  constructor() {
+    super();
+  }
 
   /**
    * Gets the background color of an item based on its rarity.

@@ -25,19 +25,47 @@ export class Stats {
   ]);
 
   static variableGetMap = new Map<string, (ref: Stats) => number>([
-    ['successChance', (ref) => ref.successChance ],
-    ['xpBonus', (ref) => ref.xpBonus],
-    ['wolfcoinBonus', (ref) => ref.wolfcoinBonus],
-    ['itemFind', (ref) => ref.itemFind],
-    ['preventDeath', (ref) => ref.preventDeath]
+    ['successChance', ref => ref.successChance],
+    ['xpBonus', ref => ref.xpBonus],
+    ['wolfcoinBonus', ref => ref.wolfcoinBonus],
+    ['itemFind', ref => ref.itemFind],
+    ['preventDeath', ref => ref.preventDeath],
   ]);
 
-  static variableUpdateMap = new Map<string, (ref: Stats, value: number) => void>([
-    ['successChance', (ref, value) => { ref.successChance = value; }],
-    ['xpBonus', (ref, value) => { ref.xpBonus = value; }],
-    ['wolfcoinBonus', (ref, value) => { ref.wolfcoinBonus = value; }],
-    ['itemFind', (ref, value) => { ref.itemFind = value; }],
-    ['preventDeath', (ref, value) => { ref.preventDeath = value; }]
+  static variableUpdateMap = new Map<
+    string,
+    (ref: Stats, value: number) => void
+  >([
+    [
+      'successChance',
+      (ref, value) => {
+        ref.successChance = value;
+      },
+    ],
+    [
+      'xpBonus',
+      (ref, value) => {
+        ref.xpBonus = value;
+      },
+    ],
+    [
+      'wolfcoinBonus',
+      (ref, value) => {
+        ref.wolfcoinBonus = value;
+      },
+    ],
+    [
+      'itemFind',
+      (ref, value) => {
+        ref.itemFind = value;
+      },
+    ],
+    [
+      'preventDeath',
+      (ref, value) => {
+        ref.preventDeath = value;
+      },
+    ],
   ]);
 
   /**

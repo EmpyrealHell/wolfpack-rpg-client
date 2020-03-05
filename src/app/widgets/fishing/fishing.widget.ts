@@ -3,7 +3,6 @@ import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { Responder } from '../abstract/responder';
 import * as fishConfig from './fishing.widget.json';
 
-
 /**
  * Widget used to display character data.
  */
@@ -13,7 +12,7 @@ import * as fishConfig from './fishing.widget.json';
 })
 export class FishingWidgetComponent extends AbstractWidgetComponent {
   private responderArray: Responder[] = [
-    new Responder(fishConfig.patterns.Leader, (data) => {
+    new Responder(fishConfig.patterns.Leader, data => {
       for (const record of this.records) {
         if (record.fish === data[1]) {
           record.update(data[2], data[3]);
@@ -21,7 +20,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
         }
       }
       this.records.push(new FishingRecord(data[1], data[2], data[3]));
-    })
+    }),
   ];
   get responders(): Responder[] {
     return this.responderArray;

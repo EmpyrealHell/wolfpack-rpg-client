@@ -34,7 +34,7 @@ export class GameComponent implements OnInit {
   /**
    * The current version of the app.
    */
-  version = PackageJson.version
+  version = PackageJson.version;
 
   constructor(
     public ircService: IrcService,
@@ -43,8 +43,8 @@ export class GameComponent implements OnInit {
     public widgetService: WidgetService,
     public overlayContainer: OverlayContainer,
     public dialog: MatDialog,
-    public router: Router,
-  ) { }
+    public router: Router
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.widgets = this.widgetService.getWidgets();
@@ -60,7 +60,13 @@ export class GameComponent implements OnInit {
         config.authentication.user = userData.login;
         this.configManager.save();
         this.config = config;
-        this.ircService.registerForError('game', (message) => { this.onError(message); }, true);
+        this.ircService.registerForError(
+          'game',
+          message => {
+            this.onError(message);
+          },
+          true
+        );
         this.ircService.connect();
       } else {
         config.authentication.token = null;
@@ -71,7 +77,10 @@ export class GameComponent implements OnInit {
   }
 
   openIssuesPage(): void {
-    window.open('https://github.com/EmpyrealHell/wolfpack-rpg-client/issues/new', '_blank');
+    window.open(
+      'https://github.com/EmpyrealHell/wolfpack-rpg-client/issues/new',
+      '_blank'
+    );
   }
 
   /**
@@ -82,7 +91,9 @@ export class GameComponent implements OnInit {
     if (this.config.settings.useDarkTheme) {
       this.overlayContainer.getContainerElement().classList.add('dark-theme');
     } else {
-      this.overlayContainer.getContainerElement().classList.remove('dark-theme');
+      this.overlayContainer
+        .getContainerElement()
+        .classList.remove('dark-theme');
     }
   }
 
@@ -93,9 +104,10 @@ export class GameComponent implements OnInit {
   onError(message: string): void {
     this.dialog.open(ErrorDialog, {
       data: {
-        message: `An error occurred trying to send a message: "${message}"\n` +
-          'If you continue to see this issue, you may need to whisper the bot directly, or your account might be too new.'
-      }
+        message:
+          `An error occurred trying to send a message: "${message}"\n` +
+          'If you continue to see this issue, you may need to whisper the bot directly, or your account might be too new.',
+      },
     });
   }
 

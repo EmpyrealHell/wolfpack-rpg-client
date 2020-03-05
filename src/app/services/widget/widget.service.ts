@@ -10,7 +10,7 @@ import { FishingWidgetComponent } from 'src/app/widgets/fishing/fishing.widget';
  * Service containing the list of all available widgets.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WidgetService {
   private static widgets = new Array<WidgetItem>(
@@ -25,10 +25,13 @@ export class WidgetService {
     new WidgetItem(null, null),
     new WidgetItem(null, 'Shop'),
     new WidgetItem(null, 'Info'),
-    new WidgetItem(ConsoleWidgetComponent, 'Console'),
+    new WidgetItem(ConsoleWidgetComponent, 'Console')
   );
 
-  constructor(private ircService: IrcService, private configManager: ConfigManager) { }
+  constructor(
+    private ircService: IrcService,
+    private configManager: ConfigManager
+  ) {}
 
   /**
    * Returns a collection of all available widgets.

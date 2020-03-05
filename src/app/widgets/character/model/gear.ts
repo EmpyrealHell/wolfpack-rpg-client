@@ -33,7 +33,7 @@ export enum Rarity {
   /**
    * Best quality gear, provides large bonuses to many stats.
    */
-  epic
+  epic,
 }
 
 /**

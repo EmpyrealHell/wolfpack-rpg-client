@@ -22,19 +22,33 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import {
-  MatButtonModule, MatCardModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule,
-  MatListModule, MatMenuModule, MatProgressBarModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
+  MatButtonModule,
+  MatCardModule,
+  MatDividerModule,
+  MatGridListModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatMenuModule,
+  MatProgressBarModule,
+  MatSidenavModule,
+  MatSlideToggleModule,
+  MatToolbarModule,
 } from '@angular/material';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FishingWidgetComponent } from './widgets/fishing/fishing.widget';
 import { ErrorDialog } from './components/error-dialog/error-dialog';
 
-
 @NgModule({
   declarations: [
-    FocusOnLoadDirective, ShowLastDirective, WidgetContainerDirective,
+    FocusOnLoadDirective,
+    ShowLastDirective,
+    WidgetContainerDirective,
 
-    AppComponent, AuthComponent, GameComponent, ErrorDialog,
+    AppComponent,
+    AuthComponent,
+    GameComponent,
+    ErrorDialog,
 
     CharacterWidgetComponent,
     ConsoleWidgetComponent,
@@ -44,16 +58,38 @@ import { ErrorDialog } from './components/error-dialog/error-dialog';
     WidgetFactoryComponent,
   ],
   imports: [
-    AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
 
-    FlexLayoutModule, LayoutModule, ScrollingModule,
+    FlexLayoutModule,
+    LayoutModule,
+    ScrollingModule,
 
-    MatButtonModule, MatCardModule, MatDialogModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule,
-    MatListModule, MatMenuModule, MatProgressBarModule, MatSidenavModule, MatSlideToggleModule, MatToolbarModule
+    MatButtonModule,
+    MatCardModule,
+    MatDialogModule,
+    MatDividerModule,
+    MatGridListModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatMenuModule,
+    MatProgressBarModule,
+    MatSidenavModule,
+    MatSlideToggleModule,
+    MatToolbarModule,
   ],
-  entryComponents: [CharacterWidgetComponent, ConsoleWidgetComponent, FishingWidgetComponent, ErrorDialog],
+  entryComponents: [
+    CharacterWidgetComponent,
+    ConsoleWidgetComponent,
+    FishingWidgetComponent,
+    ErrorDialog,
+  ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

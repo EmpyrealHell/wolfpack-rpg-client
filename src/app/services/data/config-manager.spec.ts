@@ -14,10 +14,12 @@ describe('ConfigManager', () => {
   it('should alert subscribers when the config is saved', () => {
     const manager = new ConfigManager();
     const subscriber = {
-      alert: () => { }
+      alert: () => {},
     };
     const alertSpy = spyOn(subscriber, 'alert');
-    manager.subscribe(() => { subscriber.alert(); });
+    manager.subscribe(() => {
+      subscriber.alert();
+    });
     manager.save();
     expect(alertSpy).toHaveBeenCalled();
   });
@@ -31,8 +33,8 @@ describe('ConfigManager', () => {
       manager.save();
       const loadedJson = localStorage.getItem(storageKey);
       expect(loadedJson).toBeTruthy();
-      const loadedData = JSON.parse(loadedJson!);
-      expect(loadedData.Authentication.User).toBe(testData.authentication.user);
+      const loadedData = JSON.parse(loadedJson!) as Config;
+      expect(loadedData.authentication.user).toBe(testData.authentication.user);
     } finally {
       if (current) {
         localStorage.setItem(storageKey, current);
@@ -58,4 +60,3 @@ describe('ConfigManager', () => {
     }
   });
 });
-

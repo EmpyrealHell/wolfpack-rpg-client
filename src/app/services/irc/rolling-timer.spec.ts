@@ -15,7 +15,7 @@ describe('RollingTimer', () => {
   });
 
   it('should roll the timer based on elapsed time', async () => {
-    const timer = new RollingTimer(.1, 2);
+    const timer = new RollingTimer(0.1, 2);
     const delay = async () => new Promise(resolve => setTimeout(resolve, 50));
     timer.addOccurrence();
     expect(timer.availableOccurrences()).toBe(1);

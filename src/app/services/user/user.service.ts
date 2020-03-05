@@ -12,7 +12,7 @@ export class UserService {
   private static tokenValidationUrl = 'https://id.twitch.tv/oauth2/validate';
   private static cachedResponse: UserData | null;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /**
    * Validates an OAuth token and retrieves the user data contained within.
@@ -24,10 +24,12 @@ export class UserService {
     }
     const options = {
       headers: {
-        Authorization: `OAuth ${token}`
-      }
+        Authorization: `OAuth ${token}`,
+      },
     };
-    return this.http.get<UserData>(UserService.tokenValidationUrl, options).toPromise<UserData>();
+    return this.http
+      .get<UserData>(UserService.tokenValidationUrl, options)
+      .toPromise<UserData>();
   }
 
   /**

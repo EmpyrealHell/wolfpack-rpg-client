@@ -1,7 +1,10 @@
 import { RollingTimer } from './rolling-timer';
 import { Client } from 'tmi.js';
 
-export type SendFunction = (account: string, message: string) => Promise<[string, string]>;
+export type SendFunction = (
+  account: string,
+  message: string
+) => Promise<[string, string]>;
 
 /**
  * Handles rate limiting for sending messages to twitch via irc.
@@ -25,17 +28,23 @@ export class MessageQueue {
    * The number of messages that can be sent at the current time.
    */
   get availableOccurrences(): number {
-    return Math.min(this.secondTimer.availableOccurrences(),
-      this.minuteTimer.availableOccurrences());
+    return Math.min(
+      this.secondTimer.availableOccurrences(),
+      this.minuteTimer.availableOccurrences()
+    );
   }
 
-  constructor(private account: string, private rate: number) { }
-  
+  constructor(private account: string, private rate: number) {}
+
   private async sendMessages(count: number): Promise<void> {
     if (this.sendFn) {
       const toSend = this.queue.splice(0, count);
       for (const message of toSend) {
-        await this.sendFn.call(this.sendThis ? this.sendThis : this.sendFn, this.account, message);
+        await this.sendFn.call(
+          this.sendThis ? this.sendThis : this.sendFn,
+          this.account,
+          message
+        );
         this.secondTimer.addOccurrence();
         this.minuteTimer.addOccurrence();
       }
@@ -43,7 +52,9 @@ export class MessageQueue {
   }
 
   private continue(): void {
-    this.timer = window.setTimeout(async () => { await this.processQueue(); }, this.rate);
+    this.timer = window.setTimeout(async () => {
+      await this.processQueue();
+    }, this.rate);
   }
 
   /**

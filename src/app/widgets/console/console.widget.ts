@@ -74,31 +74,39 @@ export class ConsoleWidgetComponent implements WidgetComponent {
     }
   }
 
-  private commandFromHistory(index: number): { message: string, index: number } {
+  private commandFromHistory(
+    index: number
+  ): { message: string; index: number } {
     if (!this.configManager) {
       return {
         message: '',
-        index
-      }
+        index,
+      };
     }
     const history = this.configManager.getConfig().history;
     const clampedIndex = Math.max(Math.min(index, history.length), 0);
     if (clampedIndex <= 0) {
       return {
         message: '',
-        index: clampedIndex
+        index: clampedIndex,
       };
     } else {
       return {
         message: history[history.length - clampedIndex],
-        index: clampedIndex
+        index: clampedIndex,
       };
     }
   }
 
   onActivate(): void {
     if (this.ircService) {
-      this.ircService.register('console-widget', (message) => { this.onWhisper(message); }, true);
+      this.ircService.register(
+        'console-widget',
+        message => {
+          this.onWhisper(message);
+        },
+        true
+      );
       this.consoleData = this.ircService.history;
     }
   }

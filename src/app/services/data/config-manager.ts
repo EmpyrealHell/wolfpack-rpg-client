@@ -10,7 +10,7 @@ export type ConfigSubscriber = () => void;
  * Service that provides access to the client-side configuration data.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConfigManager {
   private static storageKey = 'Config';
@@ -40,7 +40,10 @@ export class ConfigManager {
    */
   isTester(): boolean {
     if (ConfigManager.data.authentication.user) {
-      return ConfigManager.testers.indexOf(ConfigManager.data.authentication.user) >= 0;
+      return (
+        ConfigManager.testers.indexOf(ConfigManager.data.authentication.user) >=
+        0
+      );
     }
     return false;
   }
@@ -52,7 +55,10 @@ export class ConfigManager {
     if (!this.isTester()) {
       ConfigManager.data.layout = new Array<string>('Console');
     }
-    localStorage.setItem(ConfigManager.storageKey, JSON.stringify(ConfigManager.data));
+    localStorage.setItem(
+      ConfigManager.storageKey,
+      JSON.stringify(ConfigManager.data)
+    );
     for (const subscriber of ConfigManager.subscribers) {
       subscriber.call(subscriber);
     }

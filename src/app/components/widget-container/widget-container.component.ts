@@ -1,4 +1,9 @@
-import { Component, ComponentFactory, ComponentFactoryResolver, OnInit } from '@angular/core';
+import {
+  Component,
+  ComponentFactory,
+  ComponentFactoryResolver,
+  OnInit,
+} from '@angular/core';
 import { Config } from 'src/app/services/data/config-data';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService } from 'src/app/services/irc/irc.service';
@@ -11,14 +16,20 @@ import { WidgetService } from '../../services/widget/widget.service';
  */
 @Component({
   selector: 'app-widget-container',
-  templateUrl: './widget-container.component.html'
+  templateUrl: './widget-container.component.html',
 })
 export class WidgetContainerComponent implements OnInit {
   private static layouts = [
-    '', '"a0"', '"a0 a1"', '"a0 a1" "a0 a2"',
-    '"a0 a1" "a2 a3"', '"a0 a1 a2" "a0 a3 a4"',
-    '"a0 a1 a2" "a3 a4 a5"', '"a0 a1 a2" "a0 a1 a3" "a4 a5 a6"',
-    '"a0 a1 a2" "a0 a3 a4" "a5 a6 a7"', '"a0 a1 a2" "a3 a4 a5" "a6 a7 a8"'
+    '',
+    '"a0"',
+    '"a0 a1"',
+    '"a0 a1" "a0 a2"',
+    '"a0 a1" "a2 a3"',
+    '"a0 a1 a2" "a0 a3 a4"',
+    '"a0 a1 a2" "a3 a4 a5"',
+    '"a0 a1 a2" "a0 a1 a3" "a4 a5 a6"',
+    '"a0 a1 a2" "a0 a3 a4" "a5 a6 a7"',
+    '"a0 a1 a2" "a3 a4 a5" "a6 a7 a8"',
   ];
 
   private widgetMap: Map<string, WidgetItem> = new Map<string, WidgetItem>();
@@ -35,13 +46,19 @@ export class WidgetContainerComponent implements OnInit {
    */
   factories = new Array<ComponentFactory<WidgetComponent>>();
 
-  constructor(private widgetService: WidgetService, public configManager: ConfigManager,
+  constructor(
+    private widgetService: WidgetService,
+    public configManager: ConfigManager,
     // tslint:disable-next-line:align
-    public ircService: IrcService, private componentFactoryResolver: ComponentFactoryResolver) { }
+    public ircService: IrcService,
+    private componentFactoryResolver: ComponentFactoryResolver
+  ) {}
 
   ngOnInit(): void {
     this.config = this.configManager.getConfig();
-    this.configManager.subscribe(() => { this.resetLayout(); });
+    this.configManager.subscribe(() => {
+      this.resetLayout();
+    });
     this.resetLayout();
   }
 
@@ -82,7 +99,7 @@ export class WidgetContainerComponent implements OnInit {
 
     this.factories = [];
     if (this.config) {
-      const items = this.config.layout;
+      const items = this.config.layout ? this.config.layout : [];
       for (const item of items) {
         const widget = this.loadWidget(item);
         if (widget) {
@@ -109,7 +126,9 @@ export class WidgetContainerComponent implements OnInit {
     if (widget) {
       const widgetComponent = widget.component;
       if (widgetComponent) {
-        const factory = this.componentFactoryResolver.resolveComponentFactory(widgetComponent);
+        const factory = this.componentFactoryResolver.resolveComponentFactory(
+          widgetComponent
+        );
         return factory;
       }
     }
