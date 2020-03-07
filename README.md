@@ -52,9 +52,18 @@ Note that only authorized users are able to publish to the Github-hosted page.
 
 ## Built With
 
-* [Angular](https://angular.io/) - The web framework used
-* [NPM](https://www.npmjs.com/) - Dependency management
-* [GTS](https://github.com/google/gts) - Style guide and linter
+- [Angular](https://angular.io/) - The web framework used
+- [NPM](https://www.npmjs.com/) - Dependency management
+- [GTS](https://github.com/google/gts) - Style guide and linter
+
+## IDE and Extensions
+
+We recommend using [Visual Studio Code](https://code.visualstudio.com/) with the following extensions:
+
+- [TSLint](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin)
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+Make sure to set your default formatter to use Prettier, as the default typescript formatter in VS Code will cause conflicts with the GTS style check.It is listed in the formatter selection as esbenp.prettier-vscode.
 
 ## Contributing
 
@@ -62,12 +71,12 @@ Please read [CONTRIBUTING.md](https://github.com/EmpyrealHell/wolfpack-rpg-clien
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/EmpyrealHell/wolfpack-rpg-client/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/EmpyrealHell/wolfpack-rpg-client/tags).
 
 ## Authors
 
-* **[LobosJr](https://twitch.tv/LobosJr)** - *Lead Designer*
-* **[EmpyrealHell](https://github.com/EmpyrealHell)** - *Lead/Primary Developer*
+- **[LobosJr](https://twitch.tv/LobosJr)** - _Lead Designer_
+- **[EmpyrealHell](https://github.com/EmpyrealHell)** - _Lead/Primary Developer_
 
 See also the list of [contributors](https://github.com/EmpyrealHell/wolfpack-rpg-client/contributors) who participated in this project.
 

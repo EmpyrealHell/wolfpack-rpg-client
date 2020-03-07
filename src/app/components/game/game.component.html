@@ -6,7 +6,7 @@
         <span>Wolfpack RPG Client v{{version}}</span>
         <span class="fill-space"></span>
         <span>
-          <button mat-button (click)="openIssuesPage()">Report a Bug</button>
+          <button mat-button (click)="openPage('issues/new')">Report a Bug</button>
         </span>
         <span *ngIf="ircService.isConnected else usernameLoggedOut">
           <button mat-button [matMenuTriggerFor]="userMenu">{{config.authentication.user}}<mat-icon>arrow_drop_down
@@ -26,6 +26,9 @@
               <mat-slide-toggle (click)="$event.stopPropagation();" color="accent"
                 [(ngModel)]="config.settings.toolbarIcons" (change)="updateSettings()">Toolbar Icons</mat-slide-toggle>
             </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="openPage('releases');">Changelog</button>
+            <button mat-menu-item (click)="openPage('issues/new');">Report a Bug</button>
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="logOut()">Logout</button>
           </mat-menu>
