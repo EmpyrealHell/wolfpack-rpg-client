@@ -76,9 +76,12 @@ export class GameComponent implements OnInit {
     }
   }
 
-  openIssuesPage(): void {
+  /**
+   * Launches a new window on a page.
+   */
+  openPage(endpoint: string): void {
     window.open(
-      'https://github.com/EmpyrealHell/wolfpack-rpg-client/issues/new',
+      `https://github.com/EmpyrealHell/wolfpack-rpg-client/${endpoint}`,
       '_blank'
     );
   }
