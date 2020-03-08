@@ -272,6 +272,27 @@ describe('IrcService', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
+  fit('should send a fourth message after 1 second', async () => {
+    const message = `test message sent at ${Date.now()}`;
+    const sendFn = {
+      send: (account: string, message: string): Promise<[string, string]> => {
+        return new Promise(resolve => {
+          resolve(['', '']);
+        });
+      },
+    };
+    const spy = spyOn(sendFn, 'send');
+    service.send(message);
+    service.messageQueue.setSendFunction(sendFn.send);
+    await attachAndSend(message);
+    for (let i = 0; i < 3; i++) {
+      service.messageQueue.addSent(Date.now() - 1001);
+    }
+    service.send(message);
+    await service.messageQueue.processQueue();
+    expect(spy).toHaveBeenCalled();
+  });
+
   it('should not send more than 100 messages each minute', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
@@ -291,5 +312,26 @@ describe('IrcService', () => {
     service.send(message);
     await service.messageQueue.processQueue();
     expect(spy).not.toHaveBeenCalled();
+  });
+
+  fit('should send a 101st message after 1 minute', async () => {
+    const message = `test message sent at ${Date.now()}`;
+    const sendFn = {
+      send: (account: string, message: string): Promise<[string, string]> => {
+        return new Promise(resolve => {
+          resolve(['', '']);
+        });
+      },
+    };
+    const spy = spyOn(sendFn, 'send');
+    service.send(message);
+    service.messageQueue.setSendFunction(sendFn.send);
+    await attachAndSend(message);
+    for (let i = 0; i < 100; i++) {
+      service.messageQueue.addSent(Date.now() - 60001);
+    }
+    service.send(message);
+    await service.messageQueue.processQueue();
+    expect(spy).toHaveBeenCalled();
   });
 });
