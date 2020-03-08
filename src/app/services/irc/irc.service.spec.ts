@@ -251,7 +251,7 @@ describe('IrcService', () => {
     expect(call.args[1]).toBe(message);
   });
 
-  it('should not send more than 3 messages each second', async () => {
+  fit('should not send more than 3 messages each second', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
       send: (account: string, message: string): Promise<[string, string]> => {
@@ -261,11 +261,11 @@ describe('IrcService', () => {
       },
     };
     const spy = spyOn(sendFn, 'send');
-    service.send(message);
-    service.messageQueue.setSendFunction(sendFn.send);
     await attachAndSend(message);
+    service.messageQueue.reset();
+    service.messageQueue.setSendFunction(sendFn.send);
     for (let i = 0; i < 3; i++) {
-      service.messageQueue.addSent(Date.now());
+      service.messageQueue.addSent(Date.now() - 999);
     }
     service.send(message);
     await service.messageQueue.processQueue();
@@ -282,9 +282,9 @@ describe('IrcService', () => {
       },
     };
     const spy = spyOn(sendFn, 'send');
-    service.send(message);
-    service.messageQueue.setSendFunction(sendFn.send);
     await attachAndSend(message);
+    service.messageQueue.reset();
+    service.messageQueue.setSendFunction(sendFn.send);
     for (let i = 0; i < 3; i++) {
       service.messageQueue.addSent(Date.now() - 1001);
     }
@@ -293,7 +293,7 @@ describe('IrcService', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should not send more than 100 messages each minute', async () => {
+  fit('should not send more than 100 messages each minute', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
       send: (account: string, message: string): Promise<[string, string]> => {
@@ -303,11 +303,11 @@ describe('IrcService', () => {
       },
     };
     const spy = spyOn(sendFn, 'send');
-    service.send(message);
-    service.messageQueue.setSendFunction(sendFn.send);
     await attachAndSend(message);
+    service.messageQueue.reset();
+    service.messageQueue.setSendFunction(sendFn.send);
     for (let i = 0; i < 100; i++) {
-      service.messageQueue.addSent(Date.now() - 5000);
+      service.messageQueue.addSent(Date.now() - 59999);
     }
     service.send(message);
     await service.messageQueue.processQueue();
@@ -324,9 +324,9 @@ describe('IrcService', () => {
       },
     };
     const spy = spyOn(sendFn, 'send');
-    service.send(message);
-    service.messageQueue.setSendFunction(sendFn.send);
     await attachAndSend(message);
+    service.messageQueue.reset();
+    service.messageQueue.setSendFunction(sendFn.send);
     for (let i = 0; i < 100; i++) {
       service.messageQueue.addSent(Date.now() - 60001);
     }
