@@ -84,15 +84,15 @@ export class ConsoleWidgetComponent implements WidgetComponent {
       };
     }
     const history = this.configManager.getConfig().history;
-    const clampedIndex = Math.max(Math.min(index, history.length), 0);
-    if (clampedIndex <= 0) {
+    const clampedIndex = Math.max(Math.min(index, history.length - 1), -1);
+    if (clampedIndex < 0) {
       return {
         message: '',
-        index: clampedIndex,
+        index: -1,
       };
     } else {
       return {
-        message: history[history.length - clampedIndex],
+        message: history[history.length - clampedIndex - 1],
         index: clampedIndex,
       };
     }
