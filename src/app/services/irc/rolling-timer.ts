@@ -36,12 +36,15 @@ export class RollingTimer {
   availableOccurrences(): number {
     const now = Date.now();
     const threshold = now - this.period * 1000;
+    let toRemove = 0;
     for (let i = 0; i < this.hits.length; i++) {
-      if (this.hits[i] >= threshold) {
-        this.hits.splice(0, i);
+      if (this.hits[i] < threshold) {
+        toRemove++;
+      } else if (this.hits[i] >= threshold) {
         break;
       }
     }
+    this.hits.splice(0, toRemove);
     return this.max - this.hits.length;
   }
 }

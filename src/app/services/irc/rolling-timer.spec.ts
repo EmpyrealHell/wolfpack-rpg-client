@@ -25,4 +25,13 @@ describe('RollingTimer', () => {
     await delay();
     expect(timer.availableOccurrences()).toBe(1);
   });
+
+  it('should remove lapsed occurrences', async () => {
+    const timer = new RollingTimer(0.04, 1);
+    const delay = async () => new Promise(resolve => setTimeout(resolve, 50));
+    timer.addOccurrence();
+    expect(timer.availableOccurrences()).toBe(0);
+    await delay();
+    expect(timer.availableOccurrences()).toBe(1);
+  });
 });
