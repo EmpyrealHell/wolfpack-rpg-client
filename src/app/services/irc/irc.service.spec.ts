@@ -11,6 +11,21 @@ describe('IrcService', () => {
   let configManagerSpy: ClassSpy<ConfigManager>;
   let userServiceSpy: ClassSpy<UserService>;
 
+  async function attachAndSend(
+    message: string
+  ): Promise<jasmine.SpyObj<Client>> {
+    const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
+    clientInstance.on.and.callFake((event: string, callback: Function) => {
+      if (event === 'whisper') {
+        callback('', null, message, false);
+      }
+    });
+    await service.connectUsing((opts: Options) => {
+      return clientInstance;
+    });
+    return clientInstance;
+  }
+
   beforeEach(() => {
     configManagerSpy = TestUtils.spyOnClass(ConfigManager);
     const configData = new Config();
@@ -35,6 +50,7 @@ describe('IrcService', () => {
 
   it('should connect to IRC', async () => {
     const queueSpy = spyOn(service.messageQueue, 'start');
+    const sendFnSpy = spyOn(service.messageQueue, 'setSendFunction');
     const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
     const userData = userServiceSpy.getUserInfo();
     const configData = configManagerSpy.getConfig() as Config;
@@ -44,6 +60,7 @@ describe('IrcService', () => {
       return clientInstance;
     });
     expect(queueSpy).toHaveBeenCalled();
+    expect(sendFnSpy).toHaveBeenCalled();
     expect(optsUsed).toBeTruthy();
     expect(optsUsed.options).toBeTruthy();
     expect(optsUsed.options!.clientId).toBe(userData.client_id);
@@ -63,47 +80,6 @@ describe('IrcService', () => {
     }
     expect(toCall).toEqual([]);
   });
-
-  it('should queue messages to send', () => {
-    const message = `test${Date.now()}`;
-    service.send(message);
-    const queue = service.messageQueue.queuedMessages;
-    expect(queue).toContain(message);
-    expect(queue.length).toBe(1);
-  });
-
-  it('should not queue duplicate messages', () => {
-    const message = `test${Date.now()}`;
-    service.send(message);
-    service.send(message);
-    const queue = service.messageQueue.queuedMessages;
-    expect(queue.length).toBe(1);
-  });
-
-  it('should return a copy of the queued messages', () => {
-    const message = `test message at ${Date.now()}`;
-    service.send(message);
-    let queueCopy = service.messageQueue.queuedMessages;
-    expect(queueCopy).toContain(message);
-    queueCopy.length = 0;
-    queueCopy = service.messageQueue.queuedMessages;
-    expect(queueCopy).toContain(message);
-  });
-
-  async function attachAndSend(
-    message: string
-  ): Promise<jasmine.SpyObj<Client>> {
-    const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
-    clientInstance.on.and.callFake((event: string, callback: Function) => {
-      if (event === 'whisper') {
-        callback('', null, message, false);
-      }
-    });
-    await service.connectUsing((opts: Options) => {
-      return clientInstance;
-    });
-    return clientInstance;
-  }
 
   it('should return a copy of received messages', async () => {
     const message = `test message at ${Date.now()}`;
@@ -249,89 +225,5 @@ describe('IrcService', () => {
     expect(spy).toHaveBeenCalled();
     const call = spy.calls.mostRecent();
     expect(call.args[1]).toBe(message);
-  });
-
-  fit('should not send more than 3 messages each second', async () => {
-    const message = `test message sent at ${Date.now()}`;
-    const sendFn = {
-      send: (account: string, message: string): Promise<[string, string]> => {
-        return new Promise(resolve => {
-          resolve(['', '']);
-        });
-      },
-    };
-    const spy = spyOn(sendFn, 'send');
-    await attachAndSend(message);
-    service.messageQueue.reset();
-    service.messageQueue.setSendFunction(sendFn.send);
-    for (let i = 0; i < 3; i++) {
-      service.messageQueue.addSent(Date.now() - 999);
-    }
-    service.send(message);
-    await service.messageQueue.processQueue();
-    expect(spy).not.toHaveBeenCalled();
-  });
-
-  fit('should send a fourth message after 1 second', async () => {
-    const message = `test message sent at ${Date.now()}`;
-    const sendFn = {
-      send: (account: string, message: string): Promise<[string, string]> => {
-        return new Promise(resolve => {
-          resolve(['', '']);
-        });
-      },
-    };
-    const spy = spyOn(sendFn, 'send');
-    await attachAndSend(message);
-    service.messageQueue.reset();
-    service.messageQueue.setSendFunction(sendFn.send);
-    for (let i = 0; i < 3; i++) {
-      service.messageQueue.addSent(Date.now() - 1001);
-    }
-    service.send(message);
-    await service.messageQueue.processQueue();
-    expect(spy).toHaveBeenCalled();
-  });
-
-  fit('should not send more than 100 messages each minute', async () => {
-    const message = `test message sent at ${Date.now()}`;
-    const sendFn = {
-      send: (account: string, message: string): Promise<[string, string]> => {
-        return new Promise(resolve => {
-          resolve(['', '']);
-        });
-      },
-    };
-    const spy = spyOn(sendFn, 'send');
-    await attachAndSend(message);
-    service.messageQueue.reset();
-    service.messageQueue.setSendFunction(sendFn.send);
-    for (let i = 0; i < 100; i++) {
-      service.messageQueue.addSent(Date.now() - 59999);
-    }
-    service.send(message);
-    await service.messageQueue.processQueue();
-    expect(spy).not.toHaveBeenCalled();
-  });
-
-  fit('should send a 101st message after 1 minute', async () => {
-    const message = `test message sent at ${Date.now()}`;
-    const sendFn = {
-      send: (account: string, message: string): Promise<[string, string]> => {
-        return new Promise(resolve => {
-          resolve(['', '']);
-        });
-      },
-    };
-    const spy = spyOn(sendFn, 'send');
-    await attachAndSend(message);
-    service.messageQueue.reset();
-    service.messageQueue.setSendFunction(sendFn.send);
-    for (let i = 0; i < 100; i++) {
-      service.messageQueue.addSent(Date.now() - 60001);
-    }
-    service.send(message);
-    await service.messageQueue.processQueue();
-    expect(spy).toHaveBeenCalled();
   });
 });
