@@ -209,11 +209,8 @@ describe('IrcService', () => {
   it('should send queued messages', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
-      send: async (
-        account: string,
-        message: string
-      ): Promise<[string, string]> => {
-        return new Promise(resolve => {
+      send: async (account: string, message: string) => {
+        return new Promise<[string, string]>(resolve => {
           resolve(['', '']);
         });
       },
@@ -225,5 +222,40 @@ describe('IrcService', () => {
     expect(spy).toHaveBeenCalled();
     const call = spy.calls.mostRecent();
     expect(call.args[1]).toBe(message);
+  });
+
+  it('should properly format messages', async () => {
+    const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
+    let whisperCallback: Function = () => {};
+    clientInstance.on.and.callFake((event: string, callback: Function) => {
+      if (event === 'whisper') {
+        whisperCallback = callback;
+      }
+    });
+    await service.connectUsing((opts: Options) => {
+      return clientInstance;
+    });
+
+    const whispers: string[] = [];
+    service.register('test', (message: string) => {
+      whispers.push(message);
+    });
+
+    const timestamp = Date.now().toString();
+    whisperCallback.call(service, '', null, 'cmd', true);
+    whisperCallback.call(service, '', null, 'response', false);
+    whisperCallback.call(service, '', null, 'cmd', true);
+    whisperCallback.call(service, '', null, 'at', false);
+    whisperCallback.call(service, '', null, timestamp, false);
+
+    expect(service.history).toBe(
+      `>> cmd\nresponse\n\n>> cmd\nat\n${timestamp}\n`
+    );
+    expect(service.lines.length).toBe(5);
+    expect(whispers[0]).toBe('>> cmd');
+    expect(whispers[1]).toBe('response');
+    expect(whispers[2]).toBe('\n>> cmd');
+    expect(whispers[3]).toBe('at');
+    expect(whispers[4]).toBe(timestamp);
   });
 });

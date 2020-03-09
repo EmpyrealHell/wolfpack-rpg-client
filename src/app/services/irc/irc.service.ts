@@ -95,11 +95,13 @@ export class IrcService {
   ) {}
 
   private onWhisper(message: string, self = false): void {
+    const newLine = IrcService.lines.length === 0 ? '' : '\n';
     const prefixedMessage = self ? `>> ${message}` : message;
+    const fullMessage = self ? `${newLine}${prefixedMessage}` : prefixedMessage;
     IrcService.lines.push(prefixedMessage);
-    IrcService.history += `${self ? '\n' : ''}${prefixedMessage}\n`;
+    IrcService.history += `${fullMessage}\n`;
     for (const [key, value] of IrcService.callbacks) {
-      value.call(value, prefixedMessage);
+      value.call(value, fullMessage);
     }
   }
 
