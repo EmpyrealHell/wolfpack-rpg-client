@@ -18,8 +18,8 @@ export class CommandService extends CommandWrapper {
    * @param message The message to send.
    */
   sendChatMessage(message: string): void {
-    const raw = this.getCommandString('Chat', 'Message', 'Command');
-    const command = this.replaceProperty(raw, 'Message', message);
+    const raw = this.getCommandString('chat', 'message', 'command');
+    const command = this.replaceProperty(raw, 'message', message);
     this.ircService.send(command);
   }
 
@@ -27,7 +27,7 @@ export class CommandService extends CommandWrapper {
    * Sends the command to retrieve daily bonus eligibility.
    */
   sendDungeonDaily(): void {
-    const command = this.getCommandString('Dungeon', 'Daily', 'Command');
+    const command = this.getCommandString('dungeon', 'daily', 'command');
     this.ircService.send(command);
   }
 
@@ -35,8 +35,8 @@ export class CommandService extends CommandWrapper {
    * Sends the command to retrieve details about a specific dungeon.
    */
   sendDungeonDetail(id: string): void {
-    const raw = this.getCommandString('Dungeon', 'Detail', 'Command');
-    const command = this.replaceProperty(raw, 'Id', id);
+    const raw = this.getCommandString('dungeon', 'detail', 'command');
+    const command = this.replaceProperty(raw, 'id', id);
     this.ircService.send(command);
   }
 }

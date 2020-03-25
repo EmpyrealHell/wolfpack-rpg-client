@@ -1,13 +1,8 @@
 import { TestUtils } from 'src/test/test-utils';
-import { Options } from 'tmi.js';
-import { Config } from '../data/config-data';
-import { ConfigManager } from '../data/config-manager';
 import { IrcService } from '../irc/irc.service';
-import { UserData } from '../user/user.data';
-import { UserService } from '../user/user.service';
 import { CommandService } from './command-service';
 
-fdescribe('CommandWrapper', () => {
+describe('CommandWrapper', () => {
   let ircService: IrcService;
   let service: CommandService;
 

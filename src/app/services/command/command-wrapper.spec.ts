@@ -1,6 +1,5 @@
-import { CommandWrapper } from './command-wrapper';
 import * as CommandData from './command-data.json';
-import { Utils } from 'src/app/util/utils';
+import { CommandWrapper } from './command-wrapper';
 
 export class ConcreteCommandWrapper extends CommandWrapper {}
 
@@ -9,11 +8,11 @@ describe('CommandWrapper', () => {
 
   it('should get command strings', () => {
     const commandString = wrapper.getCommandString(
-      'Chat',
-      'Message',
-      'Command'
+      'chat',
+      'message',
+      'command'
     );
-    expect(commandString).toBe(CommandData.Commands.Chat.Message.Command);
+    expect(commandString).toBe(CommandData.commands.chat.message.command);
   });
 
   it('should wrap properties to match json', () => {

@@ -14,11 +14,11 @@ export abstract class CommandWrapper {
    * @param message Must be 'Command' to ensure type safety.
    */
   getCommandString<
-    G extends keyof typeof CommandData.Commands,
-    C extends keyof typeof CommandData.Commands[G],
-    M extends keyof typeof CommandData.Commands[G][C]
+    G extends keyof typeof CommandData.commands,
+    C extends keyof typeof CommandData.commands[G],
+    M extends keyof typeof CommandData.commands[G][C]
   >(group: G, command: C, message: M): string {
-    const groupObj = CommandData.Commands[group];
+    const groupObj = CommandData.commands[group];
     const commandObj = groupObj[command];
     const toSend = commandObj[message];
     return '' + toSend;

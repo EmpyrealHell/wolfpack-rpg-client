@@ -1,5 +1,5 @@
-import * as CommandData from './command-data.json';
 import { Utils } from 'src/app/util/utils';
+import * as CommandData from './command-data.json';
 
 describe('CommandData', () => {
   // tslint:disable-next-line: no-any
@@ -21,7 +21,8 @@ describe('CommandData', () => {
     const commands = getAllCommands(CommandData);
     const wrongCommands: string[] = [];
     for (const command of commands) {
-      const parts = command.split(' ').splice(0, 1);
+      const parts = command.split(' ');
+      parts.splice(0, 1);
       for (const part of parts) {
         if (!part.startsWith('{') || !part.endsWith('}')) {
           wrongCommands.push(command);
