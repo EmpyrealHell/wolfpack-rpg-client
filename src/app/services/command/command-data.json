@@ -3,9 +3,7 @@
     "Chat": {
       "Message": {
         "Command": "/p {Message}",
-        "Alternates": [
-          "/party {Message}"
-        ],
+        "Alternates": ["/party {Message}"],
         "Responses": {
           "Success": {
             "Confirmation": "You whisper: \" (?<Message>.*)\" "
@@ -101,9 +99,7 @@
       },
       "Catch": {
         "Command": "!catch",
-        "Alternates": [
-          "!reel"
-        ],
+        "Alternates": ["!reel"],
         "Responses": {
           "Success": {
             "Confirmation": "Congratulations! You caught a (?<Length>\\d+(?:\\.\\d+)?) inch, (?<Weight>\\d+(?:\\.\\d+)?) pound (?<Name>\\w+)!"
@@ -134,9 +130,7 @@
       },
       "Leaderboard": {
         "Command": "!fishleaders",
-        "Alternates": [
-          "!leaderboards"
-        ],
+        "Alternates": ["!leaderboards"],
         "Responses": {
           "Success": {
             "Record": "Largest (?<Fish>\\w+) caught by (?<User>[^ ]+) at (?<Size>\\d+(?:\\.\\d+)) lbs\\."
@@ -189,9 +183,7 @@
       },
       "Coins": {
         "Command": "!coins",
-        "Alternates": [
-          "coins"
-        ],
+        "Alternates": ["coins"],
         "Responses": {
           "Error": {
             "NotFound": "You don't have any coins yet! Stick around during the livestream to earn coins\\."
@@ -203,13 +195,7 @@
       },
       "Experience": {
         "Command": "!xp",
-        "Alternates": [
-          "xp",
-          "!level",
-          "level",
-          "!lvl",
-          "lvl"
-        ],
+        "Alternates": ["xp", "!level", "level", "!lvl", "lvl"],
         "Responses": {
           "Error": {
             "InvalidOperation": "You don't have any XP yet! Hang out in chat during the livestream to earn XP & coins\\."
@@ -222,12 +208,7 @@
       },
       "Help": {
         "Command": "?",
-        "Alternates": [
-          "help",
-          "!help",
-          "faq",
-          "!faq"
-        ],
+        "Alternates": ["help", "!help", "faq", "!faq"],
         "Responses": {
           "Success": {
             "Info": {
@@ -253,9 +234,7 @@
       },
       "Stats": {
         "Command": "!stats",
-        "Alternates": [
-          "stats"
-        ],
+        "Alternates": ["stats"],
         "Responses": {
           "Error": {
             "InvalidOperation": "You either don't have coins or xp yet\\. Hang out in chat during the livestream to earn them!"
@@ -291,11 +270,7 @@
       },
       "Equip": {
         "Command": "!equip",
-        "Alternates": [
-          "!activate",
-          "activate",
-          "equip"
-        ],
+        "Alternates": ["!activate", "activate", "equip"],
         "Responses": {
           "Error": {
             "AlreadyEquipped": "(?<Item>.*) is already equipped\\.",
@@ -309,11 +284,7 @@
       },
       "List": {
         "Command": "!inventory",
-        "Alternates": [
-          "inventory",
-          "!inv",
-          "inv"
-        ],
+        "Alternates": ["inventory", "!inv", "inv"],
         "Responses": {
           "Error": {
             "Empty": "You have no items\\."
@@ -328,11 +299,7 @@
       },
       "Unequip": {
         "Command": "!unequip",
-        "Alternates": [
-          "!deactivate",
-          "deactivate",
-          "unequip"
-        ],
+        "Alternates": ["!deactivate", "deactivate", "unequip"],
         "Responses": {
           "Error": {
             "Empty": "You have no items\\."
@@ -508,11 +475,7 @@
       },
       "List": {
         "Command": "!pets",
-        "Alternates": [
-          "!stable",
-          "pets",
-          "stable"
-        ],
+        "Alternates": ["!stable", "pets", "stable"],
         "Responses": {
           "Error": {
             "Empty": "You have no pets\\."
@@ -538,10 +501,7 @@
             "Confirmation": "If you release (?<Name>[^ ]{1,16}), they will be gone forever\\. Are you sure you want to release them\\? \\(y/n\\)"
           }
         },
-        "Options": [
-          "Yes",
-          "No"
-        ]
+        "Options": ["Yes", "No"]
       },
       "Rename": {
         "Command": "!rename {Id} {Name}",
@@ -627,9 +587,7 @@
       },
       "Gloat": {
         "Command": "!gloat",
-        "Alternates": [
-          "gloat"
-        ],
+        "Alternates": ["gloat"],
         "Responses": {
           "Error": {
             "InsufficientFunds": "You don't have enough coins to gloat (Cost: (?<Cost>\\d+) Wolfcoins)",
@@ -642,9 +600,7 @@
       },
       "GloatFish": {
         "Command": "!gloatfish",
-        "Alternates": [
-          "!fishgloat"
-        ],
+        "Alternates": ["!fishgloat"],
         "Responses": {
           "Error": {
             "Empty": "You don't have any fish! Type !cast to try and fish for some!",
@@ -661,9 +617,7 @@
       },
       "GloatPet": {
         "Command": "!gloatpet",
-        "Alternates": [
-          "!petgloat"
-        ],
+        "Alternates": ["!petgloat"],
         "Responses": {
           "Error": {
             "Empty": "You don't have an active pet to show off! Activate one with !summon <id>",
@@ -701,16 +655,11 @@
             }
           }
         },
-        "Options": [
-          "SetClass",
-          "Cancel"
-        ]
+        "Options": ["SetClass", "Cancel"]
       },
       "Stats": {
         "Command": "!stats {Username}",
-        "Alternates": [
-          "stats {Username}"
-        ],
+        "Alternates": ["stats {Username}"],
         "Responses": {
           "Error": {
             "UserNotFound": "User does not exist in database\\. You were charged no coins\\."
