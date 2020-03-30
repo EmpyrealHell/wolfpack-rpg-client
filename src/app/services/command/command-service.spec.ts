@@ -14,7 +14,7 @@ describe('CommandWrapper', () => {
   });
 
   it('should send chat messages to party', () => {
-    service.sendChatMessage('test');
+    service.chat.message('test');
     expect(ircService.send).toHaveBeenCalledWith('/p test');
   });
 });
