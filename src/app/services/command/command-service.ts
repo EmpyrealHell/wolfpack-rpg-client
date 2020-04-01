@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IrcService } from '../irc/irc.service.js';
 import { ChatCommands } from './chat-commands.js';
-import { CommandWrapper } from './command-wrapper.js';
 import { DungeonCommands } from './dungeon-commands.js';
 import { FishingCommands } from './fishing-commands.js';
 import { InfoCommands } from './info-commands.js';
@@ -10,6 +9,7 @@ import { PartyCommands } from './party-commands.js';
 import { PendingCommands } from './pending-commands.js';
 import { PetsCommands } from './pets-commands.js';
 import { ShopCommands } from './shop-commands.js';
+import * as CommandData from './command-data.json';
 
 /**
  * Service that sends messages based on the command data json config file.
@@ -17,7 +17,8 @@ import { ShopCommands } from './shop-commands.js';
 @Injectable({
   providedIn: 'root',
 })
-export class CommandService extends CommandWrapper {
+export class CommandService {
+  private messages = new Map<string, RegExp>();
   chat: ChatCommands;
   dungeon: DungeonCommands;
   fishing: FishingCommands;
@@ -29,7 +30,6 @@ export class CommandService extends CommandWrapper {
   shop: ShopCommands;
 
   constructor(private ircService: IrcService) {
-    super();
     this.chat = new ChatCommands(ircService);
     this.dungeon = new DungeonCommands(ircService);
     this.fishing = new FishingCommands(ircService);
@@ -39,5 +39,52 @@ export class CommandService extends CommandWrapper {
     this.pending = new PendingCommands(ircService);
     this.pets = new PetsCommands(ircService);
     this.shop = new ShopCommands(ircService);
+    this.ircService.register('command-service', this.onIncomingWhisper, true);
+
+    this.registerResponses();
+    this.registerMessages();
+  }
+
+  private registerResponses(): void {
+    // tslint:disable-next-line: no-any
+    const commands = CommandData.commands as any;
+    for (const groupKey in commands) {
+      if (commands[groupKey]) {
+        const group = commands[groupKey];
+        for (const messageKey in group) {
+          // TODO: in progress
+          if (group[messageKey] && group[messageKey].responses) {
+            const message = group[messageKey];
+            if (typeof message === 'string') {
+              const id = `messages.${groupKey}.${messageKey}`;
+              this.messages.set(id, new RegExp(message));
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private registerMessages(): void {
+    // tslint:disable-next-line: no-any
+    const messages = CommandData.messages as any;
+    for (const groupKey in messages) {
+      if (messages[groupKey]) {
+        const group = messages[groupKey];
+        for (const messageKey in group) {
+          if (group[messageKey]) {
+            const message = group[messageKey];
+            if (typeof message === 'string') {
+              const id = `messages.${groupKey}.${messageKey}`;
+              this.messages.set(id, new RegExp(message));
+            }
+          }
+        }
+      }
+    }
+  }
+
+  onIncomingWhisper(message: string): void {
+    const messages = CommandData.messages;
   }
 }
