@@ -18,7 +18,7 @@ import * as CommandData from './command-data.json';
   providedIn: 'root',
 })
 export class CommandService {
-  private messages = new Map<string, RegExp>();
+  private messages = new Map<string, CommandResponse>();
   chat: ChatCommands;
   dungeon: DungeonCommands;
   fishing: FishingCommands;
@@ -39,52 +39,105 @@ export class CommandService {
     this.pending = new PendingCommands(ircService);
     this.pets = new PetsCommands(ircService);
     this.shop = new ShopCommands(ircService);
-    this.ircService.register('command-service', this.onIncomingWhisper, true);
 
     this.registerResponses();
     this.registerMessages();
+    this.ircService.register('command-service', this.onIncomingWhisper, true);
+  }
+
+  private registerContainer<T>(
+    name: string,
+    container: T,
+    isCommand = false
+  ): void {
+    for (const groupKey in container) {
+      if (container[groupKey]) {
+        const group = container[groupKey];
+        this.registerGroup(`${name}.${groupKey}`, group, isCommand);
+      }
+    }
+  }
+
+  private registerGroup<T>(name: string, group: T, isCommand: boolean): void {
+    for (const entryKey in group) {
+      if (group[entryKey]) {
+        const entry = group[entryKey];
+        if (isCommand) {
+          this.registerCommand(`${name}.${entryKey}`, entry);
+        } else {
+          this.registerEntry(`${name}.${entryKey}`, entry);
+        }
+      }
+    }
+  }
+
+  private registerCommand<T>(name: string, command: T): void {
+    for (const catKey in command) {
+      if (command[catKey]) {
+        const category = command[catKey];
+        for (const entryKey in category) {
+          if (category[entryKey]) {
+            const entry = category[entryKey];
+            this.registerEntry(`${name}.${catKey}.${entryKey}`, entry);
+          }
+        }
+      }
+    }
+  }
+
+  private registerEntry<T>(name: string, entry: T): void {
+    if (typeof entry === 'string') {
+      this.messages.set(name, new CommandResponse(entry));
+    } else if (typeof entry === 'object') {
+      const subgroupEntry = (entry as unknown) as SubgroupExpression;
+      const response = new CommandResponse(
+        subgroupEntry.response,
+        subgroupEntry.subGroups
+      );
+      this.messages.set(name, response);
+    }
   }
 
   private registerResponses(): void {
     // tslint:disable-next-line: no-any
     const commands = CommandData.commands as any;
-    for (const groupKey in commands) {
-      if (commands[groupKey]) {
-        const group = commands[groupKey];
-        for (const messageKey in group) {
-          // TODO: in progress
-          if (group[messageKey] && group[messageKey].responses) {
-            const message = group[messageKey];
-            if (typeof message === 'string') {
-              const id = `messages.${groupKey}.${messageKey}`;
-              this.messages.set(id, new RegExp(message));
-            }
-          }
-        }
-      }
-    }
+    this.registerContainer('command', commands, true);
   }
 
   private registerMessages(): void {
     // tslint:disable-next-line: no-any
     const messages = CommandData.messages as any;
-    for (const groupKey in messages) {
-      if (messages[groupKey]) {
-        const group = messages[groupKey];
-        for (const messageKey in group) {
-          if (group[messageKey]) {
-            const message = group[messageKey];
-            if (typeof message === 'string') {
-              const id = `messages.${groupKey}.${messageKey}`;
-              this.messages.set(id, new RegExp(message));
-            }
-          }
+    this.registerContainer('message', messages);
+  }
+
+  onIncomingWhisper(message: string): void {
+    for (const [key, value] of this.messages) {
+      if (value.response.test(message)) {
+        if (value.subGroups) {
+          const match = value.subGroups.exec(message);
+          console.log(match);
+        } else {
+          const match = value.response.exec(message);
+          console.log(match);
         }
       }
     }
   }
+}
 
-  onIncomingWhisper(message: string): void {
-    const messages = CommandData.messages;
+export class CommandResponse {
+  response: RegExp;
+  subGroups: RegExp | undefined;
+
+  constructor(response: string, subGroups: string | undefined = undefined) {
+    this.response = new RegExp(response).compile();
+    if (subGroups) {
+      this.subGroups = new RegExp(subGroups).compile();
+    }
   }
+}
+
+export interface SubgroupExpression {
+  response: string;
+  subGroups: string;
 }
