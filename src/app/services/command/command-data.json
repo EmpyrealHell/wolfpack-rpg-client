@@ -114,7 +114,7 @@
             "empty": "You don't have any fish! Type !cast to try and fish for some!"
           },
           "success": {
-            "name": "Name - (?<name>[^ ]{1,16}",
+            "name": "Name - (?<name>[^ ]{1,16})",
             "length": "Length - (?<length>\\d+(?:\\.\\d+)?) in\\.",
             "weight": "Weight - (?<weight>\\d+(?:\\.\\d+)?) lbs\\.",
             "size": "Size Category - (?<size>\\w+)",
@@ -145,7 +145,7 @@
           },
           "success": {
             "size": "You've caught (?<size>\\d+) different types of fish: ",
-            "fishInfo": "(?<id>\\d+): (?<name>[^ ]{1,16}",
+            "fishInfo": "(?<id>\\d+): (?<name>[^ ]{1,16})",
             "details": "Type !fish # for more information on the particular type of fish\\."
           }
         }
@@ -201,8 +201,8 @@
             "invalidOperation": "You don't have any XP yet! Hang out in chat during the livestream to earn XP & coins\\."
           },
           "success": {
-            "classLevel": "You are a Level (?<level>\\d+) (?<className>\\w+), and you are Prestige Level (?<prestige>\\d+)\\. (Total XP: (?<experience>\\d+) | XP To Next Level: (?<ToNext>\\d+))",
-            "level": "You are Level (?<level>\\d+) (Total XP: (?<experience>\\d+) | XP To Next Level: (?<ToNext>\\d+))"
+            "classLevel": "You are a Level (?<level>\\d+) (?<className>\\w+), and you are Prestige Level (?<prestige>\\d+)\\. \\(Total XP: (?<experience>\\d+) | XP To Next Level: (?<ToNext>\\d+)\\)",
+            "level": "You are Level (?<level>\\d+) \\(Total XP: (?<experience>\\d+) | XP To Next Level: (?<ToNext>\\d+)\\)"
           }
         }
       },
@@ -241,8 +241,8 @@
           },
           "success": {
             "coins": "You have: (?<coins>\\d+) coins\\.",
-            "classLevel": "You are a Level (?<level>\\d+) (?<className>\\w+), and you are Prestige Level (?<prestige>\\d+)\\. (Total XP: (?<experience>\\d+) | XP To Next Level: (?<ToNext>\\d+))",
-            "level": "You are Level (?<level>\\d+) (Total XP: (?<experience>\\d+) | XP To Next Level: (?<ToNext>\\d+))"
+            "classLevel": "You are a Level (?<level>\\d+) (?<className>\\w+), and you are Prestige Level (?<prestige>\\d+)\\. \\(Total XP: (?<experience>\\d+) | XP To Next Level: (?<ToNext>\\d+)\\)",
+            "level": "You are Level (?<level>\\d+) \\(Total XP: (?<experience>\\d+) | XP To Next Level: (?<ToNext>\\d+)\\)"
           }
         }
       },
@@ -432,7 +432,7 @@
         "command": "n",
         "responses": {
           "success": {
-            "keepPet": "You decided to keep (?<name>[^ ]{1,16}\\.",
+            "keepPet": "You decided to keep (?<name>[^ ]{1,16})\\.",
             "declineInvite": "You declined (?<user>[^ ]+)'s invite\\."
           }
         }
@@ -467,8 +467,8 @@
             "empty": "You don't have any pets\\."
           },
           "success": {
-            "infoActive": "<\\[(?<id>\\d+)\\]> (?<name>[^ ]{1,16} the (?<type>.*) \\((?<rarity>\\w+)\\)",
-            "infoInactive": "\\[(?<id>\\d+)\\] (?<name>[^ ]{1,16} the (?<type>.*) \\((?<rarity>\\w+)\\)",
+            "infoActive": "<\\[(?<id>\\d+)\\]> (?<name>[^ ]{1,16}) the (?<type>.*) \\((?<rarity>\\w+)\\)",
+            "infoInactive": "\\[(?<id>\\d+)\\] (?<name>[^ ]{1,16}) the (?<type>.*) \\((?<rarity>\\w+)\\)",
             "status": "Status: (?<status>[^\\|]+) \\| Sparkly\\? (?<sparkly>No|Yes)\\!?",
             "stats": "Level: (?<level>\\d+) \\| Affection: (?<affection>\\d+) \\| Energy: (?<energy>\\d+)"
           }
@@ -484,7 +484,7 @@
             "empty": "You don't have a pet\\."
           },
           "success": {
-            "confirmation": "You dismissed (?<name>[^ ]{1,16}\\."
+            "confirmation": "You dismissed (?<name>[^ ]{1,16})\\."
           }
         }
       },
@@ -495,11 +495,11 @@
             "syntax": "Invalid number of parameters\\. Syntax: !feed <stable ID>",
             "invalidId": "Invalid Stable ID given\\. Check !pets for each pet's stable ID!",
             "insufficientFunds": "You lack the (?<cost>\\d+) wolfcoins to feed your pet! Hop in a Lobos stream soon!",
-            "full": "(?<name>[^ ]{1,16} is full and doesn't need to eat!"
+            "full": "(?<name>[^ ]{1,16}) is full and doesn't need to eat!"
           },
           "success": {
-            "confirmation": "You were charged (?<cost>\\d+) wolfcoins to feed (?<name>[^ ]{1,16}\\. They feel refreshed!",
-            "levelUp": "(?<name>[^ ]{1,16} leveled up! They are now level (?<level>\\d+)\\."
+            "confirmation": "You were charged (?<cost>\\d+) wolfcoins to feed (?<name>[^ ]{1,16})\\. They feel refreshed!",
+            "levelUp": "(?<name>[^ ]{1,16}) leveled up! They are now level (?<level>\\d+)\\."
           }
         }
       },
@@ -525,8 +525,8 @@
           },
           "success": {
             "size": "You have (?<size>\\d+) pets: ",
-            "infoActive": "<\\[(?<id>\\d+)\\]> (?<name>[^ ]{1,16} the (?<type>.*) \\((?<rarity>\\w+)\\)",
-            "infoInactive": "\\[(?<id>\\d+)\\] (?<name>[^ ]{1,16} the (?<type>.*) \\((?<rarity>\\w+)\\)",
+            "infoActive": "<\\[(?<id>\\d+)\\]> (?<name>[^ ]{1,16}) the (?<type>.*) \\((?<rarity>\\w+)\\)",
+            "infoInactive": "\\[(?<id>\\d+)\\] (?<name>[^ ]{1,16}) the (?<type>.*) \\((?<rarity>\\w+)\\)",
             "status": "Status: (?<status>[^\\|]+) \\| Sparkly\\? (?<sparkly>No|Yes)\\!?",
             "stats": "Level: (?<level>\\d+) \\| Affection: (?<affection>\\d+) \\| Energy: (?<energy>\\d+)"
           }
@@ -582,7 +582,9 @@
       "bet": {
         "command": "!bet {value}",
         "responses": {
-          "error": "There was an error placing your bet\\. \\(not enough coins\\?\\)"
+          "error": {
+            "insufficientFunds": "There was an error placing your bet\\. \\(not enough coins\\?\\)"
+          }
         }
       },
       "gloat": {
@@ -590,11 +592,11 @@
         "alternates": ["gloat"],
         "responses": {
           "error": {
-            "insufficientFunds": "You don't have enough coins to gloat (Cost: (?<cost>\\d+) Wolfcoins)",
+            "insufficientFunds": "You don't have enough coins to gloat \\(Cost: (?<cost>\\d+) Wolfcoins\\)",
             "invalidOperation": "You don't have coins and/or xp yet!"
           },
           "public": {
-            "gloat": "(?<user>[^ ]+) has spent (?<cost>\\d+) Wolfcoins to show off that they are  Level (?<level>\\d+)(?:, Prestige Level (?<level>\\d+))?! (?<message>.*)"
+            "gloat": "(?<user>[^ ]+) has spent (?<cost>\\d+) Wolfcoins to show off that they are  Level (?<level>\\d+)(?:, Prestige Level (?<prestige>\\d+))?! (?<message>.*)"
           }
         }
       },
@@ -635,7 +637,7 @@
         "command": "!shop",
         "responses": {
           "success": {
-            "confirmation": "Whisper me '!stats <username>' to check another users stats! (Cost: 1 coin)   Whisper me '!gloat' to spend 10 coins and show off your level! (Cost: 10 coins)"
+            "confirmation": "Whisper me '!stats <username>' to check another users stats! \\(Cost: 1 coin\\)   Whisper me '!gloat' to spend 10 coins and show off your level! \\(Cost: 10 coins\\)"
           }
         }
       },
