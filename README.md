@@ -2,7 +2,7 @@
 
 An angular web app that acts as a client for interacting with the Wolfpack RPG. The Wolfpack RPG was developed by Twitch streamer LobosJr, as part of the custom bot he wrote. This app was developed for and in collaboration with LobosJr, to act as the official client for the game to get around the issues with the Twitch whisper system.
 
-[The Wolfpack RPG code](http://www.dropwizard.io/1.0.2/docs/)
+[The Wolfpack RPG code](https://github.com/lobosjr/lobotjr)
 
 ## Running the Client
 
@@ -82,4 +82,4 @@ See also the list of [contributors](https://github.com/EmpyrealHell/wolfpack-rpg
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/EmpyrealHell/wolfpack-rpg-client/blob/master/LICENSE.md) file for details
+This project is licensed under the GPL 3.0 License - see the [LICENSE.md](https://github.com/EmpyrealHell/wolfpack-rpg-client/blob/master/LICENSE.md) file for details
