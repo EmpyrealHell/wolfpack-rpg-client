@@ -10,6 +10,7 @@ import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetItem } from '../../services/widget/widget-item';
 import { WidgetComponent } from '../widget-factory/widget.component';
 import { WidgetService } from '../../services/widget/widget.service';
+import { CommandService } from 'src/app/services/command/command-service';
 
 /**
  * Holds a list of widgets and renders them to the DOM, in order.
@@ -49,8 +50,8 @@ export class WidgetContainerComponent implements OnInit {
   constructor(
     private widgetService: WidgetService,
     public configManager: ConfigManager,
-    // tslint:disable-next-line:align
     public ircService: IrcService,
+    public commandService: CommandService,
     private componentFactoryResolver: ComponentFactoryResolver
   ) {}
 

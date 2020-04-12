@@ -9,6 +9,7 @@ import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
 import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetComponent } from './widget.component';
+import { CommandService } from 'src/app/services/command/command-service';
 
 /**
  * Component that acts as a placeholder for widgets in the widget container.
@@ -37,6 +38,12 @@ export class WidgetFactoryComponent implements OnInit {
   configManager: ConfigManager | null = null;
 
   /**
+   * Reference to the command service.
+   */
+  @Input()
+  commandService: CommandService | null = null;
+
+  /**
    * The name of the component.
    */
   @Input()
@@ -58,6 +65,7 @@ export class WidgetFactoryComponent implements OnInit {
         .instance as WidgetComponent;
       component.configManager = this.configManager;
       component.ircService = this.ircService;
+      component.commandService = this.commandService;
       component.name = this.name!;
       component.onActivate();
     }

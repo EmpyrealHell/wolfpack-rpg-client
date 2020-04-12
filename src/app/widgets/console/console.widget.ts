@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
+import { CommandService } from 'src/app/services/command/command-service';
 
 /**
  * Widget that provides direct access to the communication channel between the
@@ -38,6 +39,11 @@ export class ConsoleWidgetComponent implements WidgetComponent {
    */
   @Input()
   configManager: ConfigManager | null;
+  /**
+   * Reference to the command service.
+   */
+  @Input()
+  commandService: CommandService | null;
 
   /**
    * Whether the irc service is connected.
@@ -52,6 +58,7 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   constructor() {
     this.ircService = null;
     this.configManager = null;
+    this.commandService = null;
   }
 
   private onWhisper(message: string): void {

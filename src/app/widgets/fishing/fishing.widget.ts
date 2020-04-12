@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { Responder } from '../abstract/responder';
 import * as fishConfig from './fishing.widget.json';
+import { CommandService } from 'src/app/services/command/command-service';
 
 /**
  * Widget used to display character data.
@@ -11,6 +12,15 @@ import * as fishConfig from './fishing.widget.json';
   templateUrl: './fishing.widget.html',
 })
 export class FishingWidgetComponent extends AbstractWidgetComponent {
+  protected subscribeToResponses(
+    id: string,
+    commandService: CommandService
+  ): void {
+    throw new Error('Method not implemented.');
+  }
+  protected sendInitialCommands(commandService: CommandService): void {
+    throw new Error('Method not implemented.');
+  }
   private responderArray: Responder[] = [
     new Responder(fishConfig.patterns.Leader, data => {
       for (const record of this.records) {

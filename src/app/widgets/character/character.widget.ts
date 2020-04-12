@@ -8,6 +8,7 @@ import * as characterConfig from './character.widget.json';
 import { Character } from './model/character.js';
 import { Item, Rarity } from './model/gear.js';
 import { Stats } from './model/stats.js';
+import { CommandService } from 'src/app/services/command/command-service.js';
 
 /**
  * Widget used to display character data.
@@ -24,69 +25,6 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     [Rarity.epic, '#e6deed'],
   ]);
 
-  private responderArray = new Array<Responder>(
-    new Responder(characterConfig.patterns.coins, matches => {
-      this.data.coins = Number(matches[1]);
-    }),
-    new Responder(characterConfig.patterns.level, matches => {
-      this.data.experience.updateStrings(
-        matches[1],
-        '0',
-        matches[2],
-        matches[3]
-      );
-    }),
-    new Responder(characterConfig.patterns.classLevel, matches => {
-      this.data.setClass(matches[2]);
-      this.data.experience.updateStrings(
-        matches[1],
-        matches[3],
-        matches[4],
-        matches[5]
-      );
-      this.modifiedStats = this.data.calculatStats();
-    }),
-    new Responder(characterConfig.patterns.gear, matches => {
-      if (matches[3] === 'Armor') {
-        this.readingStats = this.data.gear.armor;
-        this.data.gear.armor.stats = new Stats(0);
-      } else if (matches[3] === 'Weapon') {
-        this.readingStats = this.data.gear.weapon;
-        this.data.gear.weapon.stats = new Stats(0);
-      }
-      if (this.readingStats) {
-        this.readingStats.name = matches[1];
-        const rarity = matches[2].toLowerCase();
-        this.readingStats.rarity = Rarity[rarity as keyof typeof Rarity];
-      }
-    }),
-    new Responder(characterConfig.patterns.id, matches => {
-      if (this.readingStats) {
-        this.readingStats.id = Number(matches[1]);
-      }
-    }),
-    new Responder(characterConfig.patterns.stat, matches => {
-      if (this.readingStats) {
-        this.readingStats.stats.updateStatByDescription(
-          matches[2],
-          Number(matches[1])
-        );
-        this.modifiedStats = this.data.calculatStats();
-      }
-    }),
-    new Responder(null, matches => {
-      this.readingStats = null;
-    })
-  );
-
-  get responders(): Responder[] {
-    return this.responderArray;
-  }
-
-  get loadCommands(): string[] {
-    return characterConfig.loadCommands;
-  }
-
   /**
    * The character data to display.
    */
@@ -102,9 +40,103 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
 
   @Input() ircService: IrcService | null = null;
   @Input() configManager: ConfigManager | null = null;
+  @Input() commandService: CommandService | null = null;
 
   constructor() {
     super();
+  }
+
+  private handleStats(
+    name: string,
+    id: string,
+    groups: Array<Map<string, string>>
+  ): void {
+    const data = groups[0];
+    if (id === 'coins') {
+      const coins = data.get('coins');
+      if (coins) {
+        this.data.coins = Number(coins);
+      }
+    } else if (id === 'classLevel') {
+      this.data.class = data.get('className');
+      this.data.experience.updateStrings(
+        data.get('level'),
+        data.get('prestige'),
+        data.get('experience'),
+        data.get('toNext')
+      );
+    } else if (id === 'level') {
+      this.data.experience.updateStrings(
+        data.get('level'),
+        '0',
+        data.get('experience'),
+        data.get('toNext')
+      );
+    }
+  }
+
+  private handleInventory(
+    name: string,
+    id: string,
+    groups: Array<Map<string, string>>
+  ): void {
+    const data = groups[0];
+    if (id === 'size') {
+      this.readingStats = null;
+    } else if (id === 'info') {
+      const type = data.get('type');
+      const equipped = data.get('status') === 'Equipped';
+      if (type === 'Armor' && equipped) {
+        this.readingStats = this.data.gear.armor;
+        this.data.gear.armor.stats = new Stats(0);
+      } else if (type === 'Weapon' && equipped) {
+        this.readingStats = this.data.gear.weapon;
+        this.data.gear.weapon.stats = new Stats(0);
+      }
+      if (this.readingStats) {
+        this.readingStats.name = data.get('name');
+        this.readingStats.rarity =
+          Rarity[data.get('rarity') as keyof typeof Rarity];
+      }
+    } else if (id === 'id') {
+      if (this.readingStats) {
+        this.readingStats.id = Number(data.get('id'));
+      }
+    } else if (id === 'stat') {
+      const stat = data.get('stat');
+      if (this.readingStats && this.readingStats.stats && stat) {
+        const stats = this.readingStats.stats;
+        stats.updateStatByDescription(stat, Number(data.get('value')));
+        this.modifiedStats = this.data.calculatStats();
+      }
+    }
+  }
+
+  protected subscribeToResponses(
+    id: string,
+    commandService: CommandService
+  ): void {
+    commandService.subscribeToCommand(
+      'info',
+      'stats',
+      'responses',
+      'success',
+      id,
+      this.handleStats
+    );
+    commandService.subscribeToCommand(
+      'inventory',
+      'list',
+      'responses',
+      'success',
+      id,
+      this.handleInventory
+    );
+  }
+
+  protected sendInitialCommands(commandService: CommandService): void {
+    commandService.sendCommand('info', 'stats');
+    commandService.sendCommand('inventory', 'list');
   }
 
   /**
@@ -128,6 +160,9 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
    * Gets the name of the icon file to load for the current class.
    */
   getClassIcon(): string {
-    return `class-${this.data.class.toLowerCase()}.svg`;
+    const charClass = this.data.class
+      ? this.data.class
+      : Character.defaultClass;
+    return `class-${charClass.toLowerCase()}.svg`;
   }
 }

@@ -2,7 +2,7 @@ import { TestUtils } from 'src/test/test-utils';
 import { IrcService } from '../irc/irc.service';
 import { CommandService } from './command-service';
 
-describe('CommandWrapper', () => {
+fdescribe('CommandService', () => {
   let ircService: IrcService;
   let service: CommandService;
 
@@ -20,7 +20,8 @@ describe('CommandWrapper', () => {
 
   it('should load the command data json', () => {
     const messageList = service.messageList;
-    expect(messageList.length).toBe(186);
+    console.log(messageList);
+    expect(messageList.length).toBe(104);
   });
 
   it('should call a method on a matching message', () => {
@@ -28,7 +29,7 @@ describe('CommandWrapper', () => {
       fn: (name: string, id: string, groups: Array<Map<string, string>>) => {},
     };
     const spy = spyOn(callback, 'fn');
-    service.subscribeToMessage('party', 'full', spy);
+    service.subscribeToMessage('party', 'full', 'test', spy);
     service.onIncomingWhisper('Your party is now full.');
     expect(spy).toHaveBeenCalled();
   });
@@ -38,7 +39,7 @@ describe('CommandWrapper', () => {
       fn: (name: string, id: string, groups: Array<Map<string, string>>) => {},
     };
     const spy = spyOn(callback, 'fn');
-    service.subscribeToMessage('party', 'full', spy);
+    service.subscribeToMessage('party', 'full', 'test', spy);
     service.onIncomingWhisper('Your party is full.');
     expect(spy).not.toHaveBeenCalled();
   });
@@ -48,10 +49,12 @@ describe('CommandWrapper', () => {
       fn: (name: string, id: string, groups: Array<Map<string, string>>) => {},
     };
     const spy = spyOn(callback, 'fn');
-    service.subscribeToMessage('party', 'declined', spy);
+    service.subscribeToMessage('party', 'declined', 'test', spy);
     service.onIncomingWhisper('Foo has declined your party invite.');
     const map = new Map<string, string>();
     map.set('user', 'Foo');
-    expect(spy).toHaveBeenCalledWith('message.party.declined', '', [map]);
+    expect(spy).toHaveBeenCalledWith('message.party.declined', 'message', [
+      map,
+    ]);
   });
 });

@@ -156,11 +156,13 @@ export class Stats {
    * Adds another stat block's values to this one.
    * @param other A stat block to add to this one.
    */
-  add(other: Stats) {
-    this.successChance += other.successChance;
-    this.xpBonus += other.xpBonus;
-    this.wolfcoinBonus += other.wolfcoinBonus;
-    this.itemFind += other.itemFind;
-    this.preventDeath += other.preventDeath;
+  add(other: Stats | undefined) {
+    if (other) {
+      this.successChance += other.successChance;
+      this.xpBonus += other.xpBonus;
+      this.wolfcoinBonus += other.wolfcoinBonus;
+      this.itemFind += other.itemFind;
+      this.preventDeath += other.preventDeath;
+    }
   }
 }

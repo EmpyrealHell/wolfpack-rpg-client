@@ -55,10 +55,10 @@ export class Experience {
   }
 
   updateStrings(
-    level: string,
-    prestige: string,
-    current: string,
-    toNext: string
+    level?: string,
+    prestige?: string,
+    current?: string,
+    toNext?: string
   ): void {
     this.update(
       Number(level),

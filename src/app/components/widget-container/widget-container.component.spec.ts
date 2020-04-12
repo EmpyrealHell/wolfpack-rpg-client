@@ -16,22 +16,21 @@ import { WidgetFactoryComponent } from '../widget-factory/widget-factory.compone
 import { WidgetComponent } from '../widget-factory/widget.component';
 import { WidgetContainerComponent } from './widget-container.component';
 import { Config } from 'src/app/services/data/config-data';
+import { CommandService } from 'src/app/services/command/command-service';
 
 export class FirstWidget extends AbstractWidgetComponent {
-  get loadCommands(): string[] {
-    return [];
-  }
-  get responders(): Responder[] {
-    return [];
-  }
+  protected subscribeToResponses(
+    id: string,
+    commandService: CommandService
+  ): void {}
+  protected sendInitialCommands(commandService: CommandService): void {}
 }
 export class SecondWidget extends AbstractWidgetComponent {
-  get loadCommands(): string[] {
-    return [];
-  }
-  get responders(): Responder[] {
-    return [];
-  }
+  protected subscribeToResponses(
+    id: string,
+    commandService: CommandService
+  ): void {}
+  protected sendInitialCommands(commandService: CommandService): void {}
 }
 
 const firstWidgetItem = new WidgetItem(FirstWidget, 'First');
@@ -60,6 +59,7 @@ componentFactoryResolverSpy.resolveComponentFactory.and.callFake(
     return null;
   }
 );
+const commandServiceSpy = TestUtils.spyOnClass(CommandService);
 
 describe('WidgetContainerComponent', () => {
   beforeEach(async(() => {
@@ -69,6 +69,7 @@ describe('WidgetContainerComponent', () => {
       providers: [
         { provide: WidgetService, useValue: widgetServiceSpy },
         { provide: ConfigManager, useValue: configManagerSpy },
+        { provide: CommandService, useValue: commandServiceSpy },
         { provide: IrcService, useValue: ircServiceSpy },
         {
           provide: ComponentFactoryResolver,

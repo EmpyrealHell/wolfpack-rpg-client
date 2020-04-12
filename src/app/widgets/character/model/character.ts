@@ -7,6 +7,7 @@ import { Gear } from './gear';
  * Represents the data for a charcter displayed on the character widget.
  */
 export class Character {
+  static defaultClass = 'Adventurer';
   /**
    * Number of wolfcoins the character has.
    */
@@ -14,7 +15,7 @@ export class Character {
   /**
    * The character's current class name.
    */
-  class = 'Adventurer';
+  class: string | undefined;
   /**
    * Object holding level, prestige, and experience data.
    */
