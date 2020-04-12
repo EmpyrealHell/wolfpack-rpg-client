@@ -6,7 +6,7 @@
         "alternates": ["/party {message}"],
         "responses": {
           "success": {
-            "confirmation": "You whisper: \" (?<message>.*)\" "
+            "confirmation": "You whisper: \"(?<message>.*)\" ?"
           }
         }
       }
