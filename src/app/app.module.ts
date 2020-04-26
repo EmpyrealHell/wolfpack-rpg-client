@@ -38,6 +38,8 @@ import {
 import { MatDialogModule } from '@angular/material/dialog';
 import { FishingWidgetComponent } from './widgets/fishing/fishing.widget';
 import { ErrorDialog } from './components/error-dialog/error-dialog';
+import { IrcService } from './services/irc/irc.service';
+import { CommandService } from './services/command/command-service';
 
 @NgModule({
   declarations: [
@@ -89,7 +91,7 @@ import { ErrorDialog } from './components/error-dialog/error-dialog';
     FishingWidgetComponent,
     ErrorDialog,
   ],
-  providers: [],
+  providers: [IrcService, CommandService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -53,7 +53,9 @@ export class WidgetContainerComponent implements OnInit {
     public ircService: IrcService,
     public commandService: CommandService,
     private componentFactoryResolver: ComponentFactoryResolver
-  ) {}
+  ) {
+    this.commandService = this.commandService.instance;
+  }
 
   ngOnInit(): void {
     this.config = this.configManager.getConfig();

@@ -52,57 +52,70 @@ export class CommandService {
   private callbacks = new Map<string, Map<string, CommandCallback>>();
   private messages = new Map<string, Map<string, CommandResponse>>();
   private matches = new Map<string, ResponseHistory>();
+  private static instance: CommandService | undefined = undefined;
+
+  get instance(): CommandService {
+    if (!CommandService.instance) {
+      CommandService.instance = this;
+      this.initialize();
+    }
+    return CommandService.instance;
+  }
+
   /**
    * Object containing mapped methods for each chat command.
    */
-  chat: ChatCommands;
+  chat: ChatCommands | undefined;
   /**
    * Object containing mapped methods for each dungeon command.
    */
-  dungeon: DungeonCommands;
+  dungeon: DungeonCommands | undefined;
   /**
    * Object containing mapped methods for each fishing command.
    */
-  fishing: FishingCommands;
+  fishing: FishingCommands | undefined;
   /**
    * Object containing mapped methods for each info command.
    */
-  info: InfoCommands;
+  info: InfoCommands | undefined;
   /**
    * Object containing mapped methods for each inventory command.
    */
-  inventory: InventoryCommands;
+  inventory: InventoryCommands | undefined;
   /**
    * Object containing mapped methods for each party command.
    */
-  party: PartyCommands;
+  party: PartyCommands | undefined;
   /**
    * Object containing mapped methods for each pending command.
    */
-  pending: PendingCommands;
+  pending: PendingCommands | undefined;
   /**
    * Object containing mapped methods for each pets command.
    */
-  pets: PetsCommands;
+  pets: PetsCommands | undefined;
   /**
    * Object containing mapped methods for each shop command.
    */
-  shop: ShopCommands;
+  shop: ShopCommands | undefined;
 
   get messageList(): string[] {
     return [...this.messages.keys()];
   }
 
-  constructor(private ircService: IrcService) {
-    this.chat = new ChatCommands(ircService);
-    this.dungeon = new DungeonCommands(ircService);
-    this.fishing = new FishingCommands(ircService);
-    this.info = new InfoCommands(ircService);
-    this.inventory = new InventoryCommands(ircService);
-    this.party = new PartyCommands(ircService);
-    this.pending = new PendingCommands(ircService);
-    this.pets = new PetsCommands(ircService);
-    this.shop = new ShopCommands(ircService);
+  constructor(private ircService: IrcService) {}
+
+  private initialize(): void {
+    console.log('Command service initialized');
+    this.chat = new ChatCommands(this.ircService);
+    this.dungeon = new DungeonCommands(this.ircService);
+    this.fishing = new FishingCommands(this.ircService);
+    this.info = new InfoCommands(this.ircService);
+    this.inventory = new InventoryCommands(this.ircService);
+    this.party = new PartyCommands(this.ircService);
+    this.pending = new PendingCommands(this.ircService);
+    this.pets = new PetsCommands(this.ircService);
+    this.shop = new ShopCommands(this.ircService);
 
     this.registerResponses();
     this.registerMessages();
@@ -233,6 +246,7 @@ export class CommandService {
    * @param message The message the client received.
    */
   onIncomingWhisper(message: string): void {
+    console.log(`Command service received message: ${message}`);
     for (const [subscriber, callbacks] of this.callbacks) {
       for (const [key, callback] of callbacks) {
         let history = this.matches.get(key);

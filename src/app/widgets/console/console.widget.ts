@@ -33,17 +33,17 @@ export class ConsoleWidgetComponent implements WidgetComponent {
    * Reference to the IRC chat service.
    */
   @Input()
-  ircService: IrcService | null;
+  ircService: IrcService | undefined;
   /**
    * Reference to the user's config data manager.
    */
   @Input()
-  configManager: ConfigManager | null;
+  configManager: ConfigManager | undefined;
   /**
    * Reference to the command service.
    */
   @Input()
-  commandService: CommandService | null;
+  commandService: CommandService | undefined;
 
   /**
    * Whether the irc service is connected.
@@ -53,12 +53,6 @@ export class ConsoleWidgetComponent implements WidgetComponent {
       return false;
     }
     return this.ircService.isConnected;
-  }
-
-  constructor() {
-    this.ircService = null;
-    this.configManager = null;
-    this.commandService = null;
   }
 
   private onWhisper(message: string): void {

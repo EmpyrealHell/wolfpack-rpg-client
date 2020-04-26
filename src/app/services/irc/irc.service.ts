@@ -31,6 +31,7 @@ export class IrcService {
    * Resets the static properties of the IrcService to their default state.
    */
   static reset(): void {
+    console.log('Resetting!');
     IrcService.connection = null;
     IrcService.callbacks.clear();
     IrcService.errorHandlers.clear();
@@ -92,7 +93,9 @@ export class IrcService {
   constructor(
     public configManager: ConfigManager,
     public userService: UserService
-  ) {}
+  ) {
+    console.log(`constructed: ${this}`);
+  }
 
   private onWhisper(message: string, self = false): void {
     const newLine = IrcService.lines.length === 0 ? '' : '\n';
@@ -101,6 +104,7 @@ export class IrcService {
     IrcService.lines.push(prefixedMessage);
     IrcService.history += `${fullMessage}\n`;
     for (const [key, value] of IrcService.callbacks) {
+      console.log(`Publishing to ${key}: ${message}`);
       value.call(value, fullMessage);
     }
   }
@@ -123,7 +127,9 @@ export class IrcService {
    * @param overwrite If true, will replace any previous references with the same id.
    */
   register(id: string, callback: WhisperCallback, overwrite = false): void {
+    console.log(`Attempting to register ${id}`);
     if (!IrcService.callbacks.has(id) || overwrite) {
+      console.log('success');
       IrcService.callbacks.set(id, callback);
     }
   }

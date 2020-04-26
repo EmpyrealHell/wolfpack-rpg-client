@@ -36,11 +36,11 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
   /**
    * The current item being updated by new messages.
    */
-  readingStats: Item | null = null;
+  readingStats: Item | undefined;
 
-  @Input() ircService: IrcService | null = null;
-  @Input() configManager: ConfigManager | null = null;
-  @Input() commandService: CommandService | null = null;
+  @Input() ircService: IrcService | undefined;
+  @Input() configManager: ConfigManager | undefined;
+  @Input() commandService: CommandService | undefined;
 
   constructor() {
     super();
@@ -51,6 +51,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     id: string,
     groups: Array<Map<string, string>>
   ): void {
+    console.log('Character widget received stats response');
     const data = groups[0];
     if (id === 'coins') {
       const coins = data.get('coins');
@@ -80,9 +81,10 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     id: string,
     groups: Array<Map<string, string>>
   ): void {
+    console.log('character widget received inventory response');
     const data = groups[0];
     if (id === 'size') {
-      this.readingStats = null;
+      this.readingStats = undefined;
     } else if (id === 'info') {
       const type = data.get('type');
       const equipped = data.get('status') === 'Equipped';
@@ -116,6 +118,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     id: string,
     commandService: CommandService
   ): void {
+    console.log('Character widget subscribing');
     commandService.subscribeToCommand(
       'info',
       'stats',
@@ -135,6 +138,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
   }
 
   protected sendInitialCommands(commandService: CommandService): void {
+    console.log('Character widget sending initial commands');
     commandService.sendCommand('info', 'stats');
     commandService.sendCommand('inventory', 'list');
   }

@@ -5,9 +5,9 @@ import { CommandService } from 'src/app/services/command/command-service';
 import * as CommandData from '../../services/command/command-data.json';
 
 export abstract class AbstractWidgetComponent implements WidgetComponent {
-  ircService: IrcService | null = null;
-  configManager: ConfigManager | null = null;
-  commandService: CommandService | null = null;
+  ircService: IrcService | undefined;
+  configManager: ConfigManager | undefined;
+  commandService: CommandService | undefined;
   name = 'abstract';
 
   protected abstract subscribeToResponses(
@@ -19,6 +19,7 @@ export abstract class AbstractWidgetComponent implements WidgetComponent {
   onActivate(): void {
     const widgetId = `${this.name}-widget`;
     if (this.commandService) {
+      this.commandService = this.commandService.instance;
       this.subscribeToResponses(widgetId, this.commandService);
       this.commandService.replayHistory(widgetId);
       if (this.ircService) {

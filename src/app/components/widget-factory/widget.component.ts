@@ -9,15 +9,15 @@ export interface WidgetComponent {
   /**
    * IRC service used to receive whisper events.
    */
-  ircService: IrcService | null;
+  ircService: IrcService | undefined;
   /**
    * Config manager used to save & load user config data.
    */
-  configManager: ConfigManager | null;
+  configManager: ConfigManager | undefined;
   /**
    * Command service used to send commands and listen for their responses.
    */
-  commandService: CommandService | null;
+  commandService: CommandService | undefined;
   /**
    * The name of the component.
    */
