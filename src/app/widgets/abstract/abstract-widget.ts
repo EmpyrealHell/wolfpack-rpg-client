@@ -19,7 +19,6 @@ export abstract class AbstractWidgetComponent implements WidgetComponent {
   onActivate(): void {
     const widgetId = `${this.name}-widget`;
     if (this.commandService) {
-      this.commandService = this.commandService.instance;
       this.subscribeToResponses(widgetId, this.commandService);
       this.commandService.replayHistory(widgetId);
       if (this.ircService) {

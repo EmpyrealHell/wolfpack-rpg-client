@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Utils } from 'src/app/util/utils.js';
-import { IrcService } from '../irc/irc.service.js';
-import { ChatCommands } from './chat-commands.js';
+import { Utils } from 'src/app/util/utils';
+import { IrcService } from '../irc/irc.service';
+import { ChatCommands } from './chat-commands';
 import * as CommandData from './command-data.json';
-import { CommandLoader } from './command-loader.js';
+import { CommandLoader } from './command-loader';
 import {
   CommandResponse,
   MatchedResponse,
   ResponseHistory,
-} from './command-response.js';
-import { DungeonCommands } from './dungeon-commands.js';
-import { FishingCommands } from './fishing-commands.js';
-import { InfoCommands } from './info-commands.js';
-import { InventoryCommands } from './inventory-commands.js';
-import { PartyCommands } from './party-commands.js';
-import { PendingCommands } from './pending-commands.js';
-import { PetsCommands } from './pets-commands.js';
-import { ShopCommands } from './shop-commands.js';
+} from './command-response';
+import { DungeonCommands } from './dungeon-commands';
+import { FishingCommands } from './fishing-commands';
+import { InfoCommands } from './info-commands';
+import { InventoryCommands } from './inventory-commands';
+import { PartyCommands } from './party-commands';
+import { PendingCommands } from './pending-commands';
+import { PetsCommands } from './pets-commands';
+import { ShopCommands } from './shop-commands';
 
 /**
  * Defines the structure of a callback method that can be used to subscribe to
@@ -52,15 +52,6 @@ export interface KeyMatchedResponse {
 export class CommandService {
   private callbacks = new Map<string, Map<string, CommandCallback>>();
   private matches = new Map<string, ResponseHistory>();
-  private static instance: CommandService | undefined = undefined;
-
-  get instance(): CommandService {
-    if (!CommandService.instance) {
-      CommandService.instance = this;
-      this.initialize();
-    }
-    return CommandService.instance;
-  }
 
   /**
    * Object that loads and maintains the list of all possible command keys.
@@ -103,10 +94,11 @@ export class CommandService {
    */
   shop: ShopCommands | undefined;
 
-  constructor(private ircService: IrcService) {}
+  constructor(private ircService: IrcService) {
+    this.initialize();
+  }
 
   initialize(): void {
-    console.log('Command service initialized');
     this.chat = new ChatCommands(this.ircService);
     this.dungeon = new DungeonCommands(this.ircService);
     this.fishing = new FishingCommands(this.ircService);
@@ -119,7 +111,13 @@ export class CommandService {
 
     this.messages = new CommandLoader();
     this.messages.load();
-    this.ircService.register('command-service', this.onIncomingWhisper, true);
+    this.ircService.register(
+      'command-service',
+      message => {
+        this.onIncomingWhisper(message);
+      },
+      true
+    );
   }
 
   private updateHistory(key: string): ResponseHistory | undefined {
@@ -182,7 +180,6 @@ export class CommandService {
    * @param message The message the client received.
    */
   onIncomingWhisper(message: string): void {
-    console.log(`Command service received message: ${message}`);
     for (const [subscriber, callbacks] of this.callbacks) {
       for (const [key, callback] of callbacks) {
         let history = this.matches.get(key);
@@ -232,7 +229,7 @@ export class CommandService {
     subscriber: string,
     callback: CommandCallback
   ): string {
-    const key = `command.${group}.${command}.response.${result}`;
+    const key = `command.${group}.${command}.${result}`;
     let current = this.callbacks.get(subscriber);
     if (!current) {
       current = new Map<string, CommandCallback>();
@@ -335,8 +332,8 @@ export class CommandService {
     }
     const lines = this.ircService.lines;
     const queue = this.ircService.messageQueue.queuedMessages;
-    for (const command of commands) {
-      if (lines.indexOf(`>> ${command}`) >= 0 && queue.indexOf(command) >= 0) {
+    for (const variant of commands) {
+      if (lines.indexOf(`>> ${variant}`) >= 0 || queue.indexOf(variant) >= 0) {
         return true;
       }
     }

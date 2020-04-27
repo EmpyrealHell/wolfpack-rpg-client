@@ -27,9 +27,11 @@ export class Character {
    * Sets the class and applies its base stats to this object.
    * @param newClass The name of the class to set.
    */
-  setClass(newClass: string): void {
-    this.class = newClass;
-    this.stats = BaseStats.byClass(newClass);
+  setClass(newClass?: string): void {
+    if (newClass) {
+      this.class = newClass;
+      this.stats = BaseStats.byClass(newClass);
+    }
   }
 
   /**

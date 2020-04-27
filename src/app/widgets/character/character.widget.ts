@@ -1,14 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { Config } from 'src/app/services/data/config-data.js';
+import { CommandService } from 'src/app/services/command/command-service';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService } from 'src/app/services/irc/irc.service';
-import { AbstractWidgetComponent } from '../abstract/abstract-widget.js';
-import { Responder } from '../abstract/responder.js';
-import * as characterConfig from './character.widget.json';
-import { Character } from './model/character.js';
-import { Item, Rarity } from './model/gear.js';
-import { Stats } from './model/stats.js';
-import { CommandService } from 'src/app/services/command/command-service.js';
+import { AbstractWidgetComponent } from '../abstract/abstract-widget';
+import { Character } from './model/character';
+import { Item, Rarity } from './model/gear';
+import { Stats } from './model/stats';
 
 /**
  * Widget used to display character data.
@@ -52,14 +49,14 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     groups: Map<string, string>,
     subGroups: Array<Map<string, string>>
   ): void {
-    console.log('Character widget received stats response');
     if (id === 'coins') {
       const coins = groups.get('coins');
       if (coins) {
         this.data.coins = Number(coins);
       }
     } else if (id === 'classLevel') {
-      this.data.class = groups.get('className');
+      groups.get('level');
+      this.data.setClass(groups.get('className'));
       this.data.experience.updateStrings(
         groups.get('level'),
         groups.get('prestige'),
@@ -82,7 +79,6 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     groups: Map<string, string>,
     subGroups: Array<Map<string, string>>
   ): void {
-    console.log('character widget received inventory response');
     if (id === 'size') {
       this.readingStats = undefined;
     } else if (id === 'info') {
@@ -96,9 +92,12 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
         this.data.gear.weapon.stats = new Stats(0);
       }
       if (this.readingStats) {
-        this.readingStats.name = groups.get('name');
-        this.readingStats.rarity =
-          Rarity[groups.get('rarity') as keyof typeof Rarity];
+        const name = groups.get('name');
+        this.readingStats.name = name ? name : '';
+        const rarityString = groups.get('rarity');
+        this.readingStats.rarity = rarityString
+          ? Rarity[rarityString.toLowerCase() as keyof typeof Rarity]
+          : Rarity.none;
       }
     } else if (id === 'id') {
       if (this.readingStats) {
@@ -118,14 +117,14 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     id: string,
     commandService: CommandService
   ): void {
-    console.log('Character widget subscribing');
     commandService.subscribeToCommand(
       'info',
       'stats',
       'responses',
       'success',
       id,
-      this.handleStats
+      (name, id, groups, subGroups) =>
+        this.handleStats(name, id, groups, subGroups)
     );
     commandService.subscribeToCommand(
       'inventory',
@@ -133,12 +132,12 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      this.handleInventory
+      (name, id, groups, subGroups) =>
+        this.handleInventory(name, id, groups, subGroups)
     );
   }
 
   protected sendInitialCommands(commandService: CommandService): void {
-    console.log('Character widget sending initial commands');
     commandService.sendCommand('info', 'stats');
     commandService.sendCommand('inventory', 'list');
   }

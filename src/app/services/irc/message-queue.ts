@@ -6,6 +6,8 @@ export type SendFunction = (
   message: string
 ) => Promise<[string, string]>;
 
+export type CheckFunction = () => boolean;
+
 /**
  * Handles rate limiting for sending messages to twitch via irc.
  */
@@ -13,9 +15,9 @@ export class MessageQueue {
   private queue: string[] = [];
   private secondTimer = new RollingTimer(1, 3);
   private minuteTimer = new RollingTimer(60, 100);
-  private timer: number | null = null;
-  private sendFn: SendFunction | null = null;
-  private sendThis: Client | null = null;
+  private timer: number | undefined;
+  private sendFn: SendFunction | undefined;
+  private checkFn: CheckFunction | undefined;
 
   /**
    * The list of messages to send through the queue.
@@ -36,15 +38,18 @@ export class MessageQueue {
 
   constructor(private account: string, private rate: number) {}
 
+  private canSend(): boolean {
+    if (this.checkFn) {
+      return this.checkFn.call(this.checkFn);
+    }
+    return true;
+  }
+
   private async sendMessages(count: number): Promise<void> {
-    if (this.sendFn) {
+    if (this.sendFn && this.canSend()) {
       const toSend = this.queue.splice(0, count);
       for (const message of toSend) {
-        await this.sendFn.call(
-          this.sendThis ? this.sendThis : this.sendFn,
-          this.account,
-          message
-        );
+        await this.sendFn.call(this.sendFn, this.account, message);
         this.secondTimer.addOccurrence();
         this.minuteTimer.addOccurrence();
       }
@@ -85,11 +90,18 @@ export class MessageQueue {
   /**
    * Sets the function to call when a message is available in the queue.
    * @param sendFn The function to send the messages to.
-   * @param sendThis The object to set as 'this' for the send function.
    */
-  setSendFunction(sendFn: SendFunction, sendThis?: Client) {
+  setSendFunction(sendFn: SendFunction) {
     this.sendFn = sendFn;
-    this.sendThis = sendThis ? sendThis : null;
+  }
+
+  /**
+   * Sets the function to call before attempting to send a message. This
+   * function must return true for messages to be sent.
+   * @param checkFn The function called before sending messages.
+   */
+  setCheckFn(checkFn: CheckFunction) {
+    this.checkFn = checkFn;
   }
 
   /**
@@ -128,7 +140,7 @@ export class MessageQueue {
   stop(): void {
     if (this.timer) {
       clearTimeout(this.timer);
-      this.timer = null;
+      this.timer = undefined;
     }
   }
 }

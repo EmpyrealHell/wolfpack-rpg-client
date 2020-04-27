@@ -201,8 +201,8 @@
             "invalidOperation": "You don't have any XP yet! Hang out in chat during the livestream to earn XP & coins\\."
           },
           "success": {
-            "classLevel": "You are a Level (?<level>\\d+) (?<className>\\w+), and you are Prestige Level (?<prestige>\\d+)\\. \\(Total XP: (?<experience>\\d+) | XP To Next Level: (?<toNext>\\d+)\\)",
-            "level": "You are Level (?<level>\\d+) \\(Total XP: (?<experience>\\d+) | XP To Next Level: (?<toNext>\\d+)\\)"
+            "classLevel": "You are a Level (?<level>\\d+) (?<className>\\w+), and you are Prestige Level (?<prestige>\\d+)\\. \\(Total XP: (?<experience>\\d+) \\| XP To Next Level: (?<toNext>\\d+)\\)",
+            "level": "You are Level (?<level>\\d+) \\(Total XP: (?<experience>\\d+) \\| XP To Next Level: (?<toNext>\\d+)\\)"
           }
         }
       },
@@ -241,8 +241,8 @@
           },
           "success": {
             "coins": "You have: (?<coins>\\d+) coins\\.",
-            "classLevel": "You are a Level (?<level>\\d+) (?<className>\\w+), and you are Prestige Level (?<prestige>\\d+)\\. \\(Total XP: (?<experience>\\d+) | XP To Next Level: (?<toNext>\\d+)\\)",
-            "level": "You are Level (?<level>\\d+) \\(Total XP: (?<experience>\\d+) | XP To Next Level: (?<toNext>\\d+)\\)"
+            "classLevel": "You are a Level (?<level>\\d+) (?<className>\\w+), and you are Prestige Level (?<prestige>\\d+)\\. \\(Total XP: (?<experience>\\d+) \\| XP To Next Level: (?<toNext>\\d+)\\)",
+            "level": "You are Level (?<level>\\d+) \\(Total XP: (?<experience>\\d+) \\| XP To Next Level: (?<toNext>\\d+)\\)"
           }
         }
       },

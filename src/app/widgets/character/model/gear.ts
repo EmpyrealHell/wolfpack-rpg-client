@@ -45,7 +45,7 @@ export class Item {
   /**
    * The display name of the item.
    */
-  name? = Item.defaultName;
+  name = Item.defaultName;
   /**
    * The id of the item in the inventory.
    */
@@ -57,7 +57,7 @@ export class Item {
   /**
    * The bonus stats the item confers while equipped.
    */
-  stats? = new Stats();
+  stats = new Stats();
 
   /**
    * Return true if the item has been updated.

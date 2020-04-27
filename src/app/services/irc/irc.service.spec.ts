@@ -45,7 +45,6 @@ describe('IrcService', () => {
       configManagerSpy,
       userServiceSpy as jasmine.SpyObj<UserService>
     );
-    IrcService.reset();
   });
 
   it('should connect to IRC', async () => {

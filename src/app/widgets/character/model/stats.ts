@@ -10,7 +10,7 @@ export class Stats {
     ['XP Bonus', 'xpBonus'],
     ['Wolfcoin Bonus', 'wolfcoinBonus'],
     ['Item Find', 'itemFind'],
-    ['to Prevent Death', 'preventDeath'],
+    ['Prevent Death', 'preventDeath'],
   ]);
 
   /**
