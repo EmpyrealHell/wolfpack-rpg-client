@@ -49,29 +49,29 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
   private handleStats(
     name: string,
     id: string,
-    groups: Array<Map<string, string>>
+    groups: Map<string, string>,
+    subGroups: Array<Map<string, string>>
   ): void {
     console.log('Character widget received stats response');
-    const data = groups[0];
     if (id === 'coins') {
-      const coins = data.get('coins');
+      const coins = groups.get('coins');
       if (coins) {
         this.data.coins = Number(coins);
       }
     } else if (id === 'classLevel') {
-      this.data.class = data.get('className');
+      this.data.class = groups.get('className');
       this.data.experience.updateStrings(
-        data.get('level'),
-        data.get('prestige'),
-        data.get('experience'),
-        data.get('toNext')
+        groups.get('level'),
+        groups.get('prestige'),
+        groups.get('experience'),
+        groups.get('toNext')
       );
     } else if (id === 'level') {
       this.data.experience.updateStrings(
-        data.get('level'),
+        groups.get('level'),
         '0',
-        data.get('experience'),
-        data.get('toNext')
+        groups.get('experience'),
+        groups.get('toNext')
       );
     }
   }
@@ -79,15 +79,15 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
   private handleInventory(
     name: string,
     id: string,
-    groups: Array<Map<string, string>>
+    groups: Map<string, string>,
+    subGroups: Array<Map<string, string>>
   ): void {
     console.log('character widget received inventory response');
-    const data = groups[0];
     if (id === 'size') {
       this.readingStats = undefined;
     } else if (id === 'info') {
-      const type = data.get('type');
-      const equipped = data.get('status') === 'Equipped';
+      const type = groups.get('type');
+      const equipped = groups.get('status') === 'Equipped';
       if (type === 'Armor' && equipped) {
         this.readingStats = this.data.gear.armor;
         this.data.gear.armor.stats = new Stats(0);
@@ -96,19 +96,19 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
         this.data.gear.weapon.stats = new Stats(0);
       }
       if (this.readingStats) {
-        this.readingStats.name = data.get('name');
+        this.readingStats.name = groups.get('name');
         this.readingStats.rarity =
-          Rarity[data.get('rarity') as keyof typeof Rarity];
+          Rarity[groups.get('rarity') as keyof typeof Rarity];
       }
     } else if (id === 'id') {
       if (this.readingStats) {
-        this.readingStats.id = Number(data.get('id'));
+        this.readingStats.id = Number(groups.get('id'));
       }
     } else if (id === 'stat') {
-      const stat = data.get('stat');
+      const stat = groups.get('stat');
       if (this.readingStats && this.readingStats.stats && stat) {
         const stats = this.readingStats.stats;
-        stats.updateStatByDescription(stat, Number(data.get('value')));
+        stats.updateStatByDescription(stat, Number(groups.get('value')));
         this.modifiedStats = this.data.calculatStats();
       }
     }

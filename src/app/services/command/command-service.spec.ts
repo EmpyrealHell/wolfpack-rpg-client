@@ -2,7 +2,7 @@ import { TestUtils } from 'src/test/test-utils';
 import { IrcService } from '../irc/irc.service';
 import { CommandService } from './command-service';
 
-fdescribe('CommandService', () => {
+describe('CommandService', () => {
   let ircService: IrcService;
   let service: CommandService;
 
@@ -11,17 +11,15 @@ fdescribe('CommandService', () => {
       IrcService
     ) as unknown) as jasmine.SpyObj<IrcService>;
     service = new CommandService(ircService);
+    service.initialize();
   });
 
   it('should send chat messages to party', () => {
-    service.chat.message('test');
-    expect(ircService.send).toHaveBeenCalledWith('/p test');
-  });
-
-  it('should load the command data json', () => {
-    const messageList = service.messageList;
-    console.log(messageList);
-    expect(messageList.length).toBe(104);
+    expect(service.chat).not.toBeUndefined();
+    if (service.chat) {
+      service.chat.message('test');
+      expect(ircService.send).toHaveBeenCalledWith('/p test');
+    }
   });
 
   it('should call a method on a matching message', () => {
@@ -53,8 +51,11 @@ fdescribe('CommandService', () => {
     service.onIncomingWhisper('Foo has declined your party invite.');
     const map = new Map<string, string>();
     map.set('user', 'Foo');
-    expect(spy).toHaveBeenCalledWith('message.party.declined', 'message', [
+    expect(spy).toHaveBeenCalledWith(
+      'message.party.declined',
+      'message',
       map,
-    ]);
+      []
+    );
   });
 });

@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
+import { Utils } from 'src/app/util/utils.js';
 import { IrcService } from '../irc/irc.service.js';
 import { ChatCommands } from './chat-commands.js';
+import * as CommandData from './command-data.json';
+import { CommandLoader } from './command-loader.js';
+import {
+  CommandResponse,
+  MatchedResponse,
+  ResponseHistory,
+} from './command-response.js';
 import { DungeonCommands } from './dungeon-commands.js';
 import { FishingCommands } from './fishing-commands.js';
 import { InfoCommands } from './info-commands.js';
@@ -9,14 +17,6 @@ import { PartyCommands } from './party-commands.js';
 import { PendingCommands } from './pending-commands.js';
 import { PetsCommands } from './pets-commands.js';
 import { ShopCommands } from './shop-commands.js';
-import * as CommandData from './command-data.json';
-import {
-  CommandResponse,
-  SubgroupExpression,
-  ResponseHistory,
-  MatchedResponse,
-} from './command-response.js';
-import { Utils } from 'src/app/util/utils.js';
 
 /**
  * Defines the structure of a callback method that can be used to subscribe to
@@ -25,7 +25,8 @@ import { Utils } from 'src/app/util/utils.js';
 export type CommandCallback = (
   name: string,
   id: string,
-  groups: Array<Map<string, string>>
+  groups: Map<string, string>,
+  subGroups: Array<Map<string, string>>
 ) => void;
 
 /**
@@ -50,7 +51,6 @@ export interface KeyMatchedResponse {
 })
 export class CommandService {
   private callbacks = new Map<string, Map<string, CommandCallback>>();
-  private messages = new Map<string, Map<string, CommandResponse>>();
   private matches = new Map<string, ResponseHistory>();
   private static instance: CommandService | undefined = undefined;
 
@@ -62,6 +62,10 @@ export class CommandService {
     return CommandService.instance;
   }
 
+  /**
+   * Object that loads and maintains the list of all possible command keys.
+   */
+  messages = new CommandLoader();
   /**
    * Object containing mapped methods for each chat command.
    */
@@ -99,13 +103,9 @@ export class CommandService {
    */
   shop: ShopCommands | undefined;
 
-  get messageList(): string[] {
-    return [...this.messages.keys()];
-  }
-
   constructor(private ircService: IrcService) {}
 
-  private initialize(): void {
+  initialize(): void {
     console.log('Command service initialized');
     this.chat = new ChatCommands(this.ircService);
     this.dungeon = new DungeonCommands(this.ircService);
@@ -117,81 +117,9 @@ export class CommandService {
     this.pets = new PetsCommands(this.ircService);
     this.shop = new ShopCommands(this.ircService);
 
-    this.registerResponses();
-    this.registerMessages();
+    this.messages = new CommandLoader();
+    this.messages.load();
     this.ircService.register('command-service', this.onIncomingWhisper, true);
-  }
-
-  private registerContainer<T>(
-    name: string,
-    container: T,
-    isCommand = false
-  ): void {
-    for (const groupKey in container) {
-      if (container[groupKey]) {
-        const group = container[groupKey];
-        this.registerGroup(`${name}.${groupKey}`, group, isCommand);
-      }
-    }
-  }
-
-  private registerGroup<T>(name: string, group: T, isCommand: boolean): void {
-    for (const entryKey in group) {
-      if (group[entryKey]) {
-        const entry = group[entryKey];
-        if (isCommand) {
-          this.registerCommand(`${name}.${entryKey}`, entry);
-        } else {
-          this.registerEntry(`${name}.${entryKey}`, 'message', entry);
-        }
-      }
-    }
-  }
-
-  private registerCommand<T>(name: string, command: T): void {
-    // tslint:disable-next-line: no-any
-    const responses = (command as any)['responses'];
-    for (const catKey in responses) {
-      if (responses[catKey]) {
-        const category = responses[catKey];
-        for (const entryKey in category) {
-          if (category[entryKey]) {
-            const entry = category[entryKey];
-            this.registerEntry(`${name}.${catKey}`, entryKey, entry);
-          }
-        }
-      }
-    }
-  }
-
-  private registerEntry<T>(name: string, id: string, entry: T): void {
-    let map = this.messages.get(name);
-    if (!map) {
-      map = new Map<string, CommandResponse>();
-      this.messages.set(name, map);
-    }
-    if (typeof entry === 'string') {
-      map.set(id, new CommandResponse(entry));
-    } else if (typeof entry === 'object') {
-      const subgroupEntry = (entry as unknown) as SubgroupExpression;
-      const response = new CommandResponse(
-        subgroupEntry.response,
-        subgroupEntry.subGroups
-      );
-      map.set(id, response);
-    }
-  }
-
-  private registerResponses(): void {
-    // tslint:disable-next-line: no-any
-    const commands = CommandData.commands as any;
-    this.registerContainer('command', commands, true);
-  }
-
-  private registerMessages(): void {
-    // tslint:disable-next-line: no-any
-    const messages = CommandData.messages as any;
-    this.registerContainer('message', messages);
   }
 
   private updateHistory(key: string): ResponseHistory | undefined {
@@ -211,7 +139,7 @@ export class CommandService {
     return history;
   }
 
-  handleResponseGroup(
+  private handleResponseGroup(
     message: string,
     key: string,
     responseGroup: Map<string, CommandResponse>,
@@ -219,22 +147,30 @@ export class CommandService {
     callback: CommandCallback | undefined = undefined
   ) {
     for (const [id, pattern] of responseGroup) {
-      const match = pattern.response.exec(message);
+      const match = pattern.response.pattern.exec(message);
       if (!match) {
         continue;
       }
-      let matches: RegExpExecArray[];
-      if (pattern.subGroups) {
-        matches = Utils.execAll(pattern.subGroups, message);
-      } else {
-        matches = [match];
+      const matchMap = new Map<string, string>();
+      for (let i = 1; i < match.length; i++) {
+        matchMap.set(pattern.response.names[i - 1], match[i]);
       }
-      const groups = matches.map(value => Utils.extractNameCaptures(value));
+      const subMap = new Array<Map<string, string>>();
+      if (pattern.subGroups) {
+        const subMatches = Utils.execAll(pattern.subGroups.pattern, message);
+        const subMatchMap = new Map<string, string>();
+        for (const subMatch of subMatches) {
+          for (let i = 1; i < subMatch.length; i++) {
+            subMatchMap.set(pattern.subGroups.names[i - 1], subMatch[i]);
+          }
+        }
+        subMap.push(subMatchMap);
+      }
       history.responses.push(
-        new MatchedResponse(id, history.lastLine, [...groups])
+        new MatchedResponse(id, history.lastLine, matchMap, subMap)
       );
       if (callback) {
-        callback.call(callback, key, id, groups);
+        callback.call(callback, key, id, matchMap, subMap);
       }
     }
   }
@@ -358,7 +294,13 @@ export class CommandService {
     for (const match of sortedMatches) {
       const callback = callbacks.get(match.key);
       if (callback) {
-        callback.call(callback, match.key, match.value.id, match.value.params);
+        callback.call(
+          callback,
+          match.key,
+          match.value.id,
+          match.value.params,
+          match.value.subParams
+        );
       }
     }
   }
