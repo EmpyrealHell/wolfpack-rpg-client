@@ -81,12 +81,6 @@ import { ErrorDialog } from './components/error-dialog/error-dialog';
     MatSlideToggleModule,
     MatToolbarModule,
   ],
-  entryComponents: [
-    CharacterWidgetComponent,
-    ConsoleWidgetComponent,
-    FishingWidgetComponent,
-    ErrorDialog,
-  ],
   providers: [],
   bootstrap: [AppComponent],
 })
