@@ -4,7 +4,8 @@ import {
   Type,
 } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
-import { MatCardModule, MatIconModule } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
 import { WidgetService } from 'src/app/services/widget/widget.service';
