@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
-import { Responder } from '../abstract/responder';
-import * as fishConfig from './fishing.widget.json';
 import { CommandService } from 'src/app/services/command/command-service';
 
 /**
@@ -12,34 +10,40 @@ import { CommandService } from 'src/app/services/command/command-service';
   templateUrl: './fishing.widget.html',
 })
 export class FishingWidgetComponent extends AbstractWidgetComponent {
+  records = new Array<FishingRecord>();
+
+  private handleLeaderboard(
+    name: string,
+    id: string,
+    groups: Map<string, string>,
+    subGroups: Array<Map<string, string>>
+  ): void {
+    if (id === 'record') {
+      const fish = groups.get('fish') ?? 'unknown fish';
+      const user = groups.get('user') ?? 'unknown user';
+      const size = groups.get('size') ?? 'unknown size';
+      this.records.push(new FishingRecord(fish, user, size));
+    }
+  }
+
   protected subscribeToResponses(
     id: string,
     commandService: CommandService
   ): void {
-    throw new Error('Method not implemented.');
-  }
-  protected sendInitialCommands(commandService: CommandService): void {
-    throw new Error('Method not implemented.');
-  }
-  private responderArray: Responder[] = [
-    new Responder(fishConfig.patterns.Leader, data => {
-      for (const record of this.records) {
-        if (record.fish === data[1]) {
-          record.update(data[2], data[3]);
-          return;
-        }
-      }
-      this.records.push(new FishingRecord(data[1], data[2], data[3]));
-    }),
-  ];
-  get responders(): Responder[] {
-    return this.responderArray;
-  }
-  get loadCommands(): string[] {
-    return fishConfig.loadCommands;
+    commandService.subscribeToCommand(
+      'fishing',
+      'leaderboard',
+      'responses',
+      'success',
+      id,
+      (name, id, groups, subGroups) =>
+        this.handleLeaderboard(name, id, groups, subGroups)
+    );
   }
 
-  records = new Array<FishingRecord>();
+  protected sendInitialCommands(commandService: CommandService): void {
+    commandService.sendCommand('fishing', 'leaderboard');
+  }
 }
 
 export class FishingRecord {

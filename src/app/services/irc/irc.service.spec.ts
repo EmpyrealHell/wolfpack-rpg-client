@@ -80,14 +80,10 @@ describe('IrcService', () => {
     expect(toCall).toEqual([]);
   });
 
-  it('should return a copy of received messages', async () => {
+  it('should return an array of received messages', async () => {
     const message = `test message at ${Date.now()}`;
     await attachAndSend(message);
-    let linesCopy = service.lines;
-    expect(linesCopy).toContain(message);
-    linesCopy.length = 0;
-    linesCopy = service.lines;
-    expect(linesCopy).toContain(message);
+    expect(service.lines).toContain(message);
   });
 
   it('should return the full history', async () => {
