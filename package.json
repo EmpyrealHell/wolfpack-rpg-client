@@ -9,13 +9,15 @@
     "deploy": "ng build --prod --output-path dist --base-href wolfpack-rpg-client",
     "deploy-to-ghpages": "ng deploy --base-href=.",
     "test": "ng test",
-    "lint": "ng lint",
+    "lint": "gts lint",
     "e2e": "ng e2e",
-    "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
     "fix": "gts fix",
-    "postinstall": "ngcc"
+    "postinstall": "ngcc",
+    "prepare": "npm.cmd run compile",
+    "pretest": "npm.cmd run compile",
+    "posttest": "npm.cmd run lint"
   },
   "private": true,
   "dependencies": {
@@ -43,10 +45,10 @@
     "@angular/language-service": "~9.1.12",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "^12.11.1",
+    "@types/node": "^14.14.6",
     "@types/tmi.js": "^1.4.0",
     "codelyzer": "^5.1.2",
-    "gts": "^1.1.2",
+    "gts": "^3.0.2",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "^4.4.1",
@@ -57,6 +59,6 @@
     "protractor": "~5.4.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
-    "typescript": "~3.8.3"
+    "typescript": "^4.0.5"
   }
 }
