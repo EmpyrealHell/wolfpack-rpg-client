@@ -14,7 +14,8 @@
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
-    "fix": "gts fix"
+    "fix": "gts fix",
+    "postinstall": "ngcc"
   },
   "private": true,
   "dependencies": {
