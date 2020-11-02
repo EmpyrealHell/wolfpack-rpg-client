@@ -1,10 +1,6 @@
 import { MessageQueue } from './message-queue';
 
 describe('MessageQueue', () => {
-  beforeEach(() => {
-    const queue = new MessageQueue('spec-test', 100);
-  });
-
   it('should queue messages to send', () => {
     const message = `test${Date.now()}`;
     const queue = new MessageQueue('spec-test', 100);

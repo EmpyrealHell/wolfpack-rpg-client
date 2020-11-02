@@ -1,0 +1,16 @@
+{
+  "extends": "./node_modules/gts/",
+  "rules": {
+    "node/no-unpublished-import": "off",
+    "node/no-unpublished-require": "off"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.ts", "**/*.tsx"],
+      "rules": {
+        "@typescript-eslint/no-unused-vars": "off"
+      }
+    }
+  ]
+  //    "no-unused-vars": ["warn", { "vars": "local", "args": "after-used" }]
+}
