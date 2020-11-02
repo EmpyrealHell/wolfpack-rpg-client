@@ -14,7 +14,11 @@ describe('IrcService', () => {
   async function attachAndSend(
     message: string
   ): Promise<jasmine.SpyObj<Client>> {
-    const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
+    const clientInstance = jasmine.createSpyObj('Client', [
+      'on',
+      'connect',
+      'whisper',
+    ]);
     clientInstance.on.and.callFake((event: string, callback: Function) => {
       if (event === 'whisper') {
         callback('', null, message, false);

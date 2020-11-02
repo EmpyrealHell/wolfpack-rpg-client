@@ -2,7 +2,7 @@ import { Utils } from 'src/app/util/utils';
 import * as CommandData from './command-data.json';
 
 describe('CommandData', () => {
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getAllCommands = (obj: any): string[] => {
     const arr: string[] = [];
     for (const property in obj) {

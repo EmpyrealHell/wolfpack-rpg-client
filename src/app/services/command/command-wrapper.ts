@@ -48,7 +48,7 @@ export abstract class CommandWrapper {
    * @param command The command string to modify.
    * @param params An object whose properties are used as parameter replacements.
    */
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   replaceProperties(command: string, params: any): string {
     let output = command;
     for (const p in params) {

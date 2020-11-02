@@ -44,7 +44,7 @@ export class CommandLoader {
   }
 
   private registerCommand<T>(name: string, command: T): void {
-    // tslint:disable-next-line: no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const responses = (command as any)['responses'];
     for (const catKey in responses) {
       if (responses[catKey]) {
@@ -78,13 +78,13 @@ export class CommandLoader {
   }
 
   private registerResponses(): void {
-    // tslint:disable-next-line: no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const commands = CommandData.commands as any;
     this.registerContainer('command', commands, true);
   }
 
   private registerMessages(): void {
-    // tslint:disable-next-line: no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const messages = CommandData.messages as any;
     this.registerContainer('message', messages);
   }

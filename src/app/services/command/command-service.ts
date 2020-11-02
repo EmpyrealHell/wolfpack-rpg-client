@@ -317,7 +317,7 @@ export class CommandService {
     G extends keyof typeof CommandData.commands,
     C extends keyof typeof CommandData.commands[G]
   >(group: G, command: C): boolean {
-    // tslint:disable-next-line: no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const variants = CommandData.commands[group][command] as any;
     const commands: string[] = [];
     if (variants.command) {
@@ -352,7 +352,7 @@ export class CommandService {
     C extends keyof typeof CommandData.commands[G]
   >(group: G, command: C): void {
     if (!this.hasCommandBeenSent(group, command)) {
-      // tslint:disable-next-line: no-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const commandObject = CommandData.commands[group][command] as any;
       if (commandObject.command) {
         const toSend = commandObject.command as string;
