@@ -48,10 +48,9 @@ describe('ConfigManager', () => {
     try {
       const testData = new Config();
       testData.authentication.user = `TestUser${Date.now()}`;
-      let loadedData: Config;
       localStorage.setItem(storageKey, JSON.stringify(testData));
       manager.load();
-      loadedData = manager.getConfig();
+      const loadedData = manager.getConfig();
       expect(loadedData.authentication.user).toBe(testData.authentication.user);
     } finally {
       if (current) {
