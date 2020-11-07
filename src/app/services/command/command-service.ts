@@ -347,7 +347,7 @@ export class CommandService {
    * @param group The command group.
    * @param command The key of the command.
    */
-  sendCommand<
+  sendInitialCommand<
     G extends keyof typeof CommandData.commands,
     C extends keyof typeof CommandData.commands[G]
   >(group: G, command: C): void {
@@ -358,6 +358,45 @@ export class CommandService {
         const toSend = commandObject.command as string;
         this.ircService.send(toSend);
       }
+    }
+  }
+
+  /**
+   * Sends a command. This will send the command regardless of whether it's
+   * been sent or not. It should be used to refresh data or send user actions,
+   * but not as part of the initial widget setup. Use SendInitialCommand
+   * instead for initial widget setup.
+   * @param group The command group.
+   * @param command The key of the command.
+   * @param args A map of arguments and the values to use for them.
+   */
+  sendCommand<
+    G extends keyof typeof CommandData.commands,
+    C extends keyof typeof CommandData.commands[G]
+  >(group: G, command: C): void {
+    this.sendCommandWithArguments(group, command);
+  }
+
+  /**
+   * Sends a command with arguments.
+   * @param group The command group.
+   * @param command The key of the command.
+   * @param args A map of arguments and the values to use for them.
+   */
+  sendCommandWithArguments<
+    G extends keyof typeof CommandData.commands,
+    C extends keyof typeof CommandData.commands[G]
+  >(group: G, command: C, args?: Map<string, string>): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const commandObject = CommandData.commands[group][command] as any;
+    if (commandObject.command) {
+      let toSend = commandObject.command as string;
+      if (args) {
+        for (const [key, value] of args) {
+          toSend = toSend.replace(`{${key}}`, value);
+        }
+      }
+      this.ircService.send(toSend);
     }
   }
 }

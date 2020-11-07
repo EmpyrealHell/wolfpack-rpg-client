@@ -1,3 +1,25 @@
+<div>
+  <span style="display: block; width: 96px; margin: auto">
+    <button mat-button (click)="hook()" style="font-size: x-large">
+      <img src="./assets/button-{{getCastIcon()}}.svg" width="48px" />
+      {{getCastMessage()}}
+    </button>
+  </span>
+</div>
+<div style="text-align: center">
+  <br />
+  <span> {{hookMessage}} </span>
+</div>
+<div style="text-align: center" *ngIf="recentCatch">
+  <br />
+  <div>Last Catch: {{recentCatch.fish}}!</div>
+  <div>
+    It's {{recentCatch.length}} inches long, and weighs {{recentCatch.weight}}
+    pounds.
+  </div>
+</div>
 <ul>
-  <li *ngFor="let record of records">{{record.fish}}: {{record.size}} ({{record.name}})</li>
+  <li *ngFor="let record of records">
+    {{record.fish}}: {{record.size}} ({{record.name}})
+  </li>
 </ul>

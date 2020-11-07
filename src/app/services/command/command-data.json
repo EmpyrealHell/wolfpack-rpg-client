@@ -102,6 +102,7 @@
         "alternates": ["!reel"],
         "responses": {
           "success": {
+            "newRecord": "This is the biggest (?<name>.*) you've ever caught\\!",
             "confirmation": "Congratulations! You caught a (?<length>\\d+(?:\\.\\d+)?) inch, (?<weight>\\d+(?:\\.\\d+)?) pound (?<name>\\w+)!"
           }
         }
@@ -680,7 +681,9 @@
       "message": "(?<user>[^ ]+) says: \" (?<message>.*)\" "
     },
     "fishing": {
-      "newRecord": "(?<user>[^ ]+) just caught the heaviest (?<name>\\w+) ever! It weighs (?<weight>\\d+(?:\\.\\d+)?) pounds!"
+      "newRecord": "(?<user>[^ ]+) just caught the heaviest (?<name>\\w+) ever! It weighs (?<weight>\\d+(?:\\.\\d+)?) pounds!",
+      "gotAway": "Heck\\! The fish got away\\. Maybe next time\\.{3}",
+      "fishHooked": "(?<message>.*) Type \\!catch to reel it in\\!"
     },
     "party": {
       "declined": "(?<user>[^ ]+) has declined your party invite\\.",

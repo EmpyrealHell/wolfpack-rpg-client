@@ -14,7 +14,7 @@ If your Twitch account is still new, you may not be able to send messages throug
 
 ## Development Requirements
 
-This app was created using [Angular CLI](https://github.com/angular/angular-cli) CLI 8.3.22. It requires Node 8.9 or higher, and NPM 5.5.1 or higher.
+This app was created using [Angular CLI](https://github.com/angular/angular-cli) CLI 10.2.0. It requires Node 10.13.0 or higher, and NPM 6.11.0 or higher.
 
 ## Building Locally
 
@@ -58,12 +58,12 @@ Note that only authorized users are able to publish to the Github-hosted page.
 
 ## IDE and Extensions
 
-We recommend using [Visual Studio Code](https://code.visualstudio.com/) with the following extensions:
+We recommend using [Visual Studio Code](https://code.visualstudio.com/), with the following extensions:
 
-- [TSLint](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
-Make sure to set your default formatter to use Prettier, as the default typescript formatter in VS Code will cause conflicts with the GTS style check.It is listed in the formatter selection as esbenp.prettier-vscode.
+Make sure to set your default formatter to use Prettier, as the default typescript formatter in VS Code will cause conflicts with the GTS style check. It is listed in the formatter selection as esbenp.prettier-vscode.
 
 ## Contributing
 

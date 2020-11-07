@@ -138,8 +138,8 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
   }
 
   protected sendInitialCommands(commandService: CommandService): void {
-    commandService.sendCommand('info', 'stats');
-    commandService.sendCommand('inventory', 'list');
+    commandService.sendInitialCommand('info', 'stats');
+    commandService.sendInitialCommand('inventory', 'list');
   }
 
   /**
