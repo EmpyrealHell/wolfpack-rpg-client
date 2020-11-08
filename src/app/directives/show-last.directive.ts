@@ -7,7 +7,6 @@ import { NgModel } from '@angular/forms';
  */
 @Directive({
   selector: '[appShowLast]',
-  providers: [NgModel],
 })
 export class ShowLastDirective implements OnInit {
   constructor(private elem: ElementRef, private model: NgModel) {}
