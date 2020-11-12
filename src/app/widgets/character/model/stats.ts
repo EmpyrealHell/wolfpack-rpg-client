@@ -144,7 +144,9 @@ export class Stats {
   updateStatByDescription(description: string, value: number): void {
     const varName = Stats.variableNameMap.get(description);
     if (varName) {
-      this.updatedStats.push(varName);
+      if (this.updatedStats.indexOf(varName) === -1) {
+        this.updatedStats.push(varName);
+      }
       const updater = Stats.variableUpdateMap.get(varName);
       if (updater) {
         updater(this, value);

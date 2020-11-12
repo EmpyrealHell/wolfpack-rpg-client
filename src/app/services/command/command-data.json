@@ -102,8 +102,8 @@
         "alternates": ["!reel"],
         "responses": {
           "success": {
-            "newRecord": "This is the biggest (?<name>.*) you've ever caught\\!",
-            "confirmation": "Congratulations! You caught a (?<length>\\d+(?:\\.\\d+)?) inch, (?<weight>\\d+(?:\\.\\d+)?) pound (?<name>\\w+)!"
+            "newRecord": "This is the biggest (?<fish>\\w+(?: \\w+)*) you've ever caught\\!",
+            "confirmation": "Congratulations! You caught a (?<length>\\d+(?:\\.\\d+)?) inch, (?<weight>\\d+(?:\\.\\d+)?) pound (?<fish>\\w+(?: \\w+)*)!"
           }
         }
       },
@@ -115,7 +115,7 @@
             "empty": "You don't have any fish! Type !cast to try and fish for some!"
           },
           "success": {
-            "name": "Name - (?<name>[^ ]{1,16})",
+            "name": "Name - (?<fish>\\w+(?: \\w+)*)",
             "length": "Length - (?<length>\\d+(?:\\.\\d+)?) in\\.",
             "weight": "Weight - (?<weight>\\d+(?:\\.\\d+)?) lbs\\.",
             "size": "Size Category - (?<size>\\w+)",
@@ -123,7 +123,7 @@
               "size": 1,
               "after": {
                 "type": "Response",
-                "id": "Size"
+                "id": "fishing.detail.size"
               }
             }
           }
@@ -134,7 +134,7 @@
         "alternates": ["!leaderboards"],
         "responses": {
           "success": {
-            "record": "Largest (?<fish>\\w+) caught by (?<user>[^ ]+) at (?<size>\\d+(?:\\.\\d+)) lbs\\."
+            "record": "Largest (?<fish>\\w+(?: \\w+)*) caught by (?<user>[^ ]+) at (?<size>\\d+(?:\\.\\d+)?) lbs\\."
           }
         }
       },
@@ -146,7 +146,7 @@
           },
           "success": {
             "size": "You've caught (?<size>\\d+) different types of fish: ",
-            "fishInfo": "(?<id>\\d+): (?<name>[^ ]{1,16})",
+            "fishInfo": "(?<id>\\d+): (?<fish>\\w+(?: \\w+)*)",
             "details": "Type !fish # for more information on the particular type of fish\\."
           }
         }
@@ -159,7 +159,7 @@
             "empty": "You don't have any fish! Type !cast to try and fish for some!"
           },
           "success": {
-            "confirmation": "You released your (?<name>\\w+)\\. Bye bye!"
+            "confirmation": "You released your (?<fish>\\w+(?: \\w+)*)\\. Bye bye!"
           }
         }
       }
@@ -215,7 +215,8 @@
             "info": {
               "size": 1,
               "after": {
-                "type": "Command"
+                "type": "Command",
+                "id": "info.help"
               }
             },
             "topicList": {
@@ -511,7 +512,8 @@
             "help": {
               "size": 4,
               "after": {
-                "type": "Command"
+                "type": "Command",
+                "id": "pets.help"
               }
             }
           }

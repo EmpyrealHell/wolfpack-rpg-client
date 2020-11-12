@@ -1,13 +1,19 @@
-<div [style.grid-template-areas]="gridlayout" style="display: grid !important">
+<div
+  [style.grid-template-areas]="gridlayout"
+  style="display: grid !important; height: 100%"
+>
   <div
     *ngFor="let factory of factories; index as i"
     [style.grid-area]="'a' + i"
     [style.display]="'flex'"
+    style="height: 100%; overflow: hidden"
   >
     <mat-card class="flex-column">
       <mat-card-title>
         <div class="contain-space">
-          <span><img src="./assets/{{ getWidgetIcon(i) }}" width="32px"/></span>
+          <span
+            ><img src="./assets/{{ getWidgetIcon(i) }}" width="32px"
+          /></span>
           <span>&nbsp;</span>
           <span>{{ getWidgetName(i) }}</span>
           <span class="fill-space"></span>

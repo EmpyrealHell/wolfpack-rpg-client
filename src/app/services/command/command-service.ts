@@ -386,14 +386,15 @@ export class CommandService {
   sendCommandWithArguments<
     G extends keyof typeof CommandData.commands,
     C extends keyof typeof CommandData.commands[G]
-  >(group: G, command: C, args?: Map<string, string>): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  >(group: G, command: C, args?: any): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const commandObject = CommandData.commands[group][command] as any;
     if (commandObject.command) {
       let toSend = commandObject.command as string;
       if (args) {
-        for (const [key, value] of args) {
-          toSend = toSend.replace(`{${key}}`, value);
+        for (const key in args) {
+          toSend = toSend.replace(`{${key}}`, args[key]);
         }
       }
       this.ircService.send(toSend);

@@ -1,5 +1,5 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { async, TestBed } from '@angular/core/testing';
+import { async, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -84,20 +84,22 @@ describe('GameComponent', () => {
         { provide: Router, useValue: routerSpy },
       ],
     }).compileComponents();
-    configManagerSpy.getConfig.and.returnValue({
-      authentication: {
-        user: 'configManager',
-        token: 'token',
-        state: null,
-        scope: null,
-      },
-      settings: {
-        useDarkTheme: true,
-        toolbarIcons: true,
-        toolbarNames: true,
-      },
-      layout: [],
-    } as Partial<Config>);
+    waitForAsync(
+      configManagerSpy.getConfig.and.returnValue({
+        authentication: {
+          user: 'configManager',
+          token: 'token',
+          state: null,
+          scope: null,
+        },
+        settings: {
+          useDarkTheme: true,
+          toolbarIcons: true,
+          toolbarNames: true,
+        },
+        layout: [],
+      } as Partial<Config>)
+    );
   }));
 
   it('should redirect if not authenticated', async () => {

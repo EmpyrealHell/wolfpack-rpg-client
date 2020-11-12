@@ -9,6 +9,7 @@ export abstract class AbstractWidgetComponent implements WidgetComponent {
   configManager: ConfigManager | undefined;
   commandService: CommandService | undefined;
   name = 'abstract';
+  username = '';
 
   protected abstract subscribeToResponses(
     id: string,
@@ -17,6 +18,7 @@ export abstract class AbstractWidgetComponent implements WidgetComponent {
   protected abstract sendInitialCommands(commandService: CommandService): void;
 
   onActivate(): void {
+    this.username = this.configManager?.getConfig().authentication.user ?? '';
     const widgetId = `${this.name}-widget`;
     if (this.commandService) {
       this.subscribeToResponses(widgetId, this.commandService);

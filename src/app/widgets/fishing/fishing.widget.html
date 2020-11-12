@@ -1,25 +1,122 @@
-<div>
-  <span style="display: block; width: 96px; margin: auto">
-    <button mat-button (click)="hook()" style="font-size: x-large">
-      <img src="./assets/button-{{getCastIcon()}}.svg" width="48px" />
-      {{getCastMessage()}}
-    </button>
-  </span>
-</div>
-<div style="text-align: center">
-  <br />
-  <span> {{hookMessage}} </span>
-</div>
-<div style="text-align: center" *ngIf="recentCatch">
-  <br />
-  <div>Last Catch: {{recentCatch.fish}}!</div>
+<mat-card-content height="100%" class="flex-column">
   <div>
-    It's {{recentCatch.length}} inches long, and weighs {{recentCatch.weight}}
-    pounds.
+    <span style="display: block; width: 96px; margin: auto">
+      <button mat-button (click)="hook()" style="font-size: x-large">
+        <img src="./assets/button-{{getCastIcon()}}.svg" width="48px" />
+        {{getCastMessage()}}
+      </button>
+    </span>
   </div>
-</div>
-<ul>
-  <li *ngFor="let record of records">
-    {{record.fish}}: {{record.size}} ({{record.name}})
-  </li>
-</ul>
+  <div style="text-align: center">
+    <br />
+    <span> {{getHookMessage()}} </span>
+  </div>
+  <mat-tab-group animationDuration="0ms" style="height: calc(100% - 115px)">
+    <mat-tab label="Session History">
+      <ng-template matTabContent>
+        <table mat-table [dataSource]="sessionTableSource" width="100%">
+          <ng-container matColumnDef="fish">
+            <th mat-header-cell *matHeaderCellDef>Fish Name</th>
+            <td mat-cell *matCellDef="let record">{{record.fish}}</td>
+          </ng-container>
+          <ng-container matColumnDef="length">
+            <th mat-header-cell *matHeaderCellDef>Length (in)</th>
+            <td mat-cell *matCellDef="let record">{{record.length}}</td>
+          </ng-container>
+          <ng-container matColumnDef="weight">
+            <th mat-header-cell *matHeaderCellDef>Weight (lbs)</th>
+            <td mat-cell *matCellDef="let record">{{record.weight}}</td>
+          </ng-container>
+          <ng-container matColumnDef="personalLength">
+            <th mat-header-cell *matHeaderCellDef>Personal Best Length</th>
+            <td mat-cell *matCellDef="let record">
+              {{getPersonal(record.fish)?.length}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="personalWeight">
+            <th mat-header-cell *matHeaderCellDef>Personal Best Weight</th>
+            <td mat-cell *matCellDef="let record">
+              {{getPersonal(record.fish)?.weight}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="recordHolder">
+            <th mat-header-cell *matHeaderCellDef>Record Holder</th>
+            <td mat-cell *matCellDef="let record">
+              {{getLeader(record.fish)?.user}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="recordWeight">
+            <th mat-header-cell *matHeaderCellDef>Record Weight</th>
+            <td mat-cell *matCellDef="let record">
+              {{getLeader(record.fish)?.weight}}
+            </td>
+          </ng-container>
+          <tr
+            mat-header-row
+            *matHeaderRowDef="['fish', 'length', 'weight', 'personalLength', 'personalWeight', 'recordHolder', 'recordWeight']"
+          ></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: ['fish', 'length', 'weight', 'personalLength', 'personalWeight', 'recordHolder', 'recordWeight']"
+          ></tr>
+        </table>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Personal Bests">
+      <ng-template matTabContent>
+        <table mat-table [dataSource]="personalTableSource" width="100%">
+          <ng-container matColumnDef="fishPB">
+            <th mat-header-cell *matHeaderCellDef>Fish Name</th>
+            <td mat-cell *matCellDef="let record">{{record.fish}}</td>
+          </ng-container>
+          <ng-container matColumnDef="sizePB">
+            <th mat-header-cell *matHeaderCellDef>Size</th>
+            <td mat-cell *matCellDef="let record">{{record.category}}</td>
+          </ng-container>
+          <ng-container matColumnDef="lengthPB">
+            <th mat-header-cell *matHeaderCellDef>Length (in)</th>
+            <td mat-cell *matCellDef="let record">{{record.length}}</td>
+          </ng-container>
+          <ng-container matColumnDef="weightPB">
+            <th mat-header-cell *matHeaderCellDef>Weight (lbs)</th>
+            <td mat-cell *matCellDef="let record">{{record.weight}}</td>
+          </ng-container>
+          <tr
+            mat-header-row
+            *matHeaderRowDef="['fishPB', 'sizePB', 'lengthPB', 'weightPB']"
+          ></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: ['fishPB', 'sizePB', 'lengthPB', 'weightPB']"
+          ></tr>
+        </table>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Leaderboard">
+      <ng-template matTabContent>
+        <table mat-table [dataSource]="leaderboardTableSource" width="100%">
+          <ng-container matColumnDef="fishLB">
+            <th mat-header-cell *matHeaderCellDef>Fish Name</th>
+            <td mat-cell *matCellDef="let record">{{record.fish}}</td>
+          </ng-container>
+          <ng-container matColumnDef="userLB">
+            <th mat-header-cell *matHeaderCellDef>User</th>
+            <td mat-cell *matCellDef="let record">{{record.user}}</td>
+          </ng-container>
+          <ng-container matColumnDef="weightLB">
+            <th mat-header-cell *matHeaderCellDef>Weight (lbs)</th>
+            <td mat-cell *matCellDef="let record">{{record.weight}}</td>
+          </ng-container>
+          <tr
+            mat-header-row
+            *matHeaderRowDef="['fishLB', 'userLB', 'weightLB']"
+          ></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: ['fishLB', 'userLB', 'weightLB']"
+          ></tr>
+        </table>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card-content>

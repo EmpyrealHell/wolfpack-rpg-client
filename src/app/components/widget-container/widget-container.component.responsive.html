@@ -1,0 +1,42 @@
+<div fxFlex fxLayout="column" fxLayoutGap="10px" style="min-height: 100vh">
+  <div fxLayout="row wrap" style="height: 100%">
+    <div
+      *ngFor="let factory of factories; index as i"
+      [fxFlex]="factories.length === 1 ? 100 : factories.length <= 4 ? 50 : 33"
+      fxFlex.md="50"
+      fxFlex.lt-md="100"
+      fxLayout="column"
+    >
+      <mat-card>
+        <mat-card-title>
+          <div class="contain-space">
+            <span
+              ><img src="./assets/{{ getWidgetIcon(i) }}" width="32px"
+            /></span>
+            <span>&nbsp;</span>
+            <span>{{ getWidgetName(i) }}</span>
+            <span class="fill-space"></span>
+            <span>
+              <button
+                *ngIf="configManager.isTester()"
+                mat-icon-button
+                color="warn"
+                (click)="closeWidget(i)"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </span>
+          </div>
+        </mat-card-title>
+        <app-widget-factory
+          [factory]="factory"
+          [ircService]="ircService"
+          [configManager]="configManager"
+          [commandService]="commandService"
+          [name]="getWidgetName(i)"
+        >
+        </app-widget-factory>
+      </mat-card>
+    </div>
+  </div>
+</div>
