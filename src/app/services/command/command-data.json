@@ -67,7 +67,10 @@
             "confirmation": "You have been placed in the Group Finder queue\\.",
             "matched": {
               "response": "You've been matched for (?<dungeon>.*) with: (?<partyList>)",
-              "subGroups": "(?<user>[^ ]+) \\((?<className>\\w+)\\)"
+              "subGroups": {
+                "container": "partyList",
+                "pattern": "(?<user>[^ ]+) \\((?<className>\\w+)\\)"
+              }
             },
             "leader": "You are the party leader\\. Whisper me '!start' to begin!"
           }
@@ -221,7 +224,10 @@
             },
             "topicList": {
               "response": "Here's a list of things you can ask me about: (?<topics>[^\\(]+ \\(\\d+\\)(?: - [^\\(]+ \\(\\d+\\))*)",
-              "subGroups": "(?<topic>[^\\(]+) \\((?<id>\\d+)\\)"
+              "subGroups": {
+                "container": "topics",
+                "pattern": "(?<topic>[^\\(]+) \\((?<id>\\d+)\\)"
+              }
             }
           }
         }
@@ -231,6 +237,24 @@
         "responses": {
           "success": {
             "confirmation": "Did you know you gain experience by watching the stream? You can level up as you get more XP! Max level is 20\\. To check your level & xp, message me '!xp' '!level' or '!stats'\\. Only Level 2\\+ viewers can post links\\. This helps prevent bot spam!"
+          }
+        }
+      },
+      "checkAccess": {
+        "command": "!check-access",
+        "alternates": ["checkAccess"],
+        "responses": {
+          "error": {
+            "noRoles": "You are not a member of any roles\\."
+          },
+          "success": {
+            "roles": {
+              "response": "You are a member of the following roles?: (?<roles>.*)",
+              "subGroups": {
+                "container": "roles",
+                "pattern": " ?(?<role>.+?)(?:, |\\.)"
+              }
+            }
           }
         }
       },
@@ -335,7 +359,10 @@
           "error": {
             "alreadyInGroup": {
               "response": "You already have a party created! (?<reason>.*)",
-              "subGroups": "(?<complete>just finished)|(?<forming>currently forming)|(?<ready>ready to adventure)|(?<started>currently on an adventure)|(?<unknown>no idea)"
+              "subGroups": {
+                "container": "reason",
+                "pattern": "(?<complete>just finished)|(?<forming>currently forming)|(?<ready>ready to adventure)|(?<started>currently on an adventure)|(?<unknown>no idea)"
+              }
             },
             "alreadyInQueue": "Can't create a party while queued with the Group Finder\\. Message me '!leavequeue' to exit\\.",
             "pendingInvite": "You currently have an outstanding invite to another party\\. Couldn't create new party!"

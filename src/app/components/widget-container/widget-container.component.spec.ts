@@ -8,9 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
-import { WidgetService } from 'src/app/services/widget/widget.service';
 import { AbstractWidgetComponent } from 'src/app/widgets/abstract/abstract-widget';
-import { Responder } from 'src/app/widgets/abstract/responder';
 import { TestUtils } from 'src/test/test-utils';
 import { ConfigManager } from '../../services/data/config-manager';
 import { WidgetFactoryComponent } from '../widget-factory/widget-factory.component';
@@ -18,6 +16,7 @@ import { WidgetComponent } from '../widget-factory/widget.component';
 import { WidgetContainerComponent } from './widget-container.component';
 import { Config } from 'src/app/services/data/config-data';
 import { CommandService } from 'src/app/services/command/command-service';
+import { FeatureManagementService } from 'src/app/services/feature-management/feature-management-service';
 
 export class FirstWidget extends AbstractWidgetComponent {
   protected subscribeToResponses(
@@ -34,11 +33,18 @@ export class SecondWidget extends AbstractWidgetComponent {
   protected sendInitialCommands(commandService: CommandService): void {}
 }
 
-const firstWidgetItem = new WidgetItem(FirstWidget, 'First');
-const secondwidgetItem = new WidgetItem(SecondWidget, 'Second');
+const firstWidgetItem = new WidgetItem(FirstWidget, 'First', 'First', 'first');
+const secondwidgetItem = new WidgetItem(
+  SecondWidget,
+  'Second',
+  'Second',
+  'second'
+);
 
-const widgetServiceSpy = TestUtils.spyOnClass(WidgetService);
-widgetServiceSpy.getWidgets.and.returnValue(
+const featureManagementServiceSpy = TestUtils.spyOnClass(
+  FeatureManagementService
+);
+featureManagementServiceSpy.getWidgets.and.returnValue(
   new Array<WidgetItem>(firstWidgetItem, secondwidgetItem)
 );
 const configManagerSpy = TestUtils.spyOnClass(ConfigManager);
@@ -68,7 +74,10 @@ describe('WidgetContainerComponent', () => {
       imports: [MatIconModule, MatCardModule],
       declarations: [WidgetContainerComponent, WidgetFactoryComponent],
       providers: [
-        { provide: WidgetService, useValue: widgetServiceSpy },
+        {
+          provide: FeatureManagementService,
+          useValue: featureManagementServiceSpy,
+        },
         { provide: ConfigManager, useValue: configManagerSpy },
         { provide: CommandService, useValue: commandServiceSpy },
         { provide: IrcService, useValue: ircServiceSpy },

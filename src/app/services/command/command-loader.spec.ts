@@ -11,7 +11,7 @@ describe('CommandLoader', () => {
 
   it('should load the command data json', () => {
     const messageList = loader.all;
-    expect(messageList.length).toBe(104);
+    expect(messageList.length).toBe(108);
   });
 
   it('should provide access to keys', () => {

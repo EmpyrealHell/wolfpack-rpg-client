@@ -155,11 +155,21 @@ export class CommandService {
       }
       const subMap = new Array<Map<string, string>>();
       if (pattern.subGroups) {
-        const subMatches = Utils.execAll(pattern.subGroups.pattern, message);
+        let container = message;
+        if (pattern.subGroups.container) {
+          container = matchMap.get(pattern.subGroups.container) ?? message;
+        }
+        const subMatches = Utils.execAll(
+          pattern.subGroups.pattern.pattern,
+          pattern.subGroups.container ?? message
+        );
         const subMatchMap = new Map<string, string>();
         for (const subMatch of subMatches) {
           for (let i = 1; i < subMatch.length; i++) {
-            subMatchMap.set(pattern.subGroups.names[i - 1], subMatch[i]);
+            subMatchMap.set(
+              pattern.subGroups.pattern.names[i - 1],
+              subMatch[i]
+            );
           }
         }
         subMap.push(subMatchMap);

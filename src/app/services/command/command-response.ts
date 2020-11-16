@@ -1,10 +1,26 @@
+export interface SubgroupData {
+  /**
+   * Which named regex capture group to apply the subgroup to.
+   */
+  container: string | undefined;
+  /**
+   * Regex pattern of repeating text to match more than once.
+   */
+  pattern: string;
+}
 /**
  * Interface that describes the properties of a subgroup in the command data
  * json.
  */
 export interface SubgroupExpression {
+  /**
+   * Regex pattern to match the entire line.
+   */
   response: string;
-  subGroups: string;
+  /**
+   * Regex pattern of repeating text to match more than once.
+   */
+  subGroups: SubgroupData;
 }
 
 /**
@@ -46,6 +62,25 @@ export class RegExpNamed {
 }
 
 /**
+ * An object that holds the regex data for a subgroup.
+ */
+export class Subgroup {
+  /**
+   * Which named regex capture group to apply the subgroup to.
+   */
+  container: string | undefined;
+  /**
+   * Regex pattern of repeating text to match more than once.
+   */
+  pattern: RegExpNamed;
+
+  constructor(pattern: string, container: string | undefined = undefined) {
+    this.container = container;
+    this.pattern = new RegExpNamed(pattern, 'g');
+  }
+}
+
+/**
  * An object that holds a regex with optional subgroups.
  */
 export class CommandResponse {
@@ -57,12 +92,19 @@ export class CommandResponse {
    * Optional subgroup regular expression that is run globally to get extra
    * details.
    */
-  subGroups: RegExpNamed | undefined;
+  subGroups: Subgroup | undefined;
 
-  constructor(response: string, subGroups: string | undefined = undefined) {
+  constructor(
+    response: string,
+    subGroups: string | SubgroupData | undefined = undefined
+  ) {
     this.response = new RegExpNamed(`^${response}$`);
     if (subGroups) {
-      this.subGroups = new RegExpNamed(subGroups, 'g');
+      if (typeof subGroups === 'string') {
+        this.subGroups = new Subgroup(subGroups);
+      } else {
+        this.subGroups = new Subgroup(subGroups.pattern, subGroups.container);
+      }
     }
   }
 }

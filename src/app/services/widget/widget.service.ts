@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CharacterWidgetComponent } from 'src/app/widgets/character/character.widget';
 import { ConsoleWidgetComponent } from 'src/app/widgets/console/console.widget';
-import { ConfigManager } from 'src/app/services/data/config-manager';
-import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetItem } from './widget-item';
 import { FishingWidgetComponent } from 'src/app/widgets/fishing/fishing.widget';
 
@@ -14,24 +12,30 @@ import { FishingWidgetComponent } from 'src/app/widgets/fishing/fishing.widget';
 })
 export class WidgetService {
   private static widgets = new Array<WidgetItem>(
-    new WidgetItem(CharacterWidgetComponent, 'Character'),
-    new WidgetItem(null, 'Inventory'),
-    new WidgetItem(null, 'Pets'),
-    new WidgetItem(FishingWidgetComponent, 'Fishing'),
-    new WidgetItem(null, null),
-    new WidgetItem(null, 'Dungeon'),
-    new WidgetItem(null, 'Group'),
-    new WidgetItem(null, 'Group Chat'),
-    new WidgetItem(null, null),
-    new WidgetItem(null, 'Shop'),
-    new WidgetItem(null, 'Info'),
-    new WidgetItem(ConsoleWidgetComponent, 'Console')
+    new WidgetItem(
+      CharacterWidgetComponent,
+      'Character',
+      'character.beta',
+      'character'
+    ),
+    new WidgetItem(null, 'Inventory', 'inventory.beta', 'inventory'),
+    new WidgetItem(null, 'Pets', 'pets.beta', 'pets'),
+    new WidgetItem(
+      FishingWidgetComponent,
+      'Fishing',
+      'fishing.beta',
+      'fishing'
+    ),
+    new WidgetItem(null, 'Fishing', 'fishing-tournament.beta', 'fishing'),
+    new WidgetItem(null, 'Dungeon', 'dungeon.beta', 'dungeon'),
+    new WidgetItem(null, 'Group', 'group.beta', 'group'),
+    new WidgetItem(null, 'Group Chat', 'group-chat.beta', 'groupchat'),
+    new WidgetItem(null, 'Shop', 'shop.beta', 'shop'),
+    new WidgetItem(null, 'Info', 'info.beta', 'info'),
+    new WidgetItem(ConsoleWidgetComponent, 'Console', 'console', 'console')
   );
 
-  constructor(
-    private ircService: IrcService,
-    private configManager: ConfigManager
-  ) {}
+  constructor() {}
 
   /**
    * Returns a collection of all available widgets.
