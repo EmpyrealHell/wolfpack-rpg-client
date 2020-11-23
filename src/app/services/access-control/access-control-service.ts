@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CommandService } from '../command/command-service';
 import { WidgetItem } from '../widget/widget-item';
 import { WidgetService } from '../widget/widget.service';
-import * as RoleData from './feature-management.json';
+import * as RoleData from './access-control.json';
 
 export type UpdateCallback = (newWidgets: WidgetItem[]) => void;
 
@@ -17,7 +17,7 @@ export interface RoleWidgets {
 @Injectable({
   providedIn: 'root',
 })
-export class FeatureManagementService {
+export class AccessControlService {
   private userRoles: string[] = [];
   private widgets: WidgetItem[] = [];
   private callback: UpdateCallback | undefined;
@@ -128,7 +128,7 @@ export class FeatureManagementService {
       'checkAccess',
       'responses',
       'success',
-      'feature-management',
+      'access-control',
       (name, id, groups, subGroups) =>
         this.handleRoleUpdate(name, id, groups, subGroups)
     );

@@ -9,7 +9,7 @@ import { IrcService } from '../../services/irc/irc.service';
 import { UserService } from '../../services/user/user.service';
 import { ErrorDialog } from '../error-dialog/error-dialog';
 import * as PackageJson from '../../../../package.json';
-import { FeatureManagementService } from 'src/app/services/feature-management/feature-management-service';
+import { AccessControlService } from 'src/app/services/access-control/access-control-service';
 
 /**
  * The main component holding the game UI.
@@ -40,14 +40,14 @@ export class GameComponent implements OnInit {
     public ircService: IrcService,
     public configManager: ConfigManager,
     public userService: UserService,
-    public featureManagementService: FeatureManagementService,
+    public accessControlService: AccessControlService,
     public overlayContainer: OverlayContainer,
     public dialog: MatDialog,
     public router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.widgets = this.featureManagementService.getWidgets(newWidgets => {
+    this.widgets = this.accessControlService.getWidgets(newWidgets => {
       this.widgets = newWidgets;
     });
     const config = this.configManager.getConfig();

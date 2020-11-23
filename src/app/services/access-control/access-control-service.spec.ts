@@ -1,12 +1,11 @@
-import { not } from '@angular/compiler/src/output/output_ast';
 import { TestUtils } from 'src/test/test-utils';
 import { CommandCallback, CommandService } from '../command/command-service';
 import { WidgetItem } from '../widget/widget-item';
 import { WidgetService } from '../widget/widget.service';
-import { FeatureManagementService } from './feature-management-service';
-import * as data from './feature-management.json';
+import { AccessControlService } from './access-control-service';
+import * as AccessControlData from './access-control.json';
 
-describe('FeatureManagementService', () => {
+describe('AccessControlService', () => {
   const defaultRole = ['console'];
   const roleData = [
     {
@@ -20,7 +19,7 @@ describe('FeatureManagementService', () => {
   ];
   let commandService: jasmine.SpyObj<CommandService>;
   let widgetService: jasmine.SpyObj<WidgetService>;
-  let service: FeatureManagementService;
+  let service: AccessControlService;
 
   let roleHandler: CommandCallback;
 
@@ -43,13 +42,13 @@ describe('FeatureManagementService', () => {
       new WidgetItem(null, 'Bar', 'bar', 'baricon'),
       new WidgetItem(null, 'Foobar', 'foo.bar', 'baricon'),
     ]);
-    service = new FeatureManagementService(commandService, widgetService);
+    service = new AccessControlService(commandService, widgetService);
   });
 
   it('should get default widget ids when no role has been assigned', () => {
     service.initialize(defaultRole, roleData);
     const widgets = service.getWidgets();
-    const defaultWidgets = data.defaultRole.widgets;
+    const defaultWidgets = AccessControlData.defaultRole.widgets;
     for (const widget of widgets) {
       expect(defaultWidgets.filter(x => x === widget.id).length).toBe(1);
     }
@@ -99,7 +98,7 @@ describe('FeatureManagementService', () => {
     expect(args[1]).toBe('checkAccess');
     expect(args[2]).toBe('responses');
     expect(args[3]).toBe('success');
-    expect(args[4]).toBe('feature-management');
+    expect(args[4]).toBe('access-control');
     expect(roleHandler).not.toBeUndefined();
     expect(commandService.sendCommand).toHaveBeenCalledWith(
       'info',

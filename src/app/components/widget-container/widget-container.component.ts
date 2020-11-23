@@ -10,7 +10,7 @@ import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetItem } from '../../services/widget/widget-item';
 import { WidgetComponent } from '../widget-factory/widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
-import { FeatureManagementService } from 'src/app/services/feature-management/feature-management-service';
+import { AccessControlService } from 'src/app/services/access-control/access-control-service';
 
 /**
  * Holds a list of widgets and renders them to the DOM, in order.
@@ -48,7 +48,7 @@ export class WidgetContainerComponent implements OnInit {
   factories = new Array<ComponentFactory<WidgetComponent>>();
 
   constructor(
-    private featureManagementService: FeatureManagementService,
+    private accessControlService: AccessControlService,
     public configManager: ConfigManager,
     public ircService: IrcService,
     public commandService: CommandService,
@@ -90,7 +90,7 @@ export class WidgetContainerComponent implements OnInit {
    */
   resetLayout(): void {
     if (this.widgetMap.size === 0) {
-      const widgets = this.featureManagementService.getWidgets();
+      const widgets = this.accessControlService.getWidgets();
       for (const widget of widgets) {
         if (widget && widget.component && widget.id) {
           this.widgetMap.set(widget.id, widget);
