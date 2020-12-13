@@ -124,7 +124,8 @@ export class MatchedResponse {
     public id: string,
     public line: number,
     public params: Map<string, string>,
-    public subParams: Array<Map<string, string>>
+    public subParams: Array<Map<string, string>>,
+    public date: number
   ) {}
 }
 

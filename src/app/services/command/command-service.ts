@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Utils } from 'src/app/util/utils';
-import { IrcService } from '../irc/irc.service';
+import { IrcService, Message } from '../irc/irc.service';
 import { ChatCommands } from './chat-commands';
 import * as CommandData from './command-data.json';
 import { CommandLoader } from './command-loader';
@@ -26,7 +26,8 @@ export type CommandCallback = (
   name: string,
   id: string,
   groups: Map<string, string>,
-  subGroups: Array<Map<string, string>>
+  subGroups: Array<Map<string, string>>,
+  date: number
 ) => void;
 
 /**
@@ -138,14 +139,14 @@ export class CommandService {
   }
 
   private handleResponseGroup(
-    message: string,
+    message: Message,
     key: string,
     responseGroup: Map<string, CommandResponse>,
     history: ResponseHistory,
     callback: CommandCallback | undefined = undefined
   ) {
     for (const [id, pattern] of responseGroup) {
-      const match = pattern.response.pattern.exec(message);
+      const match = pattern.response.pattern.exec(message.text);
       if (!match) {
         continue;
       }
@@ -155,13 +156,13 @@ export class CommandService {
       }
       const subMap = new Array<Map<string, string>>();
       if (pattern.subGroups) {
-        let container = message;
+        let container = message.text;
         if (pattern.subGroups.container) {
-          container = matchMap.get(pattern.subGroups.container) ?? message;
+          container = matchMap.get(pattern.subGroups.container) ?? message.text;
         }
         const subMatches = Utils.execAll(
           pattern.subGroups.pattern.pattern,
-          pattern.subGroups.container ?? message
+          container ?? message.text
         );
         const subMatchMap = new Map<string, string>();
         for (const subMatch of subMatches) {
@@ -175,10 +176,16 @@ export class CommandService {
         subMap.push(subMatchMap);
       }
       history.responses.push(
-        new MatchedResponse(id, history.lastLine, matchMap, subMap)
+        new MatchedResponse(
+          id,
+          history.lastLine,
+          matchMap,
+          subMap,
+          message.timestamp
+        )
       );
       if (callback) {
-        callback.call(callback, key, id, matchMap, subMap);
+        callback.call(callback, key, id, matchMap, subMap, message.timestamp);
       }
     }
   }
@@ -189,7 +196,7 @@ export class CommandService {
    * extracted.
    * @param message The message the client received.
    */
-  onIncomingWhisper(message: string): void {
+  onIncomingWhisper(message: Message): void {
     for (const [subscriber, callbacks] of this.callbacks) {
       for (const [key, callback] of callbacks) {
         let history = this.matches.get(key);
@@ -306,7 +313,8 @@ export class CommandService {
           match.key,
           match.value.id,
           match.value.params,
-          match.value.subParams
+          match.value.subParams,
+          match.value.date
         );
       }
     }
@@ -343,7 +351,10 @@ export class CommandService {
     const lines = this.ircService.lines;
     const queue = this.ircService.messageQueue.queuedMessages;
     for (const variant of commands) {
-      if (lines.indexOf(`>> ${variant}`) >= 0 || queue.indexOf(variant) >= 0) {
+      if (
+        lines.filter(x => x.text === variant).length > 0 ||
+        queue.indexOf(variant) >= 0
+      ) {
         return true;
       }
     }
@@ -361,9 +372,14 @@ export class CommandService {
     G extends keyof typeof CommandData.commands,
     C extends keyof typeof CommandData.commands[G]
   >(group: G, command: C): void {
+    console.log('Send command:');
+    console.log(group);
+    console.log(command);
     if (!this.hasCommandBeenSent(group, command)) {
+      console.log('Not already sent');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const commandObject = CommandData.commands[group][command] as any;
+      console.log(commandObject);
       if (commandObject.command) {
         const toSend = commandObject.command as string;
         this.ircService.send(toSend);

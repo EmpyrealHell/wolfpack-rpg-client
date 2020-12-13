@@ -26,7 +26,6 @@ export class WidgetService {
       'fishing.beta',
       'fishing'
     ),
-    new WidgetItem(null, 'Fishing', 'fishing-tournament.beta', 'fishing'),
     new WidgetItem(null, 'Dungeon', 'dungeon.beta', 'dungeon'),
     new WidgetItem(null, 'Group', 'group.beta', 'group'),
     new WidgetItem(null, 'Group Chat', 'group-chat.beta', 'groupchat'),

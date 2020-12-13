@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
-import { IrcService } from 'src/app/services/irc/irc.service';
+import { IrcService, Message } from 'src/app/services/irc/irc.service';
 import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
 
@@ -55,8 +55,17 @@ export class ConsoleWidgetComponent implements WidgetComponent {
     return this.ircService.isConnected;
   }
 
-  private onWhisper(message: string): void {
-    this.consoleData += `${message}\n`;
+  private onWhisper(message: Message): void {
+    if (message.whisper) {
+      const newLine = this.consoleData.length === 0 ? '' : '\n';
+      const prefixedMessage = message.self
+        ? `>> ${message.text}`
+        : message.text;
+      const fullMessage = message.self
+        ? `${newLine}${prefixedMessage}`
+        : prefixedMessage;
+      this.consoleData += `${fullMessage}\n`;
+    }
   }
 
   private sendCommand(): void {
@@ -108,7 +117,10 @@ export class ConsoleWidgetComponent implements WidgetComponent {
         },
         true
       );
-      this.consoleData = this.ircService.history;
+      this.consoleData = '';
+      for (const line of this.ircService.lines) {
+        this.onWhisper(line);
+      }
     }
   }
 

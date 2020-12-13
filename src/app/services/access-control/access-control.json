@@ -1,11 +1,11 @@
 {
   "roles": [
     {
-      "name": "UIDeveloper",
+      "name": "UIDev",
       "widgets": [".*"]
     }
   ],
   "defaultRole": {
-    "widgets": ["console"]
+    "widgets": ["fishing", "console"]
   }
 }

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { CommandService } from '../command/command-service';
 import { WidgetItem } from '../widget/widget-item';
 import { WidgetService } from '../widget/widget.service';
@@ -88,7 +89,9 @@ export class AccessControlService {
   ): void {
     this.userRoles.length = 0;
     for (const match of subGroups) {
+      console.log(match);
       const role = match.get('role');
+      console.log(role);
       if (role) {
         this.userRoles.push(role);
       }
@@ -108,9 +111,13 @@ export class AccessControlService {
     roleData = RoleData.roles,
     userRoles: string[] = []
   ): void {
-    this.defaultWidgets = [];
-    for (const widget of defaultWidgets) {
-      this.defaultWidgets.push(new RegExp(`^${widget}$`));
+    if (environment.production) {
+      this.defaultWidgets = [];
+      for (const widget of defaultWidgets) {
+        this.defaultWidgets.push(new RegExp(`^${widget}$`));
+      }
+    } else {
+      this.defaultWidgets = [new RegExp('^.*$')];
     }
     this.roleData = [];
     for (const roleDatum of roleData) {

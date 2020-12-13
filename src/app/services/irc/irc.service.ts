@@ -9,7 +9,7 @@ import { MessageQueue } from './message-queue';
 /**
  * Callback type used for broadcasting whisper messages received by the client.
  */
-export type WhisperCallback = (message: string) => void;
+export type WhisperCallback = (message: Message) => void;
 
 /**
  * Provides a connection to the Twitch IRC chat servers via two-way
@@ -32,13 +32,9 @@ export class IrcService {
    */
   errorHandlers = new Map<string, WhisperCallback>();
   /**
-   * The entire history of received messages as a single string.
-   */
-  history = '';
-  /**
    * An array containing a record of every message received.
    */
-  lines: string[] = [];
+  lines: Message[] = [];
   /**
    * The message queue that handles rate limits on messages sent.
    */
@@ -53,20 +49,26 @@ export class IrcService {
     public userService: UserService
   ) {}
 
-  private onWhisper(message: string, self = false): void {
-    const newLine = this.lines.length === 0 ? '' : '\n';
-    const prefixedMessage = self ? `>> ${message}` : message;
-    const fullMessage = self ? `${newLine}${prefixedMessage}` : prefixedMessage;
-    this.lines.push(prefixedMessage);
-    this.history += `${fullMessage}\n`;
+  private onMessage(message: string): void {
+    const messageObj = new Message(message, false, false);
+    this.lines.push(messageObj);
     for (const [key, value] of this.callbacks) {
-      value.call(value, fullMessage);
+      value.call(value, messageObj);
+    }
+  }
+
+  private onWhisper(message: string, self = false): void {
+    const messageObj = new Message(message, self);
+    this.lines.push(messageObj);
+    for (const [key, value] of this.callbacks) {
+      value.call(value, messageObj);
     }
   }
 
   private onError(message: string): void {
+    const messageObj = new Message(message, false);
     for (const [key, value] of this.errorHandlers) {
-      value.call(value, message);
+      value.call(value, messageObj);
     }
   }
 
@@ -180,7 +182,13 @@ export class IrcService {
         }
       });
       this.connection.on('message', (channel, userstate, message, self) => {
-        // console.log(`${userstate.username}: ${message}`);
+        if (
+          channel === ircConfig.streamerAccount &&
+          userstate.username === ircConfig.botAccount &&
+          userstate['message-type'] === 'chat'
+        ) {
+          this.onMessage(message);
+        }
       });
       this.connection.on('whisper', (from, userstate, message, self) => {
         this.onWhisper(message, self);
@@ -193,4 +201,13 @@ export class IrcService {
       return response.success;
     }
   }
+}
+
+export class Message {
+  timestamp = Date.now();
+  constructor(
+    public text: string,
+    public self: boolean,
+    public whisper = true
+  ) {}
 }

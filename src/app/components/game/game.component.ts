@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
 import { Config, ConfigAuthentication } from '../../services/data/config-data';
 import { ConfigManager } from '../../services/data/config-manager';
-import { IrcService } from '../../services/irc/irc.service';
+import { IrcService, Message } from '../../services/irc/irc.service';
 import { UserService } from '../../services/user/user.service';
 import { ErrorDialog } from '../error-dialog/error-dialog';
 import * as PackageJson from '../../../../package.json';
@@ -47,6 +47,7 @@ export class GameComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
+    this.accessControlService.initialize();
     this.widgets = this.accessControlService.getWidgets(newWidgets => {
       this.widgets = newWidgets;
     });
@@ -113,11 +114,11 @@ export class GameComponent implements OnInit {
    * Callback used for handling failed outgoing messages.
    * @param message The error message received.
    */
-  onError(message: string): void {
+  onError(message: Message): void {
     this.dialog.open(ErrorDialog, {
       data: {
         message:
-          `An error occurred trying to send a message: "${message}"\n` +
+          `An error occurred trying to send a message: "${message.text}"\n` +
           'If you continue to see this issue, you may need to whisper the bot directly, or your account might be too new.',
       },
     });

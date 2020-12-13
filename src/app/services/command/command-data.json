@@ -105,6 +105,7 @@
         "alternates": ["!reel"],
         "responses": {
           "success": {
+            "tournament": "You caught a (?<fish>\\w+(?: \\w+)*) worth (?<points>[0-9]+) points! You are in (?<rank>[0-9]+[a-z]{2}) place with (?<total>[0-9]+) total points\\.",
             "newRecord": "This is the biggest (?<fish>\\w+(?: \\w+)*) you've ever caught\\!",
             "confirmation": "Congratulations! You caught a (?<length>\\d+(?:\\.\\d+)?) inch, (?<weight>\\d+(?:\\.\\d+)?) pound (?<fish>\\w+(?: \\w+)*)!"
           }
@@ -133,24 +134,47 @@
         }
       },
       "leaderboard": {
-        "command": "!fishleaders",
-        "alternates": ["!leaderboards"],
+        "command": "!fishleaders -c",
+        "alternates": ["!leaderboards -c"],
         "responses": {
           "success": {
+            "compact": {
+              "pattern": "fishleaders: (?<data>.*)",
+              "subGroups": {
+                "container": "data",
+                "pattern": "(?<fish>[^\\|]+)\\|(?<length>[^\\|]+)\\|(?<weight>[^\\|]+)\\|(?<user>[^\\|]+);"
+              }
+            },
             "record": "Largest (?<fish>\\w+(?: \\w+)*) caught by (?<user>[^ ]+) at (?<size>\\d+(?:\\.\\d+)?) lbs\\."
           }
         }
       },
       "list": {
-        "command": "!fish",
+        "command": "!fish -c",
         "responses": {
           "error": {
             "empty": "You haven't caught any fish yet!"
           },
           "success": {
+            "compact": {
+              "response": "fish: (?<data>.*)",
+              "subGroups": {
+                "container": "data",
+                "pattern": "(?<fish>[^\\|]+)\\|(?<length>[^\\|]+)\\|(?<weight>[^\\|]+);"
+              }
+            },
             "size": "You've caught (?<size>\\d+) different types of fish: ",
             "fishInfo": "(?<id>\\d+): (?<fish>\\w+(?: \\w+)*)",
             "details": "Type !fish # for more information on the particular type of fish\\."
+          }
+        }
+      },
+      "next": {
+        "command": "!nexttournament -c",
+        "responses": {
+          "success": {
+            "toNext": "nexttournament: (?<time>.*)",
+            "timeLeft": "nexttournament: -(?<time>.*)"
           }
         }
       },
@@ -163,6 +187,14 @@
           },
           "success": {
             "confirmation": "You released your (?<fish>\\w+(?: \\w+)*)\\. Bye bye!"
+          }
+        }
+      },
+      "results": {
+        "command": "!tournamentresults -c",
+        "responses": {
+          "success": {
+            "results": "tournamentresults: (?<ended>[^\\|]+)\\|(?<participants>[^\\|]+)\\|(?<winner>[^\\|]+)\\|(?<winnerPoints>[^\\|]+)\\|(?<rank>[^\\|]+)\\|(?<userPoints>[^\\|]+);"
           }
         }
       }
@@ -712,7 +744,9 @@
     "fishing": {
       "newRecord": "(?<user>[^ ]+) just caught the heaviest (?<name>\\w+) ever! It weighs (?<weight>\\d+(?:\\.\\d+)?) pounds!",
       "gotAway": "Heck\\! The fish got away\\. Maybe next time\\.{3}",
-      "fishHooked": "(?<message>.*) Type \\!catch to reel it in\\!"
+      "fishHooked": "(?<message>.*) Type \\!catch to reel it in\\!",
+      "tournamentStart": "A fishing tournament has just begun! For the next (?<duration>[0-9]+) minutes, fish can be caught more quickly & will be eligible for leaderboard recognition! Head to https:\\/\\/tinyurl\\.com\\/PlayWolfpackRPG and type !cast to play!",
+      "tournamentEnd": "The fishing tournament has ended! Out of (?<participants>[0-9]+) participants, (?<winner>.*) won with (?<points>[0-9]+) points!"
     },
     "party": {
       "declined": "(?<user>[^ ]+) has declined your party invite\\.",

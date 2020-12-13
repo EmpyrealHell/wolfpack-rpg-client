@@ -47,7 +47,8 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     name: string,
     id: string,
     groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>
+    subGroups: Array<Map<string, string>>,
+    date: number
   ): void {
     if (id === 'coins') {
       const coins = groups.get('coins');
@@ -77,7 +78,8 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     name: string,
     id: string,
     groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>
+    subGroups: Array<Map<string, string>>,
+    date: number
   ): void {
     if (id === 'size') {
       this.readingStats = undefined;
@@ -123,8 +125,8 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups) =>
-        this.handleStats(name, id, groups, subGroups)
+      (name, id, groups, subGroups, date) =>
+        this.handleStats(name, id, groups, subGroups, date)
     );
     commandService.subscribeToCommand(
       'inventory',
@@ -132,8 +134,8 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups) =>
-        this.handleInventory(name, id, groups, subGroups)
+      (name, id, groups, subGroups, date) =>
+        this.handleInventory(name, id, groups, subGroups, date)
     );
   }
 
