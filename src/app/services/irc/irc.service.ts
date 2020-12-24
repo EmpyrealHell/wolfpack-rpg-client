@@ -49,20 +49,19 @@ export class IrcService {
     public userService: UserService
   ) {}
 
-  private onMessage(message: string): void {
-    const messageObj = new Message(message, false, false);
-    this.lines.push(messageObj);
+  private broadcastMessage(message: Message): void {
+    this.lines.push(message);
     for (const [key, value] of this.callbacks) {
-      value.call(value, messageObj);
+      value.call(value, message);
     }
   }
 
+  private onMessage(message: string): void {
+    this.broadcastMessage(new Message(message, false, false));
+  }
+
   private onWhisper(message: string, self = false): void {
-    const messageObj = new Message(message, self);
-    this.lines.push(messageObj);
-    for (const [key, value] of this.callbacks) {
-      value.call(value, messageObj);
-    }
+    this.broadcastMessage(new Message(message, self));
   }
 
   private onError(message: string): void {
@@ -183,7 +182,7 @@ export class IrcService {
       });
       this.connection.on('message', (channel, userstate, message, self) => {
         if (
-          channel === ircConfig.streamerAccount &&
+          channel === `#${ircConfig.streamerAccount}` &&
           userstate.username === ircConfig.botAccount &&
           userstate['message-type'] === 'chat'
         ) {

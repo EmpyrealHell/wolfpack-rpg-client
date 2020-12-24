@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatTableDataSource } from '@angular/material/table';
+import { CDK_CONNECTED_OVERLAY_SCROLL_STRATEGY_PROVIDER_FACTORY } from '@angular/cdk/overlay/overlay-directives';
 
 /**
  * Widget used to display character data.
@@ -67,8 +68,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
         } else {
           this.leaderboard.push(new CatchData(fish, user, length, weight, 0));
         }
-        this.leaderboardTableSource.data = this.leaderboard;
       }
+      this.leaderboardTableSource.data = this.leaderboard;
     }
   }
 
@@ -202,10 +203,11 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
         parseInt(time[0]) * 60 * 60 * 1000 +
         parseInt(time[1]) * 60 * 1000 +
         parseInt(time[2]) * 1000;
-      if (this.tournament && !this.tournament.endTime) {
-        this.tournament.endTime = new Date(Date.now());
+      if (!this.tournament) {
+        this.tournament = new Tournament();
       }
-      this.nextTournament = new Date(Date.now() + toAdd);
+      this.tournament.endTime = new Date(date + toAdd);
+      this.nextTournament = undefined;
     } else if (id === 'toNext') {
       const time = (groups.get('time') ?? '00:00:00').split(':');
       const toAdd =
@@ -216,7 +218,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
         this.tournament = new Tournament();
         this.commandService?.sendCommand('fishing', 'results');
       }
-      this.nextTournament = new Date(Date.now() + toAdd);
+      this.nextTournament = new Date(date + toAdd);
       this.tournament.endTime = undefined;
     }
   }
@@ -262,10 +264,12 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       this.tournament = new Tournament();
       this.tournament.endTime = new Date(Date.now());
     }
-    this.tournament.participants = Number(groups.get('participants') ?? 0);
-    this.tournament.winner = groups.get('winner') ?? 'unknown';
-    this.tournament.winnerPoints = Number(groups.get('points') ?? 0);
-    this.commandService?.sendCommand('fishing', 'results');
+    if (id.indexOf('End') !== -1) {
+      this.tournament.participants = Number(groups.get('participants') ?? 0);
+      this.tournament.winner = groups.get('winner') ?? 'unknown';
+      this.tournament.winnerPoints = Number(groups.get('points') ?? 0);
+      this.commandService?.sendCommand('fishing', 'results');
+    }
     this.commandService?.sendCommand('fishing', 'next');
   }
 
@@ -370,6 +374,14 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     commandService.subscribeToMessage(
       'fishing',
       'tournamentEnd',
+      'fishingWidget',
+      (name, id, groups, subGroups, date) =>
+        this.handleTournamentEnd(name, id, groups, subGroups, date)
+    );
+
+    commandService.subscribeToMessage(
+      'fishing',
+      'tournamentEndEmpty',
       'fishingWidget',
       (name, id, groups, subGroups, date) =>
         this.handleTournamentEnd(name, id, groups, subGroups, date)
@@ -512,6 +524,6 @@ export class Tournament {
   participants = 0;
   rank = 0;
   userPoints = 0;
-  winner = 'unknown';
+  winner: string | undefined;
   winnerPoints = 0;
 }

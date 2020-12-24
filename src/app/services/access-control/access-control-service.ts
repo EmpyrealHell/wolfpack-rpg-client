@@ -89,9 +89,7 @@ export class AccessControlService {
   ): void {
     this.userRoles.length = 0;
     for (const match of subGroups) {
-      console.log(match);
       const role = match.get('role');
-      console.log(role);
       if (role) {
         this.userRoles.push(role);
       }

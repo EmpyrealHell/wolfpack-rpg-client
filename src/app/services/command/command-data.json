@@ -105,7 +105,7 @@
         "alternates": ["!reel"],
         "responses": {
           "success": {
-            "tournament": "You caught a (?<fish>\\w+(?: \\w+)*) worth (?<points>[0-9]+) points! You are in (?<rank>[0-9]+[a-z]{2}) place with (?<total>[0-9]+) total points\\.",
+            "tournament": "You caught a (?<fish>\\w+(?: \\w+)*) worth (?<points>[0-9]+) points! You are in (?<rank>[0-9]+)[a-z]{2} place with (?<total>[0-9]+) total points\\.",
             "newRecord": "This is the biggest (?<fish>\\w+(?: \\w+)*) you've ever caught\\!",
             "confirmation": "Congratulations! You caught a (?<length>\\d+(?:\\.\\d+)?) inch, (?<weight>\\d+(?:\\.\\d+)?) pound (?<fish>\\w+(?: \\w+)*)!"
           }
@@ -139,7 +139,7 @@
         "responses": {
           "success": {
             "compact": {
-              "pattern": "fishleaders: (?<data>.*)",
+              "response": "fishleaders: (?<data>.*)",
               "subGroups": {
                 "container": "data",
                 "pattern": "(?<fish>[^\\|]+)\\|(?<length>[^\\|]+)\\|(?<weight>[^\\|]+)\\|(?<user>[^\\|]+);"
@@ -173,8 +173,8 @@
         "command": "!nexttournament -c",
         "responses": {
           "success": {
-            "toNext": "nexttournament: (?<time>.*)",
-            "timeLeft": "nexttournament: -(?<time>.*)"
+            "toNext": "nexttournament: (?<time>[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{7})",
+            "timeLeft": "nexttournament: \\-(?<time>[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{7})"
           }
         }
       },
@@ -746,7 +746,8 @@
       "gotAway": "Heck\\! The fish got away\\. Maybe next time\\.{3}",
       "fishHooked": "(?<message>.*) Type \\!catch to reel it in\\!",
       "tournamentStart": "A fishing tournament has just begun! For the next (?<duration>[0-9]+) minutes, fish can be caught more quickly & will be eligible for leaderboard recognition! Head to https:\\/\\/tinyurl\\.com\\/PlayWolfpackRPG and type !cast to play!",
-      "tournamentEnd": "The fishing tournament has ended! Out of (?<participants>[0-9]+) participants, (?<winner>.*) won with (?<points>[0-9]+) points!"
+      "tournamentEnd": "The fishing tournament has ended! Out of (?<participants>[0-9]+) participants, (?<winner>.*) won with (?<points>[0-9]+) points!",
+      "tournamentEndEmpty": "Fishing tournament has ended\\."
     },
     "party": {
       "declined": "(?<user>[^ ]+) has declined your party invite\\.",

@@ -37,7 +37,7 @@ export class CommandLoader {
         if (isCommand) {
           this.registerCommand(`${name}.${entryKey}`, entry);
         } else {
-          this.registerEntry(`${name}.${entryKey}`, 'message', entry);
+          this.registerEntry(`${name}.${entryKey}`, entryKey, entry);
         }
       }
     }

@@ -3,7 +3,7 @@
     <span style="display: block; width: 50%; margin: auto; text-align: center">
       <div *ngIf="tournament && !isTournamentOver()">
         <p>Tournament Time Remaining: {{getTimeString(tournament.endTime)}}</p>
-        <p>
+        <p *ngIf="tournament.rank > 0">
           Current Rank: {{toOrdinal(tournament.rank)}}
           ({{tournament.userPoints}} points)
         </p>
@@ -12,7 +12,7 @@
         <p *ngIf="nextTournament">
           Next Tournament: {{getTimeString(nextTournament)}}
         </p>
-        <p>
+        <p *ngIf="tournament.winner">
           Winner: {{tournament.winner}} ({{tournament.winnerPoints}} points)
         </p>
         <p *ngIf="tournament.rank > 0">
@@ -20,8 +20,8 @@
           ({{tournament.userPoints}} points)
         </p>
       </div>
-      <div *ngIf="!tournament && nextTournament">
-        <p>Next Tournament: {{getTimeString(nextTournament)}}</p>
+      <div *ngIf="!tournament && !nextTournament">
+        <p>Fetching tournament data...</p>
       </div>
     </span>
   </div>

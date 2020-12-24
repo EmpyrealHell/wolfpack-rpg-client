@@ -164,16 +164,16 @@ export class CommandService {
           pattern.subGroups.pattern.pattern,
           container ?? message.text
         );
-        const subMatchMap = new Map<string, string>();
         for (const subMatch of subMatches) {
+          const subMatchMap = new Map<string, string>();
           for (let i = 1; i < subMatch.length; i++) {
             subMatchMap.set(
               pattern.subGroups.pattern.names[i - 1],
               subMatch[i]
             );
           }
+          subMap.push(subMatchMap);
         }
-        subMap.push(subMatchMap);
       }
       history.responses.push(
         new MatchedResponse(
@@ -372,14 +372,9 @@ export class CommandService {
     G extends keyof typeof CommandData.commands,
     C extends keyof typeof CommandData.commands[G]
   >(group: G, command: C): void {
-    console.log('Send command:');
-    console.log(group);
-    console.log(command);
     if (!this.hasCommandBeenSent(group, command)) {
-      console.log('Not already sent');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const commandObject = CommandData.commands[group][command] as any;
-      console.log(commandObject);
       if (commandObject.command) {
         const toSend = commandObject.command as string;
         this.ircService.send(toSend);
