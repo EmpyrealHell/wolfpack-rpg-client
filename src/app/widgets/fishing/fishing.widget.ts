@@ -3,6 +3,7 @@ import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatTableDataSource } from '@angular/material/table';
 import { CDK_CONNECTED_OVERLAY_SCROLL_STRATEGY_PROVIDER_FACTORY } from '@angular/cdk/overlay/overlay-directives';
+import { Utils } from 'src/app/util/utils';
 
 /**
  * Widget used to display character data.
@@ -233,7 +234,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     if (!this.tournament) {
       this.tournament = new Tournament();
     }
-    this.tournament.endTime = new Date(Date.parse(groups.get('ended') ?? ''));
+    this.tournament.endTime = Utils.parseDateFromBot(groups.get('ended'));
     this.tournament.participants = Number(groups.get('participants') ?? 0);
     this.tournament.winner = groups.get('winner') ?? 'unknown';
     this.tournament.winnerPoints = Number(groups.get('winnerPoints') ?? 0);

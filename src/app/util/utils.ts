@@ -140,4 +140,54 @@ export class Utils {
     }
     return map;
   }
+
+  /**
+   * Gets the timezone offset for a specific timezone for a given date object.
+   * @param date A date object.
+   * @param timeZone The timezone to get the offset for.
+   */
+  static getTimeZoneOffset(date: Date, timeZone: string): number {
+    let iso = date
+      .toLocaleString('en-CA', { timeZone, hour12: false })
+      .replace(', ', 'T');
+    iso += '.' + date.getMilliseconds().toString().padStart(3, '0');
+    const utc = new Date(iso + 'Z');
+    return -(utc.getTime() - date.getTime()) / 60 / 1000;
+  }
+
+  private static timezoneDelta = -1;
+
+  /**
+   * Parses the date/time string that comes from the bot, which is in US format
+   * in the central time zone (-6/-5).
+   * @param date A string containing a datetime value
+   */
+  static parseDateFromBot(date: string | undefined): Date {
+    if (!date) {
+      return new Date(Date.now());
+    }
+    if (Utils.timezoneDelta === -1) {
+      const millisInMinute = 60 * 1000;
+      const now = new Date(Date.now());
+      const serverOffset =
+        this.getTimeZoneOffset(now, 'America/Chicago') * millisInMinute;
+      const localOffset = now.getTimezoneOffset() * millisInMinute;
+      Utils.timezoneDelta = serverOffset - localOffset;
+    }
+
+    const month = parseInt(date.substring(0, 2));
+    const day = parseInt(date.substring(3, 5));
+    const year = parseInt(date.substring(6, 10));
+
+    let hour = parseInt(date.substring(11, 13));
+    const minute = parseInt(date.substring(14, 16));
+    const second = parseInt(date.substring(17, 19));
+
+    if (date.endsWith('PM')) {
+      hour += 12;
+    }
+
+    const normalized = new Date(year, month - 1, day, hour, minute, second, 0);
+    return new Date(normalized.getTime() + Utils.timezoneDelta);
+  }
 }
