@@ -36,25 +36,9 @@ export class ConfigManager {
   }
 
   /**
-   * Determines if the logged-in user is a tester.
-   */
-  isTester(): boolean {
-    if (ConfigManager.data.authentication.user) {
-      return (
-        ConfigManager.testers.indexOf(ConfigManager.data.authentication.user) >=
-        0
-      );
-    }
-    return false;
-  }
-
-  /**
    * Saves the config data to the client's local storage.
    */
   save(): void {
-    if (!this.isTester()) {
-      ConfigManager.data.layout = new Array<string>('Console');
-    }
     localStorage.setItem(
       ConfigManager.storageKey,
       JSON.stringify(ConfigManager.data)
@@ -71,9 +55,6 @@ export class ConfigManager {
     const temp = localStorage.getItem(ConfigManager.storageKey);
     if (temp) {
       Object.assign(ConfigManager.data, JSON.parse(temp));
-      if (!this.isTester()) {
-        ConfigManager.data.layout = new Array<string>('Console');
-      }
     }
   }
 }

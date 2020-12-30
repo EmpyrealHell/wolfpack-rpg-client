@@ -1,0 +1,11 @@
+{
+  "roles": [
+    {
+      "name": "UIDev",
+      "widgets": [".*"]
+    }
+  ],
+  "defaultRole": {
+    "widgets": ["fishing", "console"]
+  }
+}

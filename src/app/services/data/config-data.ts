@@ -39,6 +39,10 @@ export class ConfigSettings {
    * Whether or not to show icons in the toolbar.
    */
   toolbarIcons = true;
+  /**
+   * Whether or not to play sounds for things like the fishing widget.
+   */
+  playSounds = true;
 }
 
 /**

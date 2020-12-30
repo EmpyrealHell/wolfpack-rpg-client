@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
-import { IrcService } from 'src/app/services/irc/irc.service';
+import { IrcService, Message } from 'src/app/services/irc/irc.service';
 import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
+import { CommandService } from 'src/app/services/command/command-service';
+import { MatRipple } from '@angular/material/core';
 
 /**
  * Widget that provides direct access to the communication channel between the
@@ -32,12 +34,22 @@ export class ConsoleWidgetComponent implements WidgetComponent {
    * Reference to the IRC chat service.
    */
   @Input()
-  ircService: IrcService | null;
+  ircService: IrcService | undefined;
   /**
    * Reference to the user's config data manager.
    */
   @Input()
-  configManager: ConfigManager | null;
+  configManager: ConfigManager | undefined;
+  /**
+   * Reference to the command service.
+   */
+  @Input()
+  commandService: CommandService | undefined;
+  /**
+   * Reference to the material ripple;
+   */
+  @Input()
+  ripple: MatRipple | undefined;
 
   /**
    * Whether the irc service is connected.
@@ -49,13 +61,17 @@ export class ConsoleWidgetComponent implements WidgetComponent {
     return this.ircService.isConnected;
   }
 
-  constructor() {
-    this.ircService = null;
-    this.configManager = null;
-  }
-
-  private onWhisper(message: string): void {
-    this.consoleData += `${message}\n`;
+  private onWhisper(message: Message): void {
+    if (message.whisper) {
+      const newLine = this.consoleData.length === 0 ? '' : '\n';
+      const prefixedMessage = message.self
+        ? `>> ${message.text}`
+        : message.text;
+      const fullMessage = message.self
+        ? `${newLine}${prefixedMessage}`
+        : prefixedMessage;
+      this.consoleData += `${fullMessage}\n`;
+    }
   }
 
   private sendCommand(): void {
@@ -107,7 +123,10 @@ export class ConsoleWidgetComponent implements WidgetComponent {
         },
         true
       );
-      this.consoleData = this.ircService.history;
+      this.consoleData = '';
+      for (const line of this.ircService.lines) {
+        this.onWhisper(line);
+      }
     }
   }
 

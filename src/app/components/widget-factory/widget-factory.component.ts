@@ -9,6 +9,8 @@ import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
 import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetComponent } from './widget.component';
+import { CommandService } from 'src/app/services/command/command-service';
+import { MatRipple } from '@angular/material/core';
 
 /**
  * Component that acts as a placeholder for widgets in the widget container.
@@ -22,31 +24,37 @@ export class WidgetFactoryComponent implements OnInit {
    * Component factory used to create the internal widget component.
    */
   @Input()
-  factory: ComponentFactory<WidgetComponent> | null = null;
+  factory: ComponentFactory<WidgetComponent> | undefined;
 
   /**
    * Reference to the singleton IRC service.
    */
   @Input()
-  ircService: IrcService | null = null;
+  ircService: IrcService | undefined;
 
   /**
    * Reference to the user config manager.
    */
   @Input()
-  configManager: ConfigManager | null = null;
+  configManager: ConfigManager | undefined;
+
+  /**
+   * Reference to the command service.
+   */
+  @Input()
+  commandService: CommandService | undefined;
 
   /**
    * The name of the component.
    */
   @Input()
-  name: string | null = null;
+  name: string | undefined;
 
   /**
    * Reference to the container in the dom that will house the internal widget.
    */
   @ViewChild(WidgetContainerDirective, { static: true })
-  container: WidgetContainerDirective | null = null;
+  container: WidgetContainerDirective | undefined;
 
   constructor() {}
 
@@ -58,6 +66,7 @@ export class WidgetFactoryComponent implements OnInit {
         .instance as WidgetComponent;
       component.configManager = this.configManager;
       component.ircService = this.ircService;
+      component.commandService = this.commandService;
       component.name = this.name!;
       component.onActivate();
     }

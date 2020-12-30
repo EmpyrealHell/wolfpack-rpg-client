@@ -7,6 +7,7 @@ import { Gear } from './gear';
  * Represents the data for a charcter displayed on the character widget.
  */
 export class Character {
+  static defaultClass = 'Adventurer';
   /**
    * Number of wolfcoins the character has.
    */
@@ -14,7 +15,7 @@ export class Character {
   /**
    * The character's current class name.
    */
-  class = 'Adventurer';
+  class: string | undefined;
   /**
    * Object holding level, prestige, and experience data.
    */
@@ -26,9 +27,11 @@ export class Character {
    * Sets the class and applies its base stats to this object.
    * @param newClass The name of the class to set.
    */
-  setClass(newClass: string): void {
-    this.class = newClass;
-    this.stats = BaseStats.byClass(newClass);
+  setClass(newClass?: string): void {
+    if (newClass) {
+      this.class = newClass;
+      this.stats = BaseStats.byClass(newClass);
+    }
   }
 
   /**

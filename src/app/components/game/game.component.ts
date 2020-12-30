@@ -3,13 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
-import { WidgetService } from 'src/app/services/widget/widget.service';
 import { Config, ConfigAuthentication } from '../../services/data/config-data';
 import { ConfigManager } from '../../services/data/config-manager';
-import { IrcService } from '../../services/irc/irc.service';
+import { IrcService, Message } from '../../services/irc/irc.service';
 import { UserService } from '../../services/user/user.service';
 import { ErrorDialog } from '../error-dialog/error-dialog';
 import * as PackageJson from '../../../../package.json';
+import { AccessControlService } from 'src/app/services/access-control/access-control-service';
 
 /**
  * The main component holding the game UI.
@@ -40,14 +40,17 @@ export class GameComponent implements OnInit {
     public ircService: IrcService,
     public configManager: ConfigManager,
     public userService: UserService,
-    public widgetService: WidgetService,
+    public accessControlService: AccessControlService,
     public overlayContainer: OverlayContainer,
     public dialog: MatDialog,
     public router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.widgets = this.widgetService.getWidgets();
+    this.accessControlService.initialize();
+    this.widgets = this.accessControlService.getWidgets(newWidgets => {
+      this.widgets = newWidgets;
+    });
     const config = this.configManager.getConfig();
     this.updateOverlayTheme();
 
@@ -57,6 +60,13 @@ export class GameComponent implements OnInit {
     } else {
       const userData = await this.userService.getUserInfo(token);
       if (userData && userData.login) {
+        if (this.widgets) {
+          const ids = this.widgets.map(x => x.id);
+          const validLayout = config.layout.filter(x => ids.indexOf(x) !== -1);
+          if (config.layout.length !== validLayout.length) {
+            config.layout = validLayout;
+          }
+        }
         config.authentication.user = userData.login;
         this.configManager.save();
         this.config = config;
@@ -104,11 +114,11 @@ export class GameComponent implements OnInit {
    * Callback used for handling failed outgoing messages.
    * @param message The error message received.
    */
-  onError(message: string): void {
+  onError(message: Message): void {
     this.dialog.open(ErrorDialog, {
       data: {
         message:
-          `An error occurred trying to send a message: "${message}"\n` +
+          `An error occurred trying to send a message: "${message.text}"\n` +
           'If you continue to see this issue, you may need to whisper the bot directly, or your account might be too new.',
       },
     });
@@ -127,12 +137,12 @@ export class GameComponent implements OnInit {
    * @param widget The widget to toggle.
    */
   toggleWidget(widget: WidgetItem): void {
-    if (widget && widget.name) {
-      const index = this.config.layout.indexOf(widget.name);
+    if (widget) {
+      const index = this.config.layout.indexOf(widget.id);
       if (index >= 0) {
         this.config.layout.splice(index, 1);
       } else {
-        this.config.layout.push(widget.name);
+        this.config.layout.push(widget.id);
       }
       this.configManager.save();
     }

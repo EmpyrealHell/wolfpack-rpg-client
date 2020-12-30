@@ -10,7 +10,7 @@ export class Stats {
     ['XP Bonus', 'xpBonus'],
     ['Wolfcoin Bonus', 'wolfcoinBonus'],
     ['Item Find', 'itemFind'],
-    ['to Prevent Death', 'preventDeath'],
+    ['Prevent Death', 'preventDeath'],
   ]);
 
   /**
@@ -144,7 +144,9 @@ export class Stats {
   updateStatByDescription(description: string, value: number): void {
     const varName = Stats.variableNameMap.get(description);
     if (varName) {
-      this.updatedStats.push(varName);
+      if (this.updatedStats.indexOf(varName) === -1) {
+        this.updatedStats.push(varName);
+      }
       const updater = Stats.variableUpdateMap.get(varName);
       if (updater) {
         updater(this, value);
@@ -156,11 +158,13 @@ export class Stats {
    * Adds another stat block's values to this one.
    * @param other A stat block to add to this one.
    */
-  add(other: Stats) {
-    this.successChance += other.successChance;
-    this.xpBonus += other.xpBonus;
-    this.wolfcoinBonus += other.wolfcoinBonus;
-    this.itemFind += other.itemFind;
-    this.preventDeath += other.preventDeath;
+  add(other: Stats | undefined) {
+    if (other) {
+      this.successChance += other.successChance;
+      this.xpBonus += other.xpBonus;
+      this.wolfcoinBonus += other.wolfcoinBonus;
+      this.itemFind += other.itemFind;
+      this.preventDeath += other.preventDeath;
+    }
   }
 }

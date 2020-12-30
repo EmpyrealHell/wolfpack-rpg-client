@@ -101,4 +101,93 @@ export class Utils {
     }
     return response;
   }
+
+  /**
+   * Matches a regular expression against a string until there are no more
+   * matches. If the regexp object is not global, a global copy will be made.
+   * @param regex A regular expression object.
+   * @param str A string.
+   */
+  static execAll(regex: RegExp, str: string): RegExpExecArray[] {
+    const matches: RegExpExecArray[] = [];
+    let globalRegex = regex;
+    if (regex.flags.indexOf('g') === -1) {
+      globalRegex = new RegExp(regex.source, regex.flags + 'g');
+    }
+    for (
+      let result = globalRegex.exec(str);
+      result;
+      result = globalRegex.exec(str)
+    ) {
+      matches.push(result);
+    }
+    return matches;
+  }
+
+  /**
+   * Extracts the name captures from a regular expression result and converts
+   * them into a map.
+   * @param match A regular expression exec result.
+   */
+  static extractNameCaptures(match: RegExpExecArray): Map<string, string> {
+    const map = new Map<string, string>();
+    if (match.groups) {
+      for (const key in match.groups) {
+        if (match.groups[key]) {
+          map.set(key, match.groups[key]);
+        }
+      }
+    }
+    return map;
+  }
+
+  /**
+   * Gets the timezone offset for a specific timezone for a given date object.
+   * @param date A date object.
+   * @param timeZone The timezone to get the offset for.
+   */
+  static getTimeZoneOffset(date: Date, timeZone: string): number {
+    let iso = date
+      .toLocaleString('en-CA', { timeZone, hour12: false })
+      .replace(', ', 'T');
+    iso += '.' + date.getMilliseconds().toString().padStart(3, '0');
+    const utc = new Date(iso + 'Z');
+    return -(utc.getTime() - date.getTime()) / 60 / 1000;
+  }
+
+  private static timezoneDelta = -1;
+
+  /**
+   * Parses the date/time string that comes from the bot, which is in US format
+   * in the central time zone (-6/-5).
+   * @param date A string containing a datetime value
+   */
+  static parseDateFromBot(date: string | undefined): Date {
+    if (!date) {
+      return new Date(Date.now());
+    }
+    if (Utils.timezoneDelta === -1) {
+      const millisInMinute = 60 * 1000;
+      const now = new Date(Date.now());
+      const serverOffset =
+        this.getTimeZoneOffset(now, 'America/Chicago') * millisInMinute;
+      const localOffset = now.getTimezoneOffset() * millisInMinute;
+      Utils.timezoneDelta = serverOffset - localOffset;
+    }
+
+    const month = parseInt(date.substring(0, 2));
+    const day = parseInt(date.substring(3, 5));
+    const year = parseInt(date.substring(6, 10));
+
+    let hour = parseInt(date.substring(11, 13));
+    const minute = parseInt(date.substring(14, 16));
+    const second = parseInt(date.substring(17, 19));
+
+    if (date.endsWith('PM')) {
+      hour += 12;
+    }
+
+    const normalized = new Date(year, month - 1, day, hour, minute, second, 0);
+    return new Date(normalized.getTime() + Utils.timezoneDelta);
+  }
 }

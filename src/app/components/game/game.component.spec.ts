@@ -1,5 +1,5 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,9 +11,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { IrcService } from 'src/app/services/irc/irc.service';
+import { IrcService, Message } from 'src/app/services/irc/irc.service';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
-import { WidgetService } from 'src/app/services/widget/widget.service';
 import { TestUtils } from 'src/test/test-utils';
 import { ConfigManager } from '../../services/data/config-manager';
 import { UserService } from '../../services/user/user.service';
@@ -23,6 +22,7 @@ import { WidgetFactoryComponent } from '../widget-factory/widget-factory.compone
 import { GameComponent } from './game.component';
 import { Config } from 'src/app/services/data/config-data';
 import { UserData } from 'src/app/services/user/user.data';
+import { AccessControlService } from 'src/app/services/access-control/access-control-service';
 
 export class ClassList {
   items = new Array<string>();
@@ -45,7 +45,7 @@ const userServiceSpy = TestUtils.spyOnClass(UserService);
 userServiceSpy.getUserInfo.and.returnValue({
   login: 'userService',
 } as UserData);
-const widgetServiceSpy = TestUtils.spyOnClass(WidgetService);
+const accessControlServiceSpy = TestUtils.spyOnClass(AccessControlService);
 const overlayContainerSpy = jasmine.createSpyObj('OverlayContainer', [
   'getContainerElement',
 ]);
@@ -56,7 +56,7 @@ const dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
 describe('GameComponent', () => {
-  beforeEach(async(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -78,27 +78,33 @@ describe('GameComponent', () => {
         { provide: IrcService, useValue: ircServiceSpy },
         { provide: ConfigManager, useValue: configManagerSpy },
         { provide: UserService, useValue: userServiceSpy },
-        { provide: WidgetService, useValue: widgetServiceSpy },
+        {
+          provide: AccessControlService,
+          useValue: accessControlServiceSpy,
+        },
         { provide: OverlayContainer, useValue: overlayContainerSpy },
         { provide: MatDialog, useValue: dialogSpy },
         { provide: Router, useValue: routerSpy },
       ],
     }).compileComponents();
-    configManagerSpy.getConfig.and.returnValue({
-      authentication: {
-        user: 'configManager',
-        token: 'token',
-        state: null,
-        scope: null,
-      },
-      settings: {
-        useDarkTheme: true,
-        toolbarIcons: true,
-        toolbarNames: true,
-      },
-      layout: [],
-    } as Partial<Config>);
-  }));
+    waitForAsync(
+      configManagerSpy.getConfig.and.returnValue({
+        authentication: {
+          user: 'configManager',
+          token: 'token',
+          state: null,
+          scope: null,
+        },
+        settings: {
+          useDarkTheme: true,
+          toolbarIcons: true,
+          toolbarNames: true,
+          playSounds: true,
+        },
+        layout: [],
+      } as Partial<Config>)
+    );
+  });
 
   it('should redirect if not authenticated', async () => {
     const fixture = TestBed.createComponent(GameComponent);
@@ -164,7 +170,7 @@ describe('GameComponent', () => {
     const fixture = TestBed.createComponent(GameComponent);
     const errorMessage = `modal test message ${Date.now()}`;
 
-    fixture.componentInstance.onError(errorMessage);
+    fixture.componentInstance.onError(new Message(errorMessage, false, true));
     expect(dialogSpy.open).toHaveBeenCalled();
     const args = dialogSpy.open.calls.mostRecent().args;
     expect(args[0]).toBe(ErrorDialog);
@@ -182,22 +188,20 @@ describe('GameComponent', () => {
 
   it('should add a widget to the layout', () => {
     const fixture = TestBed.createComponent(GameComponent);
-    const toAdd = new WidgetItem(null, 'toAdd');
+    const toAdd = new WidgetItem(null, 'toAdd', 'toAdd', 'to-add');
 
     fixture.componentInstance.toggleWidget(toAdd);
-    expect(fixture.componentInstance.config.layout).toContain(toAdd.name!);
+    expect(fixture.componentInstance.config.layout).toContain(toAdd.id);
     expect(configManagerSpy.save).toHaveBeenCalled();
   });
 
   it('should remove a widget to the layout', () => {
     const fixture = TestBed.createComponent(GameComponent);
-    const toRemove = new WidgetItem(null, 'toRemove');
+    const toRemove = new WidgetItem(null, 'toRemove', 'toRemove', 'to-remove');
 
-    fixture.componentInstance.config.layout.push(toRemove.name!);
+    fixture.componentInstance.config.layout.push(toRemove.id);
     fixture.componentInstance.toggleWidget(toRemove);
-    expect(fixture.componentInstance.config.layout).not.toContain(
-      toRemove.name!
-    );
+    expect(fixture.componentInstance.config.layout).not.toContain(toRemove.id);
     expect(configManagerSpy.save).toHaveBeenCalled();
   });
 });

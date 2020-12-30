@@ -12,8 +12,8 @@ const spyContainer = jasmine.createSpyObj('viewContainerRef', [
 ]);
 spyContainer.createComponent.and.returnValue({
   instance: {
-    configManager: null,
-    ircService: null,
+    configManager: undefined,
+    ircService: undefined,
     name: '',
     onActivate: () => {},
   } as WidgetComponent,

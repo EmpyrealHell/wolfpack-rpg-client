@@ -9,7 +9,7 @@ import { MessageQueue } from './message-queue';
 /**
  * Callback type used for broadcasting whisper messages received by the client.
  */
-export type WhisperCallback = (message: string) => void;
+export type WhisperCallback = (message: Message) => void;
 
 /**
  * Provides a connection to the Twitch IRC chat servers via two-way
@@ -19,100 +19,60 @@ export type WhisperCallback = (message: string) => void;
   providedIn: 'root',
 })
 export class IrcService {
-  private static connection: Client | null = null;
-  private static callbacks = new Map<string, WhisperCallback>();
-  private static errorHandlers = new Map<string, WhisperCallback>();
-  private static history = '';
-  private static lines: string[] = [];
-  private static messageQueue = new MessageQueue(ircConfig.botAccount, 100);
-  static isConnected = false;
-
-  /**
-   * Resets the static properties of the IrcService to their default state.
-   */
-  static reset(): void {
-    IrcService.connection = null;
-    IrcService.callbacks.clear();
-    IrcService.errorHandlers.clear();
-    IrcService.history = '';
-    IrcService.lines.length = 0;
-    IrcService.messageQueue.reset();
-    IrcService.isConnected = false;
-  }
-
   /**
    * The tmi.js client that handles the IRC connection.
    */
-  get connection(): Client | null {
-    return IrcService.connection;
-  }
-
+  connection: Client | undefined;
   /**
    * A map of all registered callback functions to receive whisper events.
    */
-  get callbacks(): Map<string, WhisperCallback> {
-    return new Map<string, WhisperCallback>(IrcService.callbacks.entries());
-  }
-
+  callbacks = new Map<string, WhisperCallback>();
   /**
    * A map of all registered callback functions to receive error events.
    */
-  get errorHandlers(): Map<string, WhisperCallback> {
-    return new Map<string, WhisperCallback>(IrcService.errorHandlers.entries());
-  }
-
-  /**
-   * The entire history of received messages as a single string.
-   */
-  get history(): string {
-    return IrcService.history;
-  }
-
+  errorHandlers = new Map<string, WhisperCallback>();
   /**
    * An array containing a record of every message received.
    */
-  get lines(): string[] {
-    return [...IrcService.lines];
-  }
-
+  lines: Message[] = [];
   /**
    * The message queue that handles rate limits on messages sent.
    */
-  get messageQueue(): MessageQueue {
-    return IrcService.messageQueue;
-  }
-
+  messageQueue = new MessageQueue(ircConfig.botAccount, 100);
   /**
    * Whether or not the IRC client is connected.
    */
-  get isConnected(): boolean {
-    return IrcService.isConnected;
-  }
+  isConnected = false;
 
   constructor(
     public configManager: ConfigManager,
     public userService: UserService
   ) {}
 
-  private onWhisper(message: string, self = false): void {
-    const newLine = IrcService.lines.length === 0 ? '' : '\n';
-    const prefixedMessage = self ? `>> ${message}` : message;
-    const fullMessage = self ? `${newLine}${prefixedMessage}` : prefixedMessage;
-    IrcService.lines.push(prefixedMessage);
-    IrcService.history += `${fullMessage}\n`;
-    for (const [key, value] of IrcService.callbacks) {
-      value.call(value, fullMessage);
-    }
-  }
-
-  private onError(message: string): void {
-    for (const [key, value] of IrcService.errorHandlers) {
+  private broadcastMessage(message: Message): void {
+    this.lines.push(message);
+    for (const [key, value] of this.callbacks) {
       value.call(value, message);
     }
   }
 
+  private onMessage(message: string): void {
+    this.broadcastMessage(new Message(message, false, false));
+  }
+
+  private onWhisper(message: string, self = false): void {
+    this.broadcastMessage(new Message(message, self));
+  }
+
+  private onError(message: string): void {
+    const messageObj = new Message(message, false);
+    for (const [key, value] of this.errorHandlers) {
+      value.call(value, messageObj);
+    }
+  }
+
   private reconnect(reason: string): void {
-    IrcService.isConnected = false;
+    this.isConnected = false;
     this.connect();
   }
 
@@ -123,8 +83,8 @@ export class IrcService {
    * @param overwrite If true, will replace any previous references with the same id.
    */
   register(id: string, callback: WhisperCallback, overwrite = false): void {
-    if (!IrcService.callbacks.has(id) || overwrite) {
-      IrcService.callbacks.set(id, callback);
+    if (!this.callbacks.has(id) || overwrite) {
+      this.callbacks.set(id, callback);
     }
   }
 
@@ -133,8 +93,8 @@ export class IrcService {
    * @param id The id of the callback function.
    */
   unregister(id: string): void {
-    if (IrcService.callbacks.has(id)) {
-      IrcService.callbacks.delete(id);
+    if (this.callbacks.has(id)) {
+      this.callbacks.delete(id);
     }
   }
 
@@ -149,8 +109,8 @@ export class IrcService {
     callback: WhisperCallback,
     overwrite = false
   ): void {
-    if (!IrcService.errorHandlers.has(id) || overwrite) {
-      IrcService.errorHandlers.set(id, callback);
+    if (!this.errorHandlers.has(id) || overwrite) {
+      this.errorHandlers.set(id, callback);
     }
   }
 
@@ -159,8 +119,8 @@ export class IrcService {
    * @param id The id of the callback function.
    */
   unregisterForError(id: string): void {
-    if (IrcService.errorHandlers.has(id)) {
-      IrcService.errorHandlers.delete(id);
+    if (this.errorHandlers.has(id)) {
+      this.errorHandlers.delete(id);
     }
   }
 
@@ -187,7 +147,7 @@ export class IrcService {
    * will only succeed if the config data contains a valid token.
    */
   async connectUsing(client: (opts: Options) => Client): Promise<boolean> {
-    if (IrcService.isConnected) {
+    if (this.isConnected) {
       return true;
     } else {
       const token = this.configManager.getConfig().authentication.token;
@@ -199,35 +159,54 @@ export class IrcService {
       options.options.clientId = userData.client_id;
       options.identity.username = userData.login;
       options.identity.password = `oauth:${token}`;
-      IrcService.connection = client.call(client, options) as Client;
-      IrcService.messageQueue.setSendFunction(
-        IrcService.connection.whisper,
-        IrcService.connection
-      );
-      IrcService.messageQueue.start();
-      IrcService.connection.on('raw_message', message => {
+      this.connection = client.call(client, options) as Client;
+      if (!this.connection) {
+        return false;
+      }
+      this.messageQueue.setSendFunction((username, message) => {
+        if (this.connection) {
+          return this.connection.whisper(username, message);
+        } else {
+          return new Promise(result => ['', '']);
+        }
+      });
+      this.messageQueue.setCheckFn(() => {
+        return this.isConnected;
+      });
+      this.messageQueue.start();
+      this.connection.on('raw_message', message => {
         const tag = message.tags['msg-id'] ? message.tags['msg-id'] : undefined;
         if (message.command === 'NOTICE' && tag === 'whisper_restricted') {
           this.onError(message.params[1]);
         }
       });
-      IrcService.connection.on(
-        'message',
-        (channel, userstate, message, self) => {
-          // console.log(`${userstate.username}: ${message}`);
+      this.connection.on('message', (channel, userstate, message, self) => {
+        if (
+          channel === `#${ircConfig.streamerAccount}` &&
+          userstate.username === ircConfig.botAccount &&
+          userstate['message-type'] === 'chat'
+        ) {
+          this.onMessage(message);
         }
-      );
-      IrcService.connection.on('whisper', (from, userstate, message, self) => {
+      });
+      this.connection.on('whisper', (from, userstate, message, self) => {
         this.onWhisper(message, self);
       });
-      IrcService.connection.on('disconnected', reason => {
+      this.connection.on('disconnected', reason => {
         this.reconnect(reason);
       });
-      const response = await Utils.promiseWithReject(
-        IrcService.connection.connect()
-      );
-      IrcService.isConnected = response.success;
+      const response = await Utils.promiseWithReject(this.connection.connect());
+      this.isConnected = response.success;
       return response.success;
     }
   }
+}
+
+export class Message {
+  timestamp = Date.now();
+  constructor(
+    public text: string,
+    public self: boolean,
+    public whisper = true
+  ) {}
 }

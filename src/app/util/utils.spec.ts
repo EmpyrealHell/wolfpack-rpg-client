@@ -74,4 +74,43 @@ describe('Utils', () => {
     expect(response.response).toBeFalsy();
     expect(called).toBeFalsy();
   });
+
+  it('should find all matches in a string for a global regexp', () => {
+    const regexp = /(c)/g;
+    const str = 'acca';
+    const result = Utils.execAll(regexp, str);
+    expect(result.length).toBe(2);
+    expect(result[0].length).toBe(2);
+    expect(result[1].length).toBe(2);
+    const capture = result[0] ? result[0][1] : '';
+    expect(capture).toBe('c');
+  });
+
+  it('should find all matches in a string for a non-global regexp', () => {
+    const regexp = /(c)/;
+    const str = 'acca';
+    const result = Utils.execAll(regexp, str);
+    expect(result.length).toBe(2);
+    expect(result[0].length).toBe(2);
+    expect(result[1].length).toBe(2);
+    const cname = result[0] ? result[0][1] : '';
+    expect(cname).toBe('c');
+  });
+
+  it('should return an empty array if there are no matches', () => {
+    const regexp = /c/;
+    const str = 'aa';
+    const result = Utils.execAll(regexp, str);
+    expect(result.length).toBe(0);
+  });
+
+  it('should create a map of named captures', () => {
+    const regexp = /(?<cname>c)/g;
+    const str = 'acca';
+    const result = Utils.execAll(regexp, str);
+    expect(result.length).toBe(2);
+    const map = Utils.extractNameCaptures(result[0]);
+    expect(map.size).toBe(1);
+    expect(map.get('cname')).toBe('c');
+  });
 });

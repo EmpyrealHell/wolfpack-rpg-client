@@ -1,13 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { Config } from 'src/app/services/data/config-data.js';
+import { MatRipple } from '@angular/material/core';
+import { CommandService } from 'src/app/services/command/command-service';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService } from 'src/app/services/irc/irc.service';
-import { AbstractWidgetComponent } from '../abstract/abstract-widget.js';
-import { Responder } from '../abstract/responder.js';
-import * as characterConfig from './character.widget.json';
-import { Character } from './model/character.js';
-import { Item, Rarity } from './model/gear.js';
-import { Stats } from './model/stats.js';
+import { AbstractWidgetComponent } from '../abstract/abstract-widget';
+import { Character } from './model/character';
+import { Item, Rarity } from './model/gear';
+import { Stats } from './model/stats';
 
 /**
  * Widget used to display character data.
@@ -24,69 +23,6 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     [Rarity.epic, '#e6deed'],
   ]);
 
-  private responderArray = new Array<Responder>(
-    new Responder(characterConfig.patterns.coins, matches => {
-      this.data.coins = Number(matches[1]);
-    }),
-    new Responder(characterConfig.patterns.level, matches => {
-      this.data.experience.updateStrings(
-        matches[1],
-        '0',
-        matches[2],
-        matches[3]
-      );
-    }),
-    new Responder(characterConfig.patterns.classLevel, matches => {
-      this.data.setClass(matches[2]);
-      this.data.experience.updateStrings(
-        matches[1],
-        matches[3],
-        matches[4],
-        matches[5]
-      );
-      this.modifiedStats = this.data.calculatStats();
-    }),
-    new Responder(characterConfig.patterns.gear, matches => {
-      if (matches[3] === 'Armor') {
-        this.readingStats = this.data.gear.armor;
-        this.data.gear.armor.stats = new Stats(0);
-      } else if (matches[3] === 'Weapon') {
-        this.readingStats = this.data.gear.weapon;
-        this.data.gear.weapon.stats = new Stats(0);
-      }
-      if (this.readingStats) {
-        this.readingStats.name = matches[1];
-        const rarity = matches[2].toLowerCase();
-        this.readingStats.rarity = Rarity[rarity as keyof typeof Rarity];
-      }
-    }),
-    new Responder(characterConfig.patterns.id, matches => {
-      if (this.readingStats) {
-        this.readingStats.id = Number(matches[1]);
-      }
-    }),
-    new Responder(characterConfig.patterns.stat, matches => {
-      if (this.readingStats) {
-        this.readingStats.stats.updateStatByDescription(
-          matches[2],
-          Number(matches[1])
-        );
-        this.modifiedStats = this.data.calculatStats();
-      }
-    }),
-    new Responder(null, matches => {
-      this.readingStats = null;
-    })
-  );
-
-  get responders(): Responder[] {
-    return this.responderArray;
-  }
-
-  get loadCommands(): string[] {
-    return characterConfig.loadCommands;
-  }
-
   /**
    * The character data to display.
    */
@@ -98,13 +34,116 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
   /**
    * The current item being updated by new messages.
    */
-  readingStats: Item | null = null;
+  readingStats: Item | undefined;
 
-  @Input() ircService: IrcService | null = null;
-  @Input() configManager: ConfigManager | null = null;
+  @Input() ircService: IrcService | undefined;
+  @Input() configManager: ConfigManager | undefined;
+  @Input() commandService: CommandService | undefined;
+  @Input() ripple: MatRipple | undefined;
 
   constructor() {
     super();
+  }
+
+  private handleStats(
+    name: string,
+    id: string,
+    groups: Map<string, string>,
+    subGroups: Array<Map<string, string>>,
+    date: number
+  ): void {
+    if (id === 'coins') {
+      const coins = groups.get('coins');
+      if (coins) {
+        this.data.coins = Number(coins);
+      }
+    } else if (id === 'classLevel') {
+      groups.get('level');
+      this.data.setClass(groups.get('className'));
+      this.data.experience.updateStrings(
+        groups.get('level'),
+        groups.get('prestige'),
+        groups.get('experience'),
+        groups.get('toNext')
+      );
+    } else if (id === 'level') {
+      this.data.experience.updateStrings(
+        groups.get('level'),
+        '0',
+        groups.get('experience'),
+        groups.get('toNext')
+      );
+    }
+  }
+
+  private handleInventory(
+    name: string,
+    id: string,
+    groups: Map<string, string>,
+    subGroups: Array<Map<string, string>>,
+    date: number
+  ): void {
+    if (id === 'size') {
+      this.readingStats = undefined;
+    } else if (id === 'info') {
+      const type = groups.get('type');
+      const equipped = groups.get('status') === 'Equipped';
+      if (type === 'Armor' && equipped) {
+        this.readingStats = this.data.gear.armor;
+        this.data.gear.armor.stats = new Stats(0);
+      } else if (type === 'Weapon' && equipped) {
+        this.readingStats = this.data.gear.weapon;
+        this.data.gear.weapon.stats = new Stats(0);
+      }
+      if (this.readingStats) {
+        const name = groups.get('name');
+        this.readingStats.name = name ? name : '';
+        const rarityString = groups.get('rarity');
+        this.readingStats.rarity = rarityString
+          ? Rarity[rarityString.toLowerCase() as keyof typeof Rarity]
+          : Rarity.none;
+      }
+    } else if (id === 'id') {
+      if (this.readingStats) {
+        this.readingStats.id = Number(groups.get('id'));
+      }
+    } else if (id === 'stat') {
+      const stat = groups.get('stat');
+      if (this.readingStats && this.readingStats.stats && stat) {
+        const stats = this.readingStats.stats;
+        stats.updateStatByDescription(stat, Number(groups.get('value')));
+        this.modifiedStats = this.data.calculatStats();
+      }
+    }
+  }
+
+  protected subscribeToResponses(
+    id: string,
+    commandService: CommandService
+  ): void {
+    commandService.subscribeToCommand(
+      'info',
+      'stats',
+      'responses',
+      'success',
+      id,
+      (name, id, groups, subGroups, date) =>
+        this.handleStats(name, id, groups, subGroups, date)
+    );
+    commandService.subscribeToCommand(
+      'inventory',
+      'list',
+      'responses',
+      'success',
+      id,
+      (name, id, groups, subGroups, date) =>
+        this.handleInventory(name, id, groups, subGroups, date)
+    );
+  }
+
+  protected sendInitialCommands(commandService: CommandService): void {
+    commandService.sendInitialCommand('info', 'stats');
+    commandService.sendInitialCommand('inventory', 'list');
   }
 
   /**
@@ -128,6 +167,9 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
    * Gets the name of the icon file to load for the current class.
    */
   getClassIcon(): string {
-    return `class-${this.data.class.toLowerCase()}.svg`;
+    const charClass = this.data.class
+      ? this.data.class
+      : Character.defaultClass;
+    return `class-${charClass.toLowerCase()}.svg`;
   }
 }

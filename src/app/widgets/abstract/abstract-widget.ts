@@ -1,53 +1,30 @@
 import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService } from 'src/app/services/irc/irc.service';
-import { Responder } from './responder';
+import { CommandService } from 'src/app/services/command/command-service';
+import { MatRipple } from '@angular/material/core';
 
 export abstract class AbstractWidgetComponent implements WidgetComponent {
-  ircService: IrcService | null = null;
-  configManager: ConfigManager | null = null;
+  ircService: IrcService | undefined;
+  configManager: ConfigManager | undefined;
+  commandService: CommandService | undefined;
   name = 'abstract';
+  username = '';
 
-  abstract get loadCommands(): string[];
-  abstract get responders(): Responder[];
-
-  protected onWhisper(message: string): void {
-    const responders = this.responders;
-    for (const responder of responders) {
-      if (responder.pattern) {
-        const match = message.match(responder.pattern);
-        if (match) {
-          responder.callback.call(responder.callback, match);
-          return;
-        }
-      } else {
-        responder.callback.call(responder.callback, []);
-      }
-    }
-  }
+  protected abstract subscribeToResponses(
+    id: string,
+    commandService: CommandService
+  ): void;
+  protected abstract sendInitialCommands(commandService: CommandService): void;
 
   onActivate(): void {
-    if (this.ircService) {
-      this.ircService.register(
-        `${this.name}-widget`,
-        message => {
-          this.onWhisper(message);
-        },
-        true
-      );
-      const lines = this.ircService.lines;
-      const queue = this.ircService.messageQueue.queuedMessages;
-      for (const line of lines) {
-        this.onWhisper(line);
-      }
-      const commands = this.loadCommands;
-      for (const command of commands) {
-        if (
-          lines.indexOf(`>> ${command}`) === -1 &&
-          queue.indexOf(command) === -1
-        ) {
-          this.ircService.send(command);
-        }
+    this.username = this.configManager?.getConfig().authentication.user ?? '';
+    const widgetId = `${this.name}-widget`;
+    if (this.commandService) {
+      this.subscribeToResponses(widgetId, this.commandService);
+      this.commandService.replayHistory(widgetId);
+      if (this.ircService) {
+        this.sendInitialCommands(this.commandService);
       }
     }
   }

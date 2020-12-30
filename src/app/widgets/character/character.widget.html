@@ -1,33 +1,52 @@
 <mat-card-content height="100%" class="flex-column">
-  <div style="font-size: 18pt;" class="flex-row">
-    <span><img src="./assets/{{getClassIcon()}}" width="22px"> Level {{data.experience.level}}
-      {{data.class}}</span>
+  <div style="font-size: 18pt" class="flex-row-short">
+    <span
+      ><img src="./assets/{{getClassIcon()}}" width="22px" /> Level
+      {{data.experience.level}}
+      <sup *ngIf="data.experience.prestige > 0" style="font-size: 10pt">
+        ({{data.experience.prestige}})
+      </sup>
+      {{data.class}}</span
+    >
     <span class="fill-space"></span>
     <span>{{data.experience.xpInLevel}} / {{data.experience.xpToNext}} XP</span>
   </div>
   <div class="static-bar">
-    <mat-progress-bar color="primary" mode="determinate" [value]="data.experience.progress">
+    <mat-progress-bar
+      color="primary"
+      mode="determinate"
+      [value]="data.experience.progress"
+    >
     </mat-progress-bar>
   </div>
   <p></p>
-  <div class="flex-row">
+  <div class="flex-row-short">
     <div class="flex-column">
-      <span style="font-size: 18pt;">Stats:</span>
+      <span style="font-size: 18pt">Stats:</span>
       <mat-list>
-        <mat-list-item>Success Chance: {{modifiedStats.successChance}}%</mat-list-item>
-        <mat-list-item>XP Bonus: {{modifiedStats.xpBonus}}%</mat-list-item>
-        <mat-list-item>Wolfcoin Bonus: {{modifiedStats.wolfcoinBonus}}%</mat-list-item>
-        <mat-list-item>Item Find: {{modifiedStats.itemFind}}%</mat-list-item>
-        <mat-list-item>Prevent Death: {{modifiedStats.preventDeath}}%</mat-list-item>
+        <mat-list-item>
+          Success Chance: {{modifiedStats.successChance}}%
+        </mat-list-item>
+        <mat-list-item> XP Bonus: {{modifiedStats.xpBonus}}% </mat-list-item>
+        <mat-list-item>
+          Wolfcoin Bonus: {{modifiedStats.wolfcoinBonus}}%
+        </mat-list-item>
+        <mat-list-item> Item Find: {{modifiedStats.itemFind}}% </mat-list-item>
+        <mat-list-item>
+          Prevent Death: {{modifiedStats.preventDeath}}%
+        </mat-list-item>
       </mat-list>
     </div>
     <div class="flex-column">
       <div>
-        <span style="font-size: 18pt;">Armor:</span>
+        <span style="font-size: 18pt">Armor:</span>
       </div>
       <div>
         <mat-card [style.background-color]="colorByRarity(data.gear.armor)">
-          <mat-card-content [style.color]="itemTextColor(data.gear.armor)" style="font-size: 16pt;">
+          <mat-card-content
+            [style.color]="itemTextColor(data.gear.armor)"
+            style="font-size: 16pt"
+          >
             {{data.gear.armor.name}}
           </mat-card-content>
         </mat-card>
@@ -40,11 +59,14 @@
     </div>
     <div class="flex-column">
       <div>
-        <span style="font-size: 18pt;">Weapon:</span>
+        <span style="font-size: 18pt">Weapon:</span>
       </div>
       <div>
         <mat-card [style.background-color]="colorByRarity(data.gear.weapon)">
-          <mat-card-content [style.color]="itemTextColor(data.gear.weapon)" style="font-size: 16pt;">
+          <mat-card-content
+            [style.color]="itemTextColor(data.gear.weapon)"
+            style="font-size: 16pt"
+          >
             {{data.gear.weapon.name}}
           </mat-card-content>
         </mat-card>

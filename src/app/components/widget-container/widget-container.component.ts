@@ -9,7 +9,8 @@ import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetItem } from '../../services/widget/widget-item';
 import { WidgetComponent } from '../widget-factory/widget.component';
-import { WidgetService } from '../../services/widget/widget.service';
+import { CommandService } from 'src/app/services/command/command-service';
+import { AccessControlService } from 'src/app/services/access-control/access-control-service';
 
 /**
  * Holds a list of widgets and renders them to the DOM, in order.
@@ -47,10 +48,10 @@ export class WidgetContainerComponent implements OnInit {
   factories = new Array<ComponentFactory<WidgetComponent>>();
 
   constructor(
-    private widgetService: WidgetService,
+    private accessControlService: AccessControlService,
     public configManager: ConfigManager,
-    // tslint:disable-next-line:align
     public ircService: IrcService,
+    public commandService: CommandService,
     private componentFactoryResolver: ComponentFactoryResolver
   ) {}
 
@@ -78,8 +79,8 @@ export class WidgetContainerComponent implements OnInit {
    * @param index Gets the name of to the icon file for a widget.
    */
   getWidgetIcon(index: number): string {
-    const name = this.config ? this.config.layout[index] : '';
-    const widget = this.widgetMap.get(name);
+    const id = this.config ? this.config.layout[index] : '';
+    const widget = this.widgetMap.get(id);
     return widget ? widget.getIcon() : '';
   }
 
@@ -89,10 +90,10 @@ export class WidgetContainerComponent implements OnInit {
    */
   resetLayout(): void {
     if (this.widgetMap.size === 0) {
-      const widgets = this.widgetService.getWidgets();
+      const widgets = this.accessControlService.getWidgets();
       for (const widget of widgets) {
-        if (widget && widget.component && widget.name) {
-          this.widgetMap.set(widget.name, widget);
+        if (widget && widget.component && widget.id) {
+          this.widgetMap.set(widget.id, widget);
         }
       }
     }
@@ -111,18 +112,18 @@ export class WidgetContainerComponent implements OnInit {
   }
 
   /**
-   * Gets the name of a widget in the layout by index.
+   * Gets the id of a widget in the layout by index.
    * @param index The index of the widget.
    */
   getWidgetName(index: number): string {
     if (this.config && this.config.layout) {
-      return this.config.layout[index];
+      return this.widgetMap.get(this.config.layout[index])?.name ?? '';
     }
     return '';
   }
 
-  private loadWidget(name: string): ComponentFactory<WidgetComponent> | null {
-    const widget = this.widgetMap.get(name);
+  private loadWidget(id: string): ComponentFactory<WidgetComponent> | null {
+    const widget = this.widgetMap.get(id);
     if (widget) {
       const widgetComponent = widget.component;
       if (widgetComponent) {

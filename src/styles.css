@@ -1,9 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
+html,
+body {
+  height: 100%;
+}
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   display: flex;
   flex-direction: column;
 }
@@ -42,18 +45,29 @@ mat-divider.accent-divider {
   flex-direction: row;
   flex-grow: 1;
   overflow: hidden;
+  height: 100%;
 }
 
-app-widget-container, app-widget-container > div {
+.flex-row-short {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+app-widget-container,
+app-widget-container > div {
   display: flex !important;
   flex-direction: column !important;
   flex-grow: 1;
 }
 
-app-widget-factory, app-widget-factory > * {
+app-widget-factory,
+app-widget-factory > * {
   display: flex !important;
   flex-direction: column !important;
   flex-grow: 1;
+  height: 100%;
 }
 
 app-widget-container {

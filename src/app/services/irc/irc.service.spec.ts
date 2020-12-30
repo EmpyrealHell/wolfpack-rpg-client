@@ -4,7 +4,7 @@ import { Config } from '../data/config-data';
 import { ConfigManager } from '../data/config-manager';
 import { UserData } from '../user/user.data';
 import { UserService } from '../user/user.service';
-import { IrcService } from './irc.service';
+import { IrcService, Message } from './irc.service';
 
 describe('IrcService', () => {
   let service: IrcService;
@@ -14,7 +14,11 @@ describe('IrcService', () => {
   async function attachAndSend(
     message: string
   ): Promise<jasmine.SpyObj<Client>> {
-    const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
+    const clientInstance = jasmine.createSpyObj('Client', [
+      'on',
+      'connect',
+      'whisper',
+    ]);
     clientInstance.on.and.callFake((event: string, callback: Function) => {
       if (event === 'whisper') {
         callback('', null, message, false);
@@ -45,7 +49,6 @@ describe('IrcService', () => {
       configManagerSpy,
       userServiceSpy as jasmine.SpyObj<UserService>
     );
-    IrcService.reset();
   });
 
   it('should connect to IRC', async () => {
@@ -81,24 +84,20 @@ describe('IrcService', () => {
     expect(toCall).toEqual([]);
   });
 
-  it('should return a copy of received messages', async () => {
+  it('should return an array of received messages', async () => {
     const message = `test message at ${Date.now()}`;
     await attachAndSend(message);
-    let linesCopy = service.lines;
-    expect(linesCopy).toContain(message);
-    linesCopy.length = 0;
-    linesCopy = service.lines;
-    expect(linesCopy).toContain(message);
+    expect(service.lines.filter(x => x.text === message)).toBeTruthy();
   });
 
   it('should return the full history', async () => {
     const message = `test message at ${Date.now()}`;
     await attachAndSend(message);
-    expect(service.history).toBe(`${message}\n`);
+    expect(service.lines.map(x => x.text)).toContain(message);
   });
 
   it('should register an error handler for an id', () => {
-    const errorHandler = (message: string) => {};
+    const errorHandler = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     const errorHandlers = service.errorHandlers;
@@ -106,7 +105,7 @@ describe('IrcService', () => {
   });
 
   it('should remove an error handler for an id', () => {
-    const errorHandler = (message: string) => {};
+    const errorHandler = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     expect(service.errorHandlers.get(handlerKey)).toBe(errorHandler);
@@ -115,7 +114,7 @@ describe('IrcService', () => {
   });
 
   it('should call registered error handlers on error', async () => {
-    const errorHandlerObj = { onError: (message: string) => {} };
+    const errorHandlerObj = { onError: (message: Message) => {} };
     const errorSpy = spyOn(errorHandlerObj, 'onError');
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandlerObj.onError);
@@ -136,8 +135,8 @@ describe('IrcService', () => {
   });
 
   it('should not overwrite error handlers with the same key by default', () => {
-    const errorHandler = (message: string) => {};
-    const errorHandler2 = (message: string) => {};
+    const errorHandler = (message: Message) => {};
+    const errorHandler2 = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     service.registerForError(handlerKey, errorHandler2);
@@ -147,8 +146,8 @@ describe('IrcService', () => {
   });
 
   it('should overwrite error handlers with the same key when forced', () => {
-    const errorHandler = (message: string) => {};
-    const errorHandler2 = (message: string) => {};
+    const errorHandler = (message: Message) => {};
+    const errorHandler2 = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     service.registerForError(handlerKey, errorHandler2, true);
@@ -158,14 +157,14 @@ describe('IrcService', () => {
   });
 
   it('should register a whisper handler for an id', () => {
-    const callback = (message: string) => {};
+    const callback = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     expect(service.callbacks.get(handlerKey)).toBe(callback);
   });
 
   it('should remove a whisper handler for an id', () => {
-    const callback = (message: string) => {};
+    const callback = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     expect(service.callbacks.get(handlerKey)).toBe(callback);
@@ -174,7 +173,7 @@ describe('IrcService', () => {
   });
 
   it('should call registered callbacks on whisper', async () => {
-    const callbackObj = { onWhisper: (message: string) => {} };
+    const callbackObj = { onWhisper: (message: Message) => {} };
     const callbackSpy = spyOn(callbackObj, 'onWhisper');
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callbackObj.onWhisper);
@@ -185,8 +184,8 @@ describe('IrcService', () => {
   });
 
   it('should not overwrite whisper handlers with the same key by default', () => {
-    const callback = (message: string) => {};
-    const callback2 = (message: string) => {};
+    const callback = (message: Message) => {};
+    const callback2 = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2);
@@ -196,8 +195,8 @@ describe('IrcService', () => {
   });
 
   it('should overwrite whisper handlers with the same key when forced', () => {
-    const callback = (message: string) => {};
-    const callback2 = (message: string) => {};
+    const callback = (message: Message) => {};
+    const callback2 = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2, true);
@@ -236,8 +235,8 @@ describe('IrcService', () => {
       return clientInstance;
     });
 
-    const whispers: string[] = [];
-    service.register('test', (message: string) => {
+    const whispers: Message[] = [];
+    service.register('test', (message: Message) => {
       whispers.push(message);
     });
 
@@ -248,14 +247,11 @@ describe('IrcService', () => {
     whisperCallback.call(service, '', null, 'at', false);
     whisperCallback.call(service, '', null, timestamp, false);
 
-    expect(service.history).toBe(
-      `>> cmd\nresponse\n\n>> cmd\nat\n${timestamp}\n`
-    );
     expect(service.lines.length).toBe(5);
-    expect(whispers[0]).toBe('>> cmd');
-    expect(whispers[1]).toBe('response');
-    expect(whispers[2]).toBe('\n>> cmd');
-    expect(whispers[3]).toBe('at');
-    expect(whispers[4]).toBe(timestamp);
+    expect(whispers[0].text).toBe('cmd');
+    expect(whispers[1].text).toBe('response');
+    expect(whispers[2].text).toBe('cmd');
+    expect(whispers[3].text).toBe('at');
+    expect(whispers[4].text).toBe(timestamp);
   });
 });
