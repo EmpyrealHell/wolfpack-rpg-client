@@ -48,7 +48,7 @@ describe('AccessControlService', () => {
   it('should get default widget ids when no role has been assigned', () => {
     service.initialize(defaultRole, roleData);
     const widgets = service.getWidgets();
-    const defaultWidgets = AccessControlData.defaultRole.widgets;
+    const defaultWidgets = defaultRole;
     for (const widget of widgets) {
       expect(defaultWidgets.filter(x => x === widget.id).length).toBe(1);
     }
@@ -91,7 +91,7 @@ describe('AccessControlService', () => {
   });
 
   it('should send checkaccess command and register a responder', () => {
-    service.initialize();
+    service.initialize(defaultRole, roleData);
     expect(commandService.subscribeToCommand).toHaveBeenCalled();
     const args = commandService.subscribeToCommand.calls.mostRecent().args;
     expect(args[0]).toBe('info');
@@ -108,9 +108,13 @@ describe('AccessControlService', () => {
 
   it('should update role in response to checkaccess command', () => {
     service.initialize(defaultRole, roleData);
-    roleHandler('', '', new Map<string, string>(), [
-      new Map<string, string>([['role', 'foobar']]),
-    ]);
+    roleHandler(
+      '',
+      '',
+      new Map<string, string>(),
+      [new Map<string, string>([['role', 'foobar']])],
+      Date.now()
+    );
     const widgets = service.getWidgets();
     expect(widgets.length).toBe(3);
     expect(widgets.filter(x => x.id === 'console').length).toBe(1);
@@ -125,9 +129,13 @@ describe('AccessControlService', () => {
       afterUpdateWidgets = [...newWidgets];
     };
     const initialWidgets = service.getWidgets(updateCallback);
-    roleHandler('', '', new Map<string, string>(), [
-      new Map<string, string>([['role', 'foobar']]),
-    ]);
+    roleHandler(
+      '',
+      '',
+      new Map<string, string>(),
+      [new Map<string, string>([['role', 'foobar']])],
+      Date.now()
+    );
     expect(afterUpdateWidgets.length).toBe(3);
     expect(afterUpdateWidgets.filter(x => x.id === 'console').length).toBe(1);
     expect(afterUpdateWidgets.filter(x => x.id === 'foo').length).toBe(1);

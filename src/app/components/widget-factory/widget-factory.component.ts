@@ -10,6 +10,7 @@ import { WidgetContainerDirective } from 'src/app/directives/widget-container.di
 import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetComponent } from './widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
+import { MatRipple } from '@angular/material/core';
 
 /**
  * Component that acts as a placeholder for widgets in the widget container.

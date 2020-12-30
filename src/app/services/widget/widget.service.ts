@@ -20,12 +20,7 @@ export class WidgetService {
     ),
     new WidgetItem(null, 'Inventory', 'inventory.beta', 'inventory'),
     new WidgetItem(null, 'Pets', 'pets.beta', 'pets'),
-    new WidgetItem(
-      FishingWidgetComponent,
-      'Fishing',
-      'fishing.beta',
-      'fishing'
-    ),
+    new WidgetItem(FishingWidgetComponent, 'Fishing', 'fishing', 'fishing'),
     new WidgetItem(null, 'Dungeon', 'dungeon.beta', 'dungeon'),
     new WidgetItem(null, 'Group', 'group.beta', 'group'),
     new WidgetItem(null, 'Group Chat', 'group-chat.beta', 'groupchat'),

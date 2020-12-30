@@ -23,6 +23,9 @@ describe('CommandData', () => {
     for (const command of commands) {
       const parts = command.split(' ');
       parts.splice(0, 1);
+      if (parts.length === 1 && parts[0] === '-c') {
+        continue;
+      }
       for (const part of parts) {
         if (!part.startsWith('{') || !part.endsWith('}')) {
           wrongCommands.push(command);

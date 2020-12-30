@@ -22,7 +22,6 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
   private leaderboard: CatchData[] = [];
 
   private newPersonalBest = false;
-  private readingRecord: CatchData | undefined = undefined;
 
   lineStatus = LineStatus.Idle;
   hookMessage: string | undefined = undefined;
@@ -172,9 +171,11 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     this.lineStatus = LineStatus.FishHooked;
     this.hookMessage =
       groups.get('message') ?? FishingWidgetComponent.defaultHookMessage;
-    const audio = new Audio('./assets/effect-hooked.mp3');
-    audio.load();
-    audio.play();
+    if (this.configManager?.getConfig().settings.playSounds) {
+      const audio = new Audio('./assets/effect-hooked.mp3');
+      audio.load();
+      audio.play();
+    }
   }
 
   private handleGotAway(
@@ -252,6 +253,11 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     this.tournament = new Tournament();
     const duration = Number(groups.get('duration') ?? 0);
     this.tournament.endTime = new Date(Date.now() + duration * 60 * 1000);
+    if (this.configManager?.getConfig().settings.playSounds) {
+      const audio = new Audio('./assets/effect-tournament-start.mp3');
+      audio.load();
+      audio.play();
+    }
   }
 
   private handleTournamentEnd(
@@ -393,6 +399,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     commandService.sendInitialCommand('fishing', 'leaderboard');
     commandService.sendInitialCommand('fishing', 'list');
     commandService.sendInitialCommand('fishing', 'next');
+    this.handleTournamentStart('', '', new Map<string, string>(), [], 0);
   }
 
   getLeader(fish: string): CatchData | undefined {
@@ -501,6 +508,35 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       default:
         return `${rank}th`;
     }
+  }
+
+  getTournamentHeight(): number {
+    const base = 112;
+    const headerHeight = 46;
+    const rowHeight = 31;
+    const margin = 16;
+    let amount = base + margin;
+    if (this.tournament && !this.isTournamentOver()) {
+      amount += headerHeight;
+      if (this.tournament.rank > 0) {
+        amount += rowHeight;
+      }
+    }
+    if (this.tournament && this.isTournamentOver()) {
+      if (this.nextTournament) {
+        amount += headerHeight;
+      }
+      if (this.tournament.winner) {
+        amount += rowHeight;
+      }
+      if (this.tournament.rank > 0) {
+        amount += rowHeight;
+      }
+    }
+    if (!this.tournament && !this.nextTournament) {
+      amount += rowHeight;
+    }
+    return amount;
   }
 }
 

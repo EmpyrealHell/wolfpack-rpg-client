@@ -2,16 +2,18 @@
   <div>
     <span style="display: block; width: 50%; margin: auto; text-align: center">
       <div *ngIf="tournament && !isTournamentOver()">
-        <p>Tournament Time Remaining: {{getTimeString(tournament.endTime)}}</p>
+        <h2>
+          Tournament Time Remaining: {{getTimeString(tournament.endTime)}}
+        </h2>
         <p *ngIf="tournament.rank > 0">
           Current Rank: {{toOrdinal(tournament.rank)}}
           ({{tournament.userPoints}} points)
         </p>
       </div>
       <div *ngIf="tournament && isTournamentOver()">
-        <p *ngIf="nextTournament">
+        <h2 *ngIf="nextTournament">
           Next Tournament: {{getTimeString(nextTournament)}}
-        </p>
+        </h2>
         <p *ngIf="tournament.winner">
           Winner: {{tournament.winner}} ({{tournament.winnerPoints}} points)
         </p>
@@ -37,7 +39,10 @@
       {{getHookMessage()}}
     </span>
   </div>
-  <mat-tab-group animationDuration="0ms" style="height: calc(100% - 221px)">
+  <mat-tab-group
+    animationDuration="0ms"
+    style="height: calc(100% - {{getTournamentHeight()}}px)"
+  >
     <mat-tab label="Session History">
       <ng-template matTabContent>
         <table mat-table [dataSource]="sessionTableSource" width="100%">

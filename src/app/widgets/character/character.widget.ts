@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { MatRipple } from '@angular/material/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService } from 'src/app/services/irc/irc.service';
@@ -38,6 +39,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
   @Input() ircService: IrcService | undefined;
   @Input() configManager: ConfigManager | undefined;
   @Input() commandService: CommandService | undefined;
+  @Input() ripple: MatRipple | undefined;
 
   constructor() {
     super();

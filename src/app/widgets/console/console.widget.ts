@@ -3,6 +3,7 @@ import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService, Message } from 'src/app/services/irc/irc.service';
 import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
+import { MatRipple } from '@angular/material/core';
 
 /**
  * Widget that provides direct access to the communication channel between the
@@ -44,6 +45,11 @@ export class ConsoleWidgetComponent implements WidgetComponent {
    */
   @Input()
   commandService: CommandService | undefined;
+  /**
+   * Reference to the material ripple;
+   */
+  @Input()
+  ripple: MatRipple | undefined;
 
   /**
    * Whether the irc service is connected.

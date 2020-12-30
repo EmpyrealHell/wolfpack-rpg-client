@@ -93,7 +93,7 @@ describe('IrcService', () => {
   it('should return the full history', async () => {
     const message = `test message at ${Date.now()}`;
     await attachAndSend(message);
-    expect(service.history).toBe(`${message}\n`);
+    expect(service.lines.map(x => x.text)).toContain(message);
   });
 
   it('should register an error handler for an id', () => {
@@ -247,14 +247,11 @@ describe('IrcService', () => {
     whisperCallback.call(service, '', null, 'at', false);
     whisperCallback.call(service, '', null, timestamp, false);
 
-    expect(service.history).toBe(
-      `>> cmd\nresponse\n\n>> cmd\nat\n${timestamp}\n`
-    );
     expect(service.lines.length).toBe(5);
-    expect(whispers[0]).toBe('>> cmd');
-    expect(whispers[1]).toBe('response');
-    expect(whispers[2]).toBe('\n>> cmd');
-    expect(whispers[3]).toBe('at');
-    expect(whispers[4]).toBe(timestamp);
+    expect(whispers[0].text).toBe('cmd');
+    expect(whispers[1].text).toBe('response');
+    expect(whispers[2].text).toBe('cmd');
+    expect(whispers[3].text).toBe('at');
+    expect(whispers[4].text).toBe(timestamp);
   });
 });

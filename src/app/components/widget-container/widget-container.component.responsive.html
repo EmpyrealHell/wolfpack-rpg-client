@@ -7,7 +7,7 @@
       fxFlex.lt-md="100"
       fxLayout="column"
     >
-      <mat-card>
+      <mat-card matRipple>
         <mat-card-title>
           <div class="contain-space">
             <span
@@ -17,12 +17,7 @@
             <span>{{ getWidgetName(i) }}</span>
             <span class="fill-space"></span>
             <span>
-              <button
-                *ngIf="configManager.isTester()"
-                mat-icon-button
-                color="warn"
-                (click)="closeWidget(i)"
-              >
+              <button mat-icon-button color="warn" (click)="closeWidget(i)">
                 <mat-icon>close</mat-icon>
               </button>
             </span>
@@ -33,6 +28,7 @@
           [ircService]="ircService"
           [configManager]="configManager"
           [commandService]="commandService"
+          [ripple]="ripple"
           [name]="getWidgetName(i)"
         >
         </app-widget-factory>

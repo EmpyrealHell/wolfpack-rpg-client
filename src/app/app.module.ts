@@ -31,6 +31,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatRippleModule } from '@angular/material/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
@@ -84,6 +85,7 @@ import { CommandService } from './services/command/command-service';
     MatMenuModule,
     MatPaginatorModule,
     MatProgressBarModule,
+    MatRippleModule,
     MatSidenavModule,
     MatSlideToggleModule,
     MatTableModule,

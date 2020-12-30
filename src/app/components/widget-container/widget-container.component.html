@@ -18,12 +18,7 @@
           <span>{{ getWidgetName(i) }}</span>
           <span class="fill-space"></span>
           <span>
-            <button
-              *ngIf="configManager.isTester()"
-              mat-icon-button
-              color="warn"
-              (click)="closeWidget(i)"
-            >
+            <button mat-icon-button color="warn" (click)="closeWidget(i)">
               <mat-icon>close</mat-icon>
             </button>
           </span>

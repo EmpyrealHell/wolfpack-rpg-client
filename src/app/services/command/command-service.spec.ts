@@ -1,5 +1,5 @@
 import { TestUtils } from 'src/test/test-utils';
-import { IrcService } from '../irc/irc.service';
+import { IrcService, Message } from '../irc/irc.service';
 import { CommandService } from './command-service';
 
 describe('CommandService', () => {
@@ -28,7 +28,9 @@ describe('CommandService', () => {
     };
     const spy = spyOn(callback, 'fn');
     service.subscribeToMessage('party', 'full', 'test', spy);
-    service.onIncomingWhisper('Your party is now full.');
+    service.onIncomingWhisper(
+      new Message('Your party is now full.', true, true)
+    );
     expect(spy).toHaveBeenCalled();
   });
 
@@ -38,7 +40,7 @@ describe('CommandService', () => {
     };
     const spy = spyOn(callback, 'fn');
     service.subscribeToMessage('party', 'full', 'test', spy);
-    service.onIncomingWhisper('Your party is full.');
+    service.onIncomingWhisper(new Message('Your party is full.', true, true));
     expect(spy).not.toHaveBeenCalled();
   });
 
@@ -48,14 +50,18 @@ describe('CommandService', () => {
     };
     const spy = spyOn(callback, 'fn');
     service.subscribeToMessage('party', 'declined', 'test', spy);
-    service.onIncomingWhisper('Foo has declined your party invite.');
+    const now = Date.now();
+    service.onIncomingWhisper(
+      new Message('Foo has declined your party invite.', true, true)
+    );
     const map = new Map<string, string>();
     map.set('user', 'Foo');
     expect(spy).toHaveBeenCalledWith(
       'message.party.declined',
-      'message',
+      'declined',
       map,
-      []
+      [],
+      now
     );
   });
 });

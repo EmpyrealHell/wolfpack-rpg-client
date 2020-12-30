@@ -109,13 +109,9 @@ export class AccessControlService {
     roleData = RoleData.roles,
     userRoles: string[] = []
   ): void {
-    if (environment.production) {
-      this.defaultWidgets = [];
-      for (const widget of defaultWidgets) {
-        this.defaultWidgets.push(new RegExp(`^${widget}$`));
-      }
-    } else {
-      this.defaultWidgets = [new RegExp('^.*$')];
+    this.defaultWidgets = [];
+    for (const widget of defaultWidgets) {
+      this.defaultWidgets.push(new RegExp(`^${widget}$`));
     }
     this.roleData = [];
     for (const roleDatum of roleData) {

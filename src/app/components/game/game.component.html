@@ -29,7 +29,7 @@
                 >Dark Theme</mat-slide-toggle
               >
             </button>
-            <button *ngIf="configManager.isTester()" mat-menu-item>
+            <button mat-menu-item>
               <mat-slide-toggle
                 (click)="$event.stopPropagation()"
                 color="accent"
@@ -38,13 +38,22 @@
                 >Toolbar Names</mat-slide-toggle
               >
             </button>
-            <button *ngIf="configManager.isTester()" mat-menu-item>
+            <button mat-menu-item>
               <mat-slide-toggle
                 (click)="$event.stopPropagation()"
                 color="accent"
                 [(ngModel)]="config.settings.toolbarIcons"
                 (change)="updateSettings()"
                 >Toolbar Icons</mat-slide-toggle
+              >
+            </button>
+            <button mat-menu-item>
+              <mat-slide-toggle
+                (click)="$event.stopPropagation()"
+                color="accent"
+                [(ngModel)]="config.settings.playSounds"
+                (change)="updateSettings()"
+                >Play Sounds</mat-slide-toggle
               >
             </button>
             <mat-divider></mat-divider>
@@ -65,7 +74,7 @@
         </ng-template>
       </mat-toolbar>
       <mat-divider></mat-divider>
-      <mat-toolbar *ngIf="configManager.isTester()">
+      <mat-toolbar>
         <ng-container *ngFor="let widget of widgets">
           <button
             *ngIf="widget.name"

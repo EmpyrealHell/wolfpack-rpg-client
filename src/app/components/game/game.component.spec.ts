@@ -11,7 +11,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { IrcService } from 'src/app/services/irc/irc.service';
+import { IrcService, Message } from 'src/app/services/irc/irc.service';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
 import { TestUtils } from 'src/test/test-utils';
 import { ConfigManager } from '../../services/data/config-manager';
@@ -99,6 +99,7 @@ describe('GameComponent', () => {
           useDarkTheme: true,
           toolbarIcons: true,
           toolbarNames: true,
+          playSounds: true,
         },
         layout: [],
       } as Partial<Config>)
@@ -169,7 +170,7 @@ describe('GameComponent', () => {
     const fixture = TestBed.createComponent(GameComponent);
     const errorMessage = `modal test message ${Date.now()}`;
 
-    fixture.componentInstance.onError(errorMessage);
+    fixture.componentInstance.onError(new Message(errorMessage, false, true));
     expect(dialogSpy.open).toHaveBeenCalled();
     const args = dialogSpy.open.calls.mostRecent().args;
     expect(args[0]).toBe(ErrorDialog);
