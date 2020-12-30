@@ -399,7 +399,6 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     commandService.sendInitialCommand('fishing', 'leaderboard');
     commandService.sendInitialCommand('fishing', 'list');
     commandService.sendInitialCommand('fishing', 'next');
-    this.handleTournamentStart('', '', new Map<string, string>(), [], 0);
   }
 
   getLeader(fish: string): CatchData | undefined {
