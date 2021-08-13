@@ -105,7 +105,8 @@
         "alternates": ["!reel"],
         "responses": {
           "success": {
-            "tournament": "You caught a (?<fish>\\w+(?: \\w+)*) worth (?<points>[0-9]+) points! You are in (?<rank>[0-9]+)[a-z]{2} place with (?<total>[0-9]+) total points\\.",
+            "tournament": "You caught a (?<length>\\d+(?:\\.\\d+)?) inch, (?<weight>\\d+(?:\\.\\d+)?) pound (?<fish>\\w+(?: \\w+)*) worth (?<points>[0-9]+) points! You are in (?<rank>[0-9]+)[a-z]{2} place with (?<total>[0-9]+) total points\\.",
+            "tournamentLegacy": "You caught a (?<fish>\\w+(?: \\w+)*) worth (?<points>[0-9]+) points! You are in (?<rank>[0-9]+)[a-z]{2} place with (?<total>[0-9]+) total points\\.",
             "newRecord": "This is the biggest (?<fish>\\w+(?: \\w+)*) you've ever caught\\!",
             "confirmation": "Congratulations! You caught a (?<length>\\d+(?:\\.\\d+)?) inch, (?<weight>\\d+(?:\\.\\d+)?) pound (?<fish>\\w+(?: \\w+)*)!"
           }

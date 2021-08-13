@@ -14,7 +14,7 @@ describe('UserService', () => {
 
   it('should call the twitch oauth validation service', async () => {
     httpObj.get.and.returnValue({
-      toPromise: () => new Promise(resolve => resolve()),
+      toPromise: () => new Promise<void>(resolve => resolve()),
     });
     const token = `token-${Date.now()}`;
     userService.updateCache(null);

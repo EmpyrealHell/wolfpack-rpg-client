@@ -152,6 +152,27 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       }
       this.lineStatus = LineStatus.Idle;
       this.hookMessage = undefined;
+      const length = Number(groups.get('length') ?? 0);
+      const weight = Number(groups.get('weight') ?? 0);
+      const fish = groups.get('fish') ?? 'mystery fish';
+      const points = Number(groups.get('points') ?? 0);
+      this.tournament.rank = Number(groups.get('rank') ?? 0);
+      this.tournament.userPoints = Number(groups.get('total') ?? 0);
+      const catchData = new CatchData(
+        fish,
+        this.username,
+        length,
+        weight,
+        points
+      );
+      this.addSessionData(catchData);
+    } else if (id === 'tournamentLegacy') {
+      if (!this.tournament) {
+        this.tournament = new Tournament();
+        this.commandService?.sendCommand('fishing', 'next');
+      }
+      this.lineStatus = LineStatus.Idle;
+      this.hookMessage = undefined;
       const fish = groups.get('fish') ?? 'mystery fish';
       const points = Number(groups.get('points') ?? 0);
       this.tournament.rank = Number(groups.get('rank') ?? 0);
