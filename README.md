@@ -32,9 +32,9 @@ To run the unit tests for this project, run the test NPM command.
 
     NPM run test
 
-To run the style tests for this project, run the check NPM command.
+To run the style tests for this project, run the lint NPM command.
 
-    NPM run check
+    NPM run lint
 
 Due to the dependency on Lobot being up and running, there are no e2e tests. Additional focus is placed on unit testing to compensate.
 
