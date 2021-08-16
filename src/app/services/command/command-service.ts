@@ -27,7 +27,8 @@ export type CommandCallback = (
   id: string,
   groups: Map<string, string>,
   subGroups: Array<Map<string, string>>,
-  date: number
+  date: number,
+  isReplay?: boolean
 ) => void;
 
 /**
@@ -314,7 +315,8 @@ export class CommandService {
           match.value.id,
           match.value.params,
           match.value.subParams,
-          match.value.date
+          match.value.date,
+          true
         );
       }
     }

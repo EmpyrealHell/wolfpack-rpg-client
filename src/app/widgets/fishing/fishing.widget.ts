@@ -218,7 +218,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     id: string,
     groups: Map<string, string>,
     subGroups: Array<Map<string, string>>,
-    date: number
+    date: number,
+    isReplay?: boolean
   ): void {
     if (id === 'timeLeft') {
       const time = (groups.get('time') ?? '00:00:00').split(':');
@@ -241,7 +242,9 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       if (!this.tournament) {
         console.log('No tournament currently active, create one');
         this.tournament = new Tournament();
-        this.commandService?.sendCommand('fishing', 'results');
+        if (!isReplay) {
+          this.commandService?.sendCommand('fishing', 'results');
+        }
       }
       this.nextTournament = new Date(date + toAdd);
       console.log(`Set time for next tournament to ${this.nextTournament}`);
