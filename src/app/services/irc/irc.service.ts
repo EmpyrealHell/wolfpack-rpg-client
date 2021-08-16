@@ -38,7 +38,7 @@ export class IrcService {
   /**
    * The message queue that handles rate limits on messages sent.
    */
-  messageQueue = new MessageQueue(ircConfig.botAccount, 400);
+  messageQueue = new MessageQueue(ircConfig.botAccount, 500);
   /**
    * Whether or not the IRC client is connected.
    */

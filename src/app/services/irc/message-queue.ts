@@ -1,5 +1,4 @@
 import { RollingTimer } from './rolling-timer';
-import { Client } from 'tmi.js';
 
 export type SendFunction = (
   account: string,
