@@ -367,8 +367,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleNext(name, id, groups, subGroups, date)
+      (name, id, groups, subGroups, date, isReplay) =>
+        this.handleNext(name, id, groups, subGroups, date, isReplay)
     );
 
     commandService.subscribeToCommand(
