@@ -38,7 +38,7 @@ export class IrcService {
   /**
    * The message queue that handles rate limits on messages sent.
    */
-  messageQueue = new MessageQueue(ircConfig.botAccount, 100);
+  messageQueue = new MessageQueue(ircConfig.botAccount, 400);
   /**
    * Whether or not the IRC client is connected.
    */
@@ -173,7 +173,7 @@ export class IrcService {
       this.messageQueue.setCheckFn(() => {
         return this.isConnected;
       });
-      this.messageQueue.start();
+      await this.messageQueue.start();
       this.connection.on('raw_message', message => {
         const tag = message.tags['msg-id'] ? message.tags['msg-id'] : undefined;
         if (message.command === 'NOTICE' && tag === 'whisper_restricted') {

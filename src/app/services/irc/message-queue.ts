@@ -36,7 +36,9 @@ export class MessageQueue {
     );
   }
 
-  constructor(private account: string, private rate: number) {}
+  constructor(private account: string, private rate: number) {
+    console.log('Creating a new message queue');
+  }
 
   private canSend(): boolean {
     if (this.checkFn) {
@@ -69,7 +71,7 @@ export class MessageQueue {
     if (this.queue.length > 0) {
       const limit = Math.min(this.queue.length, this.availableOccurrences);
       if (limit > 0) {
-        await this.sendMessages(limit);
+        await this.sendMessages(1);
       }
     }
     if (this.timer) {
@@ -129,8 +131,8 @@ export class MessageQueue {
   /**
    * Starts the message queue.
    */
-  start(): void {
-    this.processQueue();
+  async start(): Promise<void> {
+    await this.processQueue();
     this.continue();
   }
 
