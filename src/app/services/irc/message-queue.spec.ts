@@ -109,4 +109,25 @@ describe('MessageQueue', () => {
     await queue.processQueue();
     expect(spy).toHaveBeenCalled();
   });
+
+  it('should call registered callbacks when message is sent', async () => {
+    const message = `test message sent at ${Date.now()}`;
+    const sendFn = {
+      send: (account: string, message: string): Promise<[string, string]> => {
+        return new Promise(resolve => {
+          resolve(['', '']);
+        });
+      },
+    };
+    const queue = new MessageQueue('spec-test', 100);
+    queue.setSendFunction(sendFn.send);
+    const callbackFn = {
+      callback: (message: string): void => {},
+    };
+    const spy = spyOn(callbackFn, 'callback');
+    queue.registerSendCallback('spec-test', callbackFn.callback);
+    queue.send(message);
+    await queue.processQueue();
+    expect(spy).toHaveBeenCalled();
+  });
 });

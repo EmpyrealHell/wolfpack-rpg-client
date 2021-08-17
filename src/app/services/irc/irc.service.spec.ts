@@ -1,5 +1,5 @@
 import { ClassSpy, TestUtils } from 'src/test/test-utils';
-import { Client, Options } from 'tmi.js';
+import { client, Client, Options } from 'tmi.js';
 import { Config } from '../data/config-data';
 import { ConfigManager } from '../data/config-manager';
 import { UserData } from '../user/user.data';
@@ -179,6 +179,9 @@ describe('IrcService', () => {
     service.register(handlerKey, callbackObj.onWhisper);
     attachAndSend('test');
     service.send('test');
+    service.messageQueue.setSendFunction((account: string, message: string) => {
+      return new Promise<[string, string]>(resolve => {});
+    });
     await service.messageQueue.processQueue();
     expect(callbackSpy).toHaveBeenCalled();
   });
@@ -247,11 +250,45 @@ describe('IrcService', () => {
     whisperCallback.call(service, '', null, 'at', false);
     whisperCallback.call(service, '', null, timestamp, false);
 
-    expect(service.lines.length).toBe(5);
+    expect(service.lines.length).toBe(3);
+    expect(whispers[0].text).toBe('response');
+    expect(whispers[1].text).toBe('at');
+    expect(whispers[2].text).toBe(timestamp);
+  });
+
+  it('should handle sends from the message queue', async () => {
+    const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
+    let whisperCallback: Function = () => {};
+    clientInstance.on.and.callFake((event: string, callback: Function) => {
+      if (event === 'whisper') {
+        whisperCallback = callback;
+      }
+    });
+    await service.connectUsing((opts: Options) => {
+      return clientInstance;
+    });
+
+    const whispers: Message[] = [];
+    service.register('test', (message: Message) => {
+      whispers.push(message);
+    });
+    service.messageQueue.setSendFunction((account: string, message: string) => {
+      return new Promise<[string, string]>(resolve => {
+        resolve(['from', 'message']);
+      });
+    });
+
+    const timestamp = Date.now().toString();
+    service.messageQueue.send('cmd');
+    await service.messageQueue.processQueue();
+    whisperCallback.call(service, '', null, 'response', false);
+    whisperCallback.call(service, '', null, 'at', false);
+    whisperCallback.call(service, '', null, timestamp, false);
+
+    expect(service.lines.length).toBe(4);
     expect(whispers[0].text).toBe('cmd');
     expect(whispers[1].text).toBe('response');
-    expect(whispers[2].text).toBe('cmd');
-    expect(whispers[3].text).toBe('at');
-    expect(whispers[4].text).toBe(timestamp);
+    expect(whispers[2].text).toBe('at');
+    expect(whispers[3].text).toBe(timestamp);
   });
 });

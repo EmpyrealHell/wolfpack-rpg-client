@@ -218,7 +218,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     id: string,
     groups: Map<string, string>,
     subGroups: Array<Map<string, string>>,
-    date: number
+    date: number,
+    isReplay?: boolean
   ): void {
     if (id === 'timeLeft') {
       const time = (groups.get('time') ?? '00:00:00').split(':');
@@ -232,16 +233,21 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       this.tournament.endTime = new Date(date + toAdd);
       this.nextTournament = undefined;
     } else if (id === 'toNext') {
+      console.log(`Time to next tournament: ${groups.get('time')}`);
       const time = (groups.get('time') ?? '00:00:00').split(':');
       const toAdd =
         parseInt(time[0]) * 60 * 60 * 1000 +
         parseInt(time[1]) * 60 * 1000 +
         parseInt(time[2]) * 1000;
       if (!this.tournament) {
+        console.log('No tournament currently active, create one');
         this.tournament = new Tournament();
-        this.commandService?.sendCommand('fishing', 'results');
+        if (!isReplay) {
+          this.commandService?.sendCommand('fishing', 'results');
+        }
       }
       this.nextTournament = new Date(date + toAdd);
+      console.log(`Set time for next tournament to ${this.nextTournament}`);
       this.tournament.endTime = undefined;
     }
   }
@@ -361,8 +367,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleNext(name, id, groups, subGroups, date)
+      (name, id, groups, subGroups, date, isReplay) =>
+        this.handleNext(name, id, groups, subGroups, date, isReplay)
     );
 
     commandService.subscribeToCommand(

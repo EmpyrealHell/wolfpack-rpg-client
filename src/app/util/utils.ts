@@ -163,31 +163,45 @@ export class Utils {
    * @param date A string containing a datetime value
    */
   static parseDateFromBot(date: string | undefined): Date {
-    if (!date) {
-      return new Date(Date.now());
+    if (date) {
+      const dateString = date as string;
+      if (Utils.timezoneDelta === -1) {
+        const millisInMinute = 60 * 1000;
+        const now = new Date(Date.now());
+        const serverOffset =
+          this.getTimeZoneOffset(now, 'America/Chicago') * millisInMinute;
+        const localOffset = now.getTimezoneOffset() * millisInMinute;
+        Utils.timezoneDelta = serverOffset - localOffset;
+      }
+
+      const parse = /([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})((?: PM)?)/;
+      const values = dateString.match(parse);
+
+      if (values) {
+        const month = parseInt(values[1]);
+        const day = parseInt(values[2]);
+        const year = parseInt(values[3]);
+
+        let hour = parseInt(values[4]);
+        const minute = parseInt(values[5]);
+        const second = parseInt(values[6]);
+
+        if (values[7].length > 0) {
+          hour += 12;
+        }
+
+        const normalized = new Date(
+          year,
+          month - 1,
+          day,
+          hour,
+          minute,
+          second,
+          0
+        );
+        return new Date(normalized.getTime() + Utils.timezoneDelta);
+      }
     }
-    if (Utils.timezoneDelta === -1) {
-      const millisInMinute = 60 * 1000;
-      const now = new Date(Date.now());
-      const serverOffset =
-        this.getTimeZoneOffset(now, 'America/Chicago') * millisInMinute;
-      const localOffset = now.getTimezoneOffset() * millisInMinute;
-      Utils.timezoneDelta = serverOffset - localOffset;
-    }
-
-    const month = parseInt(date.substring(0, 2));
-    const day = parseInt(date.substring(3, 5));
-    const year = parseInt(date.substring(6, 10));
-
-    let hour = parseInt(date.substring(11, 13));
-    const minute = parseInt(date.substring(14, 16));
-    const second = parseInt(date.substring(17, 19));
-
-    if (date.endsWith('PM')) {
-      hour += 12;
-    }
-
-    const normalized = new Date(year, month - 1, day, hour, minute, second, 0);
-    return new Date(normalized.getTime() + Utils.timezoneDelta);
+    return new Date(Date.now());
   }
 }
