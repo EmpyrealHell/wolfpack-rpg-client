@@ -5,6 +5,8 @@ export type SendFunction = (
   message: string
 ) => Promise<[string, string]>;
 
+export type SendCallback = (message: string) => void;
+
 export type CheckFunction = () => boolean;
 
 /**
@@ -17,6 +19,9 @@ export class MessageQueue {
   private timer: number | undefined;
   private sendFn: SendFunction | undefined;
   private checkFn: CheckFunction | undefined;
+  private sendCallbacks = new Map<string, SendCallback>();
+  private minimumDelay = 600;
+  private lastSend = Date.now();
 
   /**
    * The list of messages to send through the queue.
@@ -46,13 +51,26 @@ export class MessageQueue {
     return true;
   }
 
+  private delayElapsed(): boolean {
+    const now = Date.now();
+    return now - this.lastSend >= this.minimumDelay;
+  }
+
+  private broadcastSend(message: string): void {
+    for (const [key, value] of this.sendCallbacks) {
+      value.call(value, message);
+    }
+  }
+
   private async sendMessages(count: number): Promise<void> {
-    if (this.sendFn && this.canSend()) {
+    if (this.sendFn && this.canSend() && this.delayElapsed()) {
       const toSend = this.queue.splice(0, count);
       for (const message of toSend) {
+        await this.broadcastSend(message);
         await this.sendFn.call(this.sendFn, this.account, message);
         this.secondTimer.addOccurrence();
         this.minuteTimer.addOccurrence();
+        this.lastSend = Date.now();
       }
     }
   }
@@ -103,6 +121,33 @@ export class MessageQueue {
    */
   setCheckFn(checkFn: CheckFunction) {
     this.checkFn = checkFn;
+  }
+
+  /**
+   * Registers a function to be called when the message queue sends a message.
+   * @param id The id of the callback to add.
+   * @param callback The callback method to call.
+   * @param overwrite Whether or not to overwrite existing callbacks with the
+   * same id.
+   */
+  registerSendCallback(
+    id: string,
+    callback: SendCallback,
+    overwrite = false
+  ): void {
+    if (!this.sendCallbacks.has(id) || overwrite) {
+      this.sendCallbacks.set(id, callback);
+    }
+  }
+
+  /**
+   * Removes a registered callback listener.
+   * @param id The id of the callback to remove.
+   */
+  unregisterSendCallback(id: string): void {
+    if (this.sendCallbacks.has(id)) {
+      this.sendCallbacks.delete(id);
+    }
   }
 
   /**

@@ -38,7 +38,7 @@ export class IrcService {
   /**
    * The message queue that handles rate limits on messages sent.
    */
-  messageQueue = new MessageQueue(ircConfig.botAccount, 500);
+  messageQueue = new MessageQueue(ircConfig.botAccount, 50);
   /**
    * Whether or not the IRC client is connected.
    */
@@ -62,6 +62,10 @@ export class IrcService {
 
   private onWhisper(message: string, self = false): void {
     this.broadcastMessage(new Message(message, self));
+  }
+
+  private onSendMessage(message: string): void {
+    this.broadcastMessage(new Message(message, true));
   }
 
   private onError(message: string): void {
@@ -173,6 +177,12 @@ export class IrcService {
       this.messageQueue.setCheckFn(() => {
         return this.isConnected;
       });
+      this.messageQueue.registerSendCallback(
+        'irc-client',
+        (message: string) => {
+          this.onSendMessage(message);
+        }
+      );
       await this.messageQueue.start();
       this.connection.on('raw_message', message => {
         const tag = message.tags['msg-id'] ? message.tags['msg-id'] : undefined;
@@ -190,7 +200,9 @@ export class IrcService {
         }
       });
       this.connection.on('whisper', (from, userstate, message, self) => {
-        this.onWhisper(message, self);
+        if (!self) {
+          this.onWhisper(message, self);
+        }
       });
       this.connection.on('disconnected', reason => {
         this.reconnect(reason);
