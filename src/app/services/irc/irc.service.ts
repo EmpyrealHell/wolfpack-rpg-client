@@ -64,10 +64,6 @@ export class IrcService {
     this.broadcastMessage(new Message(message, self));
   }
 
-  private onSendMessage(message: string): void {
-    this.broadcastMessage(new Message(message, true));
-  }
-
   private onError(message: string): void {
     const messageObj = new Message(message, false);
     for (const [key, value] of this.errorHandlers) {
@@ -180,7 +176,7 @@ export class IrcService {
       this.messageQueue.registerSendCallback(
         'irc-client',
         (message: string) => {
-          this.onSendMessage(message);
+          this.onWhisper(message, true);
         }
       );
       await this.messageQueue.start();

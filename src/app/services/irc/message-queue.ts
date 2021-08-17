@@ -21,7 +21,7 @@ export class MessageQueue {
   private checkFn: CheckFunction | undefined;
   private sendCallbacks = new Map<string, SendCallback>();
   private minimumDelay = 600;
-  private lastSend = Date.now();
+  private lastSend = 0;
 
   /**
    * The list of messages to send through the queue.
@@ -40,9 +40,7 @@ export class MessageQueue {
     );
   }
 
-  constructor(private account: string, private rate: number) {
-    console.log('Creating a new message queue');
-  }
+  constructor(private account: string, private rate: number) {}
 
   private canSend(): boolean {
     if (this.checkFn) {
