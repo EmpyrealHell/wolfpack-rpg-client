@@ -96,7 +96,7 @@ export class Utils {
       response.response = await promise;
       response.success = true;
     } catch (error) {
-      response.error = error;
+      response.error = error as E;
       response.success = false;
     }
     return response;
