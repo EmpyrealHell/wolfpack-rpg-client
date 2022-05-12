@@ -14,7 +14,7 @@ If your Twitch account is still new, you may not be able to send messages throug
 
 ## Development Requirements
 
-This app was created using [Angular CLI](https://github.com/angular/angular-cli) CLI 10.2.0. It requires Node 10.13.0 or higher, and NPM 6.11.0 or higher.
+This app was created using [Angular CLI](https://github.com/angular/angular-cli) CLI 12.1.0. It requires Node 10.13.0 or higher, and NPM 6.11.0 or higher.
 
 ## Building Locally
 

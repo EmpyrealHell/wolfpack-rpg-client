@@ -43,6 +43,10 @@ export class ConfigSettings {
    * Whether or not to play sounds for things like the fishing widget.
    */
   playSounds = true;
+  /**
+   * The volume to play the sounds at.
+   */
+  soundVolume = 0.5;
 }
 
 /**
@@ -65,4 +69,8 @@ export class ConfigAuthentication {
    * List of scopes the token provides access to.
    */
   scope: string | null = null;
+  /**
+   * Number of authentication attempts in a row.
+   */
+  authCount: number | null = null;
 }

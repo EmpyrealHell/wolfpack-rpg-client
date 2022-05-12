@@ -38,6 +38,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSliderModule } from '@angular/material/slider';
 
 import { FishingWidgetComponent } from './widgets/fishing/fishing.widget';
 import { ErrorDialog } from './components/error-dialog/error-dialog';
@@ -91,6 +92,7 @@ import { CommandService } from './services/command/command-service';
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
+    MatSliderModule,
   ],
   providers: [IrcService, CommandService],
   bootstrap: [AppComponent],

@@ -195,6 +195,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     if (this.configManager?.getConfig().settings.playSounds) {
       const audio = new Audio('./assets/effect-hooked.mp3');
       audio.load();
+      audio.volume =
+        this.configManager?.getConfig().settings.soundVolume ?? 1.0;
       audio.play();
     }
   }
