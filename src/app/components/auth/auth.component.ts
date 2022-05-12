@@ -23,6 +23,7 @@ import * as authConfig from './auth.component.json';
 })
 export class AuthComponent implements OnInit {
   route: ActivatedRouteSnapshot;
+  retryCount = 3;
 
   /**
    * Parses the auth response from twitch. This handles the app loading after
@@ -98,6 +99,7 @@ export class AuthComponent implements OnInit {
       } else {
         auth.user = data.login;
         auth.scope = Utils.stringJoin(' ', data.scopes);
+        auth.authCount = 0;
         configManager.save();
         userService.updateCache(data);
         router.navigate(['/play']);
@@ -117,6 +119,11 @@ export class AuthComponent implements OnInit {
     auth: ConfigAuthentication,
     configManager: ConfigManager
   ): void {
+    if (auth.authCount === null) {
+      auth.authCount = 0;
+    } else {
+      auth.authCount++;
+    }
     const forceVerify = auth.state === null;
     auth.state = Utils.generateState(16);
     auth.token = null;
@@ -155,6 +162,13 @@ export class AuthComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.configManager.load();
     const config = this.configManager.getConfig();
+    if (
+      config.authentication.authCount !== null &&
+      config.authentication.authCount > this.retryCount
+    ) {
+      config.authentication = new ConfigAuthentication();
+      this.configManager.save();
+    }
     if (this.route.fragment && this.route.fragment.length > 0) {
       await this.ParseAuthResponse(
         config.authentication,

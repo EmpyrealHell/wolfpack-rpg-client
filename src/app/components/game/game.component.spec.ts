@@ -94,12 +94,14 @@ describe('GameComponent', () => {
           token: 'token',
           state: null,
           scope: null,
+          authCount: 0,
         },
         settings: {
           useDarkTheme: true,
           toolbarIcons: true,
           toolbarNames: true,
           playSounds: true,
+          soundVolume: 0.5,
         },
         layout: [],
       } as Partial<Config>)
