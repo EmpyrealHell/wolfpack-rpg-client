@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatTableDataSource } from '@angular/material/table';
-import { CDK_CONNECTED_OVERLAY_SCROLL_STRATEGY_PROVIDER_FACTORY } from '@angular/cdk/overlay/overlay-directives';
 import { Utils } from 'src/app/util/utils';
 
 /**
