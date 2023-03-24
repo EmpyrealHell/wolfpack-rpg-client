@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { AuthData } from './user.data';
+import { AuthData } from './auth.data';
 import { UserService } from './user.service';
 
 describe('UserService', () => {

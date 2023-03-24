@@ -8,7 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TestUtils } from 'src/test/test-utils';
 import { Config, ConfigAuthentication } from '../../services/data/config-data';
 import { ConfigManager } from '../../services/data/config-manager';
-import { AuthData } from '../../services/user/user.data';
+import { AuthData } from '../../services/user/auth.data';
 import { UserService } from '../../services/user/user.service';
 import { AuthComponent } from './auth.component';
 

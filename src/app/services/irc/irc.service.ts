@@ -157,7 +157,6 @@ export class IrcService {
         console.log('Token not found!');
         return false;
       }
-      console.log(token);
       const userData = await this.userService.getUserAuth(token);
       const botData = await this.userService.getUserId(
         token,
@@ -168,7 +167,8 @@ export class IrcService {
         userData.user_id,
         botData.data[0].id,
         token,
-        ircConfig.connectOptions.options.clientId
+        ircConfig.connectOptions.options.clientId,
+        this.onError
       );
       const options = ircConfig.connectOptions;
       options.options.clientId = userData.client_id;

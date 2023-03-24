@@ -21,7 +21,7 @@ import { WidgetContainerComponent } from '../widget-container/widget-container.c
 import { WidgetFactoryComponent } from '../widget-factory/widget-factory.component';
 import { GameComponent } from './game.component';
 import { Config } from 'src/app/services/data/config-data';
-import { AuthData } from 'src/app/services/user/user.data';
+import { AuthData } from 'src/app/services/user/auth.data';
 import { AccessControlService } from 'src/app/services/access-control/access-control-service';
 
 export class ClassList {

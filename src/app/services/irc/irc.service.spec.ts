@@ -48,10 +48,14 @@ describe('IrcService', () => {
     } as AuthData;
     userServiceSpy.getUserAuth.and.returnValue(authData);
     const userData = {
-      id: 'userid',
-      login: 'TestUser',
+      data: [
+        {
+          id: 'userid',
+          login: 'TestUser',
+        },
+      ],
     } as UserData;
-    userServiceSpy.getUserAuth.and.returnValue(userData);
+    userServiceSpy.getUserId.and.returnValue(userData);
 
     whisperServiceSpy = TestUtils.spyOnClass(WhisperService);
 
@@ -190,9 +194,14 @@ describe('IrcService', () => {
     service.register(handlerKey, callbackObj.onWhisper);
     attachAndSend('test');
     service.send('test');
-    service.messageQueue.setSendFunction((account: string, message: string) => {
-      return new Promise<void>(resolve => undefined);
-    });
+    const sendFn = {
+      send: async (message: string) => {
+        return new Promise<void>(resolve => {
+          resolve(undefined);
+        });
+      },
+    };
+    service.messageQueue.setSendFunction(sendFn.send);
     await service.messageQueue.processQueue();
     expect(callbackSpy).toHaveBeenCalled();
   });
@@ -222,7 +231,7 @@ describe('IrcService', () => {
   it('should send queued messages', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
-      send: async (account: string, message: string) => {
+      send: async (message: string) => {
         return new Promise<void>(resolve => {
           resolve(undefined);
         });
@@ -234,7 +243,7 @@ describe('IrcService', () => {
     await service.messageQueue.processQueue();
     expect(spy).toHaveBeenCalled();
     const call = spy.calls.mostRecent();
-    expect(call.args[1]).toBe(message);
+    expect(call.args[0]).toBe(message);
   });
 
   it('should properly format messages', async () => {
@@ -283,7 +292,7 @@ describe('IrcService', () => {
     service.register('test', (message: Message) => {
       whispers.push(message);
     });
-    service.messageQueue.setSendFunction((account: string, message: string) => {
+    service.messageQueue.setSendFunction((message: string) => {
       return new Promise<void>(resolve => {
         resolve(undefined);
       });
