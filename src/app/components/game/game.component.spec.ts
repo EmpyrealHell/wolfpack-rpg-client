@@ -21,7 +21,7 @@ import { WidgetContainerComponent } from '../widget-container/widget-container.c
 import { WidgetFactoryComponent } from '../widget-factory/widget-factory.component';
 import { GameComponent } from './game.component';
 import { Config } from 'src/app/services/data/config-data';
-import { UserData } from 'src/app/services/user/user.data';
+import { AuthData } from 'src/app/services/user/auth.data';
 import { AccessControlService } from 'src/app/services/access-control/access-control-service';
 
 export class ClassList {
@@ -42,9 +42,9 @@ export class ClassList {
 const ircServiceSpy = TestUtils.spyOnClass(IrcService);
 const configManagerSpy = TestUtils.spyOnClass(ConfigManager);
 const userServiceSpy = TestUtils.spyOnClass(UserService);
-userServiceSpy.getUserInfo.and.returnValue({
+userServiceSpy.getUserAuth.and.returnValue({
   login: 'userService',
-} as UserData);
+} as AuthData);
 const accessControlServiceSpy = TestUtils.spyOnClass(AccessControlService);
 const overlayContainerSpy = jasmine.createSpyObj('OverlayContainer', [
   'getContainerElement',
@@ -128,14 +128,14 @@ describe('GameComponent', () => {
     const invalidTokenSpy = TestUtils.spyOnClass(UserService) as jasmine.SpyObj<
       UserService
     >;
-    invalidTokenSpy.getUserInfo.and.returnValue(
+    invalidTokenSpy.getUserAuth.and.returnValue(
       new Promise(resolve => {
         resolve({
           client_id: '',
           login: '',
           user_id: '',
           scopes: [],
-        } as UserData);
+        } as AuthData);
       })
     );
     const auth = fixture.componentInstance.configManager.getConfig();
@@ -152,7 +152,7 @@ describe('GameComponent', () => {
 
     await fixture.componentInstance.ngOnInit();
     const user = fixture.componentInstance.config.authentication.user;
-    const target = (await userServiceSpy.getUserInfo(null)).login;
+    const target = (await userServiceSpy.getUserAuth(null)).login;
     expect(user).toBe(target);
     expect(configManagerSpy.save).toHaveBeenCalled();
     expect(ircServiceSpy.registerForError).toHaveBeenCalled();

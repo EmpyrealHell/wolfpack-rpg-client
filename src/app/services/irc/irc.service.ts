@@ -5,6 +5,7 @@ import { Client, Options } from 'tmi.js';
 import { UserService } from '../user/user.service';
 import * as ircConfig from './irc.service.json';
 import { MessageQueue } from './message-queue';
+import { WhisperService } from './whisper.service';
 
 /**
  * Callback type used for broadcasting whisper messages received by the client.
@@ -46,7 +47,8 @@ export class IrcService {
 
   constructor(
     public configManager: ConfigManager,
-    public userService: UserService
+    public userService: UserService,
+    public whisperService: WhisperService
   ) {}
 
   private broadcastMessage(message: Message): void {
@@ -152,9 +154,22 @@ export class IrcService {
     } else {
       const token = this.configManager.getConfig().authentication.token;
       if (!token) {
+        console.log('Token not found!');
         return false;
       }
-      const userData = await this.userService.getUserInfo(token);
+      const userData = await this.userService.getUserAuth(token);
+      const botData = await this.userService.getUserId(
+        token,
+        ircConfig.connectOptions.options.clientId,
+        ircConfig.botAccount
+      );
+      this.whisperService.setData(
+        userData.user_id,
+        botData.data[0].id,
+        token,
+        ircConfig.connectOptions.options.clientId,
+        this.onError
+      );
       const options = ircConfig.connectOptions;
       options.options.clientId = userData.client_id;
       options.identity.username = userData.login;
@@ -163,11 +178,11 @@ export class IrcService {
       if (!this.connection) {
         return false;
       }
-      this.messageQueue.setSendFunction((username, message) => {
-        if (this.connection) {
-          return this.connection.whisper(username, message);
+      this.messageQueue.setSendFunction(message => {
+        if (this.whisperService) {
+          return this.whisperService.sendWhisper(message);
         } else {
-          return new Promise(result => ['', '']);
+          return new Promise(result => undefined);
         }
       });
       this.messageQueue.setCheckFn(() => {

@@ -1,9 +1,6 @@
 import { RollingTimer } from './rolling-timer';
 
-export type SendFunction = (
-  account: string,
-  message: string
-) => Promise<[string, string]>;
+export type SendFunction = (message: string) => Promise<void>;
 
 export type SendCallback = (message: string) => void;
 
@@ -65,7 +62,7 @@ export class MessageQueue {
       const toSend = this.queue.splice(0, count);
       for (const message of toSend) {
         await this.broadcastSend(message);
-        await this.sendFn.call(this.sendFn, this.account, message);
+        await this.sendFn.call(this.sendFn, message);
         this.secondTimer.addOccurrence();
         this.minuteTimer.addOccurrence();
         this.lastSend = Date.now();

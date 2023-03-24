@@ -3,7 +3,7 @@
   "streamerAccount": "lobosjr",
   "connectOptions": {
     "options": {
-      "clientId": ""
+      "clientId": "full2dvcfxpu2g8pgalowdipot41ft"
     },
     "connection": {
       "server": "irc-ws.chat.twitch.tv",
@@ -15,9 +15,6 @@
       "username": "",
       "password": ""
     },
-    "channels": [
-      "jtv",
-      "lobosjr"
-    ]
+    "channels": ["jtv", "lobosjr"]
   }
 }

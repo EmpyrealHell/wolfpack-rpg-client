@@ -247,7 +247,7 @@ export class CommandService {
     subscriber: string,
     callback: CommandCallback
   ): string {
-    const key = `command.${group}.${command}.${result}`;
+    const key = `command.${group}.${String(command)}.${String(result)}`;
     let current = this.callbacks.get(subscriber);
     if (!current) {
       current = new Map<string, CommandCallback>();
@@ -270,7 +270,7 @@ export class CommandService {
     G extends keyof typeof CommandData.messages,
     N extends keyof typeof CommandData.messages[G]
   >(group: G, name: N, subscriber: string, callback: CommandCallback): string {
-    const key = `message.${group}.${name}`;
+    const key = `message.${group}.${String(name)}`;
     let current = this.callbacks.get(subscriber);
     if (!current) {
       current = new Map<string, CommandCallback>();
