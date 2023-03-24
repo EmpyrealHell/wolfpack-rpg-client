@@ -4,10 +4,10 @@ import {
   ActivatedRouteSnapshot,
   Router,
 } from '@angular/router';
+import { AuthData } from 'src/app/services/user/auth.data';
 import { environment } from 'src/environments/environment';
 import { ConfigAuthentication } from '../../services/data/config-data';
 import { ConfigManager } from '../../services/data/config-manager';
-import { UserData } from '../../services/user/user.data';
 import { UserService } from '../../services/user/user.service';
 import { Utils } from '../../util/utils';
 import * as authConfig from './auth.component.json';
@@ -49,6 +49,14 @@ export class AuthComponent implements OnInit {
       const token = fragmentMap.get('access_token');
       if (state === auth.state && token) {
         auth.token = token;
+        if (state !== auth.state) {
+          console.log(
+            `State didn't match. Expected ${auth.state}, received ${state}, reauthenticating.`
+          );
+        }
+        if (!token) {
+          console.log('Token was empty, reauthenticating.');
+        }
         await this.ValidateToken(auth, configManager, userService, router);
       } else {
         alert(
@@ -59,6 +67,7 @@ export class AuthComponent implements OnInit {
         this.AuthenticateWithTwitch(auth, configManager);
       }
     } else {
+      console.log('State was empty, reauthenticating.');
       this.AuthenticateWithTwitch(auth, configManager);
     }
   }
@@ -78,10 +87,10 @@ export class AuthComponent implements OnInit {
     userService: UserService,
     router: Router
   ): Promise<void> {
-    let data: UserData | null = null;
+    let data: AuthData | null = null;
     try {
       if (auth.token) {
-        data = await userService.getUserInfo(auth.token);
+        data = await userService.getUserAuth(auth.token);
       }
     } catch (error) {
       console.log('Encountered an error getting token validation data');

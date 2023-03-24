@@ -2,14 +2,17 @@ import { ClassSpy, TestUtils } from 'src/test/test-utils';
 import { client, Client, Options } from 'tmi.js';
 import { Config } from '../data/config-data';
 import { ConfigManager } from '../data/config-manager';
+import { AuthData } from '../user/auth.data';
 import { UserData } from '../user/user.data';
 import { UserService } from '../user/user.service';
 import { IrcService, Message } from './irc.service';
+import { WhisperService } from './whisper.service';
 
 describe('IrcService', () => {
   let service: IrcService;
   let configManagerSpy: ClassSpy<ConfigManager>;
   let userServiceSpy: ClassSpy<UserService>;
+  let whisperServiceSpy: ClassSpy<WhisperService>;
 
   async function attachAndSend(
     message: string
@@ -37,17 +40,25 @@ describe('IrcService', () => {
     configManagerSpy.getConfig.and.returnValue(configData);
 
     userServiceSpy = TestUtils.spyOnClass(UserService);
-    const userData = {
+    const authData = {
       client_id: 'clientid',
       login: 'TestUser',
       user_id: 'userid',
       scopes: [],
+    } as AuthData;
+    userServiceSpy.getUserAuth.and.returnValue(authData);
+    const userData = {
+      id: 'userid',
+      login: 'TestUser',
     } as UserData;
-    userServiceSpy.getUserInfo.and.returnValue(userData);
+    userServiceSpy.getUserAuth.and.returnValue(userData);
+
+    whisperServiceSpy = TestUtils.spyOnClass(WhisperService);
 
     service = new IrcService(
       configManagerSpy,
-      userServiceSpy as jasmine.SpyObj<UserService>
+      userServiceSpy as jasmine.SpyObj<UserService>,
+      whisperServiceSpy as jasmine.SpyObj<WhisperService>
     );
   });
 
@@ -55,7 +66,7 @@ describe('IrcService', () => {
     const queueSpy = spyOn(service.messageQueue, 'start');
     const sendFnSpy = spyOn(service.messageQueue, 'setSendFunction');
     const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
-    const userData = userServiceSpy.getUserInfo();
+    const userData = userServiceSpy.getUserAuth();
     const configData = configManagerSpy.getConfig() as Config;
     let optsUsed: Options = {};
     await service.connectUsing((opts: Options) => {
@@ -180,7 +191,7 @@ describe('IrcService', () => {
     attachAndSend('test');
     service.send('test');
     service.messageQueue.setSendFunction((account: string, message: string) => {
-      return new Promise<[string, string]>(resolve => {});
+      return new Promise<void>(resolve => undefined);
     });
     await service.messageQueue.processQueue();
     expect(callbackSpy).toHaveBeenCalled();
@@ -212,8 +223,8 @@ describe('IrcService', () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
       send: async (account: string, message: string) => {
-        return new Promise<[string, string]>(resolve => {
-          resolve(['', '']);
+        return new Promise<void>(resolve => {
+          resolve(undefined);
         });
       },
     };
@@ -273,8 +284,8 @@ describe('IrcService', () => {
       whispers.push(message);
     });
     service.messageQueue.setSendFunction((account: string, message: string) => {
-      return new Promise<[string, string]>(resolve => {
-        resolve(['from', 'message']);
+      return new Promise<void>(resolve => {
+        resolve(undefined);
       });
     });
 

@@ -58,7 +58,7 @@ export class GameComponent implements OnInit {
     if (!token) {
       this.router.navigate(['/']);
     } else {
-      const userData = await this.userService.getUserInfo(token);
+      const userData = await this.userService.getUserAuth(token);
       if (userData && userData.login) {
         if (this.widgets) {
           const ids = this.widgets.map(x => x.id);

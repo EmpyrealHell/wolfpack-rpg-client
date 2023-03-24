@@ -33,9 +33,9 @@ describe('MessageQueue', () => {
   it('should not allow more than 3 messages each second', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
-      send: (account: string, message: string): Promise<[string, string]> => {
+      send: (account: string, message: string): Promise<void> => {
         return new Promise(resolve => {
-          resolve(['', '']);
+          resolve(undefined);
         });
       },
     };
@@ -53,9 +53,9 @@ describe('MessageQueue', () => {
   it('should send a fourth message after 1 second', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
-      send: (account: string, message: string): Promise<[string, string]> => {
+      send: (account: string, message: string): Promise<void> => {
         return new Promise(resolve => {
-          resolve(['', '']);
+          resolve(undefined);
         });
       },
     };
@@ -73,9 +73,9 @@ describe('MessageQueue', () => {
   it('should not send more than 100 messages each minute', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
-      send: (account: string, message: string): Promise<[string, string]> => {
+      send: (account: string, message: string): Promise<void> => {
         return new Promise(resolve => {
-          resolve(['', '']);
+          resolve(undefined);
         });
       },
     };
@@ -93,9 +93,9 @@ describe('MessageQueue', () => {
   it('should send a 101st message after 1 minute', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
-      send: (account: string, message: string): Promise<[string, string]> => {
+      send: (account: string, message: string): Promise<void> => {
         return new Promise(resolve => {
-          resolve(['', '']);
+          resolve(undefined);
         });
       },
     };
@@ -113,9 +113,9 @@ describe('MessageQueue', () => {
   it('should call registered callbacks when message is sent', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
-      send: (account: string, message: string): Promise<[string, string]> => {
+      send: (account: string, message: string): Promise<void> => {
         return new Promise(resolve => {
-          resolve(['', '']);
+          resolve(undefined);
         });
       },
     };

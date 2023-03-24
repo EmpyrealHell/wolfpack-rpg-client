@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { UserData } from './user.data';
+import { AuthData } from './user.data';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
@@ -19,7 +19,7 @@ describe('UserService', () => {
     const token = `token-${Date.now()}`;
     userService.updateCache(null);
 
-    await userService.getUserInfo(token);
+    await userService.getUserAuth(token);
     expect(httpObj.get).toHaveBeenCalled();
     const call = httpObj.get.calls.mostRecent();
     const opts = call.args[1];
@@ -27,15 +27,15 @@ describe('UserService', () => {
   });
 
   it('should update the user cache', () => {
-    const newCache = {} as UserData;
+    const newCache = {} as AuthData;
     userService.updateCache(newCache);
     expect(UserService[cachedResponseKey]).toBe(newCache);
   });
 
   it('should use the user cache', async () => {
-    const newCache = {} as UserData;
+    const newCache = {} as AuthData;
     userService.updateCache(newCache);
-    const userInfo = await userService.getUserInfo('');
+    const userInfo = await userService.getUserAuth('');
     expect(userInfo).toBe(newCache);
   });
 });

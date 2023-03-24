@@ -8,7 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TestUtils } from 'src/test/test-utils';
 import { Config, ConfigAuthentication } from '../../services/data/config-data';
 import { ConfigManager } from '../../services/data/config-manager';
-import { UserData } from '../../services/user/user.data';
+import { AuthData } from '../../services/user/user.data';
 import { UserService } from '../../services/user/user.service';
 import { AuthComponent } from './auth.component';
 
@@ -43,8 +43,8 @@ describe('AuthComponent', () => {
         token: 'token',
       },
     } as Partial<Config>);
-    userServiceSpy.getUserInfo.and.returnValue(
-      new Promise<UserData>(resolve => {
+    userServiceSpy.getUserAuth.and.returnValue(
+      new Promise<AuthData>(resolve => {
         resolve({
           client_id: '',
           login: username,
@@ -66,7 +66,7 @@ describe('AuthComponent', () => {
       userServiceSpy,
       routerSpy
     );
-    expect(userServiceSpy.getUserInfo).toHaveBeenCalled();
+    expect(userServiceSpy.getUserAuth).toHaveBeenCalled();
     expect(configAuth.user).toBe(username);
     expect(configAuth.scope).toBe(scopes);
     expect(configManagerSpy.save).toHaveBeenCalled();
@@ -87,7 +87,7 @@ describe('AuthComponent', () => {
       userServiceSpy,
       routerSpy
     );
-    expect(userServiceSpy.getUserInfo).toHaveBeenCalled();
+    expect(userServiceSpy.getUserAuth).toHaveBeenCalled();
     expect(configAuth.scope).toBe(null);
     expect(authSpy).toHaveBeenCalledWith(configAuth, configManagerSpy);
   });
@@ -105,7 +105,7 @@ describe('AuthComponent', () => {
       userServiceSpy,
       routerSpy
     );
-    expect(userServiceSpy.getUserInfo).toHaveBeenCalled();
+    expect(userServiceSpy.getUserAuth).toHaveBeenCalled();
     expect(configAuth.user).toBeFalsy();
     expect(configAuth.scope).toBeFalsy();
     expect(authSpy).toHaveBeenCalledWith(configAuth, configManagerSpy);
