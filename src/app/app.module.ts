@@ -17,7 +17,6 @@ import { FocusOnLoadDirective } from './directives/focus-on-load.directive';
 import { ShowLastDirective } from './directives/show-last.directive';
 import { WidgetContainerDirective } from './directives/widget-container.directive';
 
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { LayoutModule } from '@angular/cdk/layout';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
@@ -71,7 +70,6 @@ import { CommandService } from './services/command/command-service';
     ReactiveFormsModule,
     HttpClientModule,
 
-    FlexLayoutModule,
     LayoutModule,
     ScrollingModule,
 
