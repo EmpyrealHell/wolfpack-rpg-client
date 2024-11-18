@@ -56,18 +56,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "wolfpack-rpg-client:build"
+            "buildTarget": "wolfpack-rpg-client:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "wolfpack-rpg-client:build:production"
+              "buildTarget": "wolfpack-rpg-client:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "wolfpack-rpg-client:build"
+            "buildTarget": "wolfpack-rpg-client:build"
           }
         },
         "test": {
