@@ -61,29 +61,29 @@ $mat-branded-gold: (
 // hue. Available color palettes: https://material.io/design/color/
 // $wolfpack-rpg-client-primary: mat-palette($mat-dark-gray, 500, 100, 700);
 //$wolfpack-rpg-client-primary: mat.define-palette($mat-dark-gray);
-$wolfpack-rpg-client-primary: mat.define-palette(mat.$gray-palette);
-$wolfpack-rpg-client-dark-primary: mat.define-palette($mat-branded-black);
-$wolfpack-rpg-client-accent: mat.define-palette($mat-branded-gold);
+$wolfpack-rpg-client-primary: mat.m2-define-palette(mat.$m2-gray-palette);
+$wolfpack-rpg-client-dark-primary: mat.m2-define-palette($mat-branded-black);
+$wolfpack-rpg-client-accent: mat.m2-define-palette($mat-branded-gold);
 
 // The warn palette is optional (defaults to red).
-$wolfpack-rpg-client-warn: mat.define-palette(mat.$red-palette);
+$wolfpack-rpg-client-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
-$wolfpack-rpg-client-exp: mat.define-palette(mat.$blue-palette);
-$wolfpack-rpg-client-mana: mat.define-palette(mat.$purple-palette);
-$wolfpack-rpg-client-hunger: mat.define-palette(mat.$red-palette);
+$wolfpack-rpg-client-exp: mat.m2-define-palette(mat.$m2-blue-palette);
+$wolfpack-rpg-client-mana: mat.m2-define-palette(mat.$m2-purple-palette);
+$wolfpack-rpg-client-hunger: mat.m2-define-palette(mat.$m2-red-palette);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$wolfpack-rpg-client-theme: mat.define-light-theme(
+$wolfpack-rpg-client-theme: mat.m2-define-light-theme(
   $wolfpack-rpg-client-primary,
   $wolfpack-rpg-client-accent,
   $wolfpack-rpg-client-warn
 );
-$wolfpack-rpg-client-dark-theme: mat.define-dark-theme(
+$wolfpack-rpg-client-dark-theme: mat.m2-define-dark-theme(
   $wolfpack-rpg-client-dark-primary,
   $wolfpack-rpg-client-accent,
   $wolfpack-rpg-client-warn
 );
-$wolfpack-rpg-client-static-bar-theme: mat.define-light-theme(
+$wolfpack-rpg-client-static-bar-theme: mat.m2-define-light-theme(
   $wolfpack-rpg-client-exp,
   $wolfpack-rpg-client-mana,
   $wolfpack-rpg-client-hunger

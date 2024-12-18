@@ -3,7 +3,7 @@ import {
   ComponentFactoryResolver,
   Type,
 } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
+import { waitForAsync, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { IrcService } from 'src/app/services/irc/irc.service';
@@ -67,28 +67,30 @@ componentFactoryResolverSpy.resolveComponentFactory.and.callFake(
 const commandServiceSpy = TestUtils.spyOnClass(CommandService);
 
 describe('WidgetContainerComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [MatIconModule, MatCardModule],
-      declarations: [WidgetContainerComponent, WidgetFactoryComponent],
-      providers: [
-        {
-          provide: AccessControlService,
-          useValue: accessControlServiceSpy,
-        },
-        { provide: ConfigManager, useValue: configManagerSpy },
-        { provide: CommandService, useValue: commandServiceSpy },
-        { provide: IrcService, useValue: ircServiceSpy },
-        {
-          provide: ComponentFactoryResolver,
-          useValue: componentFactoryResolverSpy,
-        },
-      ],
-    }).compileComponents();
-    configManagerSpy.getConfig.and.returnValue({
-      layout: ['First', 'Second'],
-    } as Partial<Config>);
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [MatIconModule, MatCardModule],
+        declarations: [WidgetContainerComponent, WidgetFactoryComponent],
+        providers: [
+          {
+            provide: AccessControlService,
+            useValue: accessControlServiceSpy,
+          },
+          { provide: ConfigManager, useValue: configManagerSpy },
+          { provide: CommandService, useValue: commandServiceSpy },
+          { provide: IrcService, useValue: ircServiceSpy },
+          {
+            provide: ComponentFactoryResolver,
+            useValue: componentFactoryResolverSpy,
+          },
+        ],
+      }).compileComponents();
+      configManagerSpy.getConfig.and.returnValue({
+        layout: ['First', 'Second'],
+      } as Partial<Config>);
+    })
+  );
 
   it('should update layout on config update', () => {
     const fixture = TestBed.createComponent(WidgetContainerComponent);

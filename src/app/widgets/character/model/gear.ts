@@ -47,6 +47,10 @@ export class Item {
    */
   name = Item.defaultName;
   /**
+   * The item description.
+   */
+  description = '';
+  /**
    * The id of the item in the inventory.
    */
   id = -1;

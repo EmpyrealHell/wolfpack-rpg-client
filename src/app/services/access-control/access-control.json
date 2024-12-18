@@ -6,6 +6,6 @@
     }
   ],
   "defaultRole": {
-    "widgets": ["fishing", "console"]
+    "widgets": [".*"]
   }
 }

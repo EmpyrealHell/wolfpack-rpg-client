@@ -83,36 +83,24 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     subGroups: Array<Map<string, string>>,
     date: number
   ): void {
-    if (id === 'size') {
-      this.readingStats = undefined;
-    } else if (id === 'info') {
-      const type = groups.get('type');
-      const equipped = groups.get('status') === 'Equipped';
-      if (type === 'Armor' && equipped) {
-        this.readingStats = this.data.gear.armor;
-        this.data.gear.armor.stats = new Stats(0);
-      } else if (type === 'Weapon' && equipped) {
-        this.readingStats = this.data.gear.weapon;
-        this.data.gear.weapon.stats = new Stats(0);
-      }
-      if (this.readingStats) {
-        const name = groups.get('name');
-        this.readingStats.name = name ? name : '';
-        const rarityString = groups.get('rarity');
-        this.readingStats.rarity = rarityString
-          ? Rarity[rarityString.toLowerCase() as keyof typeof Rarity]
+    if (id === 'compact') {
+      for (const sub of subGroups) {
+        const newItem = new Item();
+        newItem.name = sub.get('name') ?? '';
+        newItem.description = sub.get('desc') ?? '';
+        const isEquipped = sub.get('status') === 'E';
+        const qualityString = sub.get('quality');
+        newItem.rarity = qualityString
+          ? Rarity[qualityString.toLowerCase() as keyof typeof Rarity]
           : Rarity.none;
-      }
-    } else if (id === 'id') {
-      if (this.readingStats) {
-        this.readingStats.id = Number(groups.get('id'));
-      }
-    } else if (id === 'stat') {
-      const stat = groups.get('stat');
-      if (this.readingStats && this.readingStats.stats && stat) {
-        const stats = this.readingStats.stats;
-        stats.updateStatByDescription(stat, Number(groups.get('value')));
-        this.modifiedStats = this.data.calculatStats();
+        newItem.stats.successChance = parseInt(sub.get('success') ?? '0');
+        newItem.stats.xpBonus = parseInt(sub.get('xp') ?? '0');
+        newItem.stats.wolfcoinBonus = parseInt(sub.get('coin') ?? '0');
+        newItem.stats.itemFind = parseInt(sub.get('item') ?? '0');
+        newItem.stats.preventDeath = parseInt(sub.get('death') ?? '0');
+        if (isEquipped) {
+          this.data.gear.armor;
+        }
       }
     }
   }

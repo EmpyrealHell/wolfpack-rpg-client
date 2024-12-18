@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { waitForAsync, TestBed } from '@angular/core/testing';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -27,33 +27,35 @@ const activatedRouteSpy = {
 } as ActivatedRoute;
 
 describe('AuthComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [AuthComponent],
-      providers: [
-        { provide: ConfigManager, useValue: configManagerSpy },
-        { provide: UserService, useValue: userServiceSpy },
-        { provide: Router, useValue: routerSpy },
-        { provide: ActivatedRoute, useValue: activatedRouteSpy },
-      ],
-    }).compileComponents();
-    configManagerSpy.getConfig.and.returnValue({
-      authentication: {
-        token: 'token',
-      },
-    } as Partial<Config>);
-    userServiceSpy.getUserAuth.and.returnValue(
-      new Promise<AuthData>(resolve => {
-        resolve({
-          client_id: '',
-          login: username,
-          user_id: '',
-          scopes: [scopes],
-        });
-      })
-    );
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [RouterTestingModule],
+        declarations: [AuthComponent],
+        providers: [
+          { provide: ConfigManager, useValue: configManagerSpy },
+          { provide: UserService, useValue: userServiceSpy },
+          { provide: Router, useValue: routerSpy },
+          { provide: ActivatedRoute, useValue: activatedRouteSpy },
+        ],
+      }).compileComponents();
+      configManagerSpy.getConfig.and.returnValue({
+        authentication: {
+          token: 'token',
+        },
+      } as Partial<Config>);
+      userServiceSpy.getUserAuth.and.returnValue(
+        new Promise<AuthData>(resolve => {
+          resolve({
+            client_id: '',
+            login: username,
+            user_id: '',
+            scopes: [scopes],
+          });
+        })
+      );
+    })
+  );
 
   it('should validate saved tokens', async () => {
     const fixture = TestBed.createComponent(AuthComponent);
