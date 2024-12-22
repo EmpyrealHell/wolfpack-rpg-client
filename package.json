@@ -32,7 +32,7 @@
     "@angular/router": "^18.2.12",
     "angular-cli-ghpages": "^1.0.0-rc.2",
     "rxjs": "~6.6.3",
-    "tmi.js": "^1.5.0",
+    "tmi.js": "^1.8.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.14.10"
   },

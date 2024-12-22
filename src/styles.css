@@ -101,3 +101,66 @@ textarea {
 .static-bar > mat-progress-bar {
   height: 20px !important;
 }
+
+/* AlmostHadMe's additions here */
+.toolbar-button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;  /* Controls space between image and text */
+}
+
+.widget-header-content {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;  /* Top/bottom and left/right padding */
+}
+
+.widget-title-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;  /* Space between icon and text */
+}
+
+/* Console window classes */
+.mat-mdc-form-field-focus-overlay {
+  background-color: transparent !important;
+}
+
+.mat-mdc-text-field-wrapper {
+  background-color: transparent !important;
+}
+
+.mdc-text-field {
+  background-color: transparent !important;
+}
+
+.mdc-text-field--filled {
+  background-color: transparent !important;
+}
+
+.mdc-text-field--filled .mdc-line-ripple {
+  margin-top: 0 !important;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
+}
+
+.mat-mdc-text-field-wrapper {
+  padding-bottom: 0 !important;
+}
+
+.mdc-text-field--filled {
+  padding-bottom: 0 !important;
+}
+
+.mat-mdc-form-field-infix {
+  padding-bottom: 4px !important;
+  min-height: unset !important;
+}
+
+mat-card-content textarea.mat-mdc-form-field .mdc-line-ripple,
+mat-card-content .mat-mdc-form-field .mdc-line-ripple {
+  display: none !important;
+}
