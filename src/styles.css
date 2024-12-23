@@ -130,14 +130,6 @@ textarea {
   height: 100% !important;
 }
 
-.mat-mdc-form-field-wrapper {
-  display: flex !important;
-  flex: 1 1 auto !important;
-  height: 100% !important;
-  background-color: transparent !important;
-  padding-bottom: 0 !important;
-}
-
 .mat-mdc-form-field-flex {
   display: flex !important;
   flex: 1 1 auto !important;
@@ -148,23 +140,11 @@ textarea {
   display: flex !important;
   flex: 1 1 auto !important;
   height: 100% !important;
-  padding-bottom: 0 !important;
   min-height: unset !important;
-}
-
-.mdc-text-field {
-  height: 100% !important;
-  display: flex !important;
-  background-color: transparent !important;
 }
 
 .mdc-text-field--filled {
   background-color: transparent !important;
-  padding-bottom: 0 !important;
-}
-
-.mdc-text-field--filled .mdc-line-ripple {
-  margin-top: 0 !important;
 }
 
 .mat-mdc-form-field-focus-overlay {
@@ -176,42 +156,10 @@ textarea {
 }
 
 /* Console Widget Styles */
-app-console-widget {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
 app-console-widget mat-card-content {
   flex: 1 1 auto;
   overflow: hidden;
   padding: 16px;
-}
-
-app-console-widget .console-output-field {
-  height: 100%;
-  width: 100%;
-}
-
-app-console-widget .console-output {
-  height: 100%;
-  width: 100%;
-  resize: none;
-  overflow-y: auto;
-}
-
-app-console-widget .console-input-container {
-  flex: 0 0 auto;
-}
-
-app-console-widget mat-toolbar {
-  padding: 0 16px;
-}
-
-app-console-widget .fill-space {
-  flex: 1;
-  margin-right: 16px;
 }
 
 /* Make sure the textarea itself fills the space */
