@@ -1,5 +1,5 @@
 import { ComponentFactory, Directive, ViewContainerRef } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
+import { waitForAsync, TestBed } from '@angular/core/testing';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { IrcService } from 'src/app/services/irc/irc.service';
@@ -36,11 +36,13 @@ export class WidgetContainerStubDirective {
 }
 
 describe('WidgetContainerComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [WidgetFactoryComponent, WidgetContainerStubDirective],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [WidgetFactoryComponent, WidgetContainerStubDirective],
+      }).compileComponents();
+    })
+  );
 
   it('should create a widget instance', () => {
     const fixture = TestBed.createComponent(WidgetFactoryComponent);

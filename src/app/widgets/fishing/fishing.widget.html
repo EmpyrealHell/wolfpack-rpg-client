@@ -30,8 +30,10 @@
   <div>
     <span style="display: block; width: 180px; margin: auto">
       <button mat-button (click)="hook()" style="font-size: x-large">
-        <img src="./assets/button-{{getCastIcon()}}.svg" width="48px" />
-        {{getCastMessage()}}
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <img src="./assets/button-{{getCastIcon()}}.svg" width="48px" />
+          <span>{{getCastMessage()}}</span>
+        </div>
       </button>
     </span>
     <br />
@@ -41,8 +43,8 @@
   </div>
   <mat-tab-group
     animationDuration="0ms"
-    style="height: calc(100% - {{getTournamentHeight()}}px)"
-  >
+    [style.height]="'calc(100% - ' + getTournamentHeight() + 'px)'"
+    >
     <mat-tab label="Session History">
       <ng-template matTabContent>
         <table mat-table [dataSource]="sessionTableSource" width="100%">

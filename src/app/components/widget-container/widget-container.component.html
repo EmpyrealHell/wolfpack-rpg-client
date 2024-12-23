@@ -10,18 +10,15 @@
   >
     <mat-card class="flex-column">
       <mat-card-title>
-        <div class="contain-space">
-          <span
-            ><img src="./assets/{{ getWidgetIcon(i) }}" width="32px"
-          /></span>
-          <span>&nbsp;</span>
-          <span>{{ getWidgetName(i) }}</span>
+        <div class="widget-header-content">
+          <div class="widget-title-section">
+            <img src="./assets/{{ getWidgetIcon(i) }}" width="32px" />
+            <span>{{ getWidgetName(i) }}</span>
+          </div>
           <span class="fill-space"></span>
-          <span>
-            <button mat-icon-button color="warn" (click)="closeWidget(i)">
-              <mat-icon>close</mat-icon>
-            </button>
-          </span>
+          <button mat-icon-button color="warn" (click)="closeWidget(i)">
+            <mat-icon>close</mat-icon>
+          </button>
         </div>
       </mat-card-title>
       <app-widget-factory

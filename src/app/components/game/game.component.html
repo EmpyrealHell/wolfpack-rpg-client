@@ -86,25 +86,17 @@
       <mat-divider></mat-divider>
       <mat-toolbar>
         <ng-container *ngFor="let widget of widgets">
-          <button
-            *ngIf="widget.name"
-            mat-button
-            [disabled]="!widget.component"
-            (click)="toggleWidget(widget)"
-          >
-            <img
-              *ngIf="config.settings.toolbarIcons"
-              src="./assets/{{ widget.getIcon() }}"
-              width="32px"
-            />
-            <ng-container
-              *ngIf="
-                config.settings.toolbarNames || !config.settings.toolbarIcons
-              "
-            >
-              <span>&nbsp;</span>
-              <span>{{ widget.name }}</span>
-            </ng-container>
+          <button mat-button (click)="toggleWidget(widget)">
+            <div class="toolbar-button-content">
+              <img
+                *ngIf="config.settings.toolbarIcons"
+                src="./assets/{{ widget.getIcon() }}"
+                width="32px"
+              />
+              <span *ngIf="config.settings.toolbarNames || !config.settings.toolbarIcons">
+                {{ widget.name }}
+              </span>
+            </div>
           </button>
           <mat-divider
             *ngIf="!widget.name"

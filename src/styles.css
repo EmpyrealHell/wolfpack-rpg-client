@@ -101,3 +101,74 @@ textarea {
 .static-bar > mat-progress-bar {
   height: 20px !important;
 }
+
+/* Michael's additions here */
+.toolbar-button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;  /* Controls space between image and text */
+}
+
+.widget-header-content {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;  /* Top/bottom and left/right padding */
+}
+
+.widget-title-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;  /* Space between icon and text */
+}
+
+/* Material Form Field Overrides */
+.mat-mdc-form-field {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  height: 100% !important;
+}
+
+.mat-mdc-form-field-flex {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  height: 100% !important;
+}
+
+.mat-mdc-form-field-infix {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  height: 100% !important;
+  min-height: unset !important;
+}
+
+.mdc-text-field--filled {
+  background-color: transparent !important;
+}
+
+.mat-mdc-form-field-focus-overlay {
+  background-color: transparent !important;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
+}
+
+/* Console Widget Styles */
+app-console-widget mat-card-content {
+  flex: 1 1 auto;
+  overflow: hidden;
+  padding: 16px;
+}
+
+/* Make sure the textarea itself fills the space */
+.mat-mdc-form-field textarea.mat-mdc-input-element {
+  height: 100% !important;
+  flex: 1 1 auto !important;
+}
+
+mat-card-content textarea.mat-mdc-form-field .mdc-line-ripple,
+mat-card-content .mat-mdc-form-field .mdc-line-ripple {
+  display: none !important;
+}

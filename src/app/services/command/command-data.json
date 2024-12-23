@@ -300,8 +300,8 @@
           },
           "success": {
             "coins": "You have: (?<coins>\\d+) coins\\.",
-            "classLevel": "You are a Level (?<level>\\d+) (?<className>\\w+), and you are Prestige Level (?<prestige>\\d+)\\. \\(Total XP: (?<experience>\\d+) \\| XP To Next Level: (?<toNext>\\d+)\\)",
-            "level": "You are Level (?<level>\\d+) \\(Total XP: (?<experience>\\d+) \\| XP To Next Level: (?<toNext>\\d+)\\)"
+            "classLevel": "You are a level (?<level>\\d+) (?<className>\\w+), and you are Prestige level (?<prestige>\\d+)\\. \\(Total XP: (?<experience>\\d+) \\| XP To Next Level: (?<toNext>\\d+)\\)",
+            "level": "You are level (?<level>\\d+) \\(Total XP: (?<experience>\\d+) \\| XP To Next Level: (?<toNext>\\d+)\\)"
           }
         }
       },
@@ -342,17 +342,20 @@
         }
       },
       "list": {
-        "command": "!inventory",
+        "command": "!inventory -c",
         "alternates": ["inventory", "!inv", "inv"],
         "responses": {
           "error": {
             "empty": "You have no items\\."
           },
           "success": {
-            "size": "You have (?<size>\\d+) items: ",
-            "info": "(?<name>[^\\(]+) \\((?<rarity>[^ ]+) (?<type>[^\\)]+)\\) \\((?<status>\\w+)\\)",
-            "id": "Inventory ID: (?<id>\\d+)",
-            "stat": "\\+(?<value>\\d+)%(?: to)? (?<stat>.*)"
+            "compact": {
+              "response": "inventory: (?<data>.*)",
+              "subGroups": {
+                "container": "data",
+                "pattern": "(?<name>[^\\|]+)\\|(?<desc>[^\\|]+)\\|(?<status>[UE])\\|(?<quality>\\d+%)\\|(?<success>\\d+%)\\|(?<xp>\\d+%)\\|(?<coin>\\d+%)\\|(?<item>\\d+%)\\|(?<death>\\d+%);"
+              }
+            }
           }
         }
       },
