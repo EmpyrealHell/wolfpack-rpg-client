@@ -20,13 +20,14 @@ spyContainer.createComponent.and.returnValue({
 });
 
 @Directive({
-  selector: '[appWidgetContainer]',
-  providers: [
-    {
-      provide: WidgetContainerDirective,
-      useClass: WidgetContainerStubDirective,
-    },
-  ],
+    selector: '[appWidgetContainer]',
+    providers: [
+        {
+            provide: WidgetContainerDirective,
+            useClass: WidgetContainerStubDirective,
+        },
+    ],
+    standalone: false
 })
 export class WidgetContainerStubDirective {
   viewContainerRef: ViewContainerRef;

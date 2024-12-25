@@ -16,8 +16,9 @@ import { AccessControlService } from 'src/app/services/access-control/access-con
  * Holds a list of widgets and renders them to the DOM, in order.
  */
 @Component({
-  selector: 'app-widget-container',
-  templateUrl: './widget-container.component.html',
+    selector: 'app-widget-container',
+    templateUrl: './widget-container.component.html',
+    standalone: false
 })
 export class WidgetContainerComponent implements OnInit {
   private static layouts = [

@@ -16,8 +16,9 @@ import { MatRipple } from '@angular/material/core';
  * Component that acts as a placeholder for widgets in the widget container.
  */
 @Component({
-  selector: 'app-widget-factory',
-  template: '<ng-template appWidgetContainer></ng-template>',
+    selector: 'app-widget-factory',
+    template: '<ng-template appWidgetContainer></ng-template>',
+    standalone: false
 })
 export class WidgetFactoryComponent implements OnInit {
   /**
