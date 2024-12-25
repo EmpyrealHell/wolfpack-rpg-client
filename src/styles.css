@@ -107,19 +107,19 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;  /* Controls space between image and text */
+  gap: 8px; /* Controls space between image and text */
 }
 
 .widget-header-content {
   display: flex;
   align-items: center;
-  padding: 12px 16px;  /* Top/bottom and left/right padding */
+  padding: 12px 16px; /* Top/bottom and left/right padding */
 }
 
 .widget-title-section {
   display: flex;
   align-items: center;
-  gap: 8px;  /* Space between icon and text */
+  gap: 8px; /* Space between icon and text */
 }
 
 /* Material Form Field Overrides */
@@ -166,6 +166,10 @@ app-console-widget mat-card-content {
 .mat-mdc-form-field textarea.mat-mdc-input-element {
   height: 100% !important;
   flex: 1 1 auto !important;
+}
+
+.mat-mdc-input-element {
+  caret-color: #808080;
 }
 
 mat-card-content textarea.mat-mdc-form-field .mdc-line-ripple,
