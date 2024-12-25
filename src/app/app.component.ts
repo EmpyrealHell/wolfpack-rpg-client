@@ -6,8 +6,9 @@ import { Component } from '@angular/core';
  * assume valid authentication.
  */
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    standalone: false
 })
 export class AppComponent {
   constructor() {}

@@ -6,7 +6,8 @@ import { NgModel } from '@angular/forms';
  * to the bottom when the model updates.
  */
 @Directive({
-  selector: '[appShowLast]',
+    selector: '[appShowLast]',
+    standalone: false
 })
 export class ShowLastDirective implements OnInit {
   constructor(private elem: ElementRef, private model: NgModel) {}

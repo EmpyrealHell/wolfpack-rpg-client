@@ -30,7 +30,14 @@
   <div>
     <span style="display: block; width: 180px; margin: auto">
       <button mat-button (click)="hook()" style="font-size: x-large">
-        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+          "
+        >
           <img src="./assets/button-{{getCastIcon()}}.svg" width="48px" />
           <span>{{getCastMessage()}}</span>
         </div>
@@ -42,9 +49,10 @@
     </span>
   </div>
   <mat-tab-group
+    color="accent"
     animationDuration="0ms"
     [style.height]="'calc(100% - ' + getTournamentHeight() + 'px)'"
-    >
+  >
     <mat-tab label="Session History">
       <ng-template matTabContent>
         <table mat-table [dataSource]="sessionTableSource" width="100%">

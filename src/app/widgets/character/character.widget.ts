@@ -12,8 +12,9 @@ import { Stats } from './model/stats';
  * Widget used to display character data.
  */
 @Component({
-  selector: 'app-character-widget',
-  templateUrl: './character.widget.html',
+    selector: 'app-character-widget',
+    templateUrl: './character.widget.html',
+    standalone: false
 })
 export class CharacterWidgetComponent extends AbstractWidgetComponent {
   private static rarityColors = new Map<Rarity, string>([

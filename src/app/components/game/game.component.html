@@ -56,15 +56,20 @@
                 >Play Sounds</mat-slide-toggle
               >
             </button>
-            <span class="mat-menu-item"
+            <span mat-menu-item
               >Volume
               <mat-slider
                 min="0"
                 max="1"
                 step="0.1"
-                [(ngModel)]="config.settings.soundVolume"
                 [disabled]="!config.settings.playSounds"
-              ></mat-slider>
+              >
+                <input
+                  (click)="$event.stopPropagation()"
+                  matSliderThumb
+                  [(ngModel)]="config.settings.soundVolume"
+                />
+              </mat-slider>
             </span>
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="openPage('releases')">
@@ -93,7 +98,11 @@
                 src="./assets/{{ widget.getIcon() }}"
                 width="32px"
               />
-              <span *ngIf="config.settings.toolbarNames || !config.settings.toolbarIcons">
+              <span
+                *ngIf="
+                  config.settings.toolbarNames || !config.settings.toolbarIcons
+                "
+              >
                 {{ widget.name }}
               </span>
             </div>

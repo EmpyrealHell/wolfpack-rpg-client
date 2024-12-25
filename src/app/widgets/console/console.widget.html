@@ -1,17 +1,17 @@
 <mat-card-content height="100%" class="flex-column">
-  <mat-form-field style="flex: 1 1 auto; width: 100%;">
-    <textarea 
+  <mat-form-field style="flex: 1 1 auto; width: 100%">
+    <textarea
       matInput
       readonly
       [(ngModel)]="consoleData"
-      style="height: 100%; resize: none;"
+      style="height: 100%; resize: none"
       appShowLast
     ></textarea>
   </mat-form-field>
 </mat-card-content>
 <mat-card-footer>
   <mat-toolbar>
-    <mat-form-field appearance="standard" class="fill-space">
+    <mat-form-field color="accent" appearance="standard" class="fill-space">
       <input
         matInput
         [(ngModel)]="command"

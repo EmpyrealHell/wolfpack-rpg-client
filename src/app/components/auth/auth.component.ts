@@ -18,8 +18,9 @@ import * as authConfig from './auth.component.json';
  * assume valid authentication.
  */
 @Component({
-  selector: 'app-auth',
-  template: 'Authenticating...',
+    selector: 'app-auth',
+    template: 'Authenticating...',
+    standalone: false
 })
 export class AuthComponent implements OnInit {
   route: ActivatedRouteSnapshot;

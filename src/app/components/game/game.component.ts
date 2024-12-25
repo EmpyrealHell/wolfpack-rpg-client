@@ -15,8 +15,9 @@ import { AccessControlService } from 'src/app/services/access-control/access-con
  * The main component holding the game UI.
  */
 @Component({
-  selector: 'app-game',
-  templateUrl: './game.component.html',
+    selector: 'app-game',
+    templateUrl: './game.component.html',
+    standalone: false
 })
 export class GameComponent implements OnInit {
   /**

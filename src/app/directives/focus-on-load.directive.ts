@@ -1,7 +1,8 @@
 import { ElementRef, OnInit, Directive } from '@angular/core';
 
 @Directive({
-  selector: '[appFocusOnLoad]',
+    selector: '[appFocusOnLoad]',
+    standalone: false
 })
 export class FocusOnLoadDirective implements OnInit {
   constructor(private elem: ElementRef) {}
