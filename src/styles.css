@@ -107,6 +107,8 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
   gap: 8px; /* Controls space between image and text */
 }
 
@@ -155,6 +157,24 @@ textarea {
   display: none !important;
 }
 
+.mat-mdc-card-title {
+  font-size: 24px !important;
+  font-weight: 500 !important;
+}
+
+.mat-toolbar.mat-primary {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* .mat-mdc-input-element {
+  caret-color: white !important;
+}
+
+.mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: white !important;
+} */
+
 /* Console Widget Styles */
 app-console-widget mat-card-content {
   flex: 1 1 auto;
@@ -166,10 +186,6 @@ app-console-widget mat-card-content {
 .mat-mdc-form-field textarea.mat-mdc-input-element {
   height: 100% !important;
   flex: 1 1 auto !important;
-}
-
-.mat-mdc-input-element {
-  caret-color: #808080;
 }
 
 mat-card-content textarea.mat-mdc-form-field .mdc-line-ripple,
