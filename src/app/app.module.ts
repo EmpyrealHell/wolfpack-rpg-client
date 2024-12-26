@@ -41,8 +41,9 @@ import { MatSliderModule } from '@angular/material/slider';
 
 import { FishingWidgetComponent } from './widgets/fishing/fishing.widget';
 import { ErrorDialog } from './components/error-dialog/error-dialog';
-import { IrcService } from './services/irc/irc.service';
 import { CommandService } from './services/command/command-service';
+
+import { EventSubService } from './services/eventsub/eventsub.service';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,7 @@ import { CommandService } from './services/command/command-service';
     MatToolbarModule,
     MatSliderModule,
   ],
-  providers: [IrcService, CommandService],
+  providers: [CommandService, EventSubService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

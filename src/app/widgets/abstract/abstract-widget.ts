@@ -1,11 +1,12 @@
 import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
 import { ConfigManager } from 'src/app/services/data/config-manager';
-import { IrcService } from 'src/app/services/irc/irc.service';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatRipple } from '@angular/material/core';
 
+import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
+
 export abstract class AbstractWidgetComponent implements WidgetComponent {
-  ircService: IrcService | undefined;
+  eventSubService: EventSubService | undefined;
   configManager: ConfigManager | undefined;
   commandService: CommandService | undefined;
   name = 'abstract';
@@ -23,7 +24,7 @@ export abstract class AbstractWidgetComponent implements WidgetComponent {
     if (this.commandService) {
       this.subscribeToResponses(widgetId, this.commandService);
       this.commandService.replayHistory(widgetId);
-      if (this.ircService) {
+      if (this.eventSubService) {
         this.sendInitialCommands(this.commandService);
       }
     }

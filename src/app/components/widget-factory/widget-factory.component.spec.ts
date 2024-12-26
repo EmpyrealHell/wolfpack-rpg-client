@@ -2,9 +2,9 @@ import { ComponentFactory, Directive, ViewContainerRef } from '@angular/core';
 import { waitForAsync, TestBed } from '@angular/core/testing';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
 import { ConfigManager } from 'src/app/services/data/config-manager';
-import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetFactoryComponent } from './widget-factory.component';
 import { WidgetComponent } from './widget.component';
+import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 
 const spyContainer = jasmine.createSpyObj('viewContainerRef', [
   'clear',
@@ -13,7 +13,7 @@ const spyContainer = jasmine.createSpyObj('viewContainerRef', [
 spyContainer.createComponent.and.returnValue({
   instance: {
     configManager: undefined,
-    ircService: undefined,
+    eventSubService: undefined,
     name: '',
     onActivate: () => {},
   } as WidgetComponent,
@@ -50,7 +50,7 @@ describe('WidgetContainerComponent', () => {
     const component = fixture.componentInstance;
     component.factory = {} as ComponentFactory<WidgetComponent>;
     component.configManager = {} as ConfigManager;
-    component.ircService = {} as IrcService;
+    component.eventSubService = {} as EventSubService;
     component.name = 'componentName';
     const internalComponent = spyContainer.createComponent(null).instance;
     const internalSpy = spyOn(internalComponent, 'onActivate');
@@ -61,7 +61,7 @@ describe('WidgetContainerComponent', () => {
       component.factory
     );
     expect(internalComponent.configManager).toBe(component.configManager);
-    expect(internalComponent.ircService).toBe(component.ircService);
+    expect(internalComponent.eventSubService).toBe(component.eventSubService);
     expect(internalComponent.name).toBe(component.name);
     expect(internalSpy).toHaveBeenCalled();
   });

@@ -2,11 +2,12 @@ import { Component, Input } from '@angular/core';
 import { MatRipple } from '@angular/material/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { ConfigManager } from 'src/app/services/data/config-manager';
-import { IrcService } from 'src/app/services/irc/irc.service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { Character } from './model/character';
 import { Item, Rarity } from './model/gear';
 import { Stats } from './model/stats';
+
+import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 
 /**
  * Widget used to display character data.
@@ -37,7 +38,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
    */
   readingStats: Item | undefined;
 
-  @Input() ircService: IrcService | undefined;
+  @Input() eventSubService: EventSubService | undefined;
   @Input() configManager: ConfigManager | undefined;
   @Input() commandService: CommandService | undefined;
   @Input() ripple: MatRipple | undefined;
