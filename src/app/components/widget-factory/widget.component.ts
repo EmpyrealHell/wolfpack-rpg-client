@@ -1,7 +1,6 @@
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatRipple } from '@angular/material/core';
-
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 
 /**

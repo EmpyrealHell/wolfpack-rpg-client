@@ -10,16 +10,15 @@ import { WidgetContainerDirective } from 'src/app/directives/widget-container.di
 import { WidgetComponent } from './widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatRipple } from '@angular/material/core';
-
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 
 /**
  * Component that acts as a placeholder for widgets in the widget container.
  */
 @Component({
-    selector: 'app-widget-factory',
-    template: '<ng-template appWidgetContainer></ng-template>',
-    standalone: false
+  selector: 'app-widget-factory',
+  template: '<ng-template appWidgetContainer></ng-template>',
+  standalone: false,
 })
 export class WidgetFactoryComponent implements OnInit {
   /**

@@ -3,20 +3,16 @@ import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatRipple } from '@angular/material/core';
-
-import {
-  EventSubService,
-  Message,
-} from 'src/app/services/eventsub/eventsub.service';
+import { EventSubService, Message } from 'src/app/services/eventsub/eventsub.service';
 
 /**
  * Widget that provides direct access to the communication channel between the
  * authenticated user and the target account.
  */
 @Component({
-    selector: 'app-console-widget',
-    templateUrl: './console.widget.html',
-    standalone: false
+  selector: 'app-console-widget',
+  templateUrl: './console.widget.html',
+  standalone: false,
 })
 export class ConsoleWidgetComponent implements WidgetComponent {
   private static maxHistory = 100;
@@ -95,9 +91,10 @@ export class ConsoleWidgetComponent implements WidgetComponent {
     }
   }
 
-  private commandFromHistory(
-    index: number
-  ): { message: string; index: number } {
+  private commandFromHistory(index: number): {
+    message: string;
+    index: number;
+  } {
     if (!this.configManager) {
       return {
         message: '',

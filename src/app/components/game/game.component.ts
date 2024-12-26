@@ -9,10 +9,7 @@ import { UserService } from '../../services/user/user.service';
 import { ErrorDialog } from '../error-dialog/error-dialog';
 import * as PackageJson from '../../../../package.json';
 import { AccessControlService } from 'src/app/services/access-control/access-control-service';
-import {
-  EventSubService,
-  Message,
-} from 'src/app/services/eventsub/eventsub.service';
+import { EventSubService, Message } from 'src/app/services/eventsub/eventsub.service';
 
 /**
  * The main component holding the game UI.

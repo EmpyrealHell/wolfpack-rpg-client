@@ -6,16 +6,15 @@ import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { Character } from './model/character';
 import { Item, Rarity } from './model/gear';
 import { Stats } from './model/stats';
-
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 
 /**
  * Widget used to display character data.
  */
 @Component({
-    selector: 'app-character-widget',
-    templateUrl: './character.widget.html',
-    standalone: false
+  selector: 'app-character-widget',
+  templateUrl: './character.widget.html',
+  standalone: false,
 })
 export class CharacterWidgetComponent extends AbstractWidgetComponent {
   private static rarityColors = new Map<Rarity, string>([

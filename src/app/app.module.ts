@@ -42,7 +42,6 @@ import { MatSliderModule } from '@angular/material/slider';
 import { FishingWidgetComponent } from './widgets/fishing/fishing.widget';
 import { ErrorDialog } from './components/error-dialog/error-dialog';
 import { CommandService } from './services/command/command-service';
-
 import { EventSubService } from './services/eventsub/eventsub.service';
 
 @NgModule({

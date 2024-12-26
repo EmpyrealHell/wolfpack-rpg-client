@@ -10,16 +10,15 @@ import { WidgetItem } from '../../services/widget/widget-item';
 import { WidgetComponent } from '../widget-factory/widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AccessControlService } from 'src/app/services/access-control/access-control-service';
-
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 
 /**
  * Holds a list of widgets and renders them to the DOM, in order.
  */
 @Component({
-    selector: 'app-widget-container',
-    templateUrl: './widget-container.component.html',
-    standalone: false
+  selector: 'app-widget-container',
+  templateUrl: './widget-container.component.html',
+  standalone: false
 })
 export class WidgetContainerComponent implements OnInit {
   private static layouts = [
@@ -129,9 +128,10 @@ export class WidgetContainerComponent implements OnInit {
     if (widget) {
       const widgetComponent = widget.component;
       if (widgetComponent) {
-        const factory = this.componentFactoryResolver.resolveComponentFactory(
-          widgetComponent
-        );
+        const factory =
+          this.componentFactoryResolver.resolveComponentFactory(
+            widgetComponent
+          );
         return factory;
       }
     }

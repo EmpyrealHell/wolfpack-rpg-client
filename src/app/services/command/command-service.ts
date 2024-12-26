@@ -16,7 +16,6 @@ import { PartyCommands } from './party-commands';
 import { PendingCommands } from './pending-commands';
 import { PetsCommands } from './pets-commands';
 import { ShopCommands } from './shop-commands';
-
 import { EventSubService, Message } from '../eventsub/eventsub.service';
 
 /**
