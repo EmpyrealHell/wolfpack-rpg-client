@@ -11,58 +11,61 @@ import { WhisperService } from './whisper.service';
 import * as eventSubConfig from './eventsub.service.json';
 import { of } from 'rxjs';
 
-function createWelcomeMessage(): MessageEvent {
-  return {
-    data: JSON.stringify({
-      metadata: { message_type: 'session_welcome' },
-      payload: { session: { id: 'test-session-id' } },
-    }),
-  } as MessageEvent;
-}
-
-function createWhisperMessage(text: string, fromUserId: string): MessageEvent {
-  return {
-    data: JSON.stringify({
-      metadata: {
-        message_type: 'notification',
-        subscription_type: 'user.whisper.message',
-      },
-      payload: {
-        event: {
-          from_user_id: fromUserId,
-          whisper: { text },
-        },
-      },
-    }),
-  } as MessageEvent;
-}
-
-function createChannelChatMessage(message: string): MessageEvent {
-  return {
-    data: JSON.stringify({
-      metadata: {
-        message_type: 'notification',
-        subscription_type: 'channel.chat.message',
-      },
-      payload: {
-        event: {
-          broadcaster_login: eventSubConfig.streamerAccount,
-          chatter_login: eventSubConfig.botAccount,
-          message: {
-            text: message,
-          },
-        },
-      },
-    }),
-  } as MessageEvent;
-}
-
 describe('EventSubService', () => {
   let service: EventSubService;
   let configManagerSpy: ClassSpy<ConfigManager>;
   let userServiceSpy: ClassSpy<UserService>;
   let whisperServiceSpy: ClassSpy<WhisperService>;
   let httpClientSpy: jasmine.SpyObj<HttpClient>;
+
+  function createWelcomeMessage(): MessageEvent {
+    return {
+      data: JSON.stringify({
+        metadata: { message_type: 'session_welcome' },
+        payload: { session: { id: 'test-session-id' } },
+      }),
+    } as MessageEvent;
+  }
+
+  function createWhisperMessage(
+    text: string,
+    fromUserId: string
+  ): MessageEvent {
+    return {
+      data: JSON.stringify({
+        metadata: {
+          message_type: 'notification',
+          subscription_type: 'user.whisper.message',
+        },
+        payload: {
+          event: {
+            from_user_id: fromUserId,
+            whisper: { text },
+          },
+        },
+      }),
+    } as MessageEvent;
+  }
+
+  function createChannelChatMessage(message: string): MessageEvent {
+    return {
+      data: JSON.stringify({
+        metadata: {
+          message_type: 'notification',
+          subscription_type: 'channel.chat.message',
+        },
+        payload: {
+          event: {
+            broadcaster_login: eventSubConfig.streamerAccount,
+            chatter_login: eventSubConfig.botAccount,
+            message: {
+              text: message,
+            },
+          },
+        },
+      }),
+    } as MessageEvent;
+  }
 
   async function attachAndSend(
     message: string
@@ -313,53 +316,21 @@ describe('EventSubService', () => {
   });
 
   it('should properly format messages', async () => {
-    const wsInstance = jasmine.createSpyObj('WebSocket', [
-      'onmessage',
-      'onopen',
-      'onclose',
-      'onerror',
-    ]);
-    let messageHandler = (event: MessageEvent) => {};
-    let openHandler = (event: Event) => {};
-    let closeHandler = (event: CloseEvent) => {};
-    let errorHandler = (event: Event) => {};
+    const wsInstance = new WebSocket('');
+    let messageHandler: (event: MessageEvent) => void = () => {};
+    spyOnProperty(wsInstance, 'onmessage', 'set').and.callFake(
+      (handler: (this: WebSocket, ev: MessageEvent) => unknown) => {
+        messageHandler = handler;
+      }
+    );
+    spyOnProperty(wsInstance, 'onopen', 'set').and.callFake(
+      (handler: (this: WebSocket, ev: Event) => unknown) => {
+        setTimeout(() => handler.call(wsInstance, {} as Event), 0);
+      }
+    );
+    spyOnProperty(wsInstance, 'onclose', 'set');
+    spyOnProperty(wsInstance, 'onerror', 'set');
     await service.connectUsing(() => {
-      Object.defineProperties(wsInstance, {
-        onmessage: {
-          set(handler) {
-            messageHandler = handler;
-          },
-          get() {
-            return messageHandler;
-          },
-        },
-        onopen: {
-          set(handler) {
-            openHandler = handler;
-            setTimeout(() => handler({} as Event), 0);
-          },
-          get() {
-            return openHandler;
-          },
-        },
-        onclose: {
-          set(handler) {
-            closeHandler = handler;
-          },
-          get() {
-            return closeHandler;
-          },
-        },
-        onerror: {
-          set(handler) {
-            errorHandler = handler;
-          },
-          get() {
-            return errorHandler;
-          },
-        },
-      });
-
       return wsInstance;
     });
     await new Promise(resolve => setTimeout(resolve, 0));
@@ -381,23 +352,15 @@ describe('EventSubService', () => {
     expect(whispers[1].text).toBe('at');
     expect(whispers[2].text).toBe(timestamp);
   });
+
   it('should handle sends from the message queue', async () => {
-    const wsInstance = jasmine.createSpyObj('WebSocket', [
-      'onopen',
-      'onmessage',
-      'onclose',
-      'onerror',
-    ]);
+    const wsInstance = new WebSocket('');
     let messageCallback: Function = () => {};
-    const originalOnMessage =
-      Object.getOwnPropertyDescriptor(wsInstance, 'onmessage')?.set ||
-      (() => {});
-    Object.defineProperty(wsInstance, 'onmessage', {
-      set: function (callback) {
+    spyOnProperty(wsInstance, 'onmessage', 'set').and.callFake(
+      (callback: (this: WebSocket, ev: MessageEvent) => unknown) => {
         messageCallback = callback;
-        originalOnMessage.call(this, callback);
-      },
-    });
+      }
+    );
     await service.connectUsing(() => {
       setTimeout(() => {
         if (wsInstance.onopen) {
@@ -416,7 +379,6 @@ describe('EventSubService', () => {
         resolve(undefined);
       });
     });
-
     const timestamp = Date.now().toString();
     service.messageQueue.send('cmd');
     await service.messageQueue.processQueue();

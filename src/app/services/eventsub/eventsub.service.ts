@@ -5,6 +5,7 @@ import { ConfigManager } from '../data/config-manager';
 import { UserService } from '../user/user.service';
 import { MessageQueue } from './message-queue';
 import { WhisperService } from './whisper.service';
+import { EventSubMessage } from './eventsub.types';
 import * as eventSubConfig from './eventsub.service.json';
 
 /**
@@ -20,10 +21,6 @@ export type WhisperCallback = (message: Message) => void;
   providedIn: 'root',
 })
 export class EventSubService {
-  private static EVENTSUB_URL =
-    'https://api.twitch.tv/helix/eventsub/subscriptions';
-  private static WEBSOCKET_URL = 'wss://eventsub.wss.twitch.tv/ws';
-
   /**
    * The WebSocket connection that handles the EventSub connection.
    */
@@ -152,7 +149,7 @@ export class EventSubService {
    */
   async connect(): Promise<boolean> {
     return this.connectUsing(
-      () => new WebSocket(EventSubService.WEBSOCKET_URL)
+      () => new WebSocket(eventSubConfig.urls.websocket)
     );
   }
 
@@ -218,9 +215,14 @@ export class EventSubService {
         };
 
         this.connection.onmessage = async event => {
-          const data = JSON.parse(event.data);
+          const data = JSON.parse(event.data) as EventSubMessage;
 
           if (data.metadata?.message_type === 'session_welcome') {
+            // Need to check if session exists since it's optional in the type
+            if (!data.payload.session) {
+              this.onError('Missing session data in welcome message');
+              return;
+            }
             this.sessionId = data.payload.session.id;
             this.isConnected = true;
             await this.subscribeToEventType(
@@ -228,22 +230,45 @@ export class EventSubService {
               userData.user_id
             );
           } else if (data.metadata?.message_type === 'notification') {
+            if (!data.payload.event) {
+              this.onError('Missing event data in notification');
+              return;
+            }
+
             if (data.metadata.subscription_type === 'channel.chat.message') {
-              const chatEvent = data.payload.event;
+              // Need to check if all required properties exist
               if (
-                chatEvent.broadcaster_login ===
-                  eventSubConfig.streamerAccount &&
-                chatEvent.chatter_login === eventSubConfig.botAccount
+                !data.payload.event.broadcaster_login ||
+                !data.payload.event.chatter_login ||
+                !data.payload.event.message?.text
               ) {
-                this.onMessage(chatEvent.message.text);
+                this.onError('Missing required chat message data');
+                return;
+              }
+
+              if (
+                data.payload.event.broadcaster_login ===
+                  eventSubConfig.streamerAccount &&
+                data.payload.event.chatter_login === eventSubConfig.botAccount
+              ) {
+                this.onMessage(data.payload.event.message.text);
               }
             } else if (
               data.metadata.subscription_type === 'user.whisper.message'
             ) {
-              const whisperEvent = data.payload.event;
-              const isSelf = whisperEvent.from_user_id === userData.user_id;
+              // Need to check if all required properties exist
+              if (
+                !data.payload.event.from_user_id ||
+                !data.payload.event.whisper?.text
+              ) {
+                this.onError('Missing required whisper data');
+                return;
+              }
+
+              const isSelf =
+                data.payload.event.from_user_id === userData.user_id;
               if (!isSelf) {
-                this.onWhisper(whisperEvent.whisper.text, isSelf);
+                this.onWhisper(data.payload.event.whisper.text, isSelf);
               }
             }
           } else if (data.metadata?.message_type === 'session_reconnect') {
@@ -285,7 +310,7 @@ export class EventSubService {
     };
 
     const response = await this.http
-      .post(EventSubService.EVENTSUB_URL, subscription, {
+      .post(eventSubConfig.urls.eventSub, subscription, {
         headers: {
           'Client-Id': eventSubConfig.connectOptions.options.clientId,
           Authorization: `Bearer ${

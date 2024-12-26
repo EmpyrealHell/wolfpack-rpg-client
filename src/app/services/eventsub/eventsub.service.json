@@ -10,5 +10,9 @@
       "password": ""
     },
     "channels": ["jtv", "lobosjr"]
+  },
+  "urls": {
+    "eventSub": "https://api.twitch.tv/helix/eventsub/subscriptions",
+    "websocket": "wss://eventsub.wss.twitch.tv/ws"
   }
 }
