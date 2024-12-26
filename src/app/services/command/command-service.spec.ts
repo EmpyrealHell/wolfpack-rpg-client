@@ -7,9 +7,9 @@ describe('CommandService', () => {
   let service: CommandService;
 
   beforeAll(async () => {
-    ircService = (TestUtils.spyOnClass(
+    ircService = TestUtils.spyOnClass(
       IrcService
-    ) as unknown) as jasmine.SpyObj<IrcService>;
+    ) as unknown as jasmine.SpyObj<IrcService>;
     service = new CommandService(ircService);
     service.initialize();
   });
@@ -24,7 +24,7 @@ describe('CommandService', () => {
 
   it('should call a method on a matching message', () => {
     const callback = {
-      fn: (name: string, id: string, groups: Array<Map<string, string>>) => {},
+      fn: (name: string, id: string, groups: Map<string, string>) => {},
     };
     const spy = spyOn(callback, 'fn');
     service.subscribeToMessage('party', 'full', 'test', spy);
@@ -36,7 +36,7 @@ describe('CommandService', () => {
 
   it('should not call a method on a non-matching message', () => {
     const callback = {
-      fn: (name: string, id: string, groups: Array<Map<string, string>>) => {},
+      fn: (name: string, id: string, groups: Map<string, string>) => {},
     };
     const spy = spyOn(callback, 'fn');
     service.subscribeToMessage('party', 'full', 'test', spy);
@@ -46,7 +46,13 @@ describe('CommandService', () => {
 
   it('should provide the captured groups', () => {
     const callback = {
-      fn: (name: string, id: string, groups: Array<Map<string, string>>) => {},
+      fn: (
+        name: string,
+        id: string,
+        groups: Map<string, string>,
+        subGroups: Array<Map<string, string>>,
+        date: number
+      ) => {},
     };
     const spy = spyOn(callback, 'fn');
     service.subscribeToMessage('party', 'declined', 'test', spy);
