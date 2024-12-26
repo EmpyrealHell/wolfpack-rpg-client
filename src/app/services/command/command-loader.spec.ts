@@ -1,5 +1,4 @@
 import { TestUtils } from 'src/test/test-utils';
-import { IrcService } from '../irc/irc.service';
 import { CommandLoader } from './command-loader';
 
 describe('CommandLoader', () => {

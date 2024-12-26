@@ -7,10 +7,11 @@ import {
 } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
-import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetComponent } from './widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatRipple } from '@angular/material/core';
+
+import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 
 /**
  * Component that acts as a placeholder for widgets in the widget container.
@@ -18,6 +19,7 @@ import { MatRipple } from '@angular/material/core';
 @Component({
   selector: 'app-widget-factory',
   template: '<ng-template appWidgetContainer></ng-template>',
+  standalone: false,
 })
 export class WidgetFactoryComponent implements OnInit {
   /**
@@ -27,10 +29,10 @@ export class WidgetFactoryComponent implements OnInit {
   factory: ComponentFactory<WidgetComponent> | undefined;
 
   /**
-   * Reference to the singleton IRC service.
+   * Reference to the EventSub service.
    */
   @Input()
-  ircService: IrcService | undefined;
+  eventSubService: EventSubService | undefined;
 
   /**
    * Reference to the user config manager.
@@ -65,7 +67,7 @@ export class WidgetFactoryComponent implements OnInit {
       const component = containerRef.createComponent(this.factory)
         .instance as WidgetComponent;
       component.configManager = this.configManager;
-      component.ircService = this.ircService;
+      component.eventSubService = this.eventSubService;
       component.commandService = this.commandService;
       component.name = this.name!;
       component.onActivate();

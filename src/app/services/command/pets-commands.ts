@@ -1,11 +1,11 @@
 import { CommandWrapper } from './command-wrapper';
-import { IrcService } from '../irc/irc.service';
+import { EventSubService } from '../eventsub/eventsub.service';
 
 /**
  * Wrapper that holds all of the pets commands from the command data config.
  */
 export class PetsCommands extends CommandWrapper {
-  constructor(private ircService: IrcService) {
+  constructor(private eventSubService: EventSubService) {
     super();
   }
 
@@ -16,7 +16,7 @@ export class PetsCommands extends CommandWrapper {
   detail(id: string): void {
     const raw = this.getCommandString('pets', 'detail', 'command');
     const command = this.replaceProperty(raw, 'id', id);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -26,7 +26,7 @@ export class PetsCommands extends CommandWrapper {
   dismiss(id: string): void {
     const raw = this.getCommandString('pets', 'dismiss', 'command');
     const command = this.replaceProperty(raw, 'id', id);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -36,7 +36,7 @@ export class PetsCommands extends CommandWrapper {
   feed(id: string): void {
     const raw = this.getCommandString('pets', 'feed', 'command');
     const command = this.replaceProperty(raw, 'id', id);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -44,7 +44,7 @@ export class PetsCommands extends CommandWrapper {
    */
   help(): void {
     const command = this.getCommandString('pets', 'help', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -52,7 +52,7 @@ export class PetsCommands extends CommandWrapper {
    */
   list(): void {
     const command = this.getCommandString('pets', 'list', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -62,7 +62,7 @@ export class PetsCommands extends CommandWrapper {
   release(id: string): void {
     const raw = this.getCommandString('pets', 'release', 'command');
     const command = this.replaceProperty(raw, 'id', id);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -73,7 +73,7 @@ export class PetsCommands extends CommandWrapper {
   rename(id: string, name: string): void {
     const raw = this.getCommandString('pets', 'rename', 'command');
     const command = this.replaceProperties(raw, { id, name });
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -83,6 +83,6 @@ export class PetsCommands extends CommandWrapper {
   summon(id: string): void {
     const raw = this.getCommandString('pets', 'summon', 'command');
     const command = this.replaceProperty(raw, 'id', id);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 }

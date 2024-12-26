@@ -11,7 +11,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { IrcService, Message } from 'src/app/services/irc/irc.service';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
 import { TestUtils } from 'src/test/test-utils';
 import { ConfigManager } from '../../services/data/config-manager';
@@ -23,6 +22,10 @@ import { GameComponent } from './game.component';
 import { Config } from 'src/app/services/data/config-data';
 import { AuthData } from 'src/app/services/user/auth.data';
 import { AccessControlService } from 'src/app/services/access-control/access-control-service';
+import {
+  EventSubService,
+  Message,
+} from 'src/app/services/eventsub/eventsub.service';
 
 export class ClassList {
   items = new Array<string>();
@@ -39,7 +42,7 @@ export class ClassList {
   }
 }
 
-const ircServiceSpy = TestUtils.spyOnClass(IrcService);
+const eventSubServiceSpy = TestUtils.spyOnClass(EventSubService);
 const configManagerSpy = TestUtils.spyOnClass(ConfigManager);
 const userServiceSpy = TestUtils.spyOnClass(UserService);
 userServiceSpy.getUserAuth.and.returnValue({
@@ -75,7 +78,7 @@ describe('GameComponent', () => {
         WidgetFactoryComponent,
       ],
       providers: [
-        { provide: IrcService, useValue: ircServiceSpy },
+        { provide: EventSubService, useValue: eventSubServiceSpy },
         { provide: ConfigManager, useValue: configManagerSpy },
         { provide: UserService, useValue: userServiceSpy },
         {
@@ -147,7 +150,7 @@ describe('GameComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
   });
 
-  it('should connect to IRC', async () => {
+  it('should connect to EventSub', async () => {
     const fixture = TestBed.createComponent(GameComponent);
 
     await fixture.componentInstance.ngOnInit();
@@ -155,8 +158,8 @@ describe('GameComponent', () => {
     const target = (await userServiceSpy.getUserAuth(null)).login;
     expect(user).toBe(target);
     expect(configManagerSpy.save).toHaveBeenCalled();
-    expect(ircServiceSpy.registerForError).toHaveBeenCalled();
-    expect(ircServiceSpy.connect).toHaveBeenCalled();
+    expect(eventSubServiceSpy.registerForError).toHaveBeenCalled();
+    expect(eventSubServiceSpy.connect).toHaveBeenCalled();
   });
 
   it('should add the dark theme', () => {
@@ -168,7 +171,7 @@ describe('GameComponent', () => {
     );
   });
 
-  it('should present a modal on IRC error', () => {
+  it('should present a modal on EventSub error', () => {
     const fixture = TestBed.createComponent(GameComponent);
     const errorMessage = `modal test message ${Date.now()}`;
 

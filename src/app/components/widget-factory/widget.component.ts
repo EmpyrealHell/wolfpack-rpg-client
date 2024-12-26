@@ -1,16 +1,17 @@
 import { ConfigManager } from 'src/app/services/data/config-manager';
-import { IrcService } from 'src/app/services/irc/irc.service';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatRipple } from '@angular/material/core';
+
+import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 
 /**
  * Interface all widgets implement to receive access to app services.
  */
 export interface WidgetComponent {
   /**
-   * IRC service used to receive whisper events.
+   * EventSub service used to receive whisper events.
    */
-  ircService: IrcService | undefined;
+  eventSubService: EventSubService | undefined;
   /**
    * Config manager used to save & load user config data.
    */

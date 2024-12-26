@@ -1,16 +1,16 @@
 import { TestUtils } from 'src/test/test-utils';
-import { IrcService, Message } from '../irc/irc.service';
 import { CommandService } from './command-service';
+import { EventSubService, Message } from '../eventsub/eventsub.service';
 
 describe('CommandService', () => {
-  let ircService: IrcService;
+  let eventSubService: EventSubService;
   let service: CommandService;
 
   beforeAll(async () => {
-    ircService = (TestUtils.spyOnClass(
-      IrcService
-    ) as unknown) as jasmine.SpyObj<IrcService>;
-    service = new CommandService(ircService);
+    eventSubService = (TestUtils.spyOnClass(
+      EventSubService
+    ) as unknown) as jasmine.SpyObj<EventSubService>;
+    service = new CommandService(eventSubService);
     service.initialize();
   });
 
@@ -18,7 +18,7 @@ describe('CommandService', () => {
     expect(service.chat).not.toBeUndefined();
     if (service.chat) {
       service.chat.message('test');
-      expect(ircService.send).toHaveBeenCalledWith('/p test');
+      expect(eventSubService.send).toHaveBeenCalledWith('/p test');
     }
   });
 

@@ -5,18 +5,22 @@ import { Router } from '@angular/router';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
 import { Config, ConfigAuthentication } from '../../services/data/config-data';
 import { ConfigManager } from '../../services/data/config-manager';
-import { IrcService, Message } from '../../services/irc/irc.service';
 import { UserService } from '../../services/user/user.service';
 import { ErrorDialog } from '../error-dialog/error-dialog';
 import * as PackageJson from '../../../../package.json';
 import { AccessControlService } from 'src/app/services/access-control/access-control-service';
+import {
+  EventSubService,
+  Message,
+} from 'src/app/services/eventsub/eventsub.service';
 
 /**
  * The main component holding the game UI.
  */
 @Component({
-  selector: 'app-game',
-  templateUrl: './game.component.html',
+    selector: 'app-game',
+    templateUrl: './game.component.html',
+    standalone: false
 })
 export class GameComponent implements OnInit {
   /**
@@ -37,7 +41,7 @@ export class GameComponent implements OnInit {
   version = PackageJson.version;
 
   constructor(
-    public ircService: IrcService,
+    public eventSubService: EventSubService,
     public configManager: ConfigManager,
     public userService: UserService,
     public accessControlService: AccessControlService,
@@ -70,14 +74,21 @@ export class GameComponent implements OnInit {
         config.authentication.user = userData.login;
         this.configManager.save();
         this.config = config;
-        this.ircService.registerForError(
+        this.eventSubService.registerForError(
           'game',
           message => {
             this.onError(message);
           },
           true
         );
-        this.ircService.connect();
+        this.eventSubService.registerForError(
+          'game',
+          message => {
+            this.onError(message);
+          },
+          true
+        );
+        await this.eventSubService.connect();
       } else {
         config.authentication.token = null;
         this.configManager.save();

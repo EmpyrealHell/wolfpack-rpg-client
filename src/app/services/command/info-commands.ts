@@ -1,11 +1,11 @@
 import { CommandWrapper } from './command-wrapper';
-import { IrcService } from '../irc/irc.service';
+import { EventSubService } from '../eventsub/eventsub.service';
 
 /**
  * Wrapper that holds all of the info commands from the command data config.
  */
 export class InfoCommands extends CommandWrapper {
-  constructor(private ircService: IrcService) {
+  constructor(private eventSubService: EventSubService) {
     super();
   }
 
@@ -16,7 +16,7 @@ export class InfoCommands extends CommandWrapper {
   bugReport(message: string): void {
     const raw = this.getCommandString('info', 'bugReport', 'command');
     const command = this.replaceProperty(raw, 'message', message);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -24,7 +24,7 @@ export class InfoCommands extends CommandWrapper {
    */
   classes(): void {
     const command = this.getCommandString('info', 'classes', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -32,7 +32,7 @@ export class InfoCommands extends CommandWrapper {
    */
   coins(): void {
     const command = this.getCommandString('info', 'coins', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -40,7 +40,7 @@ export class InfoCommands extends CommandWrapper {
    */
   experience(): void {
     const command = this.getCommandString('info', 'experience', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -48,7 +48,7 @@ export class InfoCommands extends CommandWrapper {
    */
   help(): void {
     const command = this.getCommandString('info', 'help', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -56,7 +56,7 @@ export class InfoCommands extends CommandWrapper {
    */
   levelHelp(): void {
     const command = this.getCommandString('info', 'levelHelp', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -64,7 +64,7 @@ export class InfoCommands extends CommandWrapper {
    */
   stats(): void {
     const command = this.getCommandString('info', 'stats', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -72,6 +72,6 @@ export class InfoCommands extends CommandWrapper {
    */
   wolfcoinHelp(): void {
     const command = this.getCommandString('info', 'wolfcoinHelp', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 }
