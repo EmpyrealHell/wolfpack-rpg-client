@@ -68,7 +68,7 @@ export class CommandLoader {
     if (typeof entry === 'string') {
       map.set(id, new CommandResponse(entry));
     } else if (typeof entry === 'object') {
-      const subgroupEntry = (entry as unknown) as SubgroupExpression;
+      const subgroupEntry = entry as unknown as SubgroupExpression;
       const response = new CommandResponse(
         subgroupEntry.response,
         subgroupEntry.subGroups

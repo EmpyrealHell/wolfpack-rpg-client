@@ -22,7 +22,10 @@ import { GameComponent } from './game.component';
 import { Config } from 'src/app/services/data/config-data';
 import { AuthData } from 'src/app/services/user/auth.data';
 import { AccessControlService } from 'src/app/services/access-control/access-control-service';
-import { EventSubService, Message } from 'src/app/services/eventsub/eventsub.service';
+import {
+  EventSubService,
+  Message,
+} from 'src/app/services/eventsub/eventsub.service';
 
 export class ClassList {
   items = new Array<string>();
@@ -125,9 +128,9 @@ describe('GameComponent', () => {
 
   it('should redirect if token cannot be validated', async () => {
     const fixture = TestBed.createComponent(GameComponent);
-    const invalidTokenSpy = TestUtils.spyOnClass(UserService) as jasmine.SpyObj<
+    const invalidTokenSpy = TestUtils.spyOnClass(
       UserService
-    >;
+    ) as jasmine.SpyObj<UserService>;
     invalidTokenSpy.getUserAuth.and.returnValue(
       new Promise(resolve => {
         resolve({

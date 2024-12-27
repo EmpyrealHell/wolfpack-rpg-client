@@ -5,6 +5,7 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
+    "composite": false,
     "declaration": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,

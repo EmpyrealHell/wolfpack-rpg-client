@@ -24,18 +24,18 @@ describe('AccessControlService', () => {
   let roleHandler: CommandCallback;
 
   beforeAll(async () => {
-    commandService = (TestUtils.spyOnClass(
+    commandService = TestUtils.spyOnClass(
       CommandService
-    ) as unknown) as jasmine.SpyObj<CommandService>;
+    ) as unknown as jasmine.SpyObj<CommandService>;
     commandService.subscribeToCommand.and.callFake(
       (group, command, response, result, subscriber, callback) => {
         roleHandler = callback;
         return '';
       }
     );
-    widgetService = (TestUtils.spyOnClass(
+    widgetService = TestUtils.spyOnClass(
       WidgetService
-    ) as unknown) as jasmine.SpyObj<WidgetService>;
+    ) as unknown as jasmine.SpyObj<WidgetService>;
     widgetService.getWidgets.and.returnValue([
       new WidgetItem(null, 'Console Widget', 'console', 'consoleicon'),
       new WidgetItem(null, 'Foo', 'foo', 'fooicon'),
@@ -102,7 +102,7 @@ describe('AccessControlService', () => {
     expect(roleHandler).not.toBeUndefined();
     expect(commandService.sendCommand).toHaveBeenCalledWith(
       'info',
-      'checkAccess'
+      'checkAccess' as never
     );
   });
 

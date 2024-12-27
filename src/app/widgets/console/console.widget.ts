@@ -3,7 +3,10 @@ import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatRipple } from '@angular/material/core';
-import { EventSubService, Message } from 'src/app/services/eventsub/eventsub.service';
+import {
+  EventSubService,
+  Message,
+} from 'src/app/services/eventsub/eventsub.service';
 
 /**
  * Widget that provides direct access to the communication channel between the

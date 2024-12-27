@@ -9,15 +9,18 @@ import { UserService } from '../../services/user/user.service';
 import { ErrorDialog } from '../error-dialog/error-dialog';
 import * as PackageJson from '../../../../package.json';
 import { AccessControlService } from 'src/app/services/access-control/access-control-service';
-import { EventSubService, Message } from 'src/app/services/eventsub/eventsub.service';
+import {
+  EventSubService,
+  Message,
+} from 'src/app/services/eventsub/eventsub.service';
 
 /**
  * The main component holding the game UI.
  */
 @Component({
-    selector: 'app-game',
-    templateUrl: './game.component.html',
-    standalone: false
+  selector: 'app-game',
+  templateUrl: './game.component.html',
+  standalone: false,
 })
 export class GameComponent implements OnInit {
   /**
