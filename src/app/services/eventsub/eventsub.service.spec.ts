@@ -1,36 +1,96 @@
+import { HttpClient } from '@angular/common/http';
 import { ClassSpy, TestUtils } from 'src/test/test-utils';
-import { client, Client, Options } from 'tmi.js';
 import { Config } from '../data/config-data';
 import { ConfigManager } from '../data/config-manager';
 import { AuthData } from '../user/auth.data';
 import { UserData } from '../user/user.data';
 import { UserService } from '../user/user.service';
-import { IrcService, Message } from './irc.service';
+import { EventSubService } from './eventsub.service';
+import { Message } from './eventsub.service';
 import { WhisperService } from './whisper.service';
+import * as eventSubConfig from './eventsub.service.json';
+import { of } from 'rxjs';
 
-describe('IrcService', () => {
-  let service: IrcService;
+describe('EventSubService', () => {
+  let service: EventSubService;
   let configManagerSpy: ClassSpy<ConfigManager>;
   let userServiceSpy: ClassSpy<UserService>;
   let whisperServiceSpy: ClassSpy<WhisperService>;
+  let httpClientSpy: jasmine.SpyObj<HttpClient>;
+
+  function createWelcomeMessage(): MessageEvent {
+    return {
+      data: JSON.stringify({
+        metadata: { message_type: 'session_welcome' },
+        payload: { session: { id: 'test-session-id' } },
+      }),
+    } as MessageEvent;
+  }
+
+  function createWhisperMessage(
+    text: string,
+    fromUserId: string
+  ): MessageEvent {
+    return {
+      data: JSON.stringify({
+        metadata: {
+          message_type: 'notification',
+          subscription_type: 'user.whisper.message',
+        },
+        payload: {
+          event: {
+            from_user_id: fromUserId,
+            whisper: { text },
+          },
+        },
+      }),
+    } as MessageEvent;
+  }
+
+  function createChannelChatMessage(message: string): MessageEvent {
+    return {
+      data: JSON.stringify({
+        metadata: {
+          message_type: 'notification',
+          subscription_type: 'channel.chat.message',
+        },
+        payload: {
+          event: {
+            broadcaster_login: eventSubConfig.streamerAccount,
+            chatter_login: eventSubConfig.botAccount,
+            message: {
+              text: message,
+            },
+          },
+        },
+      }),
+    } as MessageEvent;
+  }
 
   async function attachAndSend(
     message: string
-  ): Promise<jasmine.SpyObj<Client>> {
-    const clientInstance = jasmine.createSpyObj('Client', [
-      'on',
-      'connect',
-      'whisper',
+  ): Promise<jasmine.SpyObj<WebSocket>> {
+    const wsInstance = jasmine.createSpyObj('WebSocket', [
+      'onopen',
+      'onmessage',
+      'onclose',
+      'onerror',
     ]);
-    clientInstance.on.and.callFake((event: string, callback: Function) => {
-      if (event === 'whisper') {
-        callback('', null, message, false);
-      }
+
+    const connectPromise = service.connectUsing(() => {
+      setTimeout(() => {
+        if (wsInstance.onopen) {
+          wsInstance.onopen({} as Event);
+        }
+        if (wsInstance.onmessage) {
+          wsInstance.onmessage(createWelcomeMessage());
+          wsInstance.onmessage(createChannelChatMessage(message));
+        }
+      }, 0);
+      return wsInstance;
     });
-    await service.connectUsing((opts: Options) => {
-      return clientInstance;
-    });
-    return clientInstance;
+    await connectPromise;
+    return wsInstance;
   }
 
   beforeEach(() => {
@@ -38,7 +98,6 @@ describe('IrcService', () => {
     const configData = new Config();
     configData.authentication.token = `token${Date.now()}`;
     configManagerSpy.getConfig.and.returnValue(configData);
-
     userServiceSpy = TestUtils.spyOnClass(UserService);
     const authData = {
       client_id: 'clientid',
@@ -46,7 +105,7 @@ describe('IrcService', () => {
       user_id: 'userid',
       scopes: [],
     } as AuthData;
-    userServiceSpy.getUserAuth.and.returnValue(authData);
+    userServiceSpy.getUserAuth.and.returnValue(Promise.resolve(authData));
     const userData = {
       data: [
         {
@@ -56,47 +115,44 @@ describe('IrcService', () => {
       ],
     } as UserData;
     userServiceSpy.getUserId.and.returnValue(userData);
-
     whisperServiceSpy = TestUtils.spyOnClass(WhisperService);
-
-    service = new IrcService(
+    httpClientSpy = jasmine.createSpyObj('HttpClient', ['post']);
+    httpClientSpy.post.and.returnValue(of({}));
+    service = new EventSubService(
+      httpClientSpy,
       configManagerSpy,
       userServiceSpy as jasmine.SpyObj<UserService>,
       whisperServiceSpy as jasmine.SpyObj<WhisperService>
     );
   });
 
-  it('should connect to IRC', async () => {
+  it('should connect to EventSub', async () => {
     const queueSpy = spyOn(service.messageQueue, 'start');
     const sendFnSpy = spyOn(service.messageQueue, 'setSendFunction');
-    const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
-    const userData = userServiceSpy.getUserAuth();
-    const configData = configManagerSpy.getConfig() as Config;
-    let optsUsed: Options = {};
-    await service.connectUsing((opts: Options) => {
-      optsUsed = opts;
-      return clientInstance;
+    const wsInstance = jasmine.createSpyObj('WebSocket', [
+      'onopen',
+      'onmessage',
+      'onclose',
+      'onerror',
+    ]);
+    const connectPromise = service.connectUsing(() => {
+      setTimeout(() => {
+        if (wsInstance.onopen) {
+          wsInstance.onopen({} as Event);
+        }
+        if (wsInstance.onmessage) {
+          wsInstance.onmessage(createWelcomeMessage());
+        }
+      }, 0);
+      return wsInstance;
     });
+
+    const result = await connectPromise;
+    expect(result).toBe(true);
+    expect(service.isConnected).toBe(true);
     expect(queueSpy).toHaveBeenCalled();
     expect(sendFnSpy).toHaveBeenCalled();
-    expect(optsUsed).toBeTruthy();
-    expect(optsUsed.options).toBeTruthy();
-    expect(optsUsed.options!.clientId).toBe(userData.client_id);
-    expect(optsUsed.identity).toBeTruthy();
-    expect(optsUsed.identity!.username).toBe(userData.login);
-    expect(optsUsed.identity!.password).toBe(
-      `oauth:${configData.authentication.token}`
-    );
-    expect(clientInstance.connect).toHaveBeenCalled();
-    const onCalls = clientInstance.on.calls.all();
-    expect(onCalls.length).toBe(4);
-    const toCall = ['raw_message', 'message', 'whisper', 'disconnected'];
-    for (const onCall of onCalls) {
-      expect(toCall).toContain(onCall.args[0]);
-      expect(onCall.args[1]).toBeDefined();
-      toCall.splice(toCall.indexOf(onCall.args[0]), 1);
-    }
-    expect(toCall).toEqual([]);
+    expect(service.connection).toBeTruthy();
   });
 
   it('should return an array of received messages', async () => {
@@ -129,24 +185,29 @@ describe('IrcService', () => {
   });
 
   it('should call registered error handlers on error', async () => {
+    const consoleSpy = spyOn(console, 'error'); // supress expected error message in terminal
     const errorHandlerObj = { onError: (message: Message) => {} };
     const errorSpy = spyOn(errorHandlerObj, 'onError');
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandlerObj.onError);
-    const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
-    clientInstance.on.and.callFake((event: string, callback: Function) => {
-      if (event === 'raw_message') {
-        callback({
-          tags: { 'msg-id': 'whisper_restricted' },
-          command: 'NOTICE',
-          params: ['test'],
-        });
-      }
+    const wsInstance = jasmine.createSpyObj('WebSocket', [
+      'onopen',
+      'onmessage',
+      'onclose',
+      'onerror',
+    ]);
+    const connectPromise = service.connectUsing(() => {
+      setTimeout(() => {
+        if (wsInstance.onerror) {
+          wsInstance.onerror(new Error('WebSocket Error'));
+        }
+      }, 0);
+      return wsInstance;
     });
-    await service.connectUsing((opts: Options) => {
-      return clientInstance;
-    });
+
+    await connectPromise;
     expect(errorSpy).toHaveBeenCalled();
+    consoleSpy.calls.reset();
   });
 
   it('should not overwrite error handlers with the same key by default', () => {
@@ -192,17 +253,27 @@ describe('IrcService', () => {
     const callbackSpy = spyOn(callbackObj, 'onWhisper');
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callbackObj.onWhisper);
-    attachAndSend('test');
-    service.send('test');
-    const sendFn = {
-      send: async (message: string) => {
-        return new Promise<void>(resolve => {
-          resolve(undefined);
-        });
-      },
-    };
-    service.messageQueue.setSendFunction(sendFn.send);
-    await service.messageQueue.processQueue();
+    const wsInstance = jasmine.createSpyObj('WebSocket', [
+      'onopen',
+      'onmessage',
+      'onclose',
+      'onerror',
+    ]);
+    const connectPromise = service.connectUsing(() => {
+      setTimeout(() => {
+        if (wsInstance.onopen) {
+          wsInstance.onopen({} as Event);
+        }
+        if (wsInstance.onmessage) {
+          wsInstance.onmessage(createWelcomeMessage());
+          wsInstance.onmessage(
+            createWhisperMessage('test whisper', 'test-user')
+          );
+        }
+      }, 0);
+      return wsInstance;
+    });
+    await connectPromise;
     expect(callbackSpy).toHaveBeenCalled();
   });
 
@@ -212,9 +283,8 @@ describe('IrcService', () => {
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2);
-    const callbacks = service.callbacks;
-    expect(callbacks.get(handlerKey)).toBe(callback);
-    expect(callbacks.get(handlerKey)).not.toBe(callback2);
+    expect(service.callbacks.get(handlerKey)).toBe(callback);
+    expect(service.callbacks.get(handlerKey)).not.toBe(callback2);
   });
 
   it('should overwrite whisper handlers with the same key when forced', () => {
@@ -223,9 +293,8 @@ describe('IrcService', () => {
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2, true);
-    const callbacks = service.callbacks;
-    expect(callbacks.get(handlerKey)).toBe(callback2);
-    expect(callbacks.get(handlerKey)).not.toBe(callback);
+    expect(service.callbacks.get(handlerKey)).toBe(callback2);
+    expect(service.callbacks.get(handlerKey)).not.toBe(callback);
   });
 
   it('should send queued messages', async () => {
@@ -247,29 +316,37 @@ describe('IrcService', () => {
   });
 
   it('should properly format messages', async () => {
-    const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
-    let whisperCallback: Function = () => {};
-    clientInstance.on.and.callFake((event: string, callback: Function) => {
-      if (event === 'whisper') {
-        whisperCallback = callback;
+    const wsInstance = new WebSocket('');
+    let messageHandler: (event: MessageEvent) => void = () => {};
+    spyOnProperty(wsInstance, 'onmessage', 'set').and.callFake(
+      (handler: (this: WebSocket, ev: MessageEvent) => unknown) => {
+        messageHandler = handler;
       }
+    );
+    spyOnProperty(wsInstance, 'onopen', 'set').and.callFake(
+      (handler: (this: WebSocket, ev: Event) => unknown) => {
+        setTimeout(() => handler.call(wsInstance, {} as Event), 0);
+      }
+    );
+    spyOnProperty(wsInstance, 'onclose', 'set');
+    spyOnProperty(wsInstance, 'onerror', 'set');
+    await service.connectUsing(() => {
+      return wsInstance;
     });
-    await service.connectUsing((opts: Options) => {
-      return clientInstance;
-    });
-
+    await new Promise(resolve => setTimeout(resolve, 0));
     const whispers: Message[] = [];
     service.register('test', (message: Message) => {
       whispers.push(message);
     });
-
     const timestamp = Date.now().toString();
-    whisperCallback.call(service, '', null, 'cmd', true);
-    whisperCallback.call(service, '', null, 'response', false);
-    whisperCallback.call(service, '', null, 'cmd', true);
-    whisperCallback.call(service, '', null, 'at', false);
-    whisperCallback.call(service, '', null, timestamp, false);
-
+    const userData = await userServiceSpy.getUserAuth();
+    messageHandler(createWelcomeMessage());
+    messageHandler(createWhisperMessage('cmd', userData.user_id));
+    messageHandler(createWhisperMessage('response', 'other_user'));
+    messageHandler(createWhisperMessage('cmd', userData.user_id));
+    messageHandler(createWhisperMessage('at', 'other_user'));
+    messageHandler(createWhisperMessage(timestamp, 'other_user'));
+    await new Promise(resolve => setTimeout(resolve, 0));
     expect(service.lines.length).toBe(3);
     expect(whispers[0].text).toBe('response');
     expect(whispers[1].text).toBe('at');
@@ -277,17 +354,22 @@ describe('IrcService', () => {
   });
 
   it('should handle sends from the message queue', async () => {
-    const clientInstance = jasmine.createSpyObj('Client', ['on', 'connect']);
-    let whisperCallback: Function = () => {};
-    clientInstance.on.and.callFake((event: string, callback: Function) => {
-      if (event === 'whisper') {
-        whisperCallback = callback;
+    const wsInstance = new WebSocket('');
+    let messageCallback: Function = () => {};
+    spyOnProperty(wsInstance, 'onmessage', 'set').and.callFake(
+      (callback: (this: WebSocket, ev: MessageEvent) => unknown) => {
+        messageCallback = callback;
       }
+    );
+    await service.connectUsing(() => {
+      setTimeout(() => {
+        if (wsInstance.onopen) {
+          wsInstance.onopen({} as Event);
+        }
+        messageCallback(createWelcomeMessage());
+      }, 0);
+      return wsInstance;
     });
-    await service.connectUsing((opts: Options) => {
-      return clientInstance;
-    });
-
     const whispers: Message[] = [];
     service.register('test', (message: Message) => {
       whispers.push(message);
@@ -297,14 +379,15 @@ describe('IrcService', () => {
         resolve(undefined);
       });
     });
-
     const timestamp = Date.now().toString();
     service.messageQueue.send('cmd');
     await service.messageQueue.processQueue();
-    whisperCallback.call(service, '', null, 'response', false);
-    whisperCallback.call(service, '', null, 'at', false);
-    whisperCallback.call(service, '', null, timestamp, false);
-
+    const testMessages = [
+      createWhisperMessage('response', 'other_user'),
+      createWhisperMessage('at', 'other_user'),
+      createWhisperMessage(timestamp, 'other_user'),
+    ];
+    testMessages.forEach(message => messageCallback(message));
     expect(service.lines.length).toBe(4);
     expect(whispers[0].text).toBe('cmd');
     expect(whispers[1].text).toBe('response');

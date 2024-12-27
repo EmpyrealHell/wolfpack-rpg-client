@@ -1,18 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
-import { IrcService, Message } from 'src/app/services/irc/irc.service';
 import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatRipple } from '@angular/material/core';
+import { EventSubService, Message } from 'src/app/services/eventsub/eventsub.service';
 
 /**
  * Widget that provides direct access to the communication channel between the
  * authenticated user and the target account.
  */
 @Component({
-    selector: 'app-console-widget',
-    templateUrl: './console.widget.html',
-    standalone: false
+  selector: 'app-console-widget',
+  templateUrl: './console.widget.html',
+  standalone: false,
 })
 export class ConsoleWidgetComponent implements WidgetComponent {
   private static maxHistory = 100;
@@ -32,10 +32,10 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   name = '';
 
   /**
-   * Reference to the IRC chat service.
+   * Reference to the EventSub chat service.
    */
   @Input()
-  ircService: IrcService | undefined;
+  eventSubService: EventSubService | undefined;
   /**
    * Reference to the user's config data manager.
    */
@@ -53,13 +53,13 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   ripple: MatRipple | undefined;
 
   /**
-   * Whether the irc service is connected.
+   * Whether the EventSub service is connected.
    */
   get isConnected(): boolean {
-    if (!this.ircService) {
+    if (!this.eventSubService) {
       return false;
     }
-    return this.ircService.isConnected;
+    return this.eventSubService.isConnected;
   }
 
   private onWhisper(message: Message): void {
@@ -76,10 +76,10 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   }
 
   private sendCommand(): void {
-    if (this.ircService && this.configManager) {
+    if (this.eventSubService && this.configManager) {
       const message = this.command;
       this.command = '';
-      this.ircService.send(message);
+      this.eventSubService.send(message);
 
       const history = this.configManager.getConfig().history;
       history.push(message);
@@ -91,9 +91,10 @@ export class ConsoleWidgetComponent implements WidgetComponent {
     }
   }
 
-  private commandFromHistory(
-    index: number
-  ): { message: string; index: number } {
+  private commandFromHistory(index: number): {
+    message: string;
+    index: number;
+  } {
     if (!this.configManager) {
       return {
         message: '',
@@ -116,8 +117,8 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   }
 
   onActivate(): void {
-    if (this.ircService) {
-      this.ircService.register(
+    if (this.eventSubService) {
+      this.eventSubService.register(
         'console-widget',
         message => {
           this.onWhisper(message);
@@ -125,7 +126,7 @@ export class ConsoleWidgetComponent implements WidgetComponent {
         true
       );
       this.consoleData = '';
-      for (const line of this.ircService.lines) {
+      for (const line of this.eventSubService.lines) {
         this.onWhisper(line);
       }
     }

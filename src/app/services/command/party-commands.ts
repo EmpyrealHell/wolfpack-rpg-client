@@ -1,11 +1,11 @@
 import { CommandWrapper } from './command-wrapper';
-import { IrcService } from '../irc/irc.service';
+import { EventSubService } from '../eventsub/eventsub.service';
 
 /**
  * Wrapper that holds all of the party commands from the command data config.
  */
 export class PartyCommands extends CommandWrapper {
-  constructor(private ircService: IrcService) {
+  constructor(private eventSubService: EventSubService) {
     super();
   }
 
@@ -16,7 +16,7 @@ export class PartyCommands extends CommandWrapper {
   add(username: string): void {
     const raw = this.getCommandString('party', 'add', 'command');
     const command = this.replaceProperty(raw, 'username', username);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -24,7 +24,7 @@ export class PartyCommands extends CommandWrapper {
    */
   create(): void {
     const command = this.getCommandString('party', 'create', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -32,7 +32,7 @@ export class PartyCommands extends CommandWrapper {
    */
   data(): void {
     const command = this.getCommandString('party', 'create', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -42,7 +42,7 @@ export class PartyCommands extends CommandWrapper {
   kick(username: string): void {
     const raw = this.getCommandString('party', 'kick', 'command');
     const command = this.replaceProperty(raw, 'username', username);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -50,7 +50,7 @@ export class PartyCommands extends CommandWrapper {
    */
   leave(): void {
     const command = this.getCommandString('party', 'leave', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -60,7 +60,7 @@ export class PartyCommands extends CommandWrapper {
   promote(username: string): void {
     const raw = this.getCommandString('party', 'promote', 'command');
     const command = this.replaceProperty(raw, 'username', username);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -70,7 +70,7 @@ export class PartyCommands extends CommandWrapper {
   start(id?: string): void {
     const raw = this.getCommandString('party', 'start', 'command');
     const command = this.replaceProperty(raw, 'id?', id ? id : '');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -78,7 +78,7 @@ export class PartyCommands extends CommandWrapper {
    */
   ready(): void {
     const command = this.getCommandString('party', 'ready', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -86,6 +86,6 @@ export class PartyCommands extends CommandWrapper {
    */
   unready(): void {
     const command = this.getCommandString('party', 'unready', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 }

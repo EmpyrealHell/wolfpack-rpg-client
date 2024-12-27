@@ -1,11 +1,11 @@
 import { CommandWrapper } from './command-wrapper';
-import { IrcService } from '../irc/irc.service';
+import { EventSubService } from '../eventsub/eventsub.service';
 
 /**
  * Wrapper that holds all of the shop commands from the command data config.
  */
 export class ShopCommands extends CommandWrapper {
-  constructor(private ircService: IrcService) {
+  constructor(private eventSubService: EventSubService) {
     super();
   }
 
@@ -16,7 +16,7 @@ export class ShopCommands extends CommandWrapper {
   bet(value: string): void {
     const raw = this.getCommandString('shop', 'bet', 'command');
     const command = this.replaceProperty(raw, 'value', value);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -24,7 +24,7 @@ export class ShopCommands extends CommandWrapper {
    */
   gloat(): void {
     const command = this.getCommandString('shop', 'gloat', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -33,7 +33,7 @@ export class ShopCommands extends CommandWrapper {
    */
   gloatFish(id: string): void {
     const command = this.getCommandString('shop', 'gloat', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -41,7 +41,7 @@ export class ShopCommands extends CommandWrapper {
    */
   gloatPet(): void {
     const command = this.getCommandString('shop', 'gloatPet', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -49,7 +49,7 @@ export class ShopCommands extends CommandWrapper {
    */
   help(): void {
     const command = this.getCommandString('shop', 'help', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -57,7 +57,7 @@ export class ShopCommands extends CommandWrapper {
    */
   respec(): void {
     const command = this.getCommandString('shop', 'respec', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -67,6 +67,6 @@ export class ShopCommands extends CommandWrapper {
   stats(username: string): void {
     const raw = this.getCommandString('shop', 'stats', 'command');
     const command = this.replaceProperty(raw, 'username', username);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 }

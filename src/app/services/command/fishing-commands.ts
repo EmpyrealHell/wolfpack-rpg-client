@@ -1,11 +1,11 @@
 import { CommandWrapper } from './command-wrapper';
-import { IrcService } from '../irc/irc.service';
+import { EventSubService } from '../eventsub/eventsub.service';
 
 /**
  * Wrapper that holds all of the fishing commands from the command data config.
  */
 export class FishingCommands extends CommandWrapper {
-  constructor(private ircService: IrcService) {
+  constructor(private eventSubService: EventSubService) {
     super();
   }
 
@@ -14,7 +14,7 @@ export class FishingCommands extends CommandWrapper {
    */
   cast(): void {
     const command = this.getCommandString('fishing', 'cast', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -22,7 +22,7 @@ export class FishingCommands extends CommandWrapper {
    */
   catch(): void {
     const command = this.getCommandString('fishing', 'catch', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -32,7 +32,7 @@ export class FishingCommands extends CommandWrapper {
   detail(id: string): void {
     const raw = this.getCommandString('fishing', 'detail', 'command');
     const command = this.replaceProperty(raw, 'id', id);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -40,7 +40,7 @@ export class FishingCommands extends CommandWrapper {
    */
   leaderboard(): void {
     const command = this.getCommandString('fishing', 'leaderboard', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -48,7 +48,7 @@ export class FishingCommands extends CommandWrapper {
    */
   list(): void {
     const command = this.getCommandString('fishing', 'list', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -58,6 +58,6 @@ export class FishingCommands extends CommandWrapper {
   release(id: string): void {
     const raw = this.getCommandString('fishing', 'release', 'command');
     const command = this.replaceProperty(raw, 'id', id);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 }

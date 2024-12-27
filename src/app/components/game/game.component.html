@@ -14,7 +14,7 @@
             Report a Bug
           </button>
         </span>
-        <span *ngIf="ircService.isConnected; else usernameLoggedOut">
+        <span *ngIf="eventSubService.isConnected; else usernameLoggedOut">
           <button mat-button [matMenuTriggerFor]="userMenu">
             {{ config.authentication.user
             }}<mat-icon>arrow_drop_down </mat-icon>

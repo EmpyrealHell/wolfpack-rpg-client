@@ -6,7 +6,6 @@ import {
 import { waitForAsync, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
 import { AbstractWidgetComponent } from 'src/app/widgets/abstract/abstract-widget';
 import { TestUtils } from 'src/test/test-utils';
@@ -17,6 +16,7 @@ import { WidgetContainerComponent } from './widget-container.component';
 import { Config } from 'src/app/services/data/config-data';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AccessControlService } from 'src/app/services/access-control/access-control-service';
+import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 
 export class FirstWidget extends AbstractWidgetComponent {
   protected subscribeToResponses(
@@ -49,7 +49,7 @@ const configManagerSpy = TestUtils.spyOnClass(ConfigManager);
 configManagerSpy.subscribe.and.callFake((delegate: () => void) => {
   delegate.call(delegate);
 });
-const ircServiceSpy = TestUtils.spyOnClass(IrcService);
+const eventSubServiceSpy = TestUtils.spyOnClass(EventSubService);
 const componentFactoryResolverSpy = jasmine.createSpyObj(
   'ComponentFactoryResolver',
   ['resolveComponentFactory']
@@ -79,7 +79,7 @@ describe('WidgetContainerComponent', () => {
           },
           { provide: ConfigManager, useValue: configManagerSpy },
           { provide: CommandService, useValue: commandServiceSpy },
-          { provide: IrcService, useValue: ircServiceSpy },
+          { provide: EventSubService, useValue: eventSubServiceSpy },
           {
             provide: ComponentFactoryResolver,
             useValue: componentFactoryResolverSpy,

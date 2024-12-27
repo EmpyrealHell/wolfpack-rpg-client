@@ -1,0 +1,18 @@
+{
+  "botAccount": "lobotjr",
+  "streamerAccount": "lobosjr",
+  "connectOptions": {
+    "options": {
+      "clientId": "full2dvcfxpu2g8pgalowdipot41ft"
+    },
+    "identity": {
+      "username": "",
+      "password": ""
+    },
+    "channels": ["jtv", "lobosjr"]
+  },
+  "urls": {
+    "eventSub": "https://api.twitch.tv/helix/eventsub/subscriptions",
+    "websocket": "wss://eventsub.wss.twitch.tv/ws"
+  }
+}
