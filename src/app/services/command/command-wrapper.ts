@@ -15,8 +15,8 @@ export abstract class CommandWrapper {
    */
   getCommandString<
     G extends keyof typeof CommandData.commands,
-    C extends keyof typeof CommandData.commands[G],
-    M extends keyof typeof CommandData.commands[G][C]
+    C extends keyof (typeof CommandData.commands)[G],
+    M extends keyof (typeof CommandData.commands)[G][C],
   >(group: G, command: C, message: M): string {
     const groupObj = CommandData.commands[group];
     const commandObj = groupObj[command];

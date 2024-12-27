@@ -240,9 +240,9 @@ export class CommandService {
    */
   subscribeToCommand<
     G extends keyof typeof CommandData.commands,
-    C extends keyof typeof CommandData.commands[G],
-    R extends keyof typeof CommandData.commands[G][C],
-    S extends keyof typeof CommandData.commands[G][C][R]
+    C extends keyof (typeof CommandData.commands)[G],
+    R extends keyof (typeof CommandData.commands)[G][C],
+    S extends keyof (typeof CommandData.commands)[G][C][R],
   >(
     group: G,
     command: C,
@@ -272,7 +272,7 @@ export class CommandService {
    */
   subscribeToMessage<
     G extends keyof typeof CommandData.messages,
-    N extends keyof typeof CommandData.messages[G]
+    N extends keyof (typeof CommandData.messages)[G],
   >(group: G, name: N, subscriber: string, callback: CommandCallback): string {
     const key = `message.${group}.${String(name)}`;
     let current = this.callbacks.get(subscriber);
@@ -339,7 +339,7 @@ export class CommandService {
    */
   hasCommandBeenSent<
     G extends keyof typeof CommandData.commands,
-    C extends keyof typeof CommandData.commands[G]
+    C extends keyof (typeof CommandData.commands)[G],
   >(group: G, command: C): boolean {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const variants = CommandData.commands[group][command] as any;
@@ -376,7 +376,7 @@ export class CommandService {
    */
   sendInitialCommand<
     G extends keyof typeof CommandData.commands,
-    C extends keyof typeof CommandData.commands[G]
+    C extends keyof (typeof CommandData.commands)[G],
   >(group: G, command: C): void {
     if (!this.hasCommandBeenSent(group, command)) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -399,7 +399,7 @@ export class CommandService {
    */
   sendCommand<
     G extends keyof typeof CommandData.commands,
-    C extends keyof typeof CommandData.commands[G]
+    C extends keyof (typeof CommandData.commands)[G],
   >(group: G, command: C): void {
     this.sendCommandWithArguments(group, command);
   }
@@ -412,7 +412,7 @@ export class CommandService {
    */
   sendCommandWithArguments<
     G extends keyof typeof CommandData.commands,
-    C extends keyof typeof CommandData.commands[G]
+    C extends keyof (typeof CommandData.commands)[G],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   >(group: G, command: C, args?: any): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -67,30 +67,28 @@ componentFactoryResolverSpy.resolveComponentFactory.and.callFake(
 const commandServiceSpy = TestUtils.spyOnClass(CommandService);
 
 describe('WidgetContainerComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [MatIconModule, MatCardModule],
-        declarations: [WidgetContainerComponent, WidgetFactoryComponent],
-        providers: [
-          {
-            provide: AccessControlService,
-            useValue: accessControlServiceSpy,
-          },
-          { provide: ConfigManager, useValue: configManagerSpy },
-          { provide: CommandService, useValue: commandServiceSpy },
-          { provide: EventSubService, useValue: eventSubServiceSpy },
-          {
-            provide: ComponentFactoryResolver,
-            useValue: componentFactoryResolverSpy,
-          },
-        ],
-      }).compileComponents();
-      configManagerSpy.getConfig.and.returnValue({
-        layout: ['First', 'Second'],
-      } as Partial<Config>);
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [MatIconModule, MatCardModule],
+      declarations: [WidgetContainerComponent, WidgetFactoryComponent],
+      providers: [
+        {
+          provide: AccessControlService,
+          useValue: accessControlServiceSpy,
+        },
+        { provide: ConfigManager, useValue: configManagerSpy },
+        { provide: CommandService, useValue: commandServiceSpy },
+        { provide: EventSubService, useValue: eventSubServiceSpy },
+        {
+          provide: ComponentFactoryResolver,
+          useValue: componentFactoryResolverSpy,
+        },
+      ],
+    }).compileComponents();
+    configManagerSpy.getConfig.and.returnValue({
+      layout: ['First', 'Second'],
+    } as Partial<Config>);
+  }));
 
   it('should update layout on config update', () => {
     const fixture = TestBed.createComponent(WidgetContainerComponent);

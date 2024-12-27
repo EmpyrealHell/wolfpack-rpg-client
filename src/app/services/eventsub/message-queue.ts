@@ -37,7 +37,10 @@ export class MessageQueue {
     );
   }
 
-  constructor(private account: string, private rate: number) {}
+  constructor(
+    private account: string,
+    private rate: number
+  ) {}
 
   private canSend(): boolean {
     if (this.checkFn) {

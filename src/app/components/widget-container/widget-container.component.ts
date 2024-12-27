@@ -18,7 +18,7 @@ import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 @Component({
   selector: 'app-widget-container',
   templateUrl: './widget-container.component.html',
-  standalone: false
+  standalone: false,
 })
 export class WidgetContainerComponent implements OnInit {
   private static layouts = [

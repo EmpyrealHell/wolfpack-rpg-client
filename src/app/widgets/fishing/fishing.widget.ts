@@ -10,9 +10,9 @@ import { Utils } from 'src/app/util/utils';
  * TODO: Add paging to leaderboard and session history based on height
  */
 @Component({
-    selector: 'app-fishing-widget',
-    templateUrl: './fishing.widget.html',
-    standalone: false
+  selector: 'app-fishing-widget',
+  templateUrl: './fishing.widget.html',
+  standalone: false,
 })
 export class FishingWidgetComponent extends AbstractWidgetComponent {
   private static defaultHookMessage = 'You got a bite!';

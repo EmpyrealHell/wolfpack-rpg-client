@@ -9,7 +9,10 @@ export type ResponderCallback = (matches: string[]) => void;
  */
 export class Responder {
   pattern: RegExp;
-  constructor(pattern: string | null, public callback: ResponderCallback) {
+  constructor(
+    pattern: string | null,
+    public callback: ResponderCallback
+  ) {
     this.pattern = new RegExp(`^${pattern}$`, 'mi');
   }
 }

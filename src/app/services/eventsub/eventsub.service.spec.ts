@@ -319,13 +319,17 @@ describe('EventSubService', () => {
     const wsInstance = new WebSocket('');
     let messageHandler: (event: MessageEvent) => void = () => {};
     spyOnProperty(wsInstance, 'onmessage', 'set').and.callFake(
-      (handler: (this: WebSocket, ev: MessageEvent) => unknown) => {
-        messageHandler = handler;
+      (handler: ((this: WebSocket, ev: MessageEvent) => unknown) | null) => {
+        if (handler) {
+          messageHandler = handler;
+        }
       }
     );
     spyOnProperty(wsInstance, 'onopen', 'set').and.callFake(
-      (handler: (this: WebSocket, ev: Event) => unknown) => {
-        setTimeout(() => handler.call(wsInstance, {} as Event), 0);
+      (handler: ((this: WebSocket, ev: Event) => unknown) | null) => {
+        if (handler) {
+          setTimeout(() => handler.call(wsInstance, {} as Event), 0);
+        }
       }
     );
     spyOnProperty(wsInstance, 'onclose', 'set');
@@ -357,8 +361,10 @@ describe('EventSubService', () => {
     const wsInstance = new WebSocket('');
     let messageCallback: Function = () => {};
     spyOnProperty(wsInstance, 'onmessage', 'set').and.callFake(
-      (callback: (this: WebSocket, ev: MessageEvent) => unknown) => {
-        messageCallback = callback;
+      (callback: ((this: WebSocket, ev: MessageEvent) => unknown) | null) => {
+        if (callback) {
+          messageCallback = callback;
+        }
       }
     );
     await service.connectUsing(() => {

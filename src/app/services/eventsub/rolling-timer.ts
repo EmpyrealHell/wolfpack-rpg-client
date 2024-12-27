@@ -11,7 +11,10 @@ export class RollingTimer {
    * @param period Duration of the timer in seconds.
    * @param max Max number of occurrences in the period.
    */
-  constructor(private period: number, private max: number) {}
+  constructor(
+    private period: number,
+    private max: number
+  ) {}
 
   /**
    * Resets the timer.

@@ -174,7 +174,8 @@ export class Utils {
         Utils.timezoneDelta = serverOffset - localOffset;
       }
 
-      const parse = /([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})((?: PM)?)/;
+      const parse =
+        /([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})((?: PM)?)/;
       const values = dateString.match(parse);
 
       if (values) {
