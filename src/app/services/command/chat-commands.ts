@@ -1,11 +1,11 @@
 import { CommandWrapper } from './command-wrapper';
-import { IrcService } from '../irc/irc.service';
+import { EventSubService } from '../eventsub/eventsub.service';
 
 /**
  * Wrapper that holds all of the chat commands from the command data config.
  */
 export class ChatCommands extends CommandWrapper {
-  constructor(private ircService: IrcService) {
+  constructor(private eventSubService: EventSubService) {
     super();
   }
 
@@ -16,6 +16,6 @@ export class ChatCommands extends CommandWrapper {
   message(message: string): void {
     const raw = this.getCommandString('chat', 'message', 'command');
     const command = this.replaceProperty(raw, 'message', message);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 }

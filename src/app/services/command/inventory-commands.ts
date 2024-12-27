@@ -1,11 +1,11 @@
 import { CommandWrapper } from './command-wrapper';
-import { IrcService } from '../irc/irc.service';
+import { EventSubService } from '../eventsub/eventsub.service';
 
 /**
  * Wrapper that holds all of the inventory commands from the command data config.
  */
 export class InventoryCommands extends CommandWrapper {
-  constructor(private ircService: IrcService) {
+  constructor(private eventSubService: EventSubService) {
     super();
   }
 
@@ -16,7 +16,7 @@ export class InventoryCommands extends CommandWrapper {
   detail(id: string): void {
     const raw = this.getCommandString('inventory', 'detail', 'command');
     const command = this.replaceProperty(raw, 'id', id);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -26,7 +26,7 @@ export class InventoryCommands extends CommandWrapper {
   equip(id: string): void {
     const raw = this.getCommandString('inventory', 'detail', 'command');
     const command = this.replaceProperty(raw, 'id', id);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -34,7 +34,7 @@ export class InventoryCommands extends CommandWrapper {
    */
   list(): void {
     const command = this.getCommandString('inventory', 'list', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -44,6 +44,6 @@ export class InventoryCommands extends CommandWrapper {
   unequip(id: string): void {
     const raw = this.getCommandString('inventory', 'unequip', 'command');
     const command = this.replaceProperty(raw, 'id', id);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 }

@@ -7,7 +7,7 @@ export type SendCallback = (message: string) => void;
 export type CheckFunction = () => boolean;
 
 /**
- * Handles rate limiting for sending messages to twitch via irc.
+ * Handles rate limiting for sending messages to twitch via eventsub.
  */
 export class MessageQueue {
   private queue: string[] = [];

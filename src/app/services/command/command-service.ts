@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Utils } from 'src/app/util/utils';
-import { IrcService, Message } from '../irc/irc.service';
 import { ChatCommands } from './chat-commands';
 import * as CommandData from './command-data.json';
 import { CommandLoader } from './command-loader';
@@ -17,6 +16,7 @@ import { PartyCommands } from './party-commands';
 import { PendingCommands } from './pending-commands';
 import { PetsCommands } from './pets-commands';
 import { ShopCommands } from './shop-commands';
+import { EventSubService, Message } from '../eventsub/eventsub.service';
 
 /**
  * Defines the structure of a callback method that can be used to subscribe to
@@ -96,30 +96,34 @@ export class CommandService {
    */
   shop: ShopCommands | undefined;
 
-  constructor(private ircService: IrcService) {
+  constructor(private eventSubService: EventSubService) {
     this.initialize();
   }
 
   initialize(): void {
-    this.chat = new ChatCommands(this.ircService);
-    this.dungeon = new DungeonCommands(this.ircService);
-    this.fishing = new FishingCommands(this.ircService);
-    this.info = new InfoCommands(this.ircService);
-    this.inventory = new InventoryCommands(this.ircService);
-    this.party = new PartyCommands(this.ircService);
-    this.pending = new PendingCommands(this.ircService);
-    this.pets = new PetsCommands(this.ircService);
-    this.shop = new ShopCommands(this.ircService);
+    this.chat = new ChatCommands(this.eventSubService);
+    this.dungeon = new DungeonCommands(this.eventSubService);
+    this.fishing = new FishingCommands(this.eventSubService);
+    this.info = new InfoCommands(this.eventSubService);
+    this.inventory = new InventoryCommands(this.eventSubService);
+    this.party = new PartyCommands(this.eventSubService);
+    this.pending = new PendingCommands(this.eventSubService);
+    this.pets = new PetsCommands(this.eventSubService);
+    this.shop = new ShopCommands(this.eventSubService);
 
     this.messages = new CommandLoader();
     this.messages.load();
-    this.ircService.register(
+    this.eventSubService.register(
       'command-service',
       message => {
         this.onIncomingWhisper(message);
       },
       true
     );
+    this.eventSubService.register('command-service', message => {
+      console.log('EventSub Message received:', message);
+      this.onIncomingWhisper(message);
+    });
   }
 
   private updateHistory(key: string): ResponseHistory | undefined {
@@ -132,8 +136,8 @@ export class CommandService {
       history = new ResponseHistory();
       this.matches.set(key, history);
     }
-    for (let i = history.lastLine; i < this.ircService.lines.length; i++) {
-      const line = this.ircService.lines[i];
+    for (let i = history.lastLine; i < this.eventSubService.lines.length; i++) {
+      const line = this.eventSubService.lines[i];
       this.handleResponseGroup(line, key, messages, history);
     }
     return history;
@@ -205,8 +209,8 @@ export class CommandService {
           history = new ResponseHistory();
           this.matches.set(key, history);
         }
-        history.lastLine = this.ircService.lines
-          ? this.ircService.lines.length - 1
+        history.lastLine = this.eventSubService.lines
+          ? this.eventSubService.lines.length - 1
           : 0;
         const responseGroup = this.messages.get(key);
         if (!responseGroup) {
@@ -226,7 +230,7 @@ export class CommandService {
   /**
    * Subscribes to a command by its id. This will cause the callback passed in
    * to be called with the capture groups provided when the command response
-   * category is detected in the irc stream.
+   * category is detected in the eventsub stream.
    * @param group The name of the command group.
    * @param command The name of the individual command.
    * @param responses Must be responses to maintain type safety.
@@ -260,7 +264,7 @@ export class CommandService {
   /**
    * Subscribes to a message by its id. This will cause the callback passed in
    * to be called with the capture groups provided when the message is detected
-   * in the irc stream.
+   * in the eventsub stream.
    * @param group The name of the message group.
    * @param name The name of the individual message.
    * @param callback The method to call when the message is detected.
@@ -325,7 +329,7 @@ export class CommandService {
   /**
    * Subscribes to a command by its id. This will cause the callback passed in
    * to be called with the capture groups provided when the command response
-   * category is detected in the irc stream.
+   * category is detected in the eventsub stream.
    * @param group The name of the command group.
    * @param command The name of the individual command.
    * @param responses Must be responses to maintain type safety.
@@ -350,8 +354,8 @@ export class CommandService {
       const alternates = variants.alternates as string[];
       commands.push(...alternates.filter(item => item.indexOf('{') === -1));
     }
-    const lines = this.ircService.lines;
-    const queue = this.ircService.messageQueue.queuedMessages;
+    const lines = this.eventSubService.lines;
+    const queue = this.eventSubService.messageQueue.queuedMessages;
     for (const variant of commands) {
       if (
         lines.filter(x => x.text === variant).length > 0 ||
@@ -379,7 +383,7 @@ export class CommandService {
       const commandObject = CommandData.commands[group][command] as any;
       if (commandObject.command) {
         const toSend = commandObject.command as string;
-        this.ircService.send(toSend);
+        this.eventSubService.send(toSend);
       }
     }
   }
@@ -420,7 +424,7 @@ export class CommandService {
           toSend = toSend.replace(`{${key}}`, args[key]);
         }
       }
-      this.ircService.send(toSend);
+      this.eventSubService.send(toSend);
     }
   }
 }

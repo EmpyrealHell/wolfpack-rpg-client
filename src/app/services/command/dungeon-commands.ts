@@ -1,11 +1,11 @@
 import { CommandWrapper } from './command-wrapper';
-import { IrcService } from '../irc/irc.service';
+import { EventSubService } from '../eventsub/eventsub.service';
 
 /**
  * Wrapper that holds all of the dungeon commands from the command data config.
  */
 export class DungeonCommands extends CommandWrapper {
-  constructor(private ircService: IrcService) {
+  constructor(private eventSubService: EventSubService) {
     super();
   }
 
@@ -14,7 +14,7 @@ export class DungeonCommands extends CommandWrapper {
    */
   daily(): void {
     const command = this.getCommandString('dungeon', 'daily', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -24,7 +24,7 @@ export class DungeonCommands extends CommandWrapper {
   detail(id: string): void {
     const raw = this.getCommandString('dungeon', 'detail', 'command');
     const command = this.replaceProperty(raw, 'id', id);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -32,7 +32,7 @@ export class DungeonCommands extends CommandWrapper {
    */
   leave(): void {
     const command = this.getCommandString('dungeon', 'leave', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -40,7 +40,7 @@ export class DungeonCommands extends CommandWrapper {
    */
   list(): void {
     const command = this.getCommandString('dungeon', 'list', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -48,7 +48,7 @@ export class DungeonCommands extends CommandWrapper {
    */
   queue(): void {
     const command = this.getCommandString('dungeon', 'queue', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -56,6 +56,6 @@ export class DungeonCommands extends CommandWrapper {
    */
   queueTime(): void {
     const command = this.getCommandString('dungeon', 'queueTime', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 }

@@ -1,11 +1,11 @@
 import { CommandWrapper } from './command-wrapper';
-import { IrcService } from '../irc/irc.service';
+import { EventSubService } from '../eventsub/eventsub.service';
 
 /**
  * Wrapper that holds all of the pending commands from the command data config.
  */
 export class PendingCommands extends CommandWrapper {
-  constructor(private ircService: IrcService) {
+  constructor(private eventSubService: EventSubService) {
     super();
   }
 
@@ -15,7 +15,7 @@ export class PendingCommands extends CommandWrapper {
    */
   yes(): void {
     const command = this.getCommandString('pending', 'no', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -24,7 +24,7 @@ export class PendingCommands extends CommandWrapper {
    */
   no(): void {
     const command = this.getCommandString('pending', 'no', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -32,7 +32,7 @@ export class PendingCommands extends CommandWrapper {
    */
   cancel(): void {
     const command = this.getCommandString('pending', 'cancel', 'command');
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 
   /**
@@ -42,6 +42,6 @@ export class PendingCommands extends CommandWrapper {
   setClass(id: '1' | '2' | '3' | '4' | '5'): void {
     const raw = this.getCommandString('pending', 'setClass', 'command');
     const command = this.replaceProperty(raw, 'id', id);
-    this.ircService.send(command);
+    this.eventSubService.send(command);
   }
 }

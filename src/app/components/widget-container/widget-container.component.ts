@@ -6,19 +6,19 @@ import {
 } from '@angular/core';
 import { Config } from 'src/app/services/data/config-data';
 import { ConfigManager } from 'src/app/services/data/config-manager';
-import { IrcService } from 'src/app/services/irc/irc.service';
 import { WidgetItem } from '../../services/widget/widget-item';
 import { WidgetComponent } from '../widget-factory/widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AccessControlService } from 'src/app/services/access-control/access-control-service';
+import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 
 /**
  * Holds a list of widgets and renders them to the DOM, in order.
  */
 @Component({
-    selector: 'app-widget-container',
-    templateUrl: './widget-container.component.html',
-    standalone: false
+  selector: 'app-widget-container',
+  templateUrl: './widget-container.component.html',
+  standalone: false
 })
 export class WidgetContainerComponent implements OnInit {
   private static layouts = [
@@ -51,7 +51,7 @@ export class WidgetContainerComponent implements OnInit {
   constructor(
     private accessControlService: AccessControlService,
     public configManager: ConfigManager,
-    public ircService: IrcService,
+    public eventSubService: EventSubService,
     public commandService: CommandService,
     private componentFactoryResolver: ComponentFactoryResolver
   ) {}
@@ -128,9 +128,10 @@ export class WidgetContainerComponent implements OnInit {
     if (widget) {
       const widgetComponent = widget.component;
       if (widgetComponent) {
-        const factory = this.componentFactoryResolver.resolveComponentFactory(
-          widgetComponent
-        );
+        const factory =
+          this.componentFactoryResolver.resolveComponentFactory(
+            widgetComponent
+          );
         return factory;
       }
     }
