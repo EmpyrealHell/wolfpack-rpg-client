@@ -24,3 +24,16 @@ export interface EventSubMessage {
   metadata: EventSubMetadata;
   payload: EventSubPayload;
 }
+
+export interface EventSubSubscription {
+  type: EventSubMetadata['subscription_type'];
+  version: string;
+  condition: {
+    user_id?: string;
+    broadcaster_id?: string;
+  };
+  transport: {
+    method: 'websocket';
+    session_id: string | null;
+  };
+}

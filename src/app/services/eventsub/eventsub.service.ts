@@ -5,8 +5,8 @@ import { ConfigManager } from '../data/config-manager';
 import { UserService } from '../user/user.service';
 import { MessageQueue } from './message-queue';
 import { WhisperService } from './whisper.service';
-import { EventSubMessage } from './eventsub.types';
 import * as eventSubConfig from './eventsub.service.json';
+import { EventSubMessage, EventSubSubscription, EventSubMetadata } from './eventsub.types';
 
 /**
  * Callback type used for broadcasting whisper messages received by the client.
@@ -174,6 +174,11 @@ export class EventSubService {
       eventSubConfig.connectOptions.options.clientId,
       eventSubConfig.botAccount
     );
+    const streamerData = await this.userService.getUserId(
+      token,
+      eventSubConfig.connectOptions.options.clientId,
+      eventSubConfig.streamerAccount
+    );
 
     this.whisperService.setData(
       userData.user_id,
@@ -228,6 +233,10 @@ export class EventSubService {
             await this.subscribeToEventType(
               'user.whisper.message',
               userData.user_id
+            );
+            await this.subscribeToEventType(
+              'channel.chat.message',
+              streamerData.data[0].id
             );
           } else if (data.metadata?.message_type === 'notification') {
             if (!data.payload.event) {
@@ -294,15 +303,16 @@ export class EventSubService {
   }
 
   private async subscribeToEventType(
-    type: 'user.whisper.message',
+    type: EventSubMetadata['subscription_type'],
     userId: string
   ): Promise<void> {
-    const subscription = {
+    const subscription: EventSubSubscription = {
       type,
       version: '1',
-      condition: {
-        user_id: userId,
-      },
+      condition:
+        type === 'channel.chat.message'
+          ? { broadcaster_id: userId }
+          : { user_id: userId },
       transport: {
         method: 'websocket',
         session_id: this.sessionId,
