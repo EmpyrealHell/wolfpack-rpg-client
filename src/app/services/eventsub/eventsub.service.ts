@@ -5,8 +5,8 @@ import { ConfigManager } from '../data/config-manager';
 import { UserService } from '../user/user.service';
 import { MessageQueue } from './message-queue';
 import { WhisperService } from './whisper.service';
-import { EventSubMessage } from './eventsub.types';
 import * as eventSubConfig from './eventsub.service.json';
+import { EventSubMessage, EventSubSubscription, EventSubMetadata } from './eventsub.types';
 
 /**
  * Callback type used for broadcasting whisper messages received by the client.
@@ -174,6 +174,11 @@ export class EventSubService {
       eventSubConfig.connectOptions.options.clientId,
       eventSubConfig.botAccount
     );
+    const streamerData = await this.userService.getUserId(
+      token,
+      eventSubConfig.connectOptions.options.clientId,
+      eventSubConfig.streamerAccount
+    );
 
     this.whisperService.setData(
       userData.user_id,
@@ -216,18 +221,27 @@ export class EventSubService {
 
         this.connection.onmessage = async event => {
           const data = JSON.parse(event.data) as EventSubMessage;
-
+          if (!data.payload) {
+            console.error('Missing payload in EventSub message:', data);
+            return;
+          }
           if (data.metadata?.message_type === 'session_welcome') {
-            // Need to check if session exists since it's optional in the type
             if (!data.payload.session) {
               this.onError('Missing session data in welcome message');
               return;
             }
             this.sessionId = data.payload.session.id;
             this.isConnected = true;
+
             await this.subscribeToEventType(
               'user.whisper.message',
-              userData.user_id
+              userData.user_id,
+              streamerData.data[0].id
+            );
+            await this.subscribeToEventType(
+              'channel.chat.message',
+              userData.user_id,
+              streamerData.data[0].id
             );
           } else if (data.metadata?.message_type === 'notification') {
             if (!data.payload.event) {
@@ -236,27 +250,25 @@ export class EventSubService {
             }
 
             if (data.metadata.subscription_type === 'channel.chat.message') {
-              // Need to check if all required properties exist
               if (
-                !data.payload.event.broadcaster_login ||
-                !data.payload.event.chatter_login ||
+                !data.payload.event.broadcaster_user_login ||
+                !data.payload.event.chatter_user_login ||
                 !data.payload.event.message?.text
               ) {
                 this.onError('Missing required chat message data');
                 return;
               }
-
               if (
-                data.payload.event.broadcaster_login ===
+                data.payload.event.broadcaster_user_login ===
                   eventSubConfig.streamerAccount &&
-                data.payload.event.chatter_login === eventSubConfig.botAccount
+                data.payload.event.chatter_user_login ===
+                  eventSubConfig.botAccount
               ) {
                 this.onMessage(data.payload.event.message.text);
               }
             } else if (
               data.metadata.subscription_type === 'user.whisper.message'
             ) {
-              // Need to check if all required properties exist
               if (
                 !data.payload.event.from_user_id ||
                 !data.payload.event.whisper?.text
@@ -294,36 +306,40 @@ export class EventSubService {
   }
 
   private async subscribeToEventType(
-    type: 'user.whisper.message',
-    userId: string
+    type: EventSubMetadata['subscription_type'],
+    userId: string,
+    broadcasterId: string
   ): Promise<void> {
-    const subscription = {
+    const token = this.configManager.getConfig().authentication.token;
+    if (!token) {
+      this.onError('No authentication token available');
+      return;
+    }
+
+    const subscription: EventSubSubscription = {
       type,
       version: '1',
-      condition: {
-        user_id: userId,
-      },
+      condition:
+        type === 'channel.chat.message'
+          ? {
+              broadcaster_user_id: broadcasterId,
+              user_id: userId,
+            }
+          : { user_id: userId },
       transport: {
         method: 'websocket',
         session_id: this.sessionId,
       },
     };
 
-    const response = await this.http
+    await this.http
       .post(eventSubConfig.urls.eventSub, subscription, {
         headers: {
           'Client-Id': eventSubConfig.connectOptions.options.clientId,
-          Authorization: `Bearer ${
-            this.configManager.getConfig().authentication.token
-          }`,
+          Authorization: `Bearer ${token}`,
         },
       })
       .toPromise();
-
-    if (!response) {
-      this.onError(`Failed to subscribe to ${type}: No response`);
-      return;
-    }
   }
 }
 

@@ -56,8 +56,8 @@ describe('EventSubService', () => {
         },
         payload: {
           event: {
-            broadcaster_login: eventSubConfig.streamerAccount,
-            chatter_login: eventSubConfig.botAccount,
+            broadcaster_user_login: eventSubConfig.streamerAccount,
+            chatter_user_login: eventSubConfig.botAccount,
             message: {
               text: message,
             },
@@ -297,6 +297,35 @@ describe('EventSubService', () => {
     expect(service.callbacks.get(handlerKey)).not.toBe(callback);
   });
 
+  it('should handle chat messages from the bot account', async () => {
+    const wsInstance = jasmine.createSpyObj('WebSocket', [
+      'onopen',
+      'onmessage',
+      'onclose',
+      'onerror',
+    ]);
+
+    const chatMessage = `test chat message ${Date.now()}`;
+
+    const connectPromise = service.connectUsing(() => {
+      setTimeout(() => {
+        if (wsInstance.onopen) {
+          wsInstance.onopen({} as Event);
+        }
+        if (wsInstance.onmessage) {
+          wsInstance.onmessage(createWelcomeMessage());
+          wsInstance.onmessage(createChannelChatMessage(chatMessage));
+        }
+      }, 0);
+      return wsInstance;
+    });
+
+    await connectPromise;
+    expect(
+      service.lines.find(x => x.text === chatMessage && !x.whisper)
+    ).toBeTruthy();
+  });
+
   it('should send queued messages', async () => {
     const message = `test message sent at ${Date.now()}`;
     const sendFn = {
@@ -350,11 +379,15 @@ describe('EventSubService', () => {
     messageHandler(createWhisperMessage('cmd', userData.user_id));
     messageHandler(createWhisperMessage('at', 'other_user'));
     messageHandler(createWhisperMessage(timestamp, 'other_user'));
+    messageHandler(createChannelChatMessage('bot chat message'));
     await new Promise(resolve => setTimeout(resolve, 0));
-    expect(service.lines.length).toBe(3);
-    expect(whispers[0].text).toBe('response');
-    expect(whispers[1].text).toBe('at');
-    expect(whispers[2].text).toBe(timestamp);
+    expect(service.lines.length).toBe(4);
+    const chatMessage = service.lines.find(x => !x.whisper);
+    expect(chatMessage?.text).toBe('bot chat message');
+    const whisperMessages = service.lines.filter(x => x.whisper && !x.self);
+    expect(whisperMessages[0].text).toBe('response');
+    expect(whisperMessages[1].text).toBe('at');
+    expect(whisperMessages[2].text).toBe(timestamp);
   });
 
   it('should handle sends from the message queue', async () => {
