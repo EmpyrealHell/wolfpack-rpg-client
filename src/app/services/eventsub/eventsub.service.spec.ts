@@ -56,8 +56,8 @@ describe('EventSubService', () => {
         },
         payload: {
           event: {
-            broadcaster_login: eventSubConfig.streamerAccount,
-            chatter_login: eventSubConfig.botAccount,
+            broadcaster_user_login: eventSubConfig.streamerAccount,
+            chatter_user_login: eventSubConfig.botAccount,
             message: {
               text: message,
             },

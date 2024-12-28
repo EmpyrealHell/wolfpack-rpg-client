@@ -255,16 +255,9 @@ export class EventSubService {
                 !data.payload.event.chatter_user_login ||
                 !data.payload.event.message?.text
               ) {
-                console.error('Incomplete Chat Message Data:', {
-                  broadcaster_user_login:
-                    data.payload.event.broadcaster_user_login,
-                  chatter_user_login: data.payload.event.chatter_user_login,
-                  message_text: data.payload.event.message?.text,
-                });
                 this.onError('Missing required chat message data');
                 return;
               }
-
               if (
                 data.payload.event.broadcaster_user_login ===
                   eventSubConfig.streamerAccount &&

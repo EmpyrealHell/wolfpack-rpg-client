@@ -1,5 +1,5 @@
 {
   "url": "https://id.twitch.tv/oauth2/authorize",
   "clientId": "full2dvcfxpu2g8pgalowdipot41ft",
-  "scope": "chat:read whispers:read whispers:edit user:manage:whispers user:read:chat user:bot"
+  "scope": "chat:read whispers:read whispers:edit user:manage:whispers user:read:chat"
 }
