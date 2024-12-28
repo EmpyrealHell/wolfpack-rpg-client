@@ -221,21 +221,26 @@ export class EventSubService {
 
         this.connection.onmessage = async event => {
           const data = JSON.parse(event.data) as EventSubMessage;
-
+          if (!data.payload) {
+            console.error('Missing payload in EventSub message:', data);
+            return;
+          }
           if (data.metadata?.message_type === 'session_welcome') {
-            // Need to check if session exists since it's optional in the type
             if (!data.payload.session) {
               this.onError('Missing session data in welcome message');
               return;
             }
             this.sessionId = data.payload.session.id;
             this.isConnected = true;
+
             await this.subscribeToEventType(
               'user.whisper.message',
-              userData.user_id
+              userData.user_id,
+              streamerData.data[0].id
             );
             await this.subscribeToEventType(
               'channel.chat.message',
+              userData.user_id,
               streamerData.data[0].id
             );
           } else if (data.metadata?.message_type === 'notification') {
@@ -245,27 +250,32 @@ export class EventSubService {
             }
 
             if (data.metadata.subscription_type === 'channel.chat.message') {
-              // Need to check if all required properties exist
               if (
-                !data.payload.event.broadcaster_login ||
-                !data.payload.event.chatter_login ||
+                !data.payload.event.broadcaster_user_login ||
+                !data.payload.event.chatter_user_login ||
                 !data.payload.event.message?.text
               ) {
+                console.error('Incomplete Chat Message Data:', {
+                  broadcaster_user_login:
+                    data.payload.event.broadcaster_user_login,
+                  chatter_user_login: data.payload.event.chatter_user_login,
+                  message_text: data.payload.event.message?.text,
+                });
                 this.onError('Missing required chat message data');
                 return;
               }
 
               if (
-                data.payload.event.broadcaster_login ===
+                data.payload.event.broadcaster_user_login ===
                   eventSubConfig.streamerAccount &&
-                data.payload.event.chatter_login === eventSubConfig.botAccount
+                data.payload.event.chatter_user_login ===
+                  eventSubConfig.botAccount
               ) {
                 this.onMessage(data.payload.event.message.text);
               }
             } else if (
               data.metadata.subscription_type === 'user.whisper.message'
             ) {
-              // Need to check if all required properties exist
               if (
                 !data.payload.event.from_user_id ||
                 !data.payload.event.whisper?.text
@@ -304,14 +314,24 @@ export class EventSubService {
 
   private async subscribeToEventType(
     type: EventSubMetadata['subscription_type'],
-    userId: string
+    userId: string,
+    broadcasterId: string
   ): Promise<void> {
+    const token = this.configManager.getConfig().authentication.token;
+    if (!token) {
+      this.onError('No authentication token available');
+      return;
+    }
+
     const subscription: EventSubSubscription = {
       type,
       version: '1',
       condition:
         type === 'channel.chat.message'
-          ? { broadcaster_id: userId }
+          ? {
+              broadcaster_user_id: broadcasterId,
+              user_id: userId,
+            }
           : { user_id: userId },
       transport: {
         method: 'websocket',
@@ -319,21 +339,14 @@ export class EventSubService {
       },
     };
 
-    const response = await this.http
+    await this.http
       .post(eventSubConfig.urls.eventSub, subscription, {
         headers: {
           'Client-Id': eventSubConfig.connectOptions.options.clientId,
-          Authorization: `Bearer ${
-            this.configManager.getConfig().authentication.token
-          }`,
+          Authorization: `Bearer ${token}`,
         },
       })
       .toPromise();
-
-    if (!response) {
-      this.onError(`Failed to subscribe to ${type}: No response`);
-      return;
-    }
   }
 }
 
