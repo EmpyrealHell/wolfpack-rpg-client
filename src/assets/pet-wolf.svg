@@ -12,7 +12,7 @@
    viewBox="0 0 512 512"
    version="1.1"
    id="svg8"
-   sodipodi:docname="wolf.svg"
+   sodipodi:docname="pet-wolf.svg"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <metadata
      id="metadata14">
@@ -28,34 +28,6 @@
   </metadata>
   <defs
      id="defs12">
-    <linearGradient
-       inkscape:collect="always"
-       id="linearGradient914">
-      <stop
-         style="stop-color:#bfc0c5;stop-opacity:1;"
-         offset="0"
-         id="stop910" />
-      <stop
-         id="stop918"
-         offset="0.27432719"
-         style="stop-color:#cbb9ab;stop-opacity:1" />
-      <stop
-         style="stop-color:#bfc0c5;stop-opacity:0.94444442"
-         offset="1"
-         id="stop912" />
-    </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       id="linearGradient904">
-      <stop
-         style="stop-color:#cbb9ab;stop-opacity:1"
-         offset="0"
-         id="stop900" />
-      <stop
-         style="stop-color:#bfc0c5;stop-opacity:0.97979796"
-         offset="1"
-         id="stop902" />
-    </linearGradient>
     <linearGradient
        inkscape:collect="always"
        id="linearGradient862">
@@ -122,33 +94,6 @@
        x2="472.26547"
        y2="379.95383"
        gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient904"
-       id="linearGradient906"
-       x1="-54.375036"
-       y1="242.9387"
-       x2="508.14458"
-       y2="242.9387"
-       gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient904"
-       id="linearGradient908"
-       gradientUnits="userSpaceOnUse"
-       x1="181.89227"
-       y1="30.275848"
-       x2="207.76865"
-       y2="431.4595" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient914"
-       id="linearGradient916"
-       x1="45.429367"
-       y1="295.27719"
-       x2="474.89601"
-       y2="323.56145"
-       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      pagecolor="#ffffff"
@@ -164,7 +109,7 @@
      id="namedview10"
      showgrid="false"
      inkscape:zoom="1"
-     inkscape:cx="377.58398"
+     inkscape:cx="202.58398"
      inkscape:cy="264.08619"
      inkscape:window-x="2736"
      inkscape:window-y="99"
@@ -172,7 +117,7 @@
      inkscape:current-layer="svg8" />
   <path
      sodipodi:nodetypes="ccccscccccccccccc"
-     style="fill:none;fill-opacity:1;stroke:url(#linearGradient916);stroke-width:32;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:32;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      inkscape:connector-curvature="0"
      id="path819"
      d="M 237.3,161.4 C 123.14576,252.79322 204.21695,307.7 125.5,437.9 91.48,379.8 111.44746,318.55424 133.44746,238.55424 105.19404,263.29305 93.96206,260.76431 93.96206,260.76431 66.843416,287.88295 42.713738,328.19459 39.291809,362.79576 34.187205,414.41147 68.916,467.65 133.1,486.9 H 346 c 0,0 -6.3,-21.5 -14.1,-28.9 -12.7,-12 -48.2,-20.2 -48.2,-20.2 -11.53448,-55.76189 20.91718,-76.99803 38.6,-103.9 -17.42031,101.5193 33.09905,54.96592 57.4,153 h 76.5 c 0,0 4.6,-15.9 0.2,-21.5 C 445.5,451.6 405.1,453.5 405.1,453.5 389.55,399.9 355.34758,359.59874 364.825,281.575 351.675,228.3 336.95,186.8 315.1,180.3 293.4,173.8 260.8,166.2 237.3,161.4 Z" />
@@ -183,12 +128,12 @@
      style="fill:url(#linearGradient864);fill-opacity:1;stroke:none;stroke-opacity:1;stroke-width:8;stroke-miterlimit:4;stroke-dasharray:none"
      sodipodi:nodetypes="ccccscccccccccccc" />
   <g
-     style="fill:#8e8f98;stroke:url(#linearGradient906);stroke-opacity:1;stroke-width:56.28790419;stroke-miterlimit:4;stroke-dasharray:none;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1"
+     style="fill:#0e0e0f;stroke:#000000;stroke-opacity:1;stroke-width:56.28790419;stroke-miterlimit:4;stroke-dasharray:none;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1"
      id="g817"
      transform="matrix(0.5685058,0,0,0.5685058,178.16705,20.415973)"
      class="">
     <path
-       style="fill:#8e8f98;fill-opacity:1;stroke:url(#linearGradient908);stroke-width:56.28790283;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#0e0e0f;fill-opacity:1;stroke:#000000;stroke-width:56.28790283;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:connector-curvature="0"
        id="path815"
        d="m 181.89227,30.275848 c -22.33539,35.19187 -33.23071,91.484332 -9.89658,133.431292 l -14.79946,8.35308 c -6.08322,-10.80453 -10.16897,-22.15381 -12.62041,-33.77548 -31.32403,-5.72004 -62.976432,-10.572 -95.315849,-1.90668 30.933615,9.17022 47.912148,21.51825 69.621059,42.40093 -24.351025,8.80705 -54.703557,27.41988 -84.375131,63.7376 32.204735,-7.9899 58.861939,-10.44135 81.197331,-5.72005 -33.539408,20.42872 -58.162819,50.9356 -80.207673,103.59629 32.59515,-15.61662 58.916415,-17.06933 93.463643,-17.06933 -20.94624,29.68974 -32.023146,70.0932 -32.967407,102.41596 22.253677,-23.60651 52.306587,-54.65816 79.181697,-71.72749 2.72383,27.1475 13.61915,52.93308 32.59516,77.44754 -0.18159,-39.8587 9.35181,-80.17136 28.69099,-121.11959 -17.06933,8.17149 -29.41735,16.43377 -45.30635,26.60273 5.62925,-25.33161 11.25849,-50.66322 16.97853,-75.99482 -21.15507,2.17906 -35.40977,9.07943 -54.93054,16.79694 14.79947,-30.05291 29.68973,-60.01503 44.57999,-90.06794 l 15.25344,7.53593 -25.78557,52.11592 c 16.70615,-3.99495 26.05796,-3.72256 41.49299,-1.18032 -4.08575,18.52203 -8.17149,36.95327 -12.34803,55.38451 59.28868,-32.86753 134.64794,-41.67458 205.83066,-45.39714 l 47.30383,-137.09938 c -50.39083,-3.35939 -96.51433,4.35813 -139.82321,8.89784 C 295.20355,109.04898 256.34359,103.60132 219.02714,111.13725 206.67911,84.180418 194.33109,57.223598 181.89227,30.275848 Z M 314.63353,138.64792 c -4.08575,12.89279 -11.80326,16.61535 -22.42619,18.70362 -14.61788,-3.99495 -25.69479,-14.07312 -31.23324,-27.41988 18.52204,-3.45018 38.49678,3.08701 53.65943,8.71626 z"
