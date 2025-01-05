@@ -3,6 +3,7 @@ import { CharacterWidgetComponent } from 'src/app/widgets/character/character.wi
 import { ConsoleWidgetComponent } from 'src/app/widgets/console/console.widget';
 import { WidgetItem } from './widget-item';
 import { FishingWidgetComponent } from 'src/app/widgets/fishing/fishing.widget';
+import { PetWidgetComponent } from 'src/app/widgets/pet/pet.widget';
 
 /**
  * Service containing the list of all available widgets.
@@ -19,7 +20,7 @@ export class WidgetService {
       'character'
     ),
     // new WidgetItem(null, 'Inventory', 'inventory.beta', 'inventory'),
-    // new WidgetItem(null, 'Pets', 'pets.beta', 'pets'),
+    new WidgetItem(PetWidgetComponent, 'Pets', 'pets.beta', 'pets'),
     new WidgetItem(FishingWidgetComponent, 'Fishing', 'fishing', 'fishing'),
     // new WidgetItem(null, 'Dungeon', 'dungeon.beta', 'dungeon'),
     // new WidgetItem(null, 'Group', 'group.beta', 'group'),

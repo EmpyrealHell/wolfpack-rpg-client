@@ -353,7 +353,7 @@
               "response": "inventory: (?<data>.*)",
               "subGroups": {
                 "container": "data",
-                "pattern": "(?<name>[^\\|]+)\\|(?<desc>[^\\|]+)\\|(?<status>[UE])\\|(?<quality>\\d+%)\\|(?<success>\\d+%)\\|(?<xp>\\d+%)\\|(?<coin>\\d+%)\\|(?<item>\\d+%)\\|(?<death>\\d+%);"
+                "pattern": "(?<id>[^\\|]+)\\|(?<count>[^\\|]+)\\|(?<max>[^\\|]+)\\|(?<name>[^\\|]+)\\|(?<desc>[^\\|]+)\\|(?<equipped>[^\\|]*)\\|(?<quality>[^\\|]+)\\|(?<slot>[^\\|]+)\\|(?<type>[^\\|]+)\\|(?<success>[^\\|]+)\\|(?<xp>[^\\|]+)\\|(?<coin>[^\\|]+)\\|(?<itemFind>[^\\|]+)\\|(?<preventDeath>[^\\|]+);"
               }
             }
           }
@@ -583,18 +583,20 @@
         }
       },
       "list": {
-        "command": "!pets",
+        "command": "!pets -c",
         "alternates": ["!stable", "pets", "stable"],
         "responses": {
           "error": {
             "empty": "You have no pets\\."
           },
           "success": {
-            "size": "You have (?<size>\\d+) pets: ",
-            "infoActive": "<\\[(?<id>\\d+)\\]> (?<name>[^ ]{1,16}) the (?<type>.*) \\((?<rarity>\\w+)\\)",
-            "infoInactive": "\\[(?<id>\\d+)\\] (?<name>[^ ]{1,16}) the (?<type>.*) \\((?<rarity>\\w+)\\)",
-            "status": "Status: (?<status>[^\\|]+) \\| Sparkly\\? (?<sparkly>No|Yes)\\!?",
-            "stats": "Level: (?<level>\\d+) \\| Affection: (?<affection>\\d+) \\| Energy: (?<energy>\\d+)"
+            "compact": {
+              "response": "pets: (?<data>.*)",
+              "subGroups": {
+                "container": "data",
+                "pattern": "(?<id>[^\\|]+)\\|(?<type>[^\\|]+)\\|(?<description>[^\\|]+)\\|(?<rarity>[^\\|]+)\\|(?<name>[^\\|]+)\\|(?<sparkly>[^\\|]*)\\|(?<level>[^\\|]+)\\|(?<xp>[^\\|]+)\\|(?<affection>[^\\|]+)\\|(?<hunger>[^\\|]+)\\|(?<active>[^\\|]*);"
+              }
+            }
           }
         }
       },

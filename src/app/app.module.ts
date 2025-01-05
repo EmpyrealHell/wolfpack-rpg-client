@@ -43,6 +43,7 @@ import { FishingWidgetComponent } from './widgets/fishing/fishing.widget';
 import { ErrorDialog } from './components/error-dialog/error-dialog';
 import { CommandService } from './services/command/command-service';
 import { EventSubService } from './services/eventsub/eventsub.service';
+import { PetWidgetComponent } from './widgets/pet/pet.widget';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { EventSubService } from './services/eventsub/eventsub.service';
     ErrorDialog,
 
     CharacterWidgetComponent,
+    PetWidgetComponent,
     ConsoleWidgetComponent,
     FishingWidgetComponent,
 

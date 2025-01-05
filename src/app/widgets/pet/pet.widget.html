@@ -1,0 +1,44 @@
+<mat-card-content height="100%" class="flex-column">
+  <div *ngIf="selected">
+    <span style="display: block; width: 50%; margin: auto; text-align: center">
+      <svg>
+        <rect
+          width="64px"
+          height="64px"
+          [attr.fill]="selected?.pet?.rarity?.color"
+          rx="4px"
+          ry="4px"
+        />
+        <image
+          [attr.href]="'./assets/pet-' + selected?.pet?.id + '.svg'"
+          width="64px"
+          height="64px"
+        />
+      </svg>
+    </span>
+    <p>{{selected?.name}}</p>
+    <div class="static-bar">
+      <hr />
+    </div>
+  </div>
+  <div class="flex-row">
+    <div *ngFor="let entry of stable" style="margin: 4px">
+      <button mat-button style="height: 72px">
+        <svg width="64px" height="64px">
+          <rect
+            width="64px"
+            height="64px"
+            [attr.fill]="entry?.pet?.rarity?.color"
+            rx="4px"
+            ry="4px"
+          />
+          <image
+            [attr.href]="'./assets/pet-' + entry?.pet?.id + '.svg'"
+            width="64px"
+            height="64px"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+</mat-card-content>
