@@ -1,7 +1,7 @@
 <mat-card-content height="100%" class="flex-column">
   <div *ngIf="selected">
     <span style="display: block; width: 50%; margin: auto; text-align: center">
-      <svg>
+      <svg width="64px" height="64px">
         <rect
           width="64px"
           height="64px"
@@ -15,15 +15,15 @@
           height="64px"
         />
       </svg>
+      <p>{{selected?.name}}</p>
     </span>
-    <p>{{selected?.name}}</p>
     <div class="static-bar">
       <hr />
     </div>
   </div>
   <div class="flex-row">
     <div *ngFor="let entry of stable" style="margin: 4px">
-      <button mat-button style="height: 72px">
+      <button mat-button style="height: 72px" (click)="selected = entry">
         <svg width="64px" height="64px">
           <rect
             width="64px"
@@ -37,6 +37,8 @@
             width="64px"
             height="64px"
           />
+          <text *ngIf="entry?.sparkly" x="0" y="15">✨</text>
+          <text *ngIf="entry?.active" x="50" y="15" fill="red">🅰</text>
         </svg>
       </button>
     </div>

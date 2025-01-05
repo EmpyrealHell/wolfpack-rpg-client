@@ -4,7 +4,13 @@ import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { Pet, Rarity, Stable } from './model/pet';
 
 /**
- * Widget used to display character data.
+ * Widget used to display pet data.
+ * TODO:
+ *  * Center stable display
+ *  * add styles for summoned and sparkly
+ *  * add selection on click
+ *  * add selected display
+ *  * add actions to selected display
  */
 @Component({
   selector: 'app-pet-widget',
