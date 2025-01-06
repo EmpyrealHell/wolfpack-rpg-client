@@ -128,6 +128,7 @@ export class GameComponent implements OnInit {
   onError(message: Message): void {
     this.dialog.open(ErrorDialog, {
       data: {
+        title: 'Communication Error',
         message:
           `An error occurred trying to send a message: "${message.text}"\n` +
           'If you continue to see this issue, you may need to whisper the bot directly, or your account might be too new.',

@@ -38,6 +38,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { FishingWidgetComponent } from './widgets/fishing/fishing.widget';
 import { ErrorDialog } from './components/error-dialog/error-dialog';
@@ -93,6 +94,7 @@ import { PetWidgetComponent } from './widgets/pet/pet.widget';
     MatTabsModule,
     MatToolbarModule,
     MatSliderModule,
+    MatSnackBarModule,
   ],
   providers: [CommandService, EventSubService],
   bootstrap: [AppComponent],

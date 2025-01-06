@@ -540,16 +540,13 @@
         }
       },
       "dismiss": {
-        "command": "!dismiss {id}",
+        "command": "!dismiss",
         "responses": {
           "error": {
-            "syntax": "Invalid number of parameters\\. Syntax: !dismiss <stable ID>",
-            "invalidId": "Invalid Stable ID given\\. Check !pets for each pet's stable ID!",
-            "invalidOperation": "That pet is not currently summoned\\.",
-            "empty": "You don't have a pet\\."
+            "empty": "You do not have a pet summoned\\."
           },
           "success": {
-            "confirmation": "You dismissed (?<name>[^ ]{1,16})\\."
+            "confirmation": "You dismissed (?<name>.{1,16})\\."
           }
         }
       },
@@ -557,14 +554,12 @@
         "command": "!feed {id}",
         "responses": {
           "error": {
-            "syntax": "Invalid number of parameters\\. Syntax: !feed <stable ID>",
-            "invalidId": "Invalid Stable ID given\\. Check !pets for each pet's stable ID!",
             "insufficientFunds": "You lack the (?<cost>\\d+) wolfcoins to feed your pet! Hop in a Lobos stream soon!",
-            "full": "(?<name>[^ ]{1,16}) is full and doesn't need to eat!"
+            "full": "(?<name>[.]{1,16}) is full and doesn't need to eat!"
           },
           "success": {
-            "confirmation": "You were charged (?<cost>\\d+) wolfcoins to feed (?<name>[^ ]{1,16})\\. They feel refreshed!",
-            "levelUp": "(?<name>[^ ]{1,16}) leveled up! They are now level (?<level>\\d+)\\."
+            "confirmation": "You were charged (?<cost>\\d+) wolfcoins to feed (?<name>[.]{1,16})\\. They feel refreshed!",
+            "levelUp": "(?<name>[.]{1,16}) leveled up! They are now level (?<level>\\d+)\\."
           }
         }
       },
@@ -619,7 +614,6 @@
         "responses": {
           "error": {
             "syntax": "Sorry, the data you provided didn't work\\. Syntax: !rename <stable id> <new name>",
-            "invalidParameters": "Invalid number of parameters\\. Note: names cannot contain spaces\\.",
             "invalidId": "Sorry, the Stable ID given was invalid\\. Please try again\\.",
             "tooLong": "Name can only be 16 characters max\\.",
             "empty": "You don't have any pets to rename\\. :\\("
@@ -633,15 +627,12 @@
         "command": "!summon {id}",
         "responses": {
           "error": {
-            "syntax": "Invalid number of parameters\\. Syntax: !summon <stable ID>",
-            "invalidId": "Invalid Stable ID given\\. Check !pets for each pet's stable ID!",
-            "corrupt": "Sorry, your stableId is corrupt\\. Lobos is working on this issue :\\(",
-            "invalidOperation": "(?<name>[^ ]{1,16}) is already summoned!",
-            "empty": "You don't have a pet\\."
+            "invalidId": "Invalid index, please specify a number between 1 and (?<count>[0-9]+)",
+            "invalidOperation": "(?<name>[.]{1,16}) is already summoned!",
+            "empty": "You have no pets\\."
           },
           "success": {
-            "confirmation": "You summoned (?<name>[^ ]{1,16})\\.",
-            "dismissCurrent": "(?<name>[^ ]{1,16}) was dismissed\\."
+            "confirmation": "You summoned (?<summoned>.{1,16})(?:\\.|(?: and sent (?<dismissed>.{1,16}) back to the stable\\.))"
           }
         }
       }
@@ -686,7 +677,7 @@
         }
       },
       "gloatPet": {
-        "command": "!gloatpet",
+        "command": "!gloatpet {index}",
         "alternates": ["!petgloat"],
         "responses": {
           "error": {
@@ -694,10 +685,10 @@
             "insufficientFunds": "You don't have enough coins to gloat!"
           },
           "public": {
-            "gloat": "(?<user>[^ ]+) watches proudly as their level (?<level>\\d+) (?<sparkly>SPARKLY )?(?<type>.*) named (?<name>[^ ]{1,16}) struts around!"
+            "gloat": "(?<user>[^ ]+) watches proudly as their level (?<level>\\d+) (?<sparkly>SPARKLY )?(?<type>.*) named (?<name>[.]{1,16}) struts around!"
           },
           "success": {
-            "confirmation": "You spent (?<coins>\\d+) wolfcoins to brag about (?<name>[^ ]{1,16})\\."
+            "confirmation": "You spent (?<coins>\\d+) wolfcoins to brag about (?<name>[.]{1,16})\\."
           }
         }
       },

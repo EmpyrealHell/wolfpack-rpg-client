@@ -1,6 +1,7 @@
 import {
   Component,
   ComponentFactory,
+  Injector,
   Input,
   OnInit,
   ViewChild,
@@ -11,6 +12,9 @@ import { WidgetComponent } from './widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatRipple } from '@angular/material/core';
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
+import { AbstractWidgetComponent } from 'src/app/widgets/abstract/abstract-widget';
+import { FishingWidgetComponent } from 'src/app/widgets/fishing/fishing.widget';
+import { ConsoleWidgetComponent } from 'src/app/widgets/console/console.widget';
 
 /**
  * Component that acts as a placeholder for widgets in the widget container.
@@ -57,7 +61,7 @@ export class WidgetFactoryComponent implements OnInit {
   @ViewChild(WidgetContainerDirective, { static: true })
   container: WidgetContainerDirective | undefined;
 
-  constructor() {}
+  constructor(public injector: Injector) {}
 
   ngOnInit(): void {
     if (this.factory && this.container) {

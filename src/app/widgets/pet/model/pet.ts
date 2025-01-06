@@ -9,6 +9,7 @@ export class Pet {
 
 export class Stable {
   constructor(
+    public index: number,
     public pet: Pet,
     public name: string,
     public level: number,

@@ -1,30 +1,70 @@
 <mat-card-content height="100%" class="flex-column">
-  <div *ngIf="selected">
+  <div *ngIf="selected" mat-ripple [matRippleDisabled]="true">
     <span style="display: block; width: 50%; margin: auto; text-align: center">
-      <svg width="64px" height="64px">
+      <svg width="128px" height="128px">
         <rect
-          width="64px"
-          height="64px"
+          width="128px"
+          height="128px"
           [attr.fill]="selected?.pet?.rarity?.color"
-          rx="4px"
-          ry="4px"
+          rx="8px"
+          ry="8px"
         />
         <image
           [attr.href]="'./assets/pet-' + selected?.pet?.id + '.svg'"
-          width="64px"
-          height="64px"
+          width="128px"
+          height="128px"
         />
+        <text *ngIf="selected?.sparkly" x="0" y="30" font-size="32px">✨</text>
+        <text
+          *ngIf="selected?.active"
+          x="100"
+          y="30"
+          font-size="32px"
+          fill="white"
+          stroke="red"
+          stroke-width="3"
+        >
+          🅰
+        </text>
       </svg>
-      <p>{{selected?.name}}</p>
+      <p>
+        "{{selected?.name}}" the level {{selected?.level}} {{selected.sparkly ?
+        "sparkly " : ""}}{{selected.pet.name}}.
+      </p>
+      <p *ngIf="selected?.hunger < 25">
+        <mat-icon color="warn" style="vertical-align: bottom">warning</mat-icon
+        >They are hungry and need to be fed!<mat-icon
+          color="warn"
+          style="vertical-align: bottom"
+          >warning</mat-icon
+        >
+      </p>
+      <p *ngIf="selected?.hunger >= 25">They are not hungry.</p>
+      <div>
+        <button mat-button color="accent" (click)="feedPet()">Feed</button>
+        <button mat-button (click)="gloatPet()">Gloat</button>
+        <button mat-button (click)="renamePet()">Rename</button>
+        <button mat-button (click)="dismissPet()" *ngIf="selected?.active">
+          Dismiss
+        </button>
+        <button mat-button (click)="summonPet()" *ngIf="!selected?.active">
+          Summon
+        </button>
+        <button mat-button (click)="releasePet()" color="warn">Release</button>
+        <button mat-button (click)="debug()">Debug</button>
+      </div>
     </span>
     <div class="static-bar">
       <hr />
     </div>
   </div>
-  <div class="flex-row">
+  <div
+    class="flex-row"
+    style="justify-content: center; flex-wrap: wrap; align-content: flex-start"
+  >
     <div *ngFor="let entry of stable" style="margin: 4px">
-      <button mat-button style="height: 72px" (click)="selected = entry">
-        <svg width="64px" height="64px">
+      <button mat-button style="height: 74px" (click)="selected = entry">
+        <svg width="64px" height="64px" style="margin-top: 4px">
           <rect
             width="64px"
             height="64px"
@@ -38,7 +78,16 @@
             height="64px"
           />
           <text *ngIf="entry?.sparkly" x="0" y="15">✨</text>
-          <text *ngIf="entry?.active" x="50" y="15" fill="red">🅰</text>
+          <text
+            *ngIf="entry?.active"
+            x="50"
+            y="15"
+            fill="white"
+            stroke="red"
+            stroke-width="1.5"
+          >
+            🅰
+          </text>
         </svg>
       </button>
     </div>
