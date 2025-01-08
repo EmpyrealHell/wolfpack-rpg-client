@@ -14,8 +14,8 @@ import { MatInputModule } from '@angular/material/input';
 import { Stable } from './model/pet';
 
 @Component({
-  selector: 'rename-pet-dialog',
-  templateUrl: './rename.pet.dialog.html',
+  selector: 'release-pet-dialog',
+  templateUrl: './release.pet.dialog.html',
   standalone: true,
   imports: [
     MatFormFieldModule,
@@ -28,18 +28,9 @@ import { Stable } from './model/pet';
     MatDialogClose,
   ],
 })
-export class RenamePetDialog {
+export class ReleasePetDialog {
   constructor(
-    public dialogRef: MatDialogRef<RenamePetDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: RenameData
+    public dialogRef: MatDialogRef<ReleasePetDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: Stable
   ) {}
-
-  onCancel(): void {
-    this.dialogRef.close();
-  }
-}
-
-export interface RenameData {
-  pet: Stable;
-  name: string;
 }

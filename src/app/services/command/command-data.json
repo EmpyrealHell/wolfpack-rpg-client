@@ -604,13 +604,22 @@
             "empty": "You don't have a pet\\."
           },
           "pending": {
-            "confirmation": "If you release (?<name>[^ ]{1,16}), they will be gone forever\\. Are you sure you want to release them\\? \\(y/n\\)"
+            "confirmation": "If you release (?<name>.{1,16}), they will be gone forever\\. Are you sure you want to release them\\? \\(!y/!n\\)"
+          },
+          "success": {
+            "confirmation": "You released (?<name>.{1,16}). Goodbye, $1!"
           }
         },
         "options": ["Yes", "No"]
       },
+      "releaseConfirm": {
+        "command": "!yes"
+      },
+      "releaseCancel": {
+        "command": "!no"
+      },
       "rename": {
-        "command": "!rename {id} {name}",
+        "command": "!rename {id} \"{name}\"",
         "responses": {
           "error": {
             "syntax": "Sorry, the data you provided didn't work\\. Syntax: !rename <stable id> <new name>",
@@ -619,7 +628,7 @@
             "empty": "You don't have any pets to rename\\. :\\("
           },
           "success": {
-            "confirmation": "(?<oldName>[^ ]{1,16}) was renamed to (?<name>[^ ]{1,16})!"
+            "confirmation": "(?<oldName>.{1,16}) was renamed to (?<name>.{1,16})!"
           }
         }
       },
@@ -766,6 +775,12 @@
       "started": "Successfully initiated (?<name>.*)! Wolfcoins deducted\\.",
       "unready": "Party 'Ready' status has been revoked\\.",
       "userRemoved": "(?<user>[^ ]+) was removed from the party\\."
+    },
+    "pets": {
+      "hungerCritical": "(?<name>.{1,16}) is very hungry and will die if you don't feed it soon!",
+      "hungerWarning": "(?<name>.{1,16}) is hungry! Be sure to !feed them!",
+      "hungerDeath": "(?<name>.{1.16}) starved to death.",
+      "dungeonFound": "(?:You found your first pet! You now have a pet (?<name>.{1,16})\\. Whisper me !pethelp for more info\\.)|(You found a new pet buddy! You earned a (?<name>.{1,16}) pet!)"
     }
   }
 }
