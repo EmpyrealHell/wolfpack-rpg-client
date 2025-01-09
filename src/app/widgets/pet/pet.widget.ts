@@ -111,18 +111,26 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
   private handleFeedSuccess(
     name: string,
     id: string,
-    groups: Map<string, string>
+    groups: Map<string, string>,
+    isReplay: boolean | undefined
   ): void {
+    console.log(`Feed Success: ${name}, ${id}`);
     if (id === 'levelUp') {
-      //TODO: Maybe play a sound here?
       const level = groups.get('level') ?? '';
       if (this.lastFed) {
-        this.snackbar.open(
-          `${this.lastFed.name} leveled up! They are now level ${level}.`,
-          undefined,
-          { duration: 5000 }
-        );
-        this.ripple?.launch({ centered: true });
+        if (!isReplay) {
+          const audio = new Audio(
+            `./assets/pet-${this.lastFed.pet.id}-call.mp3`
+          );
+          audio.load();
+          audio.play();
+          this.snackbar.open(
+            `${this.lastFed.name} leveled up! They are now level ${level}.`,
+            undefined,
+            { duration: 5000 }
+          );
+          this.ripple?.launch({ centered: true });
+        }
         this.lastFed.level = parseInt(level);
       }
     } else if (id === 'confirmation') {
@@ -130,16 +138,18 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       const petName = groups.get('name') ?? '';
       const sparkly = groups.get('sparkly') ? true : false;
       const type = groups.get('pet') ?? '';
-      const pet = this.getPetByAll(name, type, sparkly);
+      const pet = this.getPetByAll(petName, type, sparkly);
       if (pet) {
         this.lastFed = pet;
         pet.hunger = 100;
       }
-      this.snackbar.open(
-        `You were charged ${cost} wolfcoins to feed ${petName}. They feel refreshed!`,
-        undefined,
-        { duration: 5000 }
-      );
+      if (!isReplay) {
+        this.snackbar.open(
+          `You were charged ${cost} wolfcoins to feed ${petName}. They feel refreshed!`,
+          undefined,
+          { duration: 5000 }
+        );
+      }
     }
   }
 
@@ -319,8 +329,8 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
-        this.handleFeedSuccess(name, id, groups);
+      (name, id, groups, subGroups, date, isReplay) => {
+        this.handleFeedSuccess(name, id, groups, isReplay);
       }
     );
     commandService.subscribeToCommand(
