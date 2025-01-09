@@ -15,7 +15,7 @@ import { WidgetComponent } from '../widget-factory/widget.component';
 import { WidgetContainerComponent } from './widget-container.component';
 import { Config } from 'src/app/services/data/config-data';
 import { CommandService } from 'src/app/services/command/command-service';
-import { AccessControlService } from 'src/app/services/access-control/access-control-service';
+import { ClientDataService } from 'src/app/services/access-control/access-control-service';
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 
 export class FirstWidget extends AbstractWidgetComponent {
@@ -41,7 +41,7 @@ const secondwidgetItem = new WidgetItem(
   'second'
 );
 
-const accessControlServiceSpy = TestUtils.spyOnClass(AccessControlService);
+const accessControlServiceSpy = TestUtils.spyOnClass(ClientDataService);
 accessControlServiceSpy.getWidgets.and.returnValue(
   new Array<WidgetItem>(firstWidgetItem, secondwidgetItem)
 );
@@ -73,7 +73,7 @@ describe('WidgetContainerComponent', () => {
       declarations: [WidgetContainerComponent, WidgetFactoryComponent],
       providers: [
         {
-          provide: AccessControlService,
+          provide: ClientDataService,
           useValue: accessControlServiceSpy,
         },
         { provide: ConfigManager, useValue: configManagerSpy },

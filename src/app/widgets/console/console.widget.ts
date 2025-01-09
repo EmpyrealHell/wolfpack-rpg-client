@@ -7,6 +7,7 @@ import {
   EventSubService,
   Message,
 } from 'src/app/services/eventsub/eventsub.service';
+import { ClientDataService } from 'src/app/services/client-data/client-data-service';
 
 /**
  * Widget that provides direct access to the communication channel between the
@@ -34,6 +35,11 @@ export class ConsoleWidgetComponent implements WidgetComponent {
    */
   name = '';
 
+  /**
+   * Reference to the ClientData service.
+   */
+  @Input()
+  clientDataService: ClientDataService | undefined;
   /**
    * Reference to the EventSub chat service.
    */

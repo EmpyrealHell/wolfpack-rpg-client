@@ -12,7 +12,7 @@
    viewBox="0 0 512 512"
    version="1.1"
    id="svg8"
-   sodipodi:docname="pet-cat.svg"
+   sodipodi:docname="pet-3.svg"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <metadata
      id="metadata14">
@@ -22,7 +22,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -38,13 +38,13 @@
       <stop
          id="stop848"
          offset="0.26063433"
-         style="stop-color:#40342b;stop-opacity:1;" />
+         style="stop-color:#363636;stop-opacity:1" />
       <stop
-         style="stop-color:#796348;stop-opacity:1"
+         style="stop-color:#616161;stop-opacity:1"
          offset="0.84917134"
          id="stop852" />
       <stop
-         style="stop-color:#755c46;stop-opacity:1"
+         style="stop-color:#5e5e5e;stop-opacity:1"
          offset="1"
          id="stop842" />
     </linearGradient>
@@ -81,10 +81,10 @@
      id="namedview10"
      showgrid="false"
      inkscape:zoom="0.4609375"
-     inkscape:cx="170.40743"
-     inkscape:cy="321.56649"
-     inkscape:window-x="2232"
-     inkscape:window-y="160"
+     inkscape:cx="892.84811"
+     inkscape:cy="239.12581"
+     inkscape:window-x="2308"
+     inkscape:window-y="129"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg8" />
   <circle

@@ -11,6 +11,18 @@
         }
       }
     },
+    "client": {
+      "data": {
+        "command": "!fetch-client-data",
+        "responses": {
+          "success": {
+            "compact": {
+              "response": "cd: (?<data>.*)"
+            }
+          }
+        }
+      }
+    },
     "dungeon": {
       "daily": {
         "command": "!daily",
@@ -546,7 +558,7 @@
             "empty": "You do not have a pet summoned\\."
           },
           "success": {
-            "confirmation": "You dismissed (?<name>.{1,16})\\."
+            "confirmation": "You dismissed (?<name>.{1,16}) the (?<sparkly>sparkly )?(?<pet>.*?)\\."
           }
         }
       },
@@ -558,7 +570,7 @@
             "full": "(?<name>[.]{1,16}) is full and doesn't need to eat!"
           },
           "success": {
-            "confirmation": "You were charged (?<cost>\\d+) wolfcoins to feed (?<name>[.]{1,16})\\. They feel refreshed!",
+            "confirmation": "You were charged (?<cost>\\d+) wolfcoins to feed (?<name>.{1,16}) the (?<sparkly>sparkly )?(?<pet>.*?)\\. They feel refreshed!",
             "levelUp": "(?<name>[.]{1,16}) leveled up! They are now level (?<level>\\d+)\\."
           }
         }
@@ -604,10 +616,10 @@
             "empty": "You don't have a pet\\."
           },
           "pending": {
-            "confirmation": "If you release (?<name>.{1,16}), they will be gone forever\\. Are you sure you want to release them\\? \\(!y/!n\\)"
+            "confirmation": "If you release (?<name>.{1,16}) the (?<sparkly>sparkly )?(?<pet>.*?), they will be gone forever\\. Are you sure you want to release them\\? \\(!y/!n\\)"
           },
           "success": {
-            "confirmation": "You released (?<name>.{1,16}). Goodbye, $1!"
+            "confirmation": "You released (?<name>.{1,16}) the (?<sparkly>sparkly )?(?<pet>.*?). Goodbye, $1!"
           }
         },
         "options": ["Yes", "No"]
@@ -628,7 +640,7 @@
             "empty": "You don't have any pets to rename\\. :\\("
           },
           "success": {
-            "confirmation": "(?<oldName>.{1,16}) was renamed to (?<name>.{1,16})!"
+            "confirmation": "(?<oldName>.{1,16}) the (?<sparkly>sparkly )?(?<pet>.*?) was renamed to (?<name>.{1,16})!"
           }
         }
       },
@@ -641,7 +653,7 @@
             "empty": "You have no pets\\."
           },
           "success": {
-            "confirmation": "You summoned (?<summoned>.{1,16})(?:\\.|(?: and sent (?<dismissed>.{1,16}) back to the stable\\.))"
+            "confirmation": "You summoned (?<summoned>.{1,16}) the (?<summonSparkly>sparkly )?(?<summonPet>.*?)(?:\\.|(?: and sent (?<dismissed>.{1,16}) the (?<dismissSparkly>sparkly )?(?<dismissPet>.*) back to the stable\\.))"
           }
         }
       }
@@ -777,9 +789,9 @@
       "userRemoved": "(?<user>[^ ]+) was removed from the party\\."
     },
     "pets": {
-      "hungerCritical": "(?<name>.{1,16}) is very hungry and will die if you don't feed it soon!",
-      "hungerWarning": "(?<name>.{1,16}) is hungry! Be sure to !feed them!",
-      "hungerDeath": "(?<name>.{1.16}) starved to death.",
+      "hungerCritical": "(?<name>.{1,16}) the (?<sparkly>sparkly )?(?<pet>.*) is very hungry and will die if you don't feed it soon!",
+      "hungerWarning": "(?<name>.{1,16}) the (?<sparkly>sparkly )?(?<pet>.*) is hungry! Be sure to !feed them!",
+      "hungerDeath": "(?<name>.{1,16}) the (?<sparkly>sparkly )?(?<pet>.*) starved to death.",
       "dungeonFound": "(?:You found your first pet! You now have a pet (?<name>.{1,16})\\. Whisper me !pethelp for more info\\.)|(You found a new pet buddy! You earned a (?<name>.{1,16}) pet!)"
     }
   }

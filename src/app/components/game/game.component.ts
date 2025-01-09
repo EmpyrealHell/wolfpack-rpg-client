@@ -8,11 +8,12 @@ import { ConfigManager } from '../../services/data/config-manager';
 import { UserService } from '../../services/user/user.service';
 import { ErrorDialog } from '../error-dialog/error-dialog';
 import * as PackageJson from '../../../../package.json';
-import { AccessControlService } from 'src/app/services/access-control/access-control-service';
+import { ClientDataService } from 'src/app/services/client-data/client-data-service';
 import {
   EventSubService,
   Message,
 } from 'src/app/services/eventsub/eventsub.service';
+import { WidgetService } from 'src/app/services/widget/widget.service';
 
 /**
  * The main component holding the game UI.
@@ -41,20 +42,19 @@ export class GameComponent implements OnInit {
   version = PackageJson.version;
 
   constructor(
+    public widgetService: WidgetService,
     public eventSubService: EventSubService,
     public configManager: ConfigManager,
     public userService: UserService,
-    public accessControlService: AccessControlService,
+    public clientDataService: ClientDataService,
     public overlayContainer: OverlayContainer,
     public dialog: MatDialog,
     public router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.accessControlService.initialize();
-    this.widgets = this.accessControlService.getWidgets(newWidgets => {
-      this.widgets = newWidgets;
-    });
+    this.clientDataService.initialize();
+    this.widgets = this.widgetService.getWidgets();
     const config = this.configManager.getConfig();
     this.updateOverlayTheme();
 

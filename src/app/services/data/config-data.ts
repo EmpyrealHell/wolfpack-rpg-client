@@ -16,7 +16,7 @@ export class Config {
   /**
    * List of widget ids, in order, to render to the widget container.
    */
-  layout = new Array<string>();
+  layout = new Array<string>('info');
   /**
    * History of commands typed into the console.
    */

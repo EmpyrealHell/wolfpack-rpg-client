@@ -2,7 +2,7 @@ import { TestUtils } from 'src/test/test-utils';
 import { CommandCallback, CommandService } from '../command/command-service';
 import { WidgetItem } from '../widget/widget-item';
 import { WidgetService } from '../widget/widget.service';
-import { AccessControlService } from './access-control-service';
+import { ClientDataService } from './client-data-service';
 import * as AccessControlData from './access-control.json';
 
 describe('AccessControlService', () => {
@@ -19,7 +19,7 @@ describe('AccessControlService', () => {
   ];
   let commandService: jasmine.SpyObj<CommandService>;
   let widgetService: jasmine.SpyObj<WidgetService>;
-  let service: AccessControlService;
+  let service: ClientDataService;
 
   let roleHandler: CommandCallback;
 
@@ -42,7 +42,7 @@ describe('AccessControlService', () => {
       new WidgetItem(null, 'Bar', 'bar', 'baricon'),
       new WidgetItem(null, 'Foobar', 'foo.bar', 'baricon'),
     ]);
-    service = new AccessControlService(commandService, widgetService);
+    service = new ClientDataService(commandService, widgetService);
   });
 
   it('should get default widget ids when no role has been assigned', () => {

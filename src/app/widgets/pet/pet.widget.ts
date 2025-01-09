@@ -10,8 +10,7 @@ import { MatRipple } from '@angular/material/core';
 
 /**
  * Widget used to display pet data.
- * TODO:
- *  * add actions to selected display
+ * TODO: Add level up sounds
  */
 @Component({
   selector: 'app-pet-widget',
@@ -20,18 +19,19 @@ import { MatRipple } from '@angular/material/core';
 })
 export class PetWidgetComponent extends AbstractWidgetComponent {
   name = 'Pets';
-  private static rarities = new Map<number, Rarity>([
-    [1, new Rarity(1, 'common', '#ffffff')],
-    [2, new Rarity(2, 'uncommon', '#6495ed')],
-    [3, new Rarity(3, 'rare', '#9932cc')],
-    [4, new Rarity(4, 'epic', '#ffa500')],
-    [5, new Rarity(5, 'legendary', '#b22222')],
-  ]);
+  // private static rarities = new Map<number, Rarity>([
+  //   [1, new Rarity(1, 'common', '#ffffff')],
+  //   [2, new Rarity(2, 'uncommon', '#6495ed')],
+  //   [3, new Rarity(3, 'rare', '#9932cc')],
+  //   [4, new Rarity(4, 'epic', '#ffa500')],
+  //   [5, new Rarity(5, 'legendary', '#b22222')],
+  // ]);
   private static pets = new Map<number, Pet>();
 
   stable: Stable[] = [];
   selected: Stable | undefined;
   summoning: Stable | undefined;
+  lastFed: Stable | undefined;
   renaming = false;
   newName = '';
 
@@ -53,6 +53,20 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     return undefined;
   }
 
+  private getPetByAll(
+    name: string,
+    pet: string,
+    sparkly: boolean
+  ): Stable | undefined {
+    const matches = this.stable.filter(
+      x => x.name === name && x.pet.name === pet && x.sparkly === sparkly
+    );
+    if (matches && matches.length > 0) {
+      return matches[0];
+    }
+    return undefined;
+  }
+
   private handleStable(
     id: string,
     subGroups: Array<Map<string, string>>
@@ -64,7 +78,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
         const description = sub.get('description') ?? '';
         const rarityId = parseInt(sub.get('rarity') ?? '0');
         const rarity =
-          PetWidgetComponent.rarities.get(rarityId) ??
+          this.clientDataService?.petRarities.get(rarityId) ??
           new Rarity(rarityId, 'unknown', '#ffffff');
         let pet: Pet;
         if (!PetWidgetComponent.pets.has(id)) {
@@ -108,24 +122,24 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
   ): void {
     if (id === 'levelUp') {
       //TODO: Maybe play a sound here?
-      const petName = groups.get('name') ?? '';
       const level = groups.get('level') ?? '';
-      this.snackbar.open(
-        `${petName} leveled up! They are now level ${level}.`,
-        undefined,
-        { duration: 5000 }
-      );
-      console.log(this.ripple);
-      this.ripple?.launch({ centered: true });
-      const pet = this.getPetByName(petName);
-      if (pet) {
-        pet.level = parseInt(level);
+      if (this.lastFed) {
+        this.snackbar.open(
+          `${this.lastFed.name} leveled up! They are now level ${level}.`,
+          undefined,
+          { duration: 5000 }
+        );
+        this.ripple?.launch({ centered: true });
+        this.lastFed.level = parseInt(level);
       }
     } else if (id === 'confirmation') {
       const cost = parseInt(groups.get('cost') ?? '0');
       const petName = groups.get('name') ?? '';
-      const pet = this.getPetByName(name);
+      const sparkly = groups.get('sparkly') ? true : false;
+      const type = groups.get('pet') ?? '';
+      const pet = this.getPetByAll(name, type, sparkly);
       if (pet) {
+        this.lastFed = pet;
         pet.hunger = 100;
       }
       this.snackbar.open(
@@ -165,8 +179,10 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
   private handleRenameSuccess(id: string, groups: Map<string, string>): void {
     if (id === 'confirmation') {
       const oldName = groups.get('oldName') ?? '';
+      const type = groups.get('pet') ?? '';
+      const sparkly = groups.get('sparkly') ? true : false;
       const newName = groups.get('name') ?? '';
-      const pet = this.getPetByName(oldName);
+      const pet = this.getPetByAll(oldName, type, sparkly);
       if (pet) {
         pet.name = newName;
       }
@@ -178,14 +194,22 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
   private handleSummonSuccess(id: string, groups: Map<string, string>): void {
     if (id === 'confirmation') {
       const summoned = groups.get('summoned') ?? '';
-      const toSummon = this.getPetByName(summoned);
+      const summonSparkly = groups.get('summonSparkly') ? true : false;
+      const summonType = groups.get('summonPet') ?? '';
+      const toSummon = this.getPetByAll(summoned, summonType, summonSparkly);
       if (toSummon) {
         toSummon.active = true;
       }
       const dismissed = groups.get('dismissed') ?? '';
-      const matches = this.stable.filter(x => x.name === dismissed && x.active);
-      if (matches && matches.length > 0) {
-        matches[0].active = false;
+      const dismissSparkly = groups.get('dismissSparkly') ? true : false;
+      const dismissType = groups.get('dismissPet') ?? '';
+      const toDismiss = this.getPetByAll(
+        dismissed,
+        dismissType,
+        dismissSparkly
+      );
+      if (toDismiss) {
+        toDismiss.active = false;
       }
     }
   }
@@ -193,9 +217,11 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
   private handleDismissSuccess(id: string, groups: Map<string, string>): void {
     if (id === 'confirmation') {
       const dismissed = groups.get('name') ?? '';
-      const matches = this.stable.filter(x => x.name === dismissed && x.active);
-      if (matches && matches.length > 0) {
-        matches[0].active = false;
+      const sparkly = groups.get('sparkly') ? true : false;
+      const type = groups.get('pet') ?? '';
+      const toDismiss = this.getPetByAll(dismissed, type, sparkly);
+      if (toDismiss) {
+        toDismiss.active = false;
       }
     }
   }
@@ -238,7 +264,9 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     isCritical: boolean
   ): void {
     const petName = groups.get('name') ?? '';
-    const pet = this.getPetByName(petName);
+    const sparkly = groups.get('sparkly') ? true : false;
+    const type = groups.get('pet') ?? '';
+    const pet = this.getPetByAll(petName, type, sparkly);
     if (pet) {
       pet.hunger = isCritical ? 10 : 25;
       const hunger = isCritical ? 'starving' : 'hungry';
@@ -257,7 +285,9 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     isReplay: boolean
   ): void {
     const petName = groups.get('name') ?? '';
-    const pet = this.getPetByName(petName);
+    const sparkly = groups.get('sparkly') ? true : false;
+    const type = groups.get('pet') ?? '';
+    const pet = this.getPetByAll(petName, type, sparkly);
     if (pet) {
       if (!isReplay) {
         this.dialog.open(ErrorDialog, {
