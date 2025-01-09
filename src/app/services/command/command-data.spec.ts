@@ -28,7 +28,9 @@ describe('CommandData', () => {
       }
       for (const part of parts) {
         if (!part.startsWith('{') || !part.endsWith('}')) {
-          wrongCommands.push(command);
+          if (!part.startsWith('"{') || !part.endsWith('}"')) {
+            wrongCommands.push(command);
+          }
         }
       }
     }

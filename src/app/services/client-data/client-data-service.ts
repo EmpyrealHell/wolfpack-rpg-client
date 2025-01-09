@@ -99,12 +99,15 @@ export class ClientDataService {
 
   private loadEquips(equips: string[]): void {
     for (let equip of equips) {
-      const parts = equip.split('|');
-      if (parts.length === 2) {
-        this.equippables.set(
-          parseInt(parts[0]),
-          parts[1].split(',').map(x => parseInt(x))
-        );
+      const pairs = equip.split('|');
+      for (let pair of pairs) {
+        const parts = pair.split(':');
+        if (parts.length === 2) {
+          this.equippables.set(
+            parseInt(parts[0]),
+            parts[1].split(',').map(x => parseInt(x))
+          );
+        }
       }
     }
   }

@@ -19,13 +19,6 @@ import { MatRipple } from '@angular/material/core';
 })
 export class PetWidgetComponent extends AbstractWidgetComponent {
   name = 'Pets';
-  // private static rarities = new Map<number, Rarity>([
-  //   [1, new Rarity(1, 'common', '#ffffff')],
-  //   [2, new Rarity(2, 'uncommon', '#6495ed')],
-  //   [3, new Rarity(3, 'rare', '#9932cc')],
-  //   [4, new Rarity(4, 'epic', '#ffa500')],
-  //   [5, new Rarity(5, 'legendary', '#b22222')],
-  // ]);
   private static pets = new Map<number, Pet>();
 
   stable: Stable[] = [];
