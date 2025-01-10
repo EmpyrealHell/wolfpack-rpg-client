@@ -119,13 +119,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       const level = groups.get('level') ?? '';
       if (this.lastFed) {
         if (!isReplay) {
-          if (this.configManager?.getConfig().settings.playSounds) {
-            const audio = new Audio(
-              `./assets/pet-${this.lastFed.pet.id}-call.mp3`
-            );
-            audio.load();
-            audio.play();
-          }
+          this.audioPlayerService?.play(`pet-${this.lastFed.pet.id}-call`);
           this.snackbar.open(
             `${this.lastFed.name} leveled up! They are now level ${level}.`,
             undefined,

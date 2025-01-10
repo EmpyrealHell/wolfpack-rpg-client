@@ -8,6 +8,7 @@ import {
   Message,
 } from 'src/app/services/eventsub/eventsub.service';
 import { ClientDataService } from 'src/app/services/client-data/client-data-service';
+import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
 
 /**
  * Widget that provides direct access to the communication channel between the
@@ -35,6 +36,11 @@ export class ConsoleWidgetComponent implements WidgetComponent {
    */
   name = '';
 
+  /**
+   * Reference to the AudioPlayer service.
+   */
+  @Input()
+  audioPlayerService: AudioPlayerService | undefined;
   /**
    * Reference to the ClientData service.
    */

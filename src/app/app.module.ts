@@ -47,6 +47,7 @@ import { EventSubService } from './services/eventsub/eventsub.service';
 import { PetWidgetComponent } from './widgets/pet/pet.widget';
 import { InfoWidgetComponent } from './widgets/info/info.widget';
 import { ClientDataService } from './services/client-data/client-data-service';
+import { AudioPlayerService } from './services/audio-player/audio-player-service';
 
 @NgModule({
   declarations: [
@@ -99,7 +100,12 @@ import { ClientDataService } from './services/client-data/client-data-service';
     MatSliderModule,
     MatSnackBarModule,
   ],
-  providers: [ClientDataService, CommandService, EventSubService],
+  providers: [
+    ClientDataService,
+    CommandService,
+    EventSubService,
+    AudioPlayerService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

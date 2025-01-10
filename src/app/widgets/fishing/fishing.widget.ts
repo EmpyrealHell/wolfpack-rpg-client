@@ -193,11 +193,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     this.hookMessage =
       groups.get('message') ?? FishingWidgetComponent.defaultHookMessage;
     if (this.configManager?.getConfig().settings.playSounds) {
-      const audio = new Audio('./assets/effect-hooked.mp3');
-      audio.load();
-      audio.volume =
-        this.configManager?.getConfig().settings.soundVolume ?? 1.0;
-      audio.play();
+      this.audioPlayerService?.play('effect-hooked');
     }
   }
 
@@ -282,11 +278,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     this.tournament = new Tournament();
     const duration = Number(groups.get('duration') ?? 0);
     this.tournament.endTime = new Date(Date.now() + duration * 60 * 1000);
-    if (this.configManager?.getConfig().settings.playSounds) {
-      const audio = new Audio('./assets/effect-tournament-start.mp3');
-      audio.load();
-      audio.play();
-    }
+    this.audioPlayerService?.play('effect-tournament-start');
   }
 
   private handleTournamentEnd(

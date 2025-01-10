@@ -304,16 +304,13 @@
         }
       },
       "stats": {
-        "command": "!stats",
-        "alternates": ["stats"],
+        "command": "!stats -c",
         "responses": {
           "error": {
             "invalidOperation": "You either don't have coins or xp yet\\. Hang out in chat during the livestream to earn them!"
           },
           "success": {
-            "coins": "You have: (?<coins>\\d+) coins\\.",
-            "classLevel": "You are a level (?<level>\\d+) (?<className>\\w+), and you are Prestige level (?<prestige>\\d+)\\. \\(Total XP: (?<experience>\\d+) \\| XP To Next Level: (?<toNext>\\d+)\\)",
-            "level": "You are level (?<level>\\d+) \\(Total XP: (?<experience>\\d+) \\| XP To Next Level: (?<toNext>\\d+)\\)"
+            "compact": "stats: (?<level>[^\\|]*\\|(?<prestige>[^\\|]*\\|(?<className>[^\\|]*\\|(?<xp>[^\\|]*\\|(?<toLevel>[^\\|]*\\|(?<currency>[^\\|]*"
           }
         }
       },
@@ -365,7 +362,7 @@
               "response": "inventory: (?<data>.*)",
               "subGroups": {
                 "container": "data",
-                "pattern": "(?<id>[^\\|]+)\\|(?<count>[^\\|]+)\\|(?<max>[^\\|]+)\\|(?<name>[^\\|]+)\\|(?<desc>[^\\|]+)\\|(?<equipped>[^\\|]*)\\|(?<quality>[^\\|]+)\\|(?<slot>[^\\|]+)\\|(?<type>[^\\|]+)\\|(?<success>[^\\|]+)\\|(?<xp>[^\\|]+)\\|(?<coin>[^\\|]+)\\|(?<itemFind>[^\\|]+)\\|(?<preventDeath>[^\\|]+);"
+                "pattern": "(?<id>[^\\|]+)\\|(?<count>[^\\|]+)\\|(?<max>[^\\|]+)\\|(?<name>[^\\|]+)\\|(?<desc>[^\\|]+)\\|(?<equipped>[^\\|]*)\\|(?<quality>[^\\|]+)\\|(?<slot>[^\\|]+)\\|(?<type>[^\\|]+)\\|(?<success>[^\\|]*)\\|(?<xp>[^\\|]*)\\|(?<coin>[^\\|]*)\\|(?<itemFind>[^\\|]*)\\|(?<preventDeath>[^\\|]*);"
               }
             }
           }
