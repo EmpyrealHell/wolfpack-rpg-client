@@ -14,12 +14,12 @@ import { InfoWidgetComponent } from 'src/app/widgets/info/info.widget';
 })
 export class WidgetService {
   private static widgets = new Array<WidgetItem>(
-    // new WidgetItem(
-    //   CharacterWidgetComponent,
-    //   'Character',
-    //   'character',
-    //   'character'
-    // ),
+    new WidgetItem(
+      CharacterWidgetComponent,
+      'Character',
+      'character',
+      'character'
+    ),
     // new WidgetItem(null, 'Inventory', 'inventory.beta', 'inventory'),
     new WidgetItem(PetWidgetComponent, 'Pets', 'pets', 'pets'),
     new WidgetItem(FishingWidgetComponent, 'Fishing', 'fishing', 'fishing'),

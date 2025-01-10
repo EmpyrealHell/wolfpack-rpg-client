@@ -310,7 +310,8 @@
             "invalidOperation": "You either don't have coins or xp yet\\. Hang out in chat during the livestream to earn them!"
           },
           "success": {
-            "compact": "stats: (?<level>[^\\|]*\\|(?<prestige>[^\\|]*\\|(?<className>[^\\|]*\\|(?<xp>[^\\|]*\\|(?<toLevel>[^\\|]*\\|(?<currency>[^\\|]*"
+            "compact": "stats: (?<level>[^\\|]*\\|(?<className>[^\\|]*\\|(?<xp>[^\\|]*\\|(?<toLevel>[^\\|]*\\|(?<currency>[^\\|]*",
+            "compactNew": "stats: (?<level>[^\\|]*\\|(?<prestige>[^\\|]*\\|(?<className>[^\\|]*\\|(?<xp>[^\\|]*\\|(?<toLevel>[^\\|]*\\|(?<currency>[^\\|]*"
           }
         }
       },

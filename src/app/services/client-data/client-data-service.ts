@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { CommandService } from '../command/command-service';
 import { Rarity } from 'src/app/widgets/pet/model/pet';
+import {
+  ItemQuality,
+  ItemSlot,
+  ItemType,
+} from 'src/app/widgets/character/model/gear';
+import { CharacterClass } from 'src/app/widgets/character/model/character';
 
 /**
  * Service containing the feature management system.
@@ -17,6 +23,10 @@ export class ClientDataService {
   >();
   public classes: Map<number, CharacterClass> = new Map<
     number,
+    CharacterClass
+  >();
+  public classNames: Map<string, CharacterClass> = new Map<
+    string,
     CharacterClass
   >();
   public equippables: Map<number, Array<number>> = new Map<
@@ -81,18 +91,17 @@ export class ClientDataService {
       const parts = charClass.split('|');
       if (parts.length === 7) {
         const id = parseInt(parts[0]);
-        this.classes.set(
+        const charClass = new CharacterClass(
           id,
-          new CharacterClass(
-            id,
-            this.unescape(parts[1]),
-            this.parseWithEmpty(parts[2]),
-            this.parseWithEmpty(parts[3]),
-            this.parseWithEmpty(parts[4]),
-            this.parseWithEmpty(parts[5]),
-            this.parseWithEmpty(parts[6])
-          )
+          this.unescape(parts[1]),
+          this.parseWithEmpty(parts[2]),
+          this.parseWithEmpty(parts[3]),
+          this.parseWithEmpty(parts[4]),
+          this.parseWithEmpty(parts[5]),
+          this.parseWithEmpty(parts[6])
         );
+        this.classes.set(id, charClass);
+        this.classNames.set(charClass.name, charClass);
       }
     }
   }
@@ -160,36 +169,4 @@ export class ClientDataService {
     );
     this.commandService.sendCommand('client', 'data');
   }
-}
-
-export class ItemType {
-  constructor(
-    public id: number,
-    public name: string
-  ) {}
-}
-export class ItemQuality {
-  constructor(
-    public id: number,
-    public name: string,
-    public color: string
-  ) {}
-}
-export class ItemSlot {
-  constructor(
-    public id: number,
-    public name: string,
-    public max: number
-  ) {}
-}
-export class CharacterClass {
-  constructor(
-    public id: number,
-    public name: string,
-    public successChance: number,
-    public xpBonus: number,
-    public coinBonus: number,
-    public itemFind: number,
-    public preventDeath: number
-  ) {}
 }

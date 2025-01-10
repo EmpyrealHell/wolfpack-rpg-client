@@ -1,12 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { MatRipple } from '@angular/material/core';
 import { CommandService } from 'src/app/services/command/command-service';
-import { ConfigManager } from 'src/app/services/data/config-manager';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
-import { Character } from './model/character';
-import { Item, Rarity } from './model/gear';
-import { Stats } from './model/stats';
-import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
+import { Character, CharacterClass } from './model/character';
+import { Item, ItemQuality, ItemSlot, ItemType } from './model/gear';
 
 /**
  * Widget used to display character data.
@@ -17,34 +13,10 @@ import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
   standalone: false,
 })
 export class CharacterWidgetComponent extends AbstractWidgetComponent {
-  private static rarityColors = new Map<Rarity, string>([
-    [Rarity.none, '#404040'],
-    [Rarity.uncommon, '#e4edde'],
-    [Rarity.rare, '#dee8ed'],
-    [Rarity.epic, '#e6deed'],
-  ]);
-
   /**
    * The character data to display.
    */
   data = new Character();
-  /**
-   * The character's stats.
-   */
-  modifiedStats = new Stats();
-  /**
-   * The current item being updated by new messages.
-   */
-  readingStats: Item | undefined;
-
-  @Input() eventSubService: EventSubService | undefined;
-  @Input() configManager: ConfigManager | undefined;
-  @Input() commandService: CommandService | undefined;
-  @Input() ripple: MatRipple | undefined;
-
-  constructor() {
-    super();
-  }
 
   private handleStats(
     name: string,
@@ -53,27 +25,14 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     subGroups: Array<Map<string, string>>,
     date: number
   ): void {
-    if (id === 'coins') {
-      const coins = groups.get('coins');
-      if (coins) {
-        this.data.coins = Number(coins);
-      }
-    } else if (id === 'classLevel') {
-      groups.get('level');
-      this.data.setClass(groups.get('className'));
-      this.data.experience.updateStrings(
-        groups.get('level'),
-        groups.get('prestige'),
-        groups.get('experience'),
-        groups.get('toNext')
-      );
-    } else if (id === 'level') {
-      this.data.experience.updateStrings(
-        groups.get('level'),
-        '0',
-        groups.get('experience'),
-        groups.get('toNext')
-      );
+    if (id === 'compact') {
+      this.data.level = parseInt(groups.get('level') ?? '0');
+      this.data.prestige = parseInt(groups.get('prestige') ?? '0');
+      this.data.class =
+        this.clientDataService?.classNames.get(groups.get('className') ?? '') ??
+        CharacterClass.default;
+      this.data.experience = parseInt(groups.get('xp') ?? '0');
+      this.data.coins = parseInt(groups.get('currency') ?? '0');
     }
   }
 
@@ -87,21 +46,30 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     if (id === 'compact') {
       for (const sub of subGroups) {
         const newItem = new Item();
+        newItem.id = parseInt(sub.get('id') ?? '0');
+        newItem.count = parseInt(sub.get('count') ?? '0');
+        newItem.max = parseInt(sub.get('max') ?? '0');
         newItem.name = sub.get('name') ?? '';
         newItem.description = sub.get('desc') ?? '';
-        const isEquipped = sub.get('status') === 'E';
-        const qualityString = sub.get('quality');
-        newItem.rarity = qualityString
-          ? Rarity[qualityString.toLowerCase() as keyof typeof Rarity]
-          : Rarity.none;
-        newItem.stats.successChance = parseInt(sub.get('success') ?? '0');
-        newItem.stats.xpBonus = parseInt(sub.get('xp') ?? '0');
-        newItem.stats.wolfcoinBonus = parseInt(sub.get('coin') ?? '0');
-        newItem.stats.itemFind = parseInt(sub.get('item') ?? '0');
-        newItem.stats.preventDeath = parseInt(sub.get('death') ?? '0');
-        if (isEquipped) {
-          this.data.gear.armor;
-        }
+        newItem.isEquipped = sub.get('equipped') === 'E';
+        const quality = this.clientDataService?.itemQualities.get(
+          parseInt(sub.get('quality') ?? '0')
+        );
+        const slot = this.clientDataService?.itemSlots.get(
+          parseInt(sub.get('slot') ?? '0')
+        );
+        const type = this.clientDataService?.itemTypes.get(
+          parseInt(sub.get('type') ?? '0')
+        );
+        newItem.quality = quality ?? ItemQuality.default;
+        newItem.slot = slot ?? ItemSlot.default;
+        newItem.type = type ?? ItemType.default;
+        newItem.successChance = parseInt(sub.get('success') ?? '0');
+        newItem.xpBonus = parseInt(sub.get('xp') ?? '0');
+        newItem.coinBonus = parseInt(sub.get('coin') ?? '0');
+        newItem.itemFind = parseInt(sub.get('itemFind') ?? '0');
+        newItem.preventDeath = parseInt(sub.get('preventDeath') ?? '0');
+        this.data.inventory.push(newItem);
       }
     }
   }
@@ -139,26 +107,54 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
    * Gets the background color of an item based on its rarity.
    * @param item The item to check.
    */
-  colorByRarity(item: Item): string {
-    const color = CharacterWidgetComponent.rarityColors.get(item.rarity);
-    return color ? color : '';
+  getShadowColor(color: string): string {
+    const red = parseInt(color.substring(1, 3), 16) / 2;
+    const green = parseInt(color.substring(3, 5), 16) / 2;
+    const blue = parseInt(color.substring(5, 7), 16) / 2;
+    return `#${red.toString(16)}${green.toString(16)}${blue.toString(16)}`;
   }
 
-  /**
-   * Gets the text color to use for an item.
-   * @param item The item to check.
-   */
-  itemTextColor(item: Item): string {
-    return item.isSet() ? 'black' : '';
+  getSlots(): ItemSlot[] {
+    const allSlots = this.data.inventory.map(x => x.slot);
+    return allSlots.filter((x, i) => allSlots.indexOf(x) === i);
   }
 
-  /**
-   * Gets the name of the icon file to load for the current class.
-   */
-  getClassIcon(): string {
-    const charClass = this.data.class
-      ? this.data.class
-      : Character.defaultClass;
-    return `class-${charClass.toLowerCase()}.svg`;
+  getItemsInSlot(slot: ItemSlot): Item[] {
+    return this.data.inventory.filter(
+      x => x.slot.id === slot.id && x.isEquipped
+    );
+  }
+
+  private getEquipped(): Item[] {
+    return this.data.inventory.filter(x => x.isEquipped);
+  }
+
+  private sum(arr: number[]): number {
+    return arr.reduce((x, acc) => x + acc);
+  }
+
+  getSuccessChance(): number {
+    const gear = this.sum(this.getEquipped().map(x => x.successChance));
+    return this.data.class.successChance + gear;
+  }
+
+  getXpBonus(): number {
+    const gear = this.sum(this.getEquipped().map(x => x.xpBonus));
+    return this.data.class.xpBonus + gear;
+  }
+
+  getCoinBonus(): number {
+    const gear = this.sum(this.getEquipped().map(x => x.coinBonus));
+    return this.data.class.coinBonus + gear;
+  }
+
+  getItemFind(): number {
+    const gear = this.sum(this.getEquipped().map(x => x.itemFind));
+    return this.data.class.itemFind + gear;
+  }
+
+  getPreventDeath(): number {
+    const gear = this.sum(this.getEquipped().map(x => x.preventDeath));
+    return this.data.class.preventDeath + gear;
   }
 }

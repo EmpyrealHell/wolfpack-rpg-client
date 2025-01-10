@@ -3,6 +3,7 @@ import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatTableDataSource } from '@angular/material/table';
 import { Utils } from 'src/app/util/utils';
+import { CatchData, LineStatus, Tournament } from './model/fish';
 
 /**
  * Widget used to display character data.
@@ -558,29 +559,4 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
     return amount;
   }
-}
-
-export class CatchData {
-  constructor(
-    public fish: string,
-    public user: string,
-    public length: number,
-    public weight: number,
-    public points: number
-  ) {}
-}
-
-export enum LineStatus {
-  Idle,
-  InWater,
-  FishHooked,
-}
-
-export class Tournament {
-  endTime: Date | undefined;
-  participants = 0;
-  rank = 0;
-  userPoints = 0;
-  winner: string | undefined;
-  winnerPoints = 0;
 }
