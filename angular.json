@@ -110,7 +110,9 @@
         },
         "deploy": {
           "builder": "angular-cli-ghpages:deploy",
-          "options": {}
+          "options": {
+            "dir": "dist/browser"
+          }
         }
       }
     }
