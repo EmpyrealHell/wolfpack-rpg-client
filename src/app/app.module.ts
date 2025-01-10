@@ -38,11 +38,15 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { FishingWidgetComponent } from './widgets/fishing/fishing.widget';
 import { ErrorDialog } from './components/error-dialog/error-dialog';
 import { CommandService } from './services/command/command-service';
 import { EventSubService } from './services/eventsub/eventsub.service';
+import { PetWidgetComponent } from './widgets/pet/pet.widget';
+import { InfoWidgetComponent } from './widgets/info/info.widget';
+import { ClientDataService } from './services/client-data/client-data-service';
 
 @NgModule({
   declarations: [
@@ -56,8 +60,10 @@ import { EventSubService } from './services/eventsub/eventsub.service';
     ErrorDialog,
 
     CharacterWidgetComponent,
+    PetWidgetComponent,
     ConsoleWidgetComponent,
     FishingWidgetComponent,
+    InfoWidgetComponent,
 
     WidgetContainerComponent,
     WidgetFactoryComponent,
@@ -91,8 +97,9 @@ import { EventSubService } from './services/eventsub/eventsub.service';
     MatTabsModule,
     MatToolbarModule,
     MatSliderModule,
+    MatSnackBarModule,
   ],
-  providers: [CommandService, EventSubService],
+  providers: [ClientDataService, CommandService, EventSubService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,10 +1,11 @@
 import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { CommandService } from 'src/app/services/command/command-service';
-import { MatRipple } from '@angular/material/core';
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
+import { ClientDataService } from 'src/app/services/client-data/client-data-service';
 
 export abstract class AbstractWidgetComponent implements WidgetComponent {
+  clientDataService: ClientDataService | undefined;
   eventSubService: EventSubService | undefined;
   configManager: ConfigManager | undefined;
   commandService: CommandService | undefined;

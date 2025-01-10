@@ -1,6 +1,7 @@
 import {
   Component,
   ComponentFactory,
+  Injector,
   Input,
   OnInit,
   ViewChild,
@@ -9,8 +10,8 @@ import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
 import { WidgetComponent } from './widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
-import { MatRipple } from '@angular/material/core';
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
+import { ClientDataService } from 'src/app/services/client-data/client-data-service';
 
 /**
  * Component that acts as a placeholder for widgets in the widget container.
@@ -26,6 +27,12 @@ export class WidgetFactoryComponent implements OnInit {
    */
   @Input()
   factory: ComponentFactory<WidgetComponent> | undefined;
+
+  /**
+   * Reference to the Client Data service.
+   */
+  @Input()
+  clientDataService: ClientDataService | undefined;
 
   /**
    * Reference to the EventSub service.
@@ -57,7 +64,7 @@ export class WidgetFactoryComponent implements OnInit {
   @ViewChild(WidgetContainerDirective, { static: true })
   container: WidgetContainerDirective | undefined;
 
-  constructor() {}
+  constructor(public injector: Injector) {}
 
   ngOnInit(): void {
     if (this.factory && this.container) {
@@ -65,6 +72,7 @@ export class WidgetFactoryComponent implements OnInit {
       containerRef.clear();
       const component = containerRef.createComponent(this.factory)
         .instance as WidgetComponent;
+      component.clientDataService = this.clientDataService;
       component.configManager = this.configManager;
       component.eventSubService = this.eventSubService;
       component.commandService = this.commandService;

@@ -21,7 +21,7 @@ import { WidgetFactoryComponent } from '../widget-factory/widget-factory.compone
 import { GameComponent } from './game.component';
 import { Config } from 'src/app/services/data/config-data';
 import { AuthData } from 'src/app/services/user/auth.data';
-import { AccessControlService } from 'src/app/services/access-control/access-control-service';
+import { ClientDataService } from 'src/app/services/client-data/client-data-service';
 import {
   EventSubService,
   Message,
@@ -48,7 +48,7 @@ const userServiceSpy = TestUtils.spyOnClass(UserService);
 userServiceSpy.getUserAuth.and.returnValue({
   login: 'userService',
 } as AuthData);
-const accessControlServiceSpy = TestUtils.spyOnClass(AccessControlService);
+const clientDataServiceSpy = TestUtils.spyOnClass(ClientDataService);
 const overlayContainerSpy = jasmine.createSpyObj('OverlayContainer', [
   'getContainerElement',
 ]);
@@ -82,8 +82,8 @@ describe('GameComponent', () => {
         { provide: ConfigManager, useValue: configManagerSpy },
         { provide: UserService, useValue: userServiceSpy },
         {
-          provide: AccessControlService,
-          useValue: accessControlServiceSpy,
+          provide: ClientDataService,
+          useValue: clientDataServiceSpy,
         },
         { provide: OverlayContainer, useValue: overlayContainerSpy },
         { provide: MatDialog, useValue: dialogSpy },

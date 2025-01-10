@@ -210,7 +210,7 @@ export class CommandService {
           this.matches.set(key, history);
         }
         history.lastLine = this.eventSubService.lines
-          ? this.eventSubService.lines.length - 1
+          ? this.eventSubService.lines.length
           : 0;
         const responseGroup = this.messages.get(key);
         if (!responseGroup) {

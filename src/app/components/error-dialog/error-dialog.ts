@@ -16,5 +16,6 @@ export class ErrorDialog {
 }
 
 export interface ErrorDialogData {
+  title: string;
   message: string;
 }

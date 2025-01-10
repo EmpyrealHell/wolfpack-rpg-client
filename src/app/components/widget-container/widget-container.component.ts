@@ -9,8 +9,9 @@ import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetItem } from '../../services/widget/widget-item';
 import { WidgetComponent } from '../widget-factory/widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
-import { AccessControlService } from 'src/app/services/access-control/access-control-service';
+import { ClientDataService } from 'src/app/services/client-data/client-data-service';
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
+import { WidgetService } from 'src/app/services/widget/widget.service';
 
 /**
  * Holds a list of widgets and renders them to the DOM, in order.
@@ -49,7 +50,8 @@ export class WidgetContainerComponent implements OnInit {
   factories = new Array<ComponentFactory<WidgetComponent>>();
 
   constructor(
-    private accessControlService: AccessControlService,
+    private widgetService: WidgetService,
+    public clientDataService: ClientDataService,
     public configManager: ConfigManager,
     public eventSubService: EventSubService,
     public commandService: CommandService,
@@ -91,7 +93,7 @@ export class WidgetContainerComponent implements OnInit {
    */
   resetLayout(): void {
     if (this.widgetMap.size === 0) {
-      const widgets = this.accessControlService.getWidgets();
+      const widgets = this.widgetService.getWidgets();
       for (const widget of widgets) {
         if (widget && widget.component && widget.id) {
           this.widgetMap.set(widget.id, widget);

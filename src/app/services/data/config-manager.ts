@@ -15,7 +15,6 @@ export type ConfigSubscriber = () => void;
 export class ConfigManager {
   private static storageKey = 'Config';
   private static data = new Config();
-  private static testers = new Array<string>('empyrealhell', 'lobosjr');
 
   private static subscribers = new Array<ConfigSubscriber>();
 
