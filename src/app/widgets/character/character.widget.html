@@ -1,12 +1,12 @@
 <mat-card-content height="100%" class="flex-column">
   <div style="font-size: 18pt" class="flex-row-short">
     <span
-      ><img src="./assets/class-{{data.class.name}}.svg" width="22px" /> Level
+      ><img src="./assets/class-{{data.class.id}}.svg" width="22px" /> Level
       {{data.level}}
       <sup *ngIf="data.prestige > 0" style="font-size: 10pt">
         ({{data.prestige}})
       </sup>
-      {{data.class}}</span
+      {{data.class.name}}</span
     >
     <span class="fill-space"></span>
     <span>{{data.xpAmount()}} / {{data.xpNeeded()}} XP</span>
@@ -15,13 +15,34 @@
     <mat-progress-bar
       color="primary"
       mode="determinate"
-      [value]="data.xpProgress()"
+      [value]="data.xpProgress() * 100"
     >
     </mat-progress-bar>
   </div>
-  <p></p>
+  <div
+    class="flex-row-short"
+    style="display: block; width: 50%; margin: auto; text-align: center"
+  >
+    <button mat-raised-button color="accent" style="margin: 2px 2px 2px 0px">
+      Gloat
+    </button>
+    <button *ngIf="data.class.id > 0" mat-raised-button style="margin: 2px">
+      Respec
+    </button>
+    <button
+      *ngIf="data.class.id === 0 && data.level >= 3"
+      mat-raised-button
+      style="margin: 2px 0px 2px 2px"
+    >
+      Select Class
+    </button>
+  </div>
   <div class="flex-row-short">
     <div class="flex-column">
+      <span style="font-size: 18pt">Wolfcoins:</span>
+      <mat-list>
+        <mat-list-item>{{data.coins}}</mat-list-item>
+      </mat-list>
       <span style="font-size: 18pt">Stats:</span>
       <mat-list>
         <mat-list-item> Success Chance: {{getSuccessChance()}}% </mat-list-item>
@@ -36,17 +57,31 @@
         <div>
           <span style="font-size: 18pt">{{slot.name}}:</span>
         </div>
-        <div>
-          <mat-card *ngFor="let item of getItemsInSlot(slot)">
-            <mat-card-content
+        <mat-list>
+          <mat-list-item *ngFor="let item of getItemsInSlot(slot)">
+            <span
               [style.color]="item.quality.color"
-              [style.text-shadow]="getShadowColor(item.quality.color)"
+              [style.textShadow]="item.quality.shadow + ' 1px 1px 2px'"
               style="font-size: 16pt"
             >
-              {{item.name}}
-            </mat-card-content>
-          </mat-card>
-        </div>
+              <svg width="32px" height="32px" style="vertical-align: middle">
+                <rect
+                  width="32px"
+                  height="32px"
+                  [attr.fill]="item.quality.color"
+                  rx="2px"
+                  ry="2px"
+                />
+                <image
+                  [attr.href]="'./assets/item-' + item.id + '.svg'"
+                  width="32px"
+                  height="32px"
+                />
+              </svg>
+              {{item.name}}</span
+            >
+          </mat-list-item>
+        </mat-list>
       </div>
     </div>
   </div>

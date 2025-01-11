@@ -5,7 +5,7 @@ import {
   ItemQuality,
   ItemSlot,
   ItemType,
-} from 'src/app/widgets/character/model/gear';
+} from 'src/app/widgets/inventory/model/item';
 import { CharacterClass } from 'src/app/widgets/character/model/character';
 
 /**

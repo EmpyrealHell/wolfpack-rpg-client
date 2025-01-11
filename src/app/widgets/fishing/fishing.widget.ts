@@ -16,6 +16,7 @@ import { CatchData, LineStatus, Tournament } from './model/fish';
   standalone: false,
 })
 export class FishingWidgetComponent extends AbstractWidgetComponent {
+  name = 'Fishing';
   private static defaultHookMessage = 'You got a bite!';
 
   private sessionHistory: CatchData[] = [];

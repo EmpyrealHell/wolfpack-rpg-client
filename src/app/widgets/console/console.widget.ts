@@ -34,7 +34,7 @@ export class ConsoleWidgetComponent implements WidgetComponent {
   /**
    * The name of the widget;
    */
-  name = '';
+  name = 'Console';
 
   /**
    * Reference to the AudioPlayer service.

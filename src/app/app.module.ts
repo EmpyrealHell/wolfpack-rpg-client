@@ -48,6 +48,7 @@ import { PetWidgetComponent } from './widgets/pet/pet.widget';
 import { InfoWidgetComponent } from './widgets/info/info.widget';
 import { ClientDataService } from './services/client-data/client-data-service';
 import { AudioPlayerService } from './services/audio-player/audio-player-service';
+import { InventoryWidgetComponent } from './widgets/inventory/inventory.widget';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { AudioPlayerService } from './services/audio-player/audio-player-service
     ErrorDialog,
 
     CharacterWidgetComponent,
+    InventoryWidgetComponent,
     PetWidgetComponent,
     ConsoleWidgetComponent,
     FishingWidgetComponent,

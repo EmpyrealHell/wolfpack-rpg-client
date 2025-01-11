@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { Character, CharacterClass } from './model/character';
-import { Item, ItemQuality, ItemSlot, ItemType } from './model/gear';
+import { Item, ItemQuality, ItemSlot, ItemType } from '../inventory/model/item';
 
 /**
  * Widget used to display character data.
@@ -13,19 +13,15 @@ import { Item, ItemQuality, ItemSlot, ItemType } from './model/gear';
   standalone: false,
 })
 export class CharacterWidgetComponent extends AbstractWidgetComponent {
+  name = 'Character';
   /**
    * The character data to display.
    */
   data = new Character();
 
-  private handleStats(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleStats(id: string, groups: Map<string, string>): void {
     if (id === 'compact') {
+      this.data.subscriber = groups.get('sub') === 'S';
       this.data.level = parseInt(groups.get('level') ?? '0');
       this.data.prestige = parseInt(groups.get('prestige') ?? '0');
       this.data.class =
@@ -37,16 +33,14 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
   }
 
   private handleInventory(
-    name: string,
     id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
+    subGroups: Array<Map<string, string>>
   ): void {
     if (id === 'compact') {
       for (const sub of subGroups) {
         const newItem = new Item();
         newItem.id = parseInt(sub.get('id') ?? '0');
+        newItem.index = this.data.inventory.length + 1;
         newItem.count = parseInt(sub.get('count') ?? '0');
         newItem.max = parseInt(sub.get('max') ?? '0');
         newItem.name = sub.get('name') ?? '';
@@ -74,6 +68,28 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
+  private handleEquip(id: string, groups: Map<string, string>): void {
+    if (id === 'confirmation') {
+      const item = this.getItemByName(groups.get('item') ?? '');
+      if (item) {
+        item.isEquipped = true;
+      }
+      const toRemove = this.getItemByName(groups.get('unequipped') ?? '');
+      if (toRemove) {
+        toRemove.isEquipped = false;
+      }
+    }
+  }
+
+  private handleUnequip(id: string, groups: Map<string, string>): void {
+    if (id === 'confirmation') {
+      const item = this.getItemByName(groups.get('item') ?? '');
+      if (item) {
+        item.isEquipped = false;
+      }
+    }
+  }
+
   protected subscribeToResponses(
     id: string,
     commandService: CommandService
@@ -84,8 +100,9 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleStats(name, id, groups, subGroups, date)
+      (name, id, groups, subGroups, date) => {
+        this.handleStats(id, groups);
+      }
     );
     commandService.subscribeToCommand(
       'inventory',
@@ -93,25 +110,161 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleInventory(name, id, groups, subGroups, date)
+      (name, id, groups, subGroups, date) => {
+        this.handleInventory(id, subGroups);
+      }
+    );
+    commandService.subscribeToCommand(
+      'inventory',
+      'equip',
+      'responses',
+      'success',
+      id,
+      (name, id, groups, subGroups, date) => {
+        this.handleEquip(id, groups);
+      }
+    );
+    commandService.subscribeToCommand(
+      'inventory',
+      'unequip',
+      'responses',
+      'success',
+      id,
+      (name, id, groups, subGroups, date) => {
+        this.handleUnequip(id, groups);
+      }
+    );
+    /*
+     * TODO: Update all of these with proper handlers to update the coin/xp amount
+     *   For respec and select class, need to create a class selection dialog
+     */
+    commandService.subscribeToCommand(
+      'shop',
+      'respec',
+      'responses',
+      'success',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToCommand(
+      'shop',
+      'respec',
+      'responses',
+      'pending',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToCommand(
+      'shop',
+      'respec',
+      'responses',
+      'error',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToCommand(
+      'shop',
+      'selectClass',
+      'responses',
+      'success',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToCommand(
+      'shop',
+      'stats',
+      'responses',
+      'success',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToCommand(
+      'pets',
+      'feed',
+      'responses',
+      'success',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToCommand(
+      'shop',
+      'gloat',
+      'responses',
+      'public',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToCommand(
+      'shop',
+      'gloat',
+      'responses',
+      'public',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToCommand(
+      'shop',
+      'gloatFish',
+      'responses',
+      'success',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToCommand(
+      'shop',
+      'gloatPet',
+      'responses',
+      'success',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToMessage(
+      'player',
+      'awards',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToMessage(
+      'player',
+      'levelUp',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToMessage(
+      'player',
+      'prestige',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToMessage(
+      'player',
+      'selectClass',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToMessage(
+      'dungeon',
+      'completeAwards',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToMessage(
+      'dungeon',
+      'death',
+      id,
+      (name, id, groups, subGroups, date) => {}
+    );
+    commandService.subscribeToMessage(
+      'dungeon',
+      'start',
+      id,
+      (name, id, groups, subGroups, date) => {}
     );
   }
 
   protected sendInitialCommands(commandService: CommandService): void {
     commandService.sendInitialCommand('info', 'stats');
     commandService.sendInitialCommand('inventory', 'list');
-  }
-
-  /**
-   * Gets the background color of an item based on its rarity.
-   * @param item The item to check.
-   */
-  getShadowColor(color: string): string {
-    const red = parseInt(color.substring(1, 3), 16) / 2;
-    const green = parseInt(color.substring(3, 5), 16) / 2;
-    const blue = parseInt(color.substring(5, 7), 16) / 2;
-    return `#${red.toString(16)}${green.toString(16)}${blue.toString(16)}`;
   }
 
   getSlots(): ItemSlot[] {
@@ -125,12 +278,20 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     );
   }
 
+  getItemByName(name: string): Item | undefined {
+    const matches = this.data.inventory.filter(x => x.name === name);
+    if (matches && matches.length > 0) {
+      return matches[0];
+    }
+    return undefined;
+  }
+
   private getEquipped(): Item[] {
     return this.data.inventory.filter(x => x.isEquipped);
   }
 
   private sum(arr: number[]): number {
-    return arr.reduce((x, acc) => x + acc);
+    return arr.reduce((x, acc) => x + acc, 0);
   }
 
   getSuccessChance(): number {
