@@ -32,7 +32,6 @@ export class WidgetService {
     // new WidgetItem(null, 'Dungeon', 'dungeon.beta', 'dungeon'),
     // new WidgetItem(null, 'Group', 'group.beta', 'group'),
     // new WidgetItem(null, 'Group Chat', 'group-chat.beta', 'groupchat'),
-    // new WidgetItem(null, 'Shop', 'shop.beta', 'shop'),
     new WidgetItem(InfoWidgetComponent, 'Info', 'info', 'info'),
     new WidgetItem(ConsoleWidgetComponent, 'Console', 'console', 'console')
   );
