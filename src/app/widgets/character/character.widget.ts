@@ -3,6 +3,9 @@ import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { Character, CharacterClass } from './model/character';
 import { Item, ItemQuality, ItemSlot, ItemType } from '../inventory/model/item';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SelectClassDialog } from './select.class.dialog';
 
 /**
  * Widget used to display character data.
@@ -18,6 +21,13 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
    * The character data to display.
    */
   data = new Character();
+
+  constructor(
+    public dialog: MatDialog,
+    public snackbar: MatSnackBar
+  ) {
+    super();
+  }
 
   private handleStats(id: string, groups: Map<string, string>): void {
     if (id === 'compact') {
@@ -134,17 +144,20 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
         this.handleUnequip(id, groups);
       }
     );
-    /*
-     * TODO: Update all of these with proper handlers to update the coin/xp amount
-     *   For respec and select class, need to create a class selection dialog
-     */
     commandService.subscribeToCommand(
       'shop',
       'respec',
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date) => {
+        if (id === 'confirmation') {
+          this.data.class =
+            this.clientDataService?.classNames.get(groups.get('class') ?? '') ??
+            CharacterClass.default;
+          this.data.coins -= parseInt(groups.get('coins') ?? '0');
+        }
+      }
     );
     commandService.subscribeToCommand(
       'shop',
@@ -152,7 +165,12 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'pending',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date, isReplay) => {
+        if (!isReplay) {
+          console.log('Respec detected!');
+          this.openClassSelect(parseInt(groups.get('cost') ?? '0'));
+        }
+      }
     );
     commandService.subscribeToCommand(
       'shop',
@@ -160,7 +178,32 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'error',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date, isReplay) => {
+        if (!isReplay) {
+          if (id === 'inParty') {
+            this.snackbar.open(
+              "You can't respec while in a party!",
+              undefined,
+              {
+                duration: 5000,
+              }
+            );
+          } else if (id === 'inQueue') {
+            this.snackbar.open(
+              "You can't respec while in the dungeon queue!",
+              undefined,
+              {
+                duration: 5000,
+              }
+            );
+          } else if (id === 'insufficientFunds') {
+            const cost = groups.get('cost') ?? '0';
+            this.snackbar.open(
+              `You do not have the ${cost} Wolfcoins needed to respec.`
+            );
+          }
+        }
+      }
     );
     commandService.subscribeToCommand(
       'shop',
@@ -168,7 +211,13 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date) => {
+        if (id === 'confirmation') {
+          this.data.class =
+            this.clientDataService?.classNames.get(groups.get('class') ?? '') ??
+            CharacterClass.default;
+        }
+      }
     );
     commandService.subscribeToCommand(
       'shop',
@@ -176,7 +225,11 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date) => {
+        if (id === 'cost') {
+          this.data.coins -= parseInt(groups.get('cost') ?? '0');
+        }
+      }
     );
     commandService.subscribeToCommand(
       'pets',
@@ -184,7 +237,30 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date) => {
+        if (id === 'confirmation') {
+          this.data.coins -= parseInt(groups.get('cost') ?? '0');
+        }
+      }
+    );
+    commandService.subscribeToCommand(
+      'shop',
+      'gloat',
+      'responses',
+      'error',
+      id,
+      (name, id, groups, subGroups, date, isReplay) => {
+        if (id === 'insufficientFunds') {
+          if (!isReplay) {
+            const cost = groups.get('cost') ?? '0';
+            this.snackbar.open(
+              `You don't have the ${cost} Wolfcoins required to gloat.`,
+              undefined,
+              { duration: 5000 }
+            );
+          }
+        }
+      }
     );
     commandService.subscribeToCommand(
       'shop',
@@ -192,15 +268,11 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'public',
       id,
-      (name, id, groups, subGroups, date) => {}
-    );
-    commandService.subscribeToCommand(
-      'shop',
-      'gloat',
-      'responses',
-      'public',
-      id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date) => {
+        if (id === 'gloat') {
+          this.data.coins -= parseInt(groups.get('cost') ?? '0');
+        }
+      }
     );
     commandService.subscribeToCommand(
       'shop',
@@ -208,7 +280,11 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date) => {
+        if (id === 'confirmation') {
+          this.data.coins -= parseInt(groups.get('coins') ?? '0');
+        }
+      }
     );
     commandService.subscribeToCommand(
       'shop',
@@ -216,49 +292,92 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date) => {
+        if (id === 'confirmation') {
+          this.data.coins -= parseInt(groups.get('coins') ?? '0');
+        }
+      }
     );
     commandService.subscribeToMessage(
       'player',
       'awards',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date) => {
+        let coins = parseInt(groups.get('coins') ?? '0');
+        let xp = parseInt(groups.get('xp') ?? '0');
+        if (this.data.subscriber) {
+          const multi = parseFloat(groups.get('multiplier') ?? '1');
+          coins *= multi;
+          xp *= multi;
+        }
+        this.data.coins += coins;
+        this.data.experience += xp;
+      }
     );
     commandService.subscribeToMessage(
       'player',
       'levelUp',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date) => {
+        this.data.level = parseInt(
+          groups.get('level') ?? this.data.level.toString()
+        );
+      }
     );
     commandService.subscribeToMessage(
       'player',
       'prestige',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date) => {
+        this.data.prestige = parseInt(
+          groups.get('prestige') ?? this.data.prestige.toString()
+        );
+        this.data.level = parseInt(
+          groups.get('level') ?? this.data.level.toString()
+        );
+      }
     );
     commandService.subscribeToMessage(
       'player',
       'selectClass',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date, isReplay) => {
+        if (!isReplay) {
+          this.openClassSelect(0);
+        }
+      }
     );
     commandService.subscribeToMessage(
       'dungeon',
       'completeAwards',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date) => {
+        this.data.experience += parseInt(groups.get('xp') ?? '0');
+        this.data.coins += parseInt(groups.get('coins') ?? '0');
+      }
     );
     commandService.subscribeToMessage(
       'dungeon',
       'death',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date) => {
+        this.data.experience -= parseInt(groups.get('xp') ?? '0');
+        this.data.coins -= parseInt(groups.get('coins') ?? '0');
+      }
     );
     commandService.subscribeToMessage(
       'dungeon',
       'start',
       id,
-      (name, id, groups, subGroups, date) => {}
+      (name, id, groups, subGroups, date) => {
+        this.data.coins -= parseInt(groups.get('coins') ?? '0');
+        const balance = parseInt(
+          groups.get('balance') ?? this.data.coins.toString()
+        );
+        if (balance != this.data.coins) {
+          this.data.coins = balance;
+        }
+      }
     );
   }
 
@@ -317,5 +436,46 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
   getPreventDeath(): number {
     const gear = this.sum(this.getEquipped().map(x => x.preventDeath));
     return this.data.class.preventDeath + gear;
+  }
+
+  gloat(): void {
+    this.commandService?.sendCommand('shop', 'gloat');
+  }
+
+  private openClassSelect(cost: number): void {
+    const classes: CharacterClass[] = [];
+    if (this.clientDataService) {
+      for (let charClass of this.clientDataService.classes) {
+        classes.push(charClass[1]);
+      }
+    }
+    console.log(JSON.stringify(classes));
+    const dialogRef = this.dialog.open(SelectClassDialog, {
+      data: {
+        isRespec: cost > 0,
+        cost: cost,
+        classes: classes,
+      },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result !== '') {
+        const charClass = this.clientDataService?.classNames.get(result);
+        if (charClass) {
+          this.commandService?.sendCommandWithArguments('shop', 'selectClass', {
+            id: charClass.id,
+          });
+        }
+      } else {
+        this.commandService?.sendCommand('pending', 'cancel');
+      }
+    });
+  }
+
+  selectClass(): void {
+    this.openClassSelect(0);
+  }
+
+  respec(): void {
+    this.commandService?.sendCommand('shop', 'respec');
   }
 }

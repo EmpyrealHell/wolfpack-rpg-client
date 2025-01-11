@@ -120,10 +120,10 @@ export class CommandService {
       },
       true
     );
-    this.eventSubService.register('command-service', message => {
-      console.log('EventSub Message received:', message);
-      this.onIncomingWhisper(message);
-    });
+    // this.eventSubService.register('command-service', message => {
+    //   console.log('EventSub Message received (2):', message);
+    //   this.onIncomingWhisper(message);
+    // });
   }
 
   private updateHistory(key: string): ResponseHistory | undefined {
@@ -180,15 +180,19 @@ export class CommandService {
           subMap.push(subMatchMap);
         }
       }
-      history.responses.push(
-        new MatchedResponse(
-          id,
-          history.lastLine,
-          matchMap,
-          subMap,
-          message.timestamp
-        )
-      );
+      if (
+        history.responses.filter(x => x.line === history.lastLine).length === 0
+      ) {
+        history.responses.push(
+          new MatchedResponse(
+            id,
+            history.lastLine,
+            matchMap,
+            subMap,
+            message.timestamp
+          )
+        );
+      }
       if (callback) {
         callback.call(callback, key, id, matchMap, subMap, message.timestamp);
       }
@@ -209,9 +213,7 @@ export class CommandService {
           history = new ResponseHistory();
           this.matches.set(key, history);
         }
-        history.lastLine = this.eventSubService.lines
-          ? this.eventSubService.lines.length
-          : 0;
+        history.lastLine = this.eventSubService.lines?.length ?? 0;
         const responseGroup = this.messages.get(key);
         if (!responseGroup) {
           continue;

@@ -233,21 +233,18 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       this.tournament.endTime = new Date(date + toAdd);
       this.nextTournament = undefined;
     } else if (id === 'toNext') {
-      console.log(`Time to next tournament: ${groups.get('time')}`);
       const time = (groups.get('time') ?? '00:00:00').split(':');
       const toAdd =
         parseInt(time[0]) * 60 * 60 * 1000 +
         parseInt(time[1]) * 60 * 1000 +
         parseInt(time[2]) * 1000;
       if (!this.tournament) {
-        console.log('No tournament currently active, create one');
         this.tournament = new Tournament();
         if (!isReplay) {
           this.commandService?.sendCommand('fishing', 'results');
         }
       }
       this.nextTournament = new Date(date + toAdd);
-      console.log(`Set time for next tournament to ${this.nextTournament}`);
       this.tournament.endTime = undefined;
     }
   }

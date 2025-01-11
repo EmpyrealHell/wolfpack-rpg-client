@@ -113,7 +113,6 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     groups: Map<string, string>,
     isReplay: boolean | undefined
   ): void {
-    console.log(`Feed Success: ${name}, ${id}`);
     if (id === 'levelUp') {
       const level = groups.get('level') ?? '';
       if (this.lastFed) {

@@ -23,15 +23,27 @@
     class="flex-row-short"
     style="display: block; width: 50%; margin: auto; text-align: center"
   >
-    <button mat-raised-button color="accent" style="margin: 2px 2px 2px 0px">
+    <button
+      *ngIf="data.class.id > 0"
+      mat-raised-button
+      (click)="gloat()"
+      color="accent"
+      style="margin: 2px 2px 2px 0px"
+    >
       Gloat
     </button>
-    <button *ngIf="data.class.id > 0" mat-raised-button style="margin: 2px">
+    <button
+      *ngIf="data.class.id > 0"
+      mat-raised-button
+      (click)="respec()"
+      style="margin: 2px"
+    >
       Respec
     </button>
     <button
       *ngIf="data.class.id === 0 && data.level >= 3"
       mat-raised-button
+      (click)="selectClass()"
       style="margin: 2px 0px 2px 2px"
     >
       Select Class

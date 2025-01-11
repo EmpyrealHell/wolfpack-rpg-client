@@ -490,7 +490,7 @@
     },
     "pending": {
       "yes": {
-        "command": "y",
+        "command": "!y",
         "responses": {
           "error": {
             "invalidId": "Stable ID mismatch\\. Try !release again\\.",
@@ -503,7 +503,7 @@
         }
       },
       "no": {
-        "command": "n",
+        "command": "!n",
         "responses": {
           "success": {
             "keepPet": "You decided to keep (?<name>[^ ]{1,16})\\.",
@@ -512,7 +512,7 @@
         }
       },
       "cancel": {
-        "command": "nevermind",
+        "command": "!nevermind",
         "responses": {
           "success": {
             "confirmation": "Respec cancelled\\. No Wolfcoins deducted from your balance\\."
@@ -520,7 +520,7 @@
         }
       },
       "setClass": {
-        "command": "C{id}",
+        "command": "!C{id}",
         "responses": {
           "error": {
             "insufficientFunds": "It costs (?<cost>\\d+) Wolfcoins to respect at your level\\. You have (?<coins>\\d+) coins\\."
@@ -724,10 +724,11 @@
           "error": {
             "insufficientFunds": "It costs (?<cost>\\d+) Wolfcoins to respec at your level\\. You have (?<coins>\\d+) coins\\.",
             "userNotFound": "You have no coins to respec with\\.",
-            "invalidOperation": "You can't respec while in a party!"
+            "inParty": "You can't respec while in a party!",
+            "inQueue": "You can't respec while in the dungeon queue!"
           },
           "pending": {
-            "warning": "You've chosen to respec your class! It will cost you (?<cost>\\d+) coins to respec and you will lose all your items\\. Reply '(?<cancelCommand>\\w+)' to cancel or one of the following codes to select your new class: ",
+            "warning": "You've chosen to respec your class! It will cost you (?<cost>\\d+) coins to respec and you will lose all your items\\. Reply '(?<cancelCommand>!\\w+)' to cancel or one of the following codes to select your new class:",
             "classList": {
               "response": "(?:,?(?: or )?'C\\d' \\(\\w+\\))+",
               "subGroups": "'C(?<id>\\d)' \\((?<name>\\w+)\\)"

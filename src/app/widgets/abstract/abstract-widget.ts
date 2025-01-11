@@ -21,7 +21,6 @@ export abstract class AbstractWidgetComponent implements WidgetComponent {
   protected abstract sendInitialCommands(commandService: CommandService): void;
 
   onActivate(): void {
-    console.log(`activating widget ${this.name}`);
     this.username = this.configManager?.getConfig().authentication.user ?? '';
     const widgetId = `${this.name}-widget`;
     if (this.commandService) {

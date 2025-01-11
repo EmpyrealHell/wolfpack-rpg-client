@@ -120,14 +120,6 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
       'success',
       id,
       (name, id, groups, subGroups, date) => {
-        for (let group of groups) {
-          console.log(JSON.stringify(group));
-        }
-        for (let subGroup of subGroups) {
-          for (let group of subGroup) {
-            console.log(JSON.stringify(group));
-          }
-        }
         this.handleEquip(id, groups);
       }
     );
