@@ -6,7 +6,11 @@ import { UserService } from '../user/user.service';
 import { MessageQueue } from './message-queue';
 import { WhisperService } from './whisper.service';
 import * as eventSubConfig from './eventsub.service.json';
-import { EventSubMessage, EventSubSubscription, EventSubMetadata } from './eventsub.types';
+import {
+  EventSubMessage,
+  EventSubSubscription,
+  EventSubMetadata,
+} from './eventsub.types';
 
 /**
  * Callback type used for broadcasting whisper messages received by the client.
@@ -80,9 +84,9 @@ export class EventSubService {
     }
   }
 
-  private reconnect(reason: string): void {
+  private async reconnect(reason: string): Promise<void> {
     this.isConnected = false;
-    this.connect();
+    await this.connect();
   }
 
   /**
@@ -284,13 +288,13 @@ export class EventSubService {
               }
             }
           } else if (data.metadata?.message_type === 'session_reconnect') {
-            this.reconnect('Session reconnect requested');
+            await this.reconnect('Session reconnect requested');
           }
         };
 
-        this.connection.onclose = event => {
+        this.connection.onclose = async event => {
           this.isConnected = false;
-          this.reconnect('WebSocket Closed');
+          await this.reconnect('WebSocket Closed');
         };
 
         this.connection.onerror = error => {

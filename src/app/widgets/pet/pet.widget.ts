@@ -301,11 +301,9 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handlePetFound(isReplay: boolean): void {
+  private handlePetFound(date: number): void {
     this.stable = [];
-    if (!isReplay) {
-      this.commandService?.sendCommand('pets', 'list');
-    }
+    this.commandService?.sendResponseCommand('pets', 'list', date);
   }
 
   protected subscribeToResponses(
@@ -439,7 +437,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'dungeonFound',
       id,
       (name, id, groups, subGroups, date, isReplay) => {
-        this.handlePetFound(isReplay ?? false);
+        this.handlePetFound(date);
       }
     );
   }

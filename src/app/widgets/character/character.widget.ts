@@ -374,9 +374,18 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
         const balance = parseInt(
           groups.get('balance') ?? this.data.coins.toString()
         );
-        if (balance != this.data.coins) {
+        if (balance !== this.data.coins) {
           this.data.coins = balance;
         }
+      }
+    );
+    commandService.subscribeToMessage(
+      'dungeon',
+      'completeLoot',
+      id,
+      (name, id, groups, subGroups, date, isReplay) => {
+        this.data.inventory = [];
+        this.commandService?.sendResponseCommand('inventory', 'list', date);
       }
     );
   }
@@ -445,7 +454,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
   private openClassSelect(cost: number): void {
     const classes: CharacterClass[] = [];
     if (this.clientDataService) {
-      for (let charClass of this.clientDataService.classes) {
+      for (const charClass of this.clientDataService.classes) {
         classes.push(charClass[1]);
       }
     }

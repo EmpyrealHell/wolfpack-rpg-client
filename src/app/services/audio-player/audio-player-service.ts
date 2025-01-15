@@ -18,7 +18,7 @@ export class AudioPlayerService {
       const audio = new Audio(`./assets/${name}.mp3`);
       audio.load();
       audio.volume = config.settings.soundVolume ?? 0.5;
-      audio.play();
+      void audio.play();
     }
   }
 }

@@ -92,11 +92,9 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleLoot(isReplay: boolean): void {
+  private handleLoot(date: number): void {
     this.inventory = [];
-    if (!isReplay) {
-      this.commandService?.sendCommand('inventory', 'list');
-    }
+    this.commandService?.sendResponseCommand('inventory', 'list', date);
   }
 
   protected subscribeToResponses(
@@ -138,7 +136,7 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
       'completeLoot',
       id,
       (name, id, groups, subGroups, date, isReplay) => {
-        this.handleLoot(isReplay ?? false);
+        this.handleLoot(date);
       }
     );
   }

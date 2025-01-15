@@ -31,6 +31,30 @@
         {{selected?.slot?.name}})
       </p>
       <p>{{selected?.description}}</p>
+      <div
+        class="flex-row"
+        style="
+          justify-content: center;
+          flex-wrap: wrap;
+          align-content: flex-start;
+        "
+      >
+        <div *ngIf="selected.successChance > 0" style="margin: 4px">
+          Success Chance: {{selected.successChance}}%
+        </div>
+        <div *ngIf="selected.xpBonus > 0" style="margin: 4px">
+          XP Bonus: {{selected.xpBonus}}%
+        </div>
+        <div *ngIf="selected.coinBonus > 0" style="margin: 4px">
+          Wolfcoin Bonus: {{selected.coinBonus}}%
+        </div>
+        <div *ngIf="selected.itemFind > 0" style="margin: 4px">
+          Item Find: {{selected.itemFind}}%
+        </div>
+        <div *ngIf="selected.preventDeath > 0" style="margin: 4px">
+          Prevent Death: {{selected.preventDeath}}%
+        </div>
+      </div>
       <div>
         <button
           mat-raised-button
