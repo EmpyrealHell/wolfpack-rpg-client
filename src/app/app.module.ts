@@ -49,6 +49,7 @@ import { InfoWidgetComponent } from './widgets/info/info.widget';
 import { ClientDataService } from './services/client-data/client-data-service';
 import { AudioPlayerService } from './services/audio-player/audio-player-service';
 import { InventoryWidgetComponent } from './widgets/inventory/inventory.widget';
+import { GroupWidgetComponent } from './widgets/group/group.widget';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { InventoryWidgetComponent } from './widgets/inventory/inventory.widget';
     ConsoleWidgetComponent,
     FishingWidgetComponent,
     InfoWidgetComponent,
+    GroupWidgetComponent,
 
     WidgetContainerComponent,
     WidgetFactoryComponent,

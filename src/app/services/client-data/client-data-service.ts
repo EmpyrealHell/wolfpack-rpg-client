@@ -7,6 +7,7 @@ import {
   ItemType,
 } from 'src/app/widgets/inventory/model/item';
 import { CharacterClass } from 'src/app/widgets/character/model/character';
+import { DungeonMode } from 'src/app/widgets/group/model/dungeon';
 
 /**
  * Service containing the feature management system.
@@ -34,6 +35,7 @@ export class ClientDataService {
     Array<number>
   >();
   public petRarities: Map<number, Rarity> = new Map<number, Rarity>();
+  public dungeonModes: Map<string, string> = new Map<string, string>();
 
   private unescape(s: string): string {
     return s
@@ -44,7 +46,7 @@ export class ClientDataService {
   }
 
   private loadQualities(qualities: string[]): void {
-    for (let quality of qualities) {
+    for (const quality of qualities) {
       const parts = quality.split('|');
       if (parts.length === 3) {
         const id = parseInt(parts[0]);
@@ -57,7 +59,7 @@ export class ClientDataService {
   }
 
   private loadTypes(types: string[]): void {
-    for (let type of types) {
+    for (const type of types) {
       const parts = type.split('|');
       if (parts.length === 2) {
         const id = parseInt(parts[0]);
@@ -67,7 +69,7 @@ export class ClientDataService {
   }
 
   private loadSlots(slots: string[]): void {
-    for (let slot of slots) {
+    for (const slot of slots) {
       const parts = slot.split('|');
       if (parts.length === 3) {
         const id = parseInt(parts[0]);
@@ -87,7 +89,7 @@ export class ClientDataService {
   }
 
   private loadClasses(classes: string[]): void {
-    for (let charClass of classes) {
+    for (const charClass of classes) {
       const parts = charClass.split('|');
       if (parts.length === 7) {
         const id = parseInt(parts[0]);
@@ -107,9 +109,9 @@ export class ClientDataService {
   }
 
   private loadEquips(equips: string[]): void {
-    for (let equip of equips) {
+    for (const equip of equips) {
       const pairs = equip.split('|');
-      for (let pair of pairs) {
+      for (const pair of pairs) {
         const parts = pair.split(':');
         if (parts.length === 2) {
           this.equippables.set(
@@ -122,7 +124,7 @@ export class ClientDataService {
   }
 
   private loadRarities(rarities: string[]): void {
-    for (let rarity of rarities) {
+    for (const rarity of rarities) {
       const parts = rarity.split('|');
       if (parts.length === 3) {
         const id = parseInt(parts[0]);
@@ -130,6 +132,17 @@ export class ClientDataService {
           id,
           new Rarity(id, this.unescape(parts[1]), parts[2])
         );
+      }
+    }
+  }
+
+  private loadModes(modes: string[]): void {
+    for (const mode of modes) {
+      const parts = mode.split('|');
+      if (parts.length === 2) {
+        const flag = parts[0];
+        const name = parts[1];
+        this.dungeonModes.set(flag, name);
       }
     }
   }
@@ -143,13 +156,14 @@ export class ClientDataService {
     const data = group.get('data');
     if (data) {
       const segments = data.split('&').map(x => x.split(';'));
-      if (segments.length === 6) {
+      if (segments.length === 7) {
         this.loadQualities(segments[0]);
         this.loadTypes(segments[1]);
         this.loadSlots(segments[2]);
         this.loadClasses(segments[3]);
         this.loadEquips(segments[4]);
         this.loadRarities(segments[5]);
+        this.loadModes(segments[6]);
       }
     }
   }
