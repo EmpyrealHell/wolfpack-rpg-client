@@ -329,20 +329,30 @@ export class CommandService {
   }
 
   /**
-   * Subscribes to a command by its id. This will cause the callback passed in
-   * to be called with the capture groups provided when the command response
-   * category is detected in the eventsub stream.
-   * @param group The name of the command group.
-   * @param command The name of the individual command.
-   * @param responses Must be responses to maintain type safety.
-   * @param result The type of result (success, failure, etc.).
-   * @param callback The method to call when the command response is detected.
-   * @returns A string representing the command response id.
+   * Checks to see if a command has been sent during the current session.
+   * @param group The name of the message group.
+   * @param command The name of the command.
+   * @returns True if the command has been sent.
    */
   hasCommandBeenSent<
     G extends keyof typeof CommandData.commands,
     C extends keyof (typeof CommandData.commands)[G],
   >(group: G, command: C): boolean {
+    return this.hasCommandBeenSentSince(group, command, 0);
+  }
+
+  /**
+   * Checks to see if a command has been sent after a given point.
+   * @param group The name of the message group.
+   * @param command The name of the command.
+   * @param time The timestamp to start checking at.
+   * @returns True if the command has been sent on or after the given line
+   * number.
+   */
+  hasCommandBeenSentSince<
+    G extends keyof typeof CommandData.commands,
+    C extends keyof (typeof CommandData.commands)[G],
+  >(group: G, command: C, time: number): boolean {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const variants = CommandData.commands[group][command] as any;
     const commands: string[] = [];
@@ -360,7 +370,8 @@ export class CommandService {
     const queue = this.eventSubService.messageQueue.queuedMessages;
     for (const variant of commands) {
       if (
-        lines.filter(x => x.text === variant).length > 0 ||
+        lines.filter(x => x.text === variant && x.timestamp >= time).length >
+          0 ||
         queue.indexOf(variant) >= 0
       ) {
         return true;
@@ -380,7 +391,22 @@ export class CommandService {
     G extends keyof typeof CommandData.commands,
     C extends keyof (typeof CommandData.commands)[G],
   >(group: G, command: C): void {
-    if (!this.hasCommandBeenSent(group, command)) {
+    this.sendResponseCommand(group, command, 0);
+  }
+
+  /**
+   * Sends a command, as long as that command has not been sent after a given
+   * point in the message history. This should be used when sending commands in
+   * a response callback.
+   * @param group The command group.
+   * @param command The key of the command.
+   * @param line The timestamp of when the command was triggered.
+   */
+  sendResponseCommand<
+    G extends keyof typeof CommandData.commands,
+    C extends keyof (typeof CommandData.commands)[G],
+  >(group: G, command: C, time: number): void {
+    if (!this.hasCommandBeenSentSince(group, command, time)) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const commandObject = CommandData.commands[group][command] as any;
       if (commandObject.command) {

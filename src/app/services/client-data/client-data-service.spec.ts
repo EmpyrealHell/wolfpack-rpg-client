@@ -46,7 +46,7 @@ describe('ClientDataService', () => {
       new Map<string, string>([
         [
           'data',
-          '1|Uncommon|#FFFFFF;2|Rare|#6495ED;3|Epic|#9932CC;4|Artifact|#FFA500&1|Warrior;2|Mage;3|Rogue;4|Ranger;5|Cleric&1|Weapon|1;2|Armor|1;3|Trinket|2;4|Other|0&1|Warrior|10||5|2|;2|Mage|2|5||10|;3|Rogue||2|10|5|;4|Ranger|5|10|2||;5|Cleric|2|2|2|2|10&2:1|3:2|4:3|5:4|6:5&5|Legendary|#B22222;4|Epic|#FFA500;3|Rare|#9932CC;2|Uncommon|#6495ED;1|Common|#FFFFFF',
+          '1|Uncommon|#FFFFFF;2|Rare|#6495ED;3|Epic|#9932CC;4|Artifact|#FFA500&1|Warrior;2|Mage;3|Rogue;4|Ranger;5|Cleric&1|Weapon|1;2|Armor|1;3|Trinket|2;4|Other|0&1|Warrior|10||5|2|;2|Mage|2|5||10|;3|Rogue||2|10|5|;4|Ranger|5|10|2||;5|Cleric|2|2|2|2|10&2:1|3:2|4:3|5:4|6:5&5|Legendary|#B22222;4|Epic|#FFA500;3|Rare|#9932CC;2|Uncommon|#6495ED;1|Common|#FFFFFF&|Normal;H|Heroic',
         ],
       ]),
       [new Map<string, string>()],
@@ -58,5 +58,6 @@ describe('ClientDataService', () => {
     expect(service.classes.size).toBe(5);
     expect(service.equippables.size).toBe(5);
     expect(service.petRarities.size).toBe(5);
+    expect(service.dungeonModes.size).toBe(2);
   });
 });

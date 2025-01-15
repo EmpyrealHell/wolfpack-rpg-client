@@ -112,7 +112,7 @@ export class AuthComponent implements OnInit {
         auth.authCount = 0;
         configManager.save();
         userService.updateCache(data);
-        router.navigate(['/play']);
+        void router.navigate(['/play']);
       }
     } else {
       this.AuthenticateWithTwitch(auth, configManager);

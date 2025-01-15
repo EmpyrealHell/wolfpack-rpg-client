@@ -61,7 +61,7 @@ export class GameComponent implements OnInit {
 
     const token = config.authentication.token;
     if (!token) {
-      this.router.navigate(['/']);
+      void this.router.navigate(['/']);
     } else {
       const userData = await this.userService.getUserAuth(token);
       if (userData && userData.login) {
@@ -93,7 +93,7 @@ export class GameComponent implements OnInit {
       } else {
         config.authentication.token = null;
         this.configManager.save();
-        this.router.navigate(['/']);
+        void this.router.navigate(['/']);
       }
     }
   }
@@ -167,6 +167,6 @@ export class GameComponent implements OnInit {
   logOut(): void {
     this.config.authentication = new ConfigAuthentication();
     this.configManager.save();
-    this.router.navigate(['/']);
+    void this.router.navigate(['/']);
   }
 }
