@@ -10,7 +10,6 @@ import { MatRipple } from '@angular/material/core';
 
 /**
  * Widget used to display pet data.
- * TODO: Add level up sounds
  */
 @Component({
   selector: 'app-pet-widget',
@@ -114,18 +113,11 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     groups: Map<string, string>,
     isReplay: boolean | undefined
   ): void {
-    console.log(`Feed Success: ${name}, ${id}`);
     if (id === 'levelUp') {
       const level = groups.get('level') ?? '';
       if (this.lastFed) {
         if (!isReplay) {
-          if (this.configManager?.getConfig().settings.playSounds) {
-            const audio = new Audio(
-              `./assets/pet-${this.lastFed.pet.id}-call.mp3`
-            );
-            audio.load();
-            audio.play();
-          }
+          this.audioPlayerService?.play(`pet-${this.lastFed.pet.id}-call`);
           this.snackbar.open(
             `${this.lastFed.name} leveled up! They are now level ${level}.`,
             undefined,
@@ -309,8 +301,11 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handlePetFound(): void {
-    this.commandService?.sendCommand('pets', 'list');
+  private handlePetFound(isReplay: boolean): void {
+    this.stable = [];
+    if (!isReplay) {
+      this.commandService?.sendCommand('pets', 'list');
+    }
   }
 
   protected subscribeToResponses(
@@ -444,12 +439,9 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'dungeonFound',
       id,
       (name, id, groups, subGroups, date, isReplay) => {
-        if (!isReplay) {
-          this.handlePetFound();
-        }
+        this.handlePetFound(isReplay ?? false);
       }
     );
-    // Need to subscribe to the pet announcements from dungeon runs (new pet, pet hungry, pet starving, pet died)
   }
 
   protected sendInitialCommands(commandService: CommandService): void {

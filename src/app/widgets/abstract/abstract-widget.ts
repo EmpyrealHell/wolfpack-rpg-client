@@ -3,8 +3,10 @@ import { ConfigManager } from 'src/app/services/data/config-manager';
 import { CommandService } from 'src/app/services/command/command-service';
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 import { ClientDataService } from 'src/app/services/client-data/client-data-service';
+import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
 
 export abstract class AbstractWidgetComponent implements WidgetComponent {
+  audioPlayerService: AudioPlayerService | undefined;
   clientDataService: ClientDataService | undefined;
   eventSubService: EventSubService | undefined;
   configManager: ConfigManager | undefined;

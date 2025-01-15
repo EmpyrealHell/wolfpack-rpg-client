@@ -5,6 +5,8 @@ import { WidgetItem } from './widget-item';
 import { FishingWidgetComponent } from 'src/app/widgets/fishing/fishing.widget';
 import { PetWidgetComponent } from 'src/app/widgets/pet/pet.widget';
 import { InfoWidgetComponent } from 'src/app/widgets/info/info.widget';
+import { InventoryWidgetComponent } from 'src/app/widgets/inventory/inventory.widget';
+import { GroupWidgetComponent } from 'src/app/widgets/group/group.widget';
 
 /**
  * Service containing the list of all available widgets.
@@ -14,19 +16,23 @@ import { InfoWidgetComponent } from 'src/app/widgets/info/info.widget';
 })
 export class WidgetService {
   private static widgets = new Array<WidgetItem>(
-    // new WidgetItem(
-    //   CharacterWidgetComponent,
-    //   'Character',
-    //   'character',
-    //   'character'
-    // ),
-    // new WidgetItem(null, 'Inventory', 'inventory.beta', 'inventory'),
+    new WidgetItem(
+      CharacterWidgetComponent,
+      'Character',
+      'character',
+      'character'
+    ),
+    new WidgetItem(
+      InventoryWidgetComponent,
+      'Inventory',
+      'inventory',
+      'inventory'
+    ),
     new WidgetItem(PetWidgetComponent, 'Pets', 'pets', 'pets'),
     new WidgetItem(FishingWidgetComponent, 'Fishing', 'fishing', 'fishing'),
-    // new WidgetItem(null, 'Dungeon', 'dungeon.beta', 'dungeon'),
-    // new WidgetItem(null, 'Group', 'group.beta', 'group'),
-    // new WidgetItem(null, 'Group Chat', 'group-chat.beta', 'groupchat'),
-    // new WidgetItem(null, 'Shop', 'shop.beta', 'shop'),
+    // new WidgetItem(DungeonWidgetComponent, 'Dungeon', 'dungeon', 'dungeon'),
+    // new WidgetItem(GroupWidgetComponent, 'Group', 'group', 'group'),
+    // new WidgetItem(null, 'Group Chat', 'group-chat', 'groupchat'),
     new WidgetItem(InfoWidgetComponent, 'Info', 'info', 'info'),
     new WidgetItem(ConsoleWidgetComponent, 'Console', 'console', 'console')
   );

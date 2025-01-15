@@ -47,6 +47,9 @@ import { EventSubService } from './services/eventsub/eventsub.service';
 import { PetWidgetComponent } from './widgets/pet/pet.widget';
 import { InfoWidgetComponent } from './widgets/info/info.widget';
 import { ClientDataService } from './services/client-data/client-data-service';
+import { AudioPlayerService } from './services/audio-player/audio-player-service';
+import { InventoryWidgetComponent } from './widgets/inventory/inventory.widget';
+import { GroupWidgetComponent } from './widgets/group/group.widget';
 
 @NgModule({
   declarations: [
@@ -60,10 +63,12 @@ import { ClientDataService } from './services/client-data/client-data-service';
     ErrorDialog,
 
     CharacterWidgetComponent,
+    InventoryWidgetComponent,
     PetWidgetComponent,
     ConsoleWidgetComponent,
     FishingWidgetComponent,
     InfoWidgetComponent,
+    GroupWidgetComponent,
 
     WidgetContainerComponent,
     WidgetFactoryComponent,
@@ -99,7 +104,12 @@ import { ClientDataService } from './services/client-data/client-data-service';
     MatSliderModule,
     MatSnackBarModule,
   ],
-  providers: [ClientDataService, CommandService, EventSubService],
+  providers: [
+    ClientDataService,
+    CommandService,
+    EventSubService,
+    AudioPlayerService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

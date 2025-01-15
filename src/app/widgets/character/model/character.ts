@@ -1,48 +1,93 @@
-import { BaseStats } from './base-stats';
-import { Experience } from './experience';
-import { Stats } from './stats';
-import { Gear } from './gear';
+import { Item } from '../../inventory/model/item';
 
 /**
  * Represents the data for a charcter displayed on the character widget.
  */
 export class Character {
-  static defaultClass = 'Adventurer';
   /**
    * Number of wolfcoins the character has.
    */
   coins = 0;
   /**
-   * The character's current class name.
+   * Character class object for the player's current class.
    */
-  class: string | undefined;
+  class = CharacterClass.default;
   /**
-   * Object holding level, prestige, and experience data.
+   * Player's current level.
    */
-  experience = new Experience();
-  stats = new Stats();
-  gear = new Gear();
+  level = 0;
+  /**
+   * Player's total experience earned.
+   */
+  experience = 0;
+  /**
+   * Player's prestige level.
+   */
+  prestige = 0;
+  /**
+   * The player's subscriber status.
+   */
+  subscriber = false;
+  /**
+   * Player's inventory.
+   */
+  inventory: Item[] = [];
 
-  /**
-   * Sets the class and applies its base stats to this object.
-   * @param newClass The name of the class to set.
-   */
-  setClass(newClass?: string): void {
-    if (newClass) {
-      this.class = newClass;
-      this.stats = BaseStats.byClass(newClass);
-    }
+  public minForLevel(level: number): number {
+    return 4 * Math.pow(level, 3) + 50;
+  }
+
+  public levelFromXp(xp: number): number {
+    return 0;
   }
 
   /**
-   * Calculates the final stats for this character, accounting for base stats
-   * and any equipped gear.
+   * @returns The amount of experience the player has earned in the current level.
    */
-  calculatStats(): Stats {
-    const stats = new Stats();
-    stats.add(this.stats);
-    stats.add(this.gear.armor.stats);
-    stats.add(this.gear.weapon.stats);
-    return stats;
+  public xpAmount(): number {
+    const amount = this.experience - this.minForLevel(this.level);
+    return Math.max(amount, 0);
   }
+
+  /**
+   * @returns The amount of experience the player needs to reach the next level.
+   */
+  public xpNeeded(): number {
+    return this.minForLevel(this.level + 1) - this.minForLevel(this.level);
+  }
+
+  /**
+   * @returns The player's progress through the current level as a number from 0 to 1.
+   */
+  public xpProgress(): number {
+    const total = this.xpNeeded();
+    const amount = this.xpAmount();
+    return amount / total;
+  }
+}
+
+/**
+ * A character class that determines the player's base stats and what gear they can equip.
+ */
+export class CharacterClass {
+  public static default = new CharacterClass(0, 'Adventurer', 0, 0, 0, 0, 0);
+
+  /**
+   * @param id The class id.
+   * @param name The class name.
+   * @param successChance Bonus chance to succeed a dungeon.
+   * @param xpBonus Bonus to experience earned from dungeons.
+   * @param coinBonus Bonus to coins earned from dungeons.
+   * @param itemFind Bonus chance to find items in dungeons.
+   * @param preventDeath Bonus chance to prevent death when failing a dungeon.
+   */
+  constructor(
+    public id: number,
+    public name: string,
+    public successChance: number,
+    public xpBonus: number,
+    public coinBonus: number,
+    public itemFind: number,
+    public preventDeath: number
+  ) {}
 }

@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>{{data.isRespec ? 'Respec' : 'Select Class'}}</h2>
+<mat-dialog-content>
+  <p>
+    Please select a class: @if (data.isRespec) {
+    <span> (This will cost {{data.cost}} Wolfcoins)</span> }
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  @for (charClass of data.classes; track charClass.name) {
+  <button mat-button [mat-dialog-close]="charClass.name">
+    {{charClass.name}}
+  </button>
+  }
+  <button color="accent" mat-button [mat-dialog-close]="" cdkFocusInitial>
+    Cancel
+  </button>
+</mat-dialog-actions>

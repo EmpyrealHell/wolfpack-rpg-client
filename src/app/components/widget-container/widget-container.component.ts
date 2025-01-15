@@ -12,6 +12,7 @@ import { CommandService } from 'src/app/services/command/command-service';
 import { ClientDataService } from 'src/app/services/client-data/client-data-service';
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 import { WidgetService } from 'src/app/services/widget/widget.service';
+import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
 
 /**
  * Holds a list of widgets and renders them to the DOM, in order.
@@ -51,6 +52,7 @@ export class WidgetContainerComponent implements OnInit {
 
   constructor(
     private widgetService: WidgetService,
+    public audioPlayerService: AudioPlayerService,
     public clientDataService: ClientDataService,
     public configManager: ConfigManager,
     public eventSubService: EventSubService,

@@ -1,0 +1,92 @@
+<mat-card-content height="100%" class="flex-column">
+  <div *ngIf="selected" mat-ripple [matRippleDisabled]="true">
+    <span style="display: block; width: 50%; margin: auto; text-align: center">
+      <svg width="128px" height="128px">
+        <rect
+          width="128px"
+          height="128px"
+          [attr.fill]="selected?.quality?.color"
+          rx="8px"
+          ry="8px"
+        />
+        <image
+          [attr.href]="'./assets/item-' + selected?.id + '.svg'"
+          width="128px"
+          height="128px"
+        />
+        <text
+          *ngIf="selected?.isEquipped"
+          x="100"
+          y="30"
+          font-size="32px"
+          fill="white"
+          stroke="red"
+          stroke-width="3"
+        >
+          🅰
+        </text>
+      </svg>
+      <p>
+        {{selected?.name}} ({{selected?.quality?.name}}
+        {{selected?.slot?.name}})
+      </p>
+      <p>{{selected?.description}}</p>
+      <div>
+        <button
+          mat-raised-button
+          color="accent"
+          (click)="equipItem()"
+          *ngIf="!selected?.isEquipped"
+          style="margin-right: 2px"
+        >
+          Equip
+        </button>
+        <button
+          mat-raised-button
+          color="accent"
+          (click)="unequipItem()"
+          *ngIf="selected?.isEquipped"
+          style="margin-right: 2px"
+        >
+          Unequip
+        </button>
+      </div>
+    </span>
+    <div class="static-bar">
+      <hr />
+    </div>
+  </div>
+  <div
+    class="flex-row"
+    style="justify-content: center; flex-wrap: wrap; align-content: flex-start"
+  >
+    <div *ngFor="let entry of inventory" style="margin: 4px">
+      <button mat-button style="height: 74px" (click)="setSelected(entry)">
+        <svg width="64px" height="64px" style="margin-top: 4px">
+          <rect
+            width="64px"
+            height="64px"
+            [attr.fill]="entry?.quality?.color"
+            rx="4px"
+            ry="4px"
+          />
+          <image
+            [attr.href]="'./assets/item-' + entry?.id + '.svg'"
+            width="64px"
+            height="64px"
+          />
+          <text
+            *ngIf="entry?.isEquipped"
+            x="50"
+            y="15"
+            fill="white"
+            stroke="red"
+            stroke-width="1.5"
+          >
+            🅰
+          </text>
+        </svg>
+      </button>
+    </div>
+  </div>
+</mat-card-content>

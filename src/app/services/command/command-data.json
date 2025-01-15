@@ -304,16 +304,14 @@
         }
       },
       "stats": {
-        "command": "!stats",
-        "alternates": ["stats"],
+        "command": "!stats -c",
         "responses": {
           "error": {
             "invalidOperation": "You either don't have coins or xp yet\\. Hang out in chat during the livestream to earn them!"
           },
           "success": {
-            "coins": "You have: (?<coins>\\d+) coins\\.",
-            "classLevel": "You are a level (?<level>\\d+) (?<className>\\w+), and you are Prestige level (?<prestige>\\d+)\\. \\(Total XP: (?<experience>\\d+) \\| XP To Next Level: (?<toNext>\\d+)\\)",
-            "level": "You are level (?<level>\\d+) \\(Total XP: (?<experience>\\d+) \\| XP To Next Level: (?<toNext>\\d+)\\)"
+            "compact": "stats: (?<sub>S?)\\|(?<level>[^\\|]*)\\|(?<prestige>[^\\|]*)\\|(?<className>[^\\|]*)\\|(?<xp>[^\\|]*)\\|(?<toLevel>[^\\|]*)\\|(?<currency>[^\\|]*)",
+            "compactOld": "stats: (?<level>[^\\|]*)\\|(?<className>[^\\|]*)\\|(?<xp>[^\\|]*)\\|(?<toLevel>[^\\|]*)\\|(?<currency>[^\\|]*)"
           }
         }
       },
@@ -348,8 +346,7 @@
             "empty": "You have no items\\."
           },
           "success": {
-            "confirmation": "Equipped (?<item>.*)\\.",
-            "removed": "Unequipped (?<item>.*)\\."
+            "confirmation": "Equipped (?<item>.*?)(?:\\.|(?:, and unequipped (?<unequipped>.*).))"
           }
         }
       },
@@ -365,7 +362,7 @@
               "response": "inventory: (?<data>.*)",
               "subGroups": {
                 "container": "data",
-                "pattern": "(?<id>[^\\|]+)\\|(?<count>[^\\|]+)\\|(?<max>[^\\|]+)\\|(?<name>[^\\|]+)\\|(?<desc>[^\\|]+)\\|(?<equipped>[^\\|]*)\\|(?<quality>[^\\|]+)\\|(?<slot>[^\\|]+)\\|(?<type>[^\\|]+)\\|(?<success>[^\\|]+)\\|(?<xp>[^\\|]+)\\|(?<coin>[^\\|]+)\\|(?<itemFind>[^\\|]+)\\|(?<preventDeath>[^\\|]+);"
+                "pattern": "(?<id>[^\\|]+)\\|(?<count>[^\\|]+)\\|(?<max>[^\\|]+)\\|(?<name>[^\\|]+)\\|(?<desc>[^\\|]+)\\|(?<equipped>[^\\|]*)\\|(?<quality>[^\\|]+)\\|(?<slot>[^\\|]+)\\|(?<type>[^\\|]+)\\|(?<success>[^\\|]*)\\|(?<xp>[^\\|]*)\\|(?<coin>[^\\|]*)\\|(?<itemFind>[^\\|]*)\\|(?<preventDeath>[^\\|]*);"
               }
             }
           }
@@ -493,7 +490,7 @@
     },
     "pending": {
       "yes": {
-        "command": "y",
+        "command": "!y",
         "responses": {
           "error": {
             "invalidId": "Stable ID mismatch\\. Try !release again\\.",
@@ -506,7 +503,7 @@
         }
       },
       "no": {
-        "command": "n",
+        "command": "!n",
         "responses": {
           "success": {
             "keepPet": "You decided to keep (?<name>[^ ]{1,16})\\.",
@@ -515,7 +512,7 @@
         }
       },
       "cancel": {
-        "command": "nevermind",
+        "command": "!nevermind",
         "responses": {
           "success": {
             "confirmation": "Respec cancelled\\. No Wolfcoins deducted from your balance\\."
@@ -523,7 +520,7 @@
         }
       },
       "setClass": {
-        "command": "C{id}",
+        "command": "!C{id}",
         "responses": {
           "error": {
             "insufficientFunds": "It costs (?<cost>\\d+) Wolfcoins to respect at your level\\. You have (?<coins>\\d+) coins\\."
@@ -676,7 +673,7 @@
             "invalidOperation": "You don't have coins and/or xp yet!"
           },
           "public": {
-            "gloat": "(?<user>[^ ]+) has spent (?<cost>\\d+) Wolfcoins to show off that they are  Level (?<level>\\d+)(?:, Prestige Level (?<prestige>\\d+))?! (?<message>.*)"
+            "gloat": "(?<user>[^ ]+) has spent (?<cost>\\d+) Wolfcoins to show off that they are Level (?<level>\\d+)(?:, Prestige Level (?<prestige>\\d+))?! (?<message>.*)"
           }
         }
       },
@@ -693,7 +690,7 @@
             "gloat": "(?<user>[^ ]+) gloats about the time they caught a  (?<length>\\d+) in. long, (?<weight>\\d+) pound (?<fish>\\d+) lobosSmug"
           },
           "success": {
-            "confirmation": "You spent (?<coins>\\d+) wolfcoins to brag about your biggest(?<fish>\\w+)\\."
+            "confirmation": "You spent (?<coins>\\d+) Wolfcoins to brag about your biggest (?<fish>\\w+)\\."
           }
         }
       },
@@ -709,7 +706,7 @@
             "gloat": "(?<user>[^ ]+) watches proudly as their level (?<level>\\d+) (?<sparkly>SPARKLY )?(?<type>.*) named (?<name>.{1,16}) struts around!"
           },
           "success": {
-            "confirmation": "You spent (?<coins>\\d+) wolfcoins to brag about (?<name>[.]{1,16})\\."
+            "confirmation": "You spent (?<coins>\\d+) Wolfcoins to brag about (?<name>.{1,16})\\."
           }
         }
       },
@@ -727,29 +724,41 @@
           "error": {
             "insufficientFunds": "It costs (?<cost>\\d+) Wolfcoins to respec at your level\\. You have (?<coins>\\d+) coins\\.",
             "userNotFound": "You have no coins to respec with\\.",
-            "invalidOperation": "You can't respec while in a party!"
+            "inParty": "You can't respec while in a party!",
+            "inQueue": "You can't respec while in the dungeon queue!"
           },
           "pending": {
-            "warning": "You've chosen to respec your class! It will cost you (?<cost>\\d+) coins to respec and you will lose all your items\\. Reply '(?<cancelCommand>\\w+)' to cancel or one of the following codes to select your new class: ",
+            "warning": "You've chosen to respec your class! It will cost you (?<cost>\\d+) coins to respec and you will lose all your items\\. Reply '(?<cancelCommand>!\\w+)' to cancel or one of the following codes to select your new class:",
             "classList": {
               "response": "(?:,?(?: or )?'C\\d' \\(\\w+\\))+",
               "subGroups": "'C(?<id>\\d)' \\((?<name>\\w+)\\)"
             }
+          },
+          "success": {
+            "confirmation": "Class successfully updated to (?<class>\\w+)! (?<coins>\\d+) deducted from your Wolfcoin balance\\."
           }
         },
         "options": ["SetClass", "Cancel"]
+      },
+      "selectClass": {
+        "command": "!c {id}",
+        "responses": {
+          "success": {
+            "confirmation": "You successfully selected the (?<class>\\w+) class!"
+          }
+        }
       },
       "stats": {
         "command": "!stats {username}",
         "alternates": ["stats {username}"],
         "responses": {
           "error": {
-            "userNotFound": "User does not exist in database\\. You were charged no coins\\."
+            "userNotFound": "User (?<user>[^ ]+) does not exist in database\\. You were not charged any Wolfcoins\\."
           },
           "success": {
             "classLevel": "(?<user>[^ ]+) is a Level (?<level>\\d+) (?<className>\\w+) \\((?<experience>\\d+) XP\\), Prestige Level (?<prestige>\\d+), and has (?<coins>\\d+) Wolfcoins\\.",
             "cost": "It cost you (?<cost>\\d+) Wolfcoins to discover this information\\.",
-            "level": "(?<user>[^ ]+) is Level  (?<level>\\d+) \\((?<experience>\\d+) XP\\) and has (?<coins>\\d+) Wolfcoins\\."
+            "level": "(?<user>[^ ]+) is Level (?<level>\\d+) \\((?<experience>\\d+) XP\\), and has (?<coins>\\d+) Wolfcoins\\."
           }
         }
       }
@@ -793,6 +802,18 @@
       "hungerWarning": "(?<name>.{1,16}) the (?<sparkly>sparkly )?(?<pet>.*) is hungry! Be sure to !feed them!",
       "hungerDeath": "(?<name>.{1,16}) the (?<sparkly>sparkly )?(?<pet>.*) starved to death.",
       "dungeonFound": "(?:You found your first pet! You now have a pet (?<name>.{1,16})\\. Whisper me !pethelp for more info\\.)|(You found a new pet buddy! You earned a (?<name>.{1,16}) pet!)"
+    },
+    "player": {
+      "awards": "Thanks for watching! Viewers awarded (?<xp>\\d+) XP & (?<coins>\\d+) Wolfcoins. Subscribers earn (?<multiplier>\\d+)x that amount!",
+      "levelUp": "DING! You just reached level (?<level>\\d+)!(?: You are Prestige (?<prestige>\\d+)\\.)? XP to next level: (?<toLevel>\\d+)\\.",
+      "prestige": "You have earned a Prestige level! You are now Prestige (?<prestige>\\d+) and your level has been set to (?<level>\\d+). XP to next level: (?<toLevel>\\d+)\\.",
+      "selectClass": "You've reached LEVEL 3! You get to choose a class for your character! Choose by whispering me one of the following\\:"
+    },
+    "dungeon": {
+      "completeAwards": "(?<user>.*?), you've earned (?<xp>\\d+) XP and (?<coins>\\d+) Wolfcoins for completing the dungeon!",
+      "completeLoot": "You looted (?<item>.*)!",
+      "death": "Sadly, you have died. You lost (?<xp>\\d+) XP and (?<coins>\\d+) Coins.",
+      "start": "Successfully initiated (?<dungeon>.*?)! (?<coins>\\d+) Wolfcoins deducted \\((?<balance>\\d+) remaining\\)."
     }
   }
 }

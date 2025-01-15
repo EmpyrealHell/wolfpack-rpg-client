@@ -14,6 +14,7 @@ import {
   Message,
 } from 'src/app/services/eventsub/eventsub.service';
 import { WidgetService } from 'src/app/services/widget/widget.service';
+import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
 
 /**
  * The main component holding the game UI.

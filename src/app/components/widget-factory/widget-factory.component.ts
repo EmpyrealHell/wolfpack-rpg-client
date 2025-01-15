@@ -12,6 +12,7 @@ import { WidgetComponent } from './widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 import { ClientDataService } from 'src/app/services/client-data/client-data-service';
+import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
 
 /**
  * Component that acts as a placeholder for widgets in the widget container.
@@ -28,6 +29,11 @@ export class WidgetFactoryComponent implements OnInit {
   @Input()
   factory: ComponentFactory<WidgetComponent> | undefined;
 
+  /***
+   * Reference to the audio player service
+   */
+  @Input()
+  audioPlayerService: AudioPlayerService | undefined;
   /**
    * Reference to the Client Data service.
    */

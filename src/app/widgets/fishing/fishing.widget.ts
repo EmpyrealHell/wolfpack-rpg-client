@@ -3,6 +3,7 @@ import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatTableDataSource } from '@angular/material/table';
 import { Utils } from 'src/app/util/utils';
+import { CatchData, LineStatus, Tournament } from './model/fish';
 
 /**
  * Widget used to display character data.
@@ -15,6 +16,7 @@ import { Utils } from 'src/app/util/utils';
   standalone: false,
 })
 export class FishingWidgetComponent extends AbstractWidgetComponent {
+  name = 'Fishing';
   private static defaultHookMessage = 'You got a bite!';
 
   private sessionHistory: CatchData[] = [];
@@ -193,11 +195,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     this.hookMessage =
       groups.get('message') ?? FishingWidgetComponent.defaultHookMessage;
     if (this.configManager?.getConfig().settings.playSounds) {
-      const audio = new Audio('./assets/effect-hooked.mp3');
-      audio.load();
-      audio.volume =
-        this.configManager?.getConfig().settings.soundVolume ?? 1.0;
-      audio.play();
+      this.audioPlayerService?.play('effect-hooked');
     }
   }
 
@@ -235,21 +233,18 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       this.tournament.endTime = new Date(date + toAdd);
       this.nextTournament = undefined;
     } else if (id === 'toNext') {
-      console.log(`Time to next tournament: ${groups.get('time')}`);
       const time = (groups.get('time') ?? '00:00:00').split(':');
       const toAdd =
         parseInt(time[0]) * 60 * 60 * 1000 +
         parseInt(time[1]) * 60 * 1000 +
         parseInt(time[2]) * 1000;
       if (!this.tournament) {
-        console.log('No tournament currently active, create one');
         this.tournament = new Tournament();
         if (!isReplay) {
           this.commandService?.sendCommand('fishing', 'results');
         }
       }
       this.nextTournament = new Date(date + toAdd);
-      console.log(`Set time for next tournament to ${this.nextTournament}`);
       this.tournament.endTime = undefined;
     }
   }
@@ -282,11 +277,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     this.tournament = new Tournament();
     const duration = Number(groups.get('duration') ?? 0);
     this.tournament.endTime = new Date(Date.now() + duration * 60 * 1000);
-    if (this.configManager?.getConfig().settings.playSounds) {
-      const audio = new Audio('./assets/effect-tournament-start.mp3');
-      audio.load();
-      audio.play();
-    }
+    this.audioPlayerService?.play('effect-tournament-start');
   }
 
   private handleTournamentEnd(
@@ -566,29 +557,4 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
     return amount;
   }
-}
-
-export class CatchData {
-  constructor(
-    public fish: string,
-    public user: string,
-    public length: number,
-    public weight: number,
-    public points: number
-  ) {}
-}
-
-export enum LineStatus {
-  Idle,
-  InWater,
-  FishHooked,
-}
-
-export class Tournament {
-  endTime: Date | undefined;
-  participants = 0;
-  rank = 0;
-  userPoints = 0;
-  winner: string | undefined;
-  winnerPoints = 0;
 }
