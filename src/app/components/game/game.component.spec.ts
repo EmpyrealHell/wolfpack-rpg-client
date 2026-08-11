@@ -60,7 +60,7 @@ const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
 describe('GameComponent', () => {
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         MatSidenavModule,
@@ -123,7 +123,7 @@ describe('GameComponent', () => {
 
     fixture.componentInstance.configManager = tokenlessSpy;
     await fixture.componentInstance.ngOnInit();
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
+    await expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
   });
 
   it('should redirect if token cannot be validated', async () => {
@@ -145,9 +145,9 @@ describe('GameComponent', () => {
 
     fixture.componentInstance.userService = invalidTokenSpy;
     await fixture.componentInstance.ngOnInit();
-    expect(auth.authentication.token).toBeNull();
-    expect(configManagerSpy.save).toHaveBeenCalled();
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
+    await expect(auth.authentication.token).toBeNull();
+    await expect(configManagerSpy.save).toHaveBeenCalled();
+    await expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
   });
 
   it('should connect to EventSub', async () => {
@@ -156,57 +156,59 @@ describe('GameComponent', () => {
     await fixture.componentInstance.ngOnInit();
     const user = fixture.componentInstance.config.authentication.user;
     const target = (await userServiceSpy.getUserAuth(null)).login;
-    expect(user).toBe(target);
-    expect(configManagerSpy.save).toHaveBeenCalled();
-    expect(eventSubServiceSpy.registerForError).toHaveBeenCalled();
-    expect(eventSubServiceSpy.connect).toHaveBeenCalled();
+    await expect(user).toBe(target);
+    await expect(configManagerSpy.save).toHaveBeenCalled();
+    await expect(eventSubServiceSpy.registerForError).toHaveBeenCalled();
+    await expect(eventSubServiceSpy.connect).toHaveBeenCalled();
   });
 
-  it('should add the dark theme', () => {
+  it('should add the dark theme', async () => {
     const fixture = TestBed.createComponent(GameComponent);
 
     fixture.componentInstance.updateOverlayTheme();
-    expect(overlayContainerSpy.getContainerElement().classList.items).toContain(
-      'dark-theme'
-    );
+    await expect(
+      overlayContainerSpy.getContainerElement().classList.items
+    ).toContain('dark-theme');
   });
 
-  it('should present a modal on EventSub error', () => {
+  it('should present a modal on EventSub error', async () => {
     const fixture = TestBed.createComponent(GameComponent);
     const errorMessage = `modal test message ${Date.now()}`;
 
     fixture.componentInstance.onError(new Message(errorMessage, false, true));
-    expect(dialogSpy.open).toHaveBeenCalled();
+    await expect(dialogSpy.open).toHaveBeenCalled();
     const args = dialogSpy.open.calls.mostRecent().args;
-    expect(args[0]).toBe(ErrorDialog);
-    expect(args[1].data.message).toContain(errorMessage);
+    await expect(args[0]).toBe(ErrorDialog);
+    await expect(args[1].data.message).toContain(errorMessage);
   });
 
-  it('should save settings and update the interface', () => {
+  it('should save settings and update the interface', async () => {
     const fixture = TestBed.createComponent(GameComponent);
     const overlaySpy = spyOn(fixture.componentInstance, 'updateOverlayTheme');
 
     fixture.componentInstance.updateSettings();
-    expect(configManagerSpy.save).toHaveBeenCalled();
-    expect(overlaySpy).toHaveBeenCalled();
+    await expect(configManagerSpy.save).toHaveBeenCalled();
+    await expect(overlaySpy).toHaveBeenCalled();
   });
 
-  it('should add a widget to the layout', () => {
+  it('should add a widget to the layout', async () => {
     const fixture = TestBed.createComponent(GameComponent);
     const toAdd = new WidgetItem(null, 'toAdd', 'toAdd', 'to-add');
 
     fixture.componentInstance.toggleWidget(toAdd);
-    expect(fixture.componentInstance.config.layout).toContain(toAdd.id);
-    expect(configManagerSpy.save).toHaveBeenCalled();
+    await expect(fixture.componentInstance.config.layout).toContain(toAdd.id);
+    await expect(configManagerSpy.save).toHaveBeenCalled();
   });
 
-  it('should remove a widget to the layout', () => {
+  it('should remove a widget to the layout', async () => {
     const fixture = TestBed.createComponent(GameComponent);
     const toRemove = new WidgetItem(null, 'toRemove', 'toRemove', 'to-remove');
 
     fixture.componentInstance.config.layout.push(toRemove.id);
     fixture.componentInstance.toggleWidget(toRemove);
-    expect(fixture.componentInstance.config.layout).not.toContain(toRemove.id);
-    expect(configManagerSpy.save).toHaveBeenCalled();
+    await expect(fixture.componentInstance.config.layout).not.toContain(
+      toRemove.id
+    );
+    await expect(configManagerSpy.save).toHaveBeenCalled();
   });
 });

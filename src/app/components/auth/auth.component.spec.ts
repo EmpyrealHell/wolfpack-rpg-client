@@ -27,8 +27,8 @@ const activatedRouteSpy = {
 } as ActivatedRoute;
 
 describe('AuthComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(waitForAsync(async () => {
+    await TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [AuthComponent],
       providers: [
@@ -66,12 +66,12 @@ describe('AuthComponent', () => {
       userServiceSpy,
       routerSpy
     );
-    expect(userServiceSpy.getUserAuth).toHaveBeenCalled();
-    expect(configAuth.user).toBe(username);
-    expect(configAuth.scope).toBe(scopes);
-    expect(configManagerSpy.save).toHaveBeenCalled();
-    expect(userServiceSpy.updateCache).toHaveBeenCalled();
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/play']);
+    await expect(userServiceSpy.getUserAuth).toHaveBeenCalled();
+    await expect(configAuth.user).toBe(username);
+    await expect(configAuth.scope).toBe(scopes);
+    await expect(configManagerSpy.save).toHaveBeenCalled();
+    await expect(userServiceSpy.updateCache).toHaveBeenCalled();
+    await expect(routerSpy.navigate).toHaveBeenCalledWith(['/play']);
   });
 
   it('should clear authentication if username changes', async () => {
@@ -87,9 +87,9 @@ describe('AuthComponent', () => {
       userServiceSpy,
       routerSpy
     );
-    expect(userServiceSpy.getUserAuth).toHaveBeenCalled();
-    expect(configAuth.scope).toBe(null);
-    expect(authSpy).toHaveBeenCalledWith(configAuth, configManagerSpy);
+    await expect(userServiceSpy.getUserAuth).toHaveBeenCalled();
+    await expect(configAuth.scope).toBe(null);
+    await expect(authSpy).toHaveBeenCalledWith(configAuth, configManagerSpy);
   });
 
   it('should clear authentication if scopes change', async () => {
@@ -105,10 +105,10 @@ describe('AuthComponent', () => {
       userServiceSpy,
       routerSpy
     );
-    expect(userServiceSpy.getUserAuth).toHaveBeenCalled();
-    expect(configAuth.user).toBeFalsy();
-    expect(configAuth.scope).toBeFalsy();
-    expect(authSpy).toHaveBeenCalledWith(configAuth, configManagerSpy);
+    await expect(userServiceSpy.getUserAuth).toHaveBeenCalled();
+    await expect(configAuth.user).toBeFalsy();
+    await expect(configAuth.scope).toBeFalsy();
+    await expect(authSpy).toHaveBeenCalledWith(configAuth, configManagerSpy);
   });
 
   it('should call twitch oauth', async () => {
@@ -121,15 +121,15 @@ describe('AuthComponent', () => {
       configAuth,
       configManagerSpy
     );
-    expect(configManagerSpy.save).toHaveBeenCalled();
-    expect(redirectSpy).toHaveBeenCalled();
+    await expect(configManagerSpy.save).toHaveBeenCalled();
+    await expect(redirectSpy).toHaveBeenCalled();
     const redirectUrl = redirectSpy.calls.mostRecent().args[0];
-    expect(redirectUrl).toContain('client_id');
-    expect(redirectUrl).toContain('redirect_uri');
-    expect(redirectUrl).toContain('state');
-    expect(redirectUrl).not.toContain('force_verify=true');
-    expect(redirectUrl).toContain('response_type=token');
-    expect(redirectUrl).toContain('scope');
+    await expect(redirectUrl).toContain('client_id');
+    await expect(redirectUrl).toContain('redirect_uri');
+    await expect(redirectUrl).toContain('state');
+    await expect(redirectUrl).not.toContain('force_verify=true');
+    await expect(redirectUrl).toContain('response_type=token');
+    await expect(redirectUrl).toContain('scope');
   });
 
   it('should call twitch oauth and force verification', async () => {
@@ -141,10 +141,10 @@ describe('AuthComponent', () => {
       configAuth,
       configManagerSpy
     );
-    expect(configManagerSpy.save).toHaveBeenCalled();
-    expect(redirectSpy).toHaveBeenCalled();
+    await expect(configManagerSpy.save).toHaveBeenCalled();
+    await expect(redirectSpy).toHaveBeenCalled();
     const redirectUrl = redirectSpy.calls.mostRecent().args[0];
-    expect(redirectUrl).toContain('force_verify=true');
+    await expect(redirectUrl).toContain('force_verify=true');
   });
 
   it('should parse the twitch response on load', async () => {
@@ -152,9 +152,9 @@ describe('AuthComponent', () => {
     const parseSpy = spyOn(fixture.componentInstance, 'ParseAuthResponse');
 
     await fixture.componentInstance.ngOnInit();
-    expect(configManagerSpy.load).toHaveBeenCalled();
-    expect(configManagerSpy.getConfig).toHaveBeenCalled();
-    expect(parseSpy).toHaveBeenCalled();
+    await expect(configManagerSpy.load).toHaveBeenCalled();
+    await expect(configManagerSpy.getConfig).toHaveBeenCalled();
+    await expect(parseSpy).toHaveBeenCalled();
   });
 
   it('should validate an existing token on load', async () => {
@@ -164,9 +164,9 @@ describe('AuthComponent', () => {
     fixture.componentInstance.route.fragment = '';
 
     await fixture.componentInstance.ngOnInit();
-    expect(configManagerSpy.load).toHaveBeenCalled();
-    expect(configManagerSpy.getConfig).toHaveBeenCalled();
-    expect(validateSpy).toHaveBeenCalled();
+    await expect(configManagerSpy.load).toHaveBeenCalled();
+    await expect(configManagerSpy.getConfig).toHaveBeenCalled();
+    await expect(validateSpy).toHaveBeenCalled();
   });
 
   it('should begin authentication on load', async () => {
@@ -179,8 +179,8 @@ describe('AuthComponent', () => {
     fixture.componentInstance.configManager = tokenProvider;
 
     await fixture.componentInstance.ngOnInit();
-    expect(tokenProvider.load).toHaveBeenCalled();
-    expect(tokenProvider.getConfig).toHaveBeenCalled();
-    expect(authSpy).toHaveBeenCalled();
+    await expect(tokenProvider.load).toHaveBeenCalled();
+    await expect(tokenProvider.getConfig).toHaveBeenCalled();
+    await expect(authSpy).toHaveBeenCalled();
   });
 });

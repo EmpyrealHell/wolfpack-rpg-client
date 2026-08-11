@@ -69,8 +69,8 @@ componentFactoryResolverSpy.resolveComponentFactory.and.callFake(
 const commandServiceSpy = TestUtils.spyOnClass(CommandService);
 
 describe('WidgetContainerComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(waitForAsync(async () => {
+    await TestBed.configureTestingModule({
       imports: [MatIconModule, MatCardModule],
       declarations: [WidgetContainerComponent, WidgetFactoryComponent],
       providers: [
@@ -96,44 +96,46 @@ describe('WidgetContainerComponent', () => {
     } as Partial<Config>);
   }));
 
-  it('should update layout on config update', () => {
+  it('should update layout on config update', async () => {
     const fixture = TestBed.createComponent(WidgetContainerComponent);
     const layoutSpy = spyOn(fixture.componentInstance, 'resetLayout');
 
     fixture.componentInstance.ngOnInit();
-    expect(configManagerSpy.getConfig).toHaveBeenCalled();
-    expect(configManagerSpy.subscribe).toHaveBeenCalled();
-    expect(layoutSpy).toHaveBeenCalledTimes(2);
+    await expect(configManagerSpy.getConfig).toHaveBeenCalled();
+    await expect(configManagerSpy.subscribe).toHaveBeenCalled();
+    await expect(layoutSpy).toHaveBeenCalledTimes(2);
   });
 
-  it('should close widgets', () => {
+  it('should close widgets', async () => {
     const fixture = TestBed.createComponent(WidgetContainerComponent);
 
     fixture.componentInstance.ngOnInit();
     fixture.componentInstance.closeWidget(0);
-    expect(fixture.componentInstance.config).toBeTruthy();
-    expect(fixture.componentInstance.config!.layout).not.toContain('First');
-    expect(fixture.componentInstance.config!.layout).toContain('Second');
-    expect(configManagerSpy.save).toHaveBeenCalled();
+    await expect(fixture.componentInstance.config).toBeTruthy();
+    await expect(fixture.componentInstance.config!.layout).not.toContain(
+      'First'
+    );
+    await expect(fixture.componentInstance.config!.layout).toContain('Second');
+    await expect(configManagerSpy.save).toHaveBeenCalled();
   });
 
-  it('should get widget icons', () => {
+  it('should get widget icons', async () => {
     const fixture = TestBed.createComponent(WidgetContainerComponent);
 
     fixture.componentInstance.ngOnInit();
     const icon = fixture.componentInstance.getWidgetIcon(0);
-    expect(icon).toEqual(firstWidgetItem.getIcon());
+    await expect(icon).toEqual(firstWidgetItem.getIcon());
   });
 
-  it('creates widgets for the layout', () => {
+  it('creates widgets for the layout', async () => {
     const fixture = TestBed.createComponent(WidgetContainerComponent);
 
     fixture.componentInstance.ngOnInit();
     fixture.componentInstance.resetLayout();
     const factories = fixture.componentInstance.factories;
-    expect(factories.length).toBe(2);
-    expect(factories[0].componentType).toBe(FirstWidget);
-    expect(factories[1].componentType).toBe(SecondWidget);
-    expect(fixture.componentInstance.gridlayout).toBe('"a0 a1"');
+    await expect(factories.length).toBe(2);
+    await expect(factories[0].componentType).toBe(FirstWidget);
+    await expect(factories[1].componentType).toBe(SecondWidget);
+    await expect(fixture.componentInstance.gridlayout).toBe('"a0 a1"');
   });
 });

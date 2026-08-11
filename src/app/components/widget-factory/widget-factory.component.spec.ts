@@ -37,13 +37,13 @@ export class WidgetContainerStubDirective {
 }
 
 describe('WidgetContainerComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(waitForAsync(async () => {
+    await TestBed.configureTestingModule({
       declarations: [WidgetFactoryComponent, WidgetContainerStubDirective],
     }).compileComponents();
   }));
 
-  it('should create a widget instance', () => {
+  it('should create a widget instance', async () => {
     const fixture = TestBed.createComponent(WidgetFactoryComponent);
     const component = fixture.componentInstance;
     component.factory = {} as ComponentFactory<WidgetComponent>;
@@ -54,13 +54,15 @@ describe('WidgetContainerComponent', () => {
     const internalSpy = spyOn(internalComponent, 'onActivate');
 
     component.ngOnInit();
-    expect(spyContainer.clear).toHaveBeenCalled();
-    expect(spyContainer.createComponent).toHaveBeenCalledWith(
+    await expect(spyContainer.clear).toHaveBeenCalled();
+    await expect(spyContainer.createComponent).toHaveBeenCalledWith(
       component.factory
     );
-    expect(internalComponent.configManager).toBe(component.configManager);
-    expect(internalComponent.eventSubService).toBe(component.eventSubService);
-    expect(internalComponent.name).toBe(component.name);
-    expect(internalSpy).toHaveBeenCalled();
+    await expect(internalComponent.configManager).toBe(component.configManager);
+    await expect(internalComponent.eventSubService).toBe(
+      component.eventSubService
+    );
+    await expect(internalComponent.name).toBe(component.name);
+    await expect(internalSpy).toHaveBeenCalled();
   });
 });

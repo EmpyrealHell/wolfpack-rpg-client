@@ -22,23 +22,23 @@ describe('ClientDataService', () => {
     service = new ClientDataService(commandService);
   });
 
-  it('should send fetch-client-data command and register a responder', () => {
+  it('should send fetch-client-data command and register a responder', async () => {
     service.initialize();
-    expect(commandService.subscribeToCommand).toHaveBeenCalled();
+    await expect(commandService.subscribeToCommand).toHaveBeenCalled();
     const args = commandService.subscribeToCommand.calls.mostRecent().args;
-    expect(args[0]).toBe('client');
-    expect(args[1]).toBe('data');
-    expect(args[2]).toBe('responses');
-    expect(args[3]).toBe('success');
-    expect(args[4]).toBe('client-data');
-    expect(roleHandler).not.toBeUndefined();
-    expect(commandService.sendCommand).toHaveBeenCalledWith(
+    await expect(args[0]).toBe('client');
+    await expect(args[1]).toBe('data');
+    await expect(args[2]).toBe('responses');
+    await expect(args[3]).toBe('success');
+    await expect(args[4]).toBe('client-data');
+    await expect(roleHandler).not.toBeUndefined();
+    await expect(commandService.sendCommand).toHaveBeenCalledWith(
       'client',
       'data' as never
     );
   });
 
-  it('should update client data in response to fetch-client-data command', () => {
+  it('should update client data in response to fetch-client-data command', async () => {
     service.initialize();
     roleHandler(
       '',
@@ -52,12 +52,12 @@ describe('ClientDataService', () => {
       [new Map<string, string>()],
       Date.now()
     );
-    expect(service.itemQualities.size).toBe(4);
-    expect(service.itemTypes.size).toBe(5);
-    expect(service.itemSlots.size).toBe(4);
-    expect(service.classes.size).toBe(5);
-    expect(service.equippables.size).toBe(5);
-    expect(service.petRarities.size).toBe(5);
-    expect(service.dungeonModes.size).toBe(2);
+    await expect(service.itemQualities.size).toBe(4);
+    await expect(service.itemTypes.size).toBe(5);
+    await expect(service.itemSlots.size).toBe(4);
+    await expect(service.classes.size).toBe(5);
+    await expect(service.equippables.size).toBe(5);
+    await expect(service.petRarities.size).toBe(5);
+    await expect(service.dungeonModes.size).toBe(2);
   });
 });

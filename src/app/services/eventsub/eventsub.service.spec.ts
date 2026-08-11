@@ -148,40 +148,40 @@ describe('EventSubService', () => {
     });
 
     const result = await connectPromise;
-    expect(result).toBe(true);
-    expect(service.isConnected).toBe(true);
-    expect(queueSpy).toHaveBeenCalled();
-    expect(sendFnSpy).toHaveBeenCalled();
-    expect(service.connection).toBeTruthy();
+    await expect(result).toBe(true);
+    await expect(service.isConnected).toBe(true);
+    await expect(queueSpy).toHaveBeenCalled();
+    await expect(sendFnSpy).toHaveBeenCalled();
+    await expect(service.connection).toBeTruthy();
   });
 
   it('should return an array of received messages', async () => {
     const message = `test message at ${Date.now()}`;
     await attachAndSend(message);
-    expect(service.lines.filter(x => x.text === message)).toBeTruthy();
+    await expect(service.lines.filter(x => x.text === message)).toBeTruthy();
   });
 
   it('should return the full history', async () => {
     const message = `test message at ${Date.now()}`;
     await attachAndSend(message);
-    expect(service.lines.map(x => x.text)).toContain(message);
+    await expect(service.lines.map(x => x.text)).toContain(message);
   });
 
-  it('should register an error handler for an id', () => {
+  it('should register an error handler for an id', async () => {
     const errorHandler = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     const errorHandlers = service.errorHandlers;
-    expect(errorHandlers.get(handlerKey)).toBe(errorHandler);
+    await expect(errorHandlers.get(handlerKey)).toBe(errorHandler);
   });
 
-  it('should remove an error handler for an id', () => {
+  it('should remove an error handler for an id', async () => {
     const errorHandler = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
-    expect(service.errorHandlers.get(handlerKey)).toBe(errorHandler);
+    await expect(service.errorHandlers.get(handlerKey)).toBe(errorHandler);
     service.unregisterForError(handlerKey);
-    expect(service.errorHandlers.has(handlerKey)).toBeFalsy();
+    await expect(service.errorHandlers.has(handlerKey)).toBeFalsy();
   });
 
   it('should call registered error handlers on error', async () => {
@@ -206,46 +206,46 @@ describe('EventSubService', () => {
     });
 
     await connectPromise;
-    expect(errorSpy).toHaveBeenCalled();
+    await expect(errorSpy).toHaveBeenCalled();
     consoleSpy.calls.reset();
   });
 
-  it('should not overwrite error handlers with the same key by default', () => {
+  it('should not overwrite error handlers with the same key by default', async () => {
     const errorHandler = (message: Message) => {};
     const errorHandler2 = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     service.registerForError(handlerKey, errorHandler2);
     const errorHandlers = service.errorHandlers;
-    expect(errorHandlers.get(handlerKey)).toBe(errorHandler);
-    expect(errorHandlers.get(handlerKey)).not.toBe(errorHandler2);
+    await expect(errorHandlers.get(handlerKey)).toBe(errorHandler);
+    await expect(errorHandlers.get(handlerKey)).not.toBe(errorHandler2);
   });
 
-  it('should overwrite error handlers with the same key when forced', () => {
+  it('should overwrite error handlers with the same key when forced', async () => {
     const errorHandler = (message: Message) => {};
     const errorHandler2 = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     service.registerForError(handlerKey, errorHandler2, true);
     const errorHandlers = service.errorHandlers;
-    expect(errorHandlers.get(handlerKey)).toBe(errorHandler2);
-    expect(errorHandlers.get(handlerKey)).not.toBe(errorHandler);
+    await expect(errorHandlers.get(handlerKey)).toBe(errorHandler2);
+    await expect(errorHandlers.get(handlerKey)).not.toBe(errorHandler);
   });
 
-  it('should register a whisper handler for an id', () => {
+  it('should register a whisper handler for an id', async () => {
     const callback = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
-    expect(service.callbacks.get(handlerKey)).toBe(callback);
+    await expect(service.callbacks.get(handlerKey)).toBe(callback);
   });
 
-  it('should remove a whisper handler for an id', () => {
+  it('should remove a whisper handler for an id', async () => {
     const callback = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
-    expect(service.callbacks.get(handlerKey)).toBe(callback);
+    await expect(service.callbacks.get(handlerKey)).toBe(callback);
     service.unregister(handlerKey);
-    expect(service.callbacks.has(handlerKey)).toBeFalsy();
+    await expect(service.callbacks.has(handlerKey)).toBeFalsy();
   });
 
   it('should call registered callbacks on whisper', async () => {
@@ -274,27 +274,27 @@ describe('EventSubService', () => {
       return wsInstance;
     });
     await connectPromise;
-    expect(callbackSpy).toHaveBeenCalled();
+    await expect(callbackSpy).toHaveBeenCalled();
   });
 
-  it('should not overwrite whisper handlers with the same key by default', () => {
+  it('should not overwrite whisper handlers with the same key by default', async () => {
     const callback = (message: Message) => {};
     const callback2 = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2);
-    expect(service.callbacks.get(handlerKey)).toBe(callback);
-    expect(service.callbacks.get(handlerKey)).not.toBe(callback2);
+    await expect(service.callbacks.get(handlerKey)).toBe(callback);
+    await expect(service.callbacks.get(handlerKey)).not.toBe(callback2);
   });
 
-  it('should overwrite whisper handlers with the same key when forced', () => {
+  it('should overwrite whisper handlers with the same key when forced', async () => {
     const callback = (message: Message) => {};
     const callback2 = (message: Message) => {};
     const handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2, true);
-    expect(service.callbacks.get(handlerKey)).toBe(callback2);
-    expect(service.callbacks.get(handlerKey)).not.toBe(callback);
+    await expect(service.callbacks.get(handlerKey)).toBe(callback2);
+    await expect(service.callbacks.get(handlerKey)).not.toBe(callback);
   });
 
   it('should handle chat messages from the bot account', async () => {
@@ -321,7 +321,7 @@ describe('EventSubService', () => {
     });
 
     await connectPromise;
-    expect(
+    await expect(
       service.lines.find(x => x.text === chatMessage && !x.whisper)
     ).toBeTruthy();
   });
@@ -339,9 +339,9 @@ describe('EventSubService', () => {
     service.send(message);
     service.messageQueue.setSendFunction(sendFn.send);
     await service.messageQueue.processQueue();
-    expect(spy).toHaveBeenCalled();
+    await expect(spy).toHaveBeenCalled();
     const call = spy.calls.mostRecent();
-    expect(call.args[0]).toBe(message);
+    await expect(call.args[0]).toBe(message);
   });
 
   it('should properly format messages', async () => {
@@ -381,13 +381,13 @@ describe('EventSubService', () => {
     messageHandler(createWhisperMessage(timestamp, 'other_user'));
     messageHandler(createChannelChatMessage('bot chat message'));
     await new Promise(resolve => setTimeout(resolve, 0));
-    expect(service.lines.length).toBe(4);
+    await expect(service.lines.length).toBe(4);
     const chatMessage = service.lines.find(x => !x.whisper);
-    expect(chatMessage?.text).toBe('bot chat message');
+    await expect(chatMessage?.text).toBe('bot chat message');
     const whisperMessages = service.lines.filter(x => x.whisper && !x.self);
-    expect(whisperMessages[0].text).toBe('response');
-    expect(whisperMessages[1].text).toBe('at');
-    expect(whisperMessages[2].text).toBe(timestamp);
+    await expect(whisperMessages[0].text).toBe('response');
+    await expect(whisperMessages[1].text).toBe('at');
+    await expect(whisperMessages[2].text).toBe(timestamp);
   });
 
   it('should handle sends from the message queue', async () => {
@@ -427,10 +427,10 @@ describe('EventSubService', () => {
       createWhisperMessage(timestamp, 'other_user'),
     ];
     testMessages.forEach(message => messageCallback(message));
-    expect(service.lines.length).toBe(4);
-    expect(whispers[0].text).toBe('cmd');
-    expect(whispers[1].text).toBe('response');
-    expect(whispers[2].text).toBe('at');
-    expect(whispers[3].text).toBe(timestamp);
+    await expect(service.lines.length).toBe(4);
+    await expect(whispers[0].text).toBe('cmd');
+    await expect(whispers[1].text).toBe('response');
+    await expect(whispers[2].text).toBe('at');
+    await expect(whispers[3].text).toBe(timestamp);
   });
 });

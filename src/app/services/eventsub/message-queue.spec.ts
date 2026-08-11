@@ -1,33 +1,33 @@
 import { MessageQueue } from './message-queue';
 
-describe('MessageQueue', () => {
-  it('should queue messages to send', () => {
+describe('MessageQueue', async () => {
+  it('should queue messages to send', async () => {
     const message = `test${Date.now()}`;
     const queue = new MessageQueue('spec-test', 100);
     queue.send(message);
     const queueCopy = queue.queuedMessages;
-    expect(queueCopy).toContain(message);
-    expect(queueCopy.length).toBe(1);
+    await expect(queueCopy).toContain(message);
+    await expect(queueCopy.length).toBe(1);
   });
 
-  it('should not queue duplicate messages', () => {
+  it('should not queue duplicate messages', async () => {
     const message = `test${Date.now()}`;
     const queue = new MessageQueue('spec-test', 100);
     queue.send(message);
     queue.send(message);
     const queueCopy = queue.queuedMessages;
-    expect(queueCopy.length).toBe(1);
+    await expect(queueCopy.length).toBe(1);
   });
 
-  it('should return a copy of the queued messages', () => {
+  it('should return a copy of the queued messages', async () => {
     const message = `test message at ${Date.now()}`;
     const queue = new MessageQueue('spec-test', 100);
     queue.send(message);
     let queueCopy = queue.queuedMessages;
-    expect(queueCopy).toContain(message);
+    await expect(queueCopy).toContain(message);
     queueCopy.length = 0;
     queueCopy = queue.queuedMessages;
-    expect(queueCopy).toContain(message);
+    await expect(queueCopy).toContain(message);
   });
 
   it('should not allow more than 3 messages each second', async () => {
@@ -47,7 +47,7 @@ describe('MessageQueue', () => {
     }
     queue.send(message);
     await queue.processQueue();
-    expect(spy).not.toHaveBeenCalled();
+    await expect(spy).not.toHaveBeenCalled();
   });
 
   it('should send a fourth message after 1 second', async () => {
@@ -67,7 +67,7 @@ describe('MessageQueue', () => {
     }
     queue.send(message);
     await queue.processQueue();
-    expect(spy).toHaveBeenCalled();
+    await expect(spy).toHaveBeenCalled();
   });
 
   it('should not send more than 100 messages each minute', async () => {
@@ -87,7 +87,7 @@ describe('MessageQueue', () => {
     }
     queue.send(message);
     await queue.processQueue();
-    expect(spy).not.toHaveBeenCalled();
+    await expect(spy).not.toHaveBeenCalled();
   });
 
   it('should send a 101st message after 1 minute', async () => {
@@ -107,7 +107,7 @@ describe('MessageQueue', () => {
     }
     queue.send(message);
     await queue.processQueue();
-    expect(spy).toHaveBeenCalled();
+    await expect(spy).toHaveBeenCalled();
   });
 
   it('should call registered callbacks when message is sent', async () => {
@@ -128,6 +128,6 @@ describe('MessageQueue', () => {
     queue.registerSendCallback('spec-test', callbackFn.callback);
     queue.send(message);
     await queue.processQueue();
-    expect(spy).toHaveBeenCalled();
+    await expect(spy).toHaveBeenCalled();
   });
 });
