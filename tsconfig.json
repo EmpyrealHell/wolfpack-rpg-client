@@ -2,7 +2,7 @@
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
     "rootDir": ".",
-    "baseUrl": "./",
+    "paths": { "*": ["./*"] },
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "composite": false,
