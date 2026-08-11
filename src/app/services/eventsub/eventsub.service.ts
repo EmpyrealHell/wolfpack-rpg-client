@@ -49,7 +49,7 @@ export class EventSubService {
   /**
    * The message queue that handles rate limits on messages sent.
    */
-  messageQueue = new MessageQueue(eventSubConfig.botAccount, 50);
+  messageQueue: MessageQueue;
   /**
    * Whether or not the EventSub client is connected.
    */
@@ -60,7 +60,10 @@ export class EventSubService {
     private configManager: ConfigManager,
     private userService: UserService,
     private whisperService: WhisperService
-  ) {}
+  ) {
+    const config = eventSubConfig;
+    this.messageQueue = new MessageQueue(config.botAccount, 50);
+  }
 
   private broadcastMessage(message: Message): void {
     this.lines.push(message);
@@ -152,9 +155,8 @@ export class EventSubService {
    * succeed if the config data contains a valid token.
    */
   async connect(): Promise<boolean> {
-    return this.connectUsing(
-      () => new WebSocket(eventSubConfig.urls.websocket)
-    );
+    const config = eventSubConfig;
+    return this.connectUsing(() => new WebSocket(config.urls.websocket));
   }
 
   /**
@@ -162,6 +164,7 @@ export class EventSubService {
    * will only succeed if the config data contains a valid token.
    */
   async connectUsing(clientConstructor: () => WebSocket): Promise<boolean> {
+    const config = eventSubConfig;
     if (this.isConnected) {
       return true;
     }
@@ -175,20 +178,20 @@ export class EventSubService {
     const userData = await this.userService.getUserAuth(token);
     const botData = await this.userService.getUserId(
       token,
-      eventSubConfig.connectOptions.options.clientId,
-      eventSubConfig.botAccount
+      config.connectOptions.options.clientId,
+      config.botAccount
     );
     const streamerData = await this.userService.getUserId(
       token,
-      eventSubConfig.connectOptions.options.clientId,
-      eventSubConfig.streamerAccount
+      config.connectOptions.options.clientId,
+      config.streamerAccount
     );
 
     this.whisperService.setData(
       userData.user_id,
       botData.data[0].id,
       token,
-      eventSubConfig.connectOptions.options.clientId,
+      config.connectOptions.options.clientId,
       (error: string) => this.onError(error)
     );
 
@@ -264,9 +267,8 @@ export class EventSubService {
               }
               if (
                 data.payload.event.broadcaster_user_login ===
-                  eventSubConfig.streamerAccount &&
-                data.payload.event.chatter_user_login ===
-                  eventSubConfig.botAccount
+                  config.streamerAccount &&
+                data.payload.event.chatter_user_login === config.botAccount
               ) {
                 this.onMessage(data.payload.event.message.text);
               }
@@ -336,10 +338,11 @@ export class EventSubService {
       },
     };
 
+    const config = eventSubConfig;
     await this.http
-      .post(eventSubConfig.urls.eventSub, subscription, {
+      .post(config.urls.eventSub, subscription, {
         headers: {
-          'Client-Id': eventSubConfig.connectOptions.options.clientId,
+          'Client-Id': config.connectOptions.options.clientId,
           Authorization: `Bearer ${token}`,
         },
       })

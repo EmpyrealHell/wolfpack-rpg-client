@@ -18,6 +18,8 @@ import { PetsCommands } from './pets-commands';
 import { ShopCommands } from './shop-commands';
 import { EventSubService, Message } from '../eventsub/eventsub.service';
 
+const commandData = CommandData;
+
 /**
  * Defines the structure of a callback method that can be used to subscribe to
  * a message or command response.
@@ -241,10 +243,10 @@ export class CommandService {
    * @returns A string representing the command response id.
    */
   subscribeToCommand<
-    G extends keyof typeof CommandData.commands,
-    C extends keyof (typeof CommandData.commands)[G],
-    R extends keyof (typeof CommandData.commands)[G][C],
-    S extends keyof (typeof CommandData.commands)[G][C][R],
+    G extends keyof typeof commandData.commands,
+    C extends keyof (typeof commandData.commands)[G],
+    R extends keyof (typeof commandData.commands)[G][C],
+    S extends keyof (typeof commandData.commands)[G][C][R],
   >(
     group: G,
     command: C,
@@ -273,8 +275,8 @@ export class CommandService {
    * @returns A string representing the message id.
    */
   subscribeToMessage<
-    G extends keyof typeof CommandData.messages,
-    N extends keyof (typeof CommandData.messages)[G],
+    G extends keyof typeof commandData.messages,
+    N extends keyof (typeof commandData.messages)[G],
   >(group: G, name: N, subscriber: string, callback: CommandCallback): string {
     const key = `message.${group}.${String(name)}`;
     let current = this.callbacks.get(subscriber);
@@ -335,8 +337,8 @@ export class CommandService {
    * @returns True if the command has been sent.
    */
   hasCommandBeenSent<
-    G extends keyof typeof CommandData.commands,
-    C extends keyof (typeof CommandData.commands)[G],
+    G extends keyof typeof commandData.commands,
+    C extends keyof (typeof commandData.commands)[G],
   >(group: G, command: C): boolean {
     return this.hasCommandBeenSentSince(group, command, 0);
   }
@@ -350,11 +352,11 @@ export class CommandService {
    * number.
    */
   hasCommandBeenSentSince<
-    G extends keyof typeof CommandData.commands,
-    C extends keyof (typeof CommandData.commands)[G],
+    G extends keyof typeof commandData.commands,
+    C extends keyof (typeof commandData.commands)[G],
   >(group: G, command: C, time: number): boolean {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const variants = CommandData.commands[group][command] as any;
+    const variants = commandData.commands[group][command] as any;
     const commands: string[] = [];
     if (variants.command) {
       const command = variants.command as string;
@@ -388,8 +390,8 @@ export class CommandService {
    * @param command The key of the command.
    */
   sendInitialCommand<
-    G extends keyof typeof CommandData.commands,
-    C extends keyof (typeof CommandData.commands)[G],
+    G extends keyof typeof commandData.commands,
+    C extends keyof (typeof commandData.commands)[G],
   >(group: G, command: C): void {
     this.sendResponseCommand(group, command, 0);
   }
@@ -403,12 +405,12 @@ export class CommandService {
    * @param line The timestamp of when the command was triggered.
    */
   sendResponseCommand<
-    G extends keyof typeof CommandData.commands,
-    C extends keyof (typeof CommandData.commands)[G],
+    G extends keyof typeof commandData.commands,
+    C extends keyof (typeof commandData.commands)[G],
   >(group: G, command: C, time: number): void {
     if (!this.hasCommandBeenSentSince(group, command, time)) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const commandObject = CommandData.commands[group][command] as any;
+      const commandObject = commandData.commands[group][command] as any;
       if (commandObject.command) {
         const toSend = commandObject.command as string;
         this.eventSubService.send(toSend);
@@ -426,8 +428,8 @@ export class CommandService {
    * @param args A map of arguments and the values to use for them.
    */
   sendCommand<
-    G extends keyof typeof CommandData.commands,
-    C extends keyof (typeof CommandData.commands)[G],
+    G extends keyof typeof commandData.commands,
+    C extends keyof (typeof commandData.commands)[G],
   >(group: G, command: C): void {
     this.sendCommandWithArguments(group, command);
   }
@@ -439,12 +441,12 @@ export class CommandService {
    * @param args A map of arguments and the values to use for them.
    */
   sendCommandWithArguments<
-    G extends keyof typeof CommandData.commands,
-    C extends keyof (typeof CommandData.commands)[G],
+    G extends keyof typeof commandData.commands,
+    C extends keyof (typeof commandData.commands)[G],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   >(group: G, command: C, args?: any): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const commandObject = CommandData.commands[group][command] as any;
+    const commandObject = commandData.commands[group][command] as any;
     if (commandObject.command) {
       let toSend = commandObject.command as string;
       if (args) {

@@ -1,5 +1,7 @@
 import * as CommandData from './command-data.json';
 
+const commandData = CommandData;
+
 /**
  * Wraps the command data json file with methods that allow type-safety when
  * accessing commands described in the json file. This will also cause
@@ -14,11 +16,11 @@ export abstract class CommandWrapper {
    * @param message Must be 'Command' to ensure type safety.
    */
   getCommandString<
-    G extends keyof typeof CommandData.commands,
-    C extends keyof (typeof CommandData.commands)[G],
-    M extends keyof (typeof CommandData.commands)[G][C],
+    G extends keyof typeof commandData.commands,
+    C extends keyof (typeof commandData.commands)[G],
+    M extends keyof (typeof commandData.commands)[G][C],
   >(group: G, command: C, message: M): string {
-    const groupObj = CommandData.commands[group];
+    const groupObj = commandData.commands[group];
     const commandObj = groupObj[command];
     const toSend = commandObj[message];
     return '' + toSend;

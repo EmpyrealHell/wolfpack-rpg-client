@@ -40,7 +40,7 @@ export class GameComponent implements OnInit {
   /**
    * The current version of the app.
    */
-  version = PackageJson.version;
+  version = '';
 
   constructor(
     public widgetService: WidgetService,
@@ -51,7 +51,10 @@ export class GameComponent implements OnInit {
     public overlayContainer: OverlayContainer,
     public dialog: MatDialog,
     public router: Router
-  ) {}
+  ) {
+    const config = PackageJson;
+    this.version = config.version;
+  }
 
   async ngOnInit(): Promise<void> {
     this.clientDataService.initialize();

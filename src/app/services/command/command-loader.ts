@@ -79,13 +79,15 @@ export class CommandLoader {
 
   private registerResponses(): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const commands = CommandData.commands as any;
+    const data = CommandData;
+    const commands = data.commands as unknown;
     this.registerContainer('command', commands, true);
   }
 
   private registerMessages(): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const messages = CommandData.messages as any;
+    const data = CommandData;
+    const messages = data.messages as unknown;
     this.registerContainer('message', messages);
   }
 }

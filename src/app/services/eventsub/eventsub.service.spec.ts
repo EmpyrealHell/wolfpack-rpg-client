@@ -48,6 +48,7 @@ describe('EventSubService', () => {
   }
 
   function createChannelChatMessage(message: string): MessageEvent {
+    const config = eventSubConfig;
     return {
       data: JSON.stringify({
         metadata: {
@@ -56,8 +57,8 @@ describe('EventSubService', () => {
         },
         payload: {
           event: {
-            broadcaster_user_login: eventSubConfig.streamerAccount,
-            chatter_user_login: eventSubConfig.botAccount,
+            broadcaster_user_login: config.streamerAccount,
+            chatter_user_login: config.botAccount,
             message: {
               text: message,
             },

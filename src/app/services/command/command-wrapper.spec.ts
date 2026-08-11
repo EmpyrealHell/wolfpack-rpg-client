@@ -12,7 +12,8 @@ describe('CommandWrapper', () => {
       'message',
       'command'
     );
-    await expect(commandString).toBe(CommandData.commands.chat.message.command);
+    const data = CommandData;
+    await expect(commandString).toBe(data.commands.chat.message.command);
   });
 
   it('should wrap properties to match json', async () => {

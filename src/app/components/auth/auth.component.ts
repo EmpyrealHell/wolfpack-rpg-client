@@ -139,11 +139,13 @@ export class AuthComponent implements OnInit {
     auth.token = null;
     configManager.save();
 
+    const config = authConfig;
+
     const url =
-      `${authConfig.url}?client_id=${authConfig.clientId}` +
+      `${config.url}?client_id=${config.clientId}` +
       `&redirect_uri=${environment.redirectUri}&state=${auth.state}` +
       (forceVerify ? '&force_verify=true' : '') +
-      `&response_type=token&scope=${authConfig.scope}`;
+      `&response_type=token&scope=${config.scope}`;
     this.Redirect(url);
   }
 

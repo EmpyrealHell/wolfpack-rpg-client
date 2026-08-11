@@ -2,7 +2,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, provideZoneChangeDetection } from '@angular/core';
 
 import { AuthComponent } from './components/auth/auth.component';
 import { AppComponent } from './app.component';
@@ -109,6 +109,7 @@ import { GroupWidgetComponent } from './widgets/group/group.widget';
     CommandService,
     EventSubService,
     AudioPlayerService,
+    provideZoneChangeDetection({ eventCoalescing: true }),
   ],
   bootstrap: [AppComponent],
 })
