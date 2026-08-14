@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
 import { CommandService } from 'src/app/services/command/command-service';

@@ -28,99 +28,96 @@
                   [(ngModel)]="config.settings.useDarkTheme"
                   (change)="updateSettings()"
                   >Dark Theme</mat-slide-toggle
-                  >
-                </button>
-                <button mat-menu-item>
-                  <mat-slide-toggle
+                >
+              </button>
+              <button mat-menu-item>
+                <mat-slide-toggle
+                  (click)="$event.stopPropagation()"
+                  color="accent"
+                  [(ngModel)]="config.settings.toolbarNames"
+                  (change)="updateSettings()"
+                  >Toolbar Names</mat-slide-toggle
+                >
+              </button>
+              <button mat-menu-item>
+                <mat-slide-toggle
+                  (click)="$event.stopPropagation()"
+                  color="accent"
+                  [(ngModel)]="config.settings.toolbarIcons"
+                  (change)="updateSettings()"
+                  >Toolbar Icons</mat-slide-toggle
+                >
+              </button>
+              <button mat-menu-item>
+                <mat-slide-toggle
+                  (click)="$event.stopPropagation()"
+                  color="accent"
+                  [(ngModel)]="config.settings.playSounds"
+                  (change)="updateSettings()"
+                  >Play Sounds</mat-slide-toggle
+                >
+              </button>
+              <span mat-menu-item
+                >Volume
+                <mat-slider
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  [disabled]="!config.settings.playSounds"
+                >
+                  <input
                     (click)="$event.stopPropagation()"
-                    color="accent"
-                    [(ngModel)]="config.settings.toolbarNames"
-                    (change)="updateSettings()"
-                    >Toolbar Names</mat-slide-toggle
-                    >
-                  </button>
-                  <button mat-menu-item>
-                    <mat-slide-toggle
-                      (click)="$event.stopPropagation()"
-                      color="accent"
-                      [(ngModel)]="config.settings.toolbarIcons"
-                      (change)="updateSettings()"
-                      >Toolbar Icons</mat-slide-toggle
-                      >
-                    </button>
-                    <button mat-menu-item>
-                      <mat-slide-toggle
-                        (click)="$event.stopPropagation()"
-                        color="accent"
-                        [(ngModel)]="config.settings.playSounds"
-                        (change)="updateSettings()"
-                        >Play Sounds</mat-slide-toggle
-                        >
-                      </button>
-                      <span mat-menu-item
-                        >Volume
-                        <mat-slider
-                          min="0"
-                          max="1"
-                          step="0.1"
-                          [disabled]="!config.settings.playSounds"
-                          >
-                          <input
-                            (click)="$event.stopPropagation()"
-                            matSliderThumb
-                            [(ngModel)]="config.settings.soundVolume"
-                            />
-                          </mat-slider>
-                        </span>
-                        <mat-divider></mat-divider>
-                        <button mat-menu-item (click)="openPage('releases')">
-                          Changelog
-                        </button>
-                        <button mat-menu-item (click)="openPage('issues/new')">
-                          Report a Bug
-                        </button>
-                        <mat-divider></mat-divider>
-                        <button mat-menu-item (click)="logOut()">Logout</button>
-                      </mat-menu>
-                    </span>
-                  } @else {
-                    <span>
-                      <button mat-button (click)="router.navigate(['/'])">Log In</button>
-                    </span>
-                  }
-                </mat-toolbar>
-                <mat-divider></mat-divider>
-                <mat-toolbar>
-                  @for (widget of widgets; track widget) {
-                    <button mat-button (click)="toggleWidget(widget)">
-                      <div class="toolbar-button-content">
-                        @if (config.settings.toolbarIcons) {
-                          <img
-                            src="./assets/{{ widget.getIcon() }}"
-                            width="32px"
-                            />
-                        }
-                        @if (
-                          config.settings.toolbarNames || !config.settings.toolbarIcons
-                          ) {
-                          <span
-                            >
-                            {{ widget.name }}
-                          </span>
-                        }
-                      </div>
-                    </button>
-                    @if (!widget.name) {
-                      <mat-divider
-                        [vertical]="true"
-                        class="accent-divider"
-                      ></mat-divider>
-                    }
-                  }
-                </mat-toolbar>
-                <div class="flex-row">
-                  <app-widget-container></app-widget-container>
-                </div>
-              </mat-sidenav-content>
-            </mat-sidenav-container>
-          </div>
+                    matSliderThumb
+                    [(ngModel)]="config.settings.soundVolume"
+                  />
+                </mat-slider>
+              </span>
+              <mat-divider></mat-divider>
+              <button mat-menu-item (click)="openPage('releases')">
+                Changelog
+              </button>
+              <button mat-menu-item (click)="openPage('issues/new')">
+                Report a Bug
+              </button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item (click)="logOut()">Logout</button>
+            </mat-menu>
+          </span>
+        } @else {
+          <span>
+            <button mat-button (click)="router.navigate(['/'])">Log In</button>
+          </span>
+        }
+      </mat-toolbar>
+      <mat-divider></mat-divider>
+      <mat-toolbar>
+        @for (widget of widgets; track widget) {
+          <button mat-button (click)="toggleWidget(widget)">
+            <div class="toolbar-button-content">
+              @if (config.settings.toolbarIcons) {
+                <img
+                  src="./assets/{{ widget.getIcon() }}"
+                  width="32px"
+                  alt="{{ widget.getWidgetName() }}"
+                />
+              }
+              @if (
+                config.settings.toolbarNames || !config.settings.toolbarIcons
+              ) {
+                <span>
+                  {{ widget.name }}
+                </span>
+              }
+            </div>
+          </button>
+          @if (!widget.name) {
+            <mat-divider [vertical]="true" class="accent-divider"></mat-divider>
+          }
+        }
+      </mat-toolbar>
+      <div class="flex-row">
+        <app-widget-container></app-widget-container>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

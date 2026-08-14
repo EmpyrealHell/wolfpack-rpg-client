@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Injector,
-  Input,
-  OnInit,
-  Type,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, Input, OnInit, Type, ViewChild, inject } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
 import { WidgetComponent } from './widget.component';
@@ -25,6 +17,8 @@ import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-s
   standalone: false,
 })
 export class WidgetFactoryComponent implements OnInit {
+  injector = inject(Injector);
+
   /**
    * Component factory used to create the internal widget component.
    */
@@ -71,8 +65,6 @@ export class WidgetFactoryComponent implements OnInit {
    */
   @ViewChild(WidgetContainerDirective, { static: true })
   container: WidgetContainerDirective | undefined;
-
-  constructor(public injector: Injector) {}
 
   ngOnInit(): void {
     if (this.factory && this.container) {

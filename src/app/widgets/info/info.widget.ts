@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  Input,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { noop } from 'rxjs';

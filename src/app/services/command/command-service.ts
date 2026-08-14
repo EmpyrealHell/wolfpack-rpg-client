@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Utils } from 'src/app/util/utils';
 import { ChatCommands } from './chat-commands';
 import * as CommandData from './command-data.json';
@@ -54,6 +54,8 @@ export interface KeyMatchedResponse {
   providedIn: 'root',
 })
 export class CommandService {
+  private eventSubService = inject(EventSubService);
+
   private callbacks = new Map<string, Map<string, CommandCallback>>();
   private matches = new Map<string, ResponseHistory>();
 
@@ -98,7 +100,7 @@ export class CommandService {
    */
   shop: ShopCommands | undefined;
 
-  constructor(private eventSubService: EventSubService) {
+  constructor() {
     this.initialize();
   }
 

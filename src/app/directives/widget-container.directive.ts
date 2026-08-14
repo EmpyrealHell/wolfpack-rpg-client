@@ -1,4 +1,4 @@
-import { Directive, ViewContainerRef } from '@angular/core';
+import { Directive, ViewContainerRef, inject } from '@angular/core';
 
 /**
  * Directive that can be applied to provide access to the view container.
@@ -7,6 +7,6 @@ import { Directive, ViewContainerRef } from '@angular/core';
   selector: '[appWidgetContainer]',
   standalone: false,
 })
-export class WidgetContainerDirective {
-  constructor(public viewContainerRef: ViewContainerRef) {}
+export class WidgetContainerDirective {  viewContainerRef = inject(ViewContainerRef);
+
 }

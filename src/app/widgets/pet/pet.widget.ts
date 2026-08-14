@@ -1,13 +1,12 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
-  Input,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
-import { Pet, Rarity, Stable } from './model/pet';
+import { Pet, Stable } from './model/pet';
 import { MatDialog } from '@angular/material/dialog';
 import { ReleasePetDialog } from './release.pet.dialog';
 import { ErrorDialog } from 'src/app/components/error-dialog/error-dialog';
@@ -24,6 +23,9 @@ import { MatRipple } from '@angular/material/core';
   standalone: false,
 })
 export class PetWidgetComponent extends AbstractWidgetComponent {
+  dialog = inject(MatDialog);
+  snackbar = inject(MatSnackBar);
+
   name = 'Pets';
   private static pets = new Map<number, Pet>();
 
@@ -36,13 +38,6 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
 
   @ViewChild(MatRipple)
   ripple: MatRipple | undefined;
-
-  constructor(
-    public dialog: MatDialog,
-    public snackbar: MatSnackBar
-  ) {
-    super();
-  }
 
   private getPetByName(name: string): Stable | undefined {
     const matches = this.stable.filter(x => x.name === name);

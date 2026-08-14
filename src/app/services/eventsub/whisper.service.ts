@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SendCallback } from './message-queue';
 
 /**
@@ -9,6 +9,8 @@ import { SendCallback } from './message-queue';
   providedIn: 'root',
 })
 export class WhisperService {
+  private http = inject(HttpClient);
+
   private static whisperUrl = 'https://api.twitch.tv/helix/whispers';
   private userId = '';
   private botId = '';
@@ -16,9 +18,9 @@ export class WhisperService {
   private clientId = '';
 
   private restricted = false;
-  private onError: SendCallback = (_message: string) => {};
-
-  constructor(private http: HttpClient) {}
+  private onError: SendCallback = (_message: string) => {
+    throw 'Send callback not set';
+  };
 
   setData(
     userId: string,

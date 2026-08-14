@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Utils } from 'src/app/util/utils';
 import { ConfigManager } from '../data/config-manager';
 import { UserService } from '../user/user.service';
@@ -25,6 +25,11 @@ export type WhisperCallback = (message: Message) => void;
   providedIn: 'root',
 })
 export class EventSubService {
+  private http = inject(HttpClient);
+  private configManager = inject(ConfigManager);
+  private userService = inject(UserService);
+  private whisperService = inject(WhisperService);
+
   /**
    * The WebSocket connection that handles the EventSub connection.
    */
@@ -55,12 +60,7 @@ export class EventSubService {
    */
   isConnected = false;
 
-  constructor(
-    private http: HttpClient,
-    private configManager: ConfigManager,
-    private userService: UserService,
-    private whisperService: WhisperService
-  ) {
+  constructor() {
     const config = eventSubConfig;
     this.messageQueue = new MessageQueue(config.botAccount, 50);
   }

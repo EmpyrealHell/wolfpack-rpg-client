@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AuthData } from './auth.data';
 import { UserData } from './user.data';
 
@@ -10,11 +10,11 @@ import { UserData } from './user.data';
   providedIn: 'root',
 })
 export class UserService {
+  private http = inject(HttpClient);
+
   private static tokenValidationUrl = 'https://id.twitch.tv/oauth2/validate';
   private static getUserUrl = 'https://api.twitch.tv/helix/users';
   private static cachedResponse: AuthData | null;
-
-  constructor(private http: HttpClient) {}
 
   /**
    * Validates an OAuth token and retrieves the user data contained within.

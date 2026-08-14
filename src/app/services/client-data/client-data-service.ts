@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { CommandService } from '../command/command-service';
 import { Rarity } from 'src/app/widgets/pet/model/pet';
 import {
@@ -15,6 +15,8 @@ import { CharacterClass } from 'src/app/widgets/character/model/character';
   providedIn: 'root',
 })
 export class ClientDataService {
+  private commandService = inject(CommandService);
+
   public itemTypes: Map<number, ItemType> = new Map<number, ItemType>();
   public itemSlots: Map<number, ItemSlot> = new Map<number, ItemSlot>();
   public itemQualities: Map<number, ItemQuality> = new Map<
@@ -164,8 +166,6 @@ export class ClientDataService {
       }
     }
   }
-
-  constructor(private commandService: CommandService) {}
 
   initialize(): void {
     this.commandService.subscribeToCommand(

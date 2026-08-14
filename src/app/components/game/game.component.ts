@@ -1,5 +1,5 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
@@ -26,6 +26,15 @@ import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-s
   standalone: false,
 })
 export class GameComponent implements OnInit {
+  widgetService = inject(WidgetService);
+  eventSubService = inject(EventSubService);
+  configManager = inject(ConfigManager);
+  userService = inject(UserService);
+  clientDataService = inject(ClientDataService);
+  overlayContainer = inject(OverlayContainer);
+  dialog = inject(MatDialog);
+  router = inject(Router);
+
   /**
    * Reference to the user config object.
    */
@@ -43,16 +52,7 @@ export class GameComponent implements OnInit {
    */
   version = '';
 
-  constructor(
-    public widgetService: WidgetService,
-    public eventSubService: EventSubService,
-    public configManager: ConfigManager,
-    public userService: UserService,
-    public clientDataService: ClientDataService,
-    public overlayContainer: OverlayContainer,
-    public dialog: MatDialog,
-    public router: Router
-  ) {
+  constructor() {
     const config = PackageJson;
     this.version = config.version;
   }

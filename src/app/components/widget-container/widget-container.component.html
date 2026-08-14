@@ -1,18 +1,22 @@
 <div
   [style.grid-template-areas]="gridlayout"
   style="display: grid !important; height: 100%"
-  >
+>
   @for (factory of factories; track factory; let i = $index) {
     <div
       [style.grid-area]="'a' + i"
       [style.display]="'flex'"
       style="height: 100%; overflow: hidden"
-      >
+    >
       <mat-card class="flex-column">
         <mat-card-title>
           <div class="widget-header-content">
             <div class="widget-title-section">
-              <img src="./assets/{{ getWidgetIcon(i) }}" width="32px" />
+              <img
+                src="./assets/{{ getWidgetIcon(i) }}"
+                width="32px"
+                alt="{{ getWidgetName(i) }}"
+              />
               <span>{{ getWidgetName(i) }}</span>
             </div>
             <span class="fill-space"></span>
@@ -29,7 +33,7 @@
           [configManager]="configManager"
           [commandService]="commandService"
           [name]="getWidgetName(i)"
-          >
+        >
         </app-widget-factory>
       </mat-card>
     </div>

@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -34,11 +29,9 @@ import { CharacterClass } from './model/character';
     MatDialogClose,
   ],
 })
-export class SelectClassDialog {
-  constructor(
-    public dialogRef: MatDialogRef<SelectClassDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: SelectClassData
-  ) {}
+export class SelectClassDialog {  dialogRef = inject<MatDialogRef<SelectClassDialog>>(MatDialogRef);
+  data = inject<SelectClassData>(MAT_DIALOG_DATA);
+
 }
 
 export interface SelectClassData {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -24,6 +24,10 @@ import * as authConfig from './auth.component.json';
   standalone: false,
 })
 export class AuthComponent implements OnInit {
+  configManager = inject(ConfigManager);
+  userService = inject(UserService);
+  private router = inject(Router);
+
   route: ActivatedRouteSnapshot;
   retryCount = 3;
 
@@ -157,13 +161,9 @@ export class AuthComponent implements OnInit {
     window.location.href = url;
   }
 
-  constructor(
-    public configManager: ConfigManager,
-    public userService: UserService,
-    // Tslint:disable-next-line:align
-    private router: Router,
-    route: ActivatedRoute
-  ) {
+  constructor() {
+    const route = inject(ActivatedRoute);
+
     this.route = route.snapshot;
   }
 

@@ -9,7 +9,7 @@
     "deploy": "ng build --configuration production --base-href wolfpack-rpg-client",
     "deploy-to-ghpages": "ng deploy --base-href=.",
     "test": "ng test",
-    "lint": "gts lint",
+    "lint": "eslint",
     "e2e": "ng e2e",
     "clean": "gts clean",
     "compile": "tsc -p .",

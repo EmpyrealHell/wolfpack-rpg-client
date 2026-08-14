@@ -386,7 +386,7 @@ describe('EventSubService', () => {
 
   it('should handle sends from the message queue', async () => {
     const wsInstance = new WebSocket('');
-    let messageCallback = (event: MessageEvent) => {};
+    let messageCallback = (_event: MessageEvent) => {};
     spyOnProperty(wsInstance, 'onmessage', 'set').and.callFake(
       (callback: ((this: WebSocket, ev: MessageEvent) => unknown) | null) => {
         if (callback) {

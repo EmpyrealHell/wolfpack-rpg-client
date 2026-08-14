@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  Input,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { MatDialog } from '@angular/material/dialog';
@@ -21,17 +15,13 @@ import { Item, ItemQuality, ItemSlot, ItemType } from './model/item';
   standalone: false,
 })
 export class InventoryWidgetComponent extends AbstractWidgetComponent {
+  dialog = inject(MatDialog);
+  snackbar = inject(MatSnackBar);
+
   name = 'Inventory';
 
   inventory: Item[] = [];
   selected: Item | undefined;
-
-  constructor(
-    public dialog: MatDialog,
-    public snackbar: MatSnackBar
-  ) {
-    super();
-  }
 
   private getItemByName(name: string): Item | undefined {
     const matches = this.inventory.filter(x => x.name === name);

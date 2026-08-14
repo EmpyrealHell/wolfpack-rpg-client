@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { Character, CharacterClass } from './model/character';
@@ -17,18 +17,14 @@ import { SelectClassDialog } from './select.class.dialog';
   standalone: false,
 })
 export class CharacterWidgetComponent extends AbstractWidgetComponent {
+  dialog = inject(MatDialog);
+  snackbar = inject(MatSnackBar);
+
   name = 'Character';
   /**
    * The character data to display.
    */
   data = new Character();
-
-  constructor(
-    public dialog: MatDialog,
-    public snackbar: MatSnackBar
-  ) {
-    super();
-  }
 
   private handleStats(id: string, groups: Map<string, string>): void {
     if (id === 'compact') {

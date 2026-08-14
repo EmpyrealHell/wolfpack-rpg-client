@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -29,9 +29,7 @@ import { Stable } from './model/pet';
     MatDialogClose,
   ],
 })
-export class ReleasePetDialog {
-  constructor(
-    public dialogRef: MatDialogRef<ReleasePetDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: Stable
-  ) {}
+export class ReleasePetDialog {  dialogRef = inject<MatDialogRef<ReleasePetDialog>>(MatDialogRef);
+  data = inject<Stable>(MAT_DIALOG_DATA);
+
 }

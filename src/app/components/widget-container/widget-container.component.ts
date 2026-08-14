@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  Type,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Type, inject } from '@angular/core';
 import { Config } from 'src/app/services/data/config-data';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetItem } from '../../services/widget/widget-item';
@@ -24,6 +19,13 @@ import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-s
   standalone: false,
 })
 export class WidgetContainerComponent implements OnInit {
+  private widgetService = inject(WidgetService);
+  audioPlayerService = inject(AudioPlayerService);
+  clientDataService = inject(ClientDataService);
+  configManager = inject(ConfigManager);
+  eventSubService = inject(EventSubService);
+  commandService = inject(CommandService);
+
   private static layouts = [
     '',
     '"a0"',
@@ -50,15 +52,6 @@ export class WidgetContainerComponent implements OnInit {
    * List of factories used to create and attach the widgets.
    */
   factories = new Array<Type<WidgetComponent>>();
-
-  constructor(
-    private widgetService: WidgetService,
-    public audioPlayerService: AudioPlayerService,
-    public clientDataService: ClientDataService,
-    public configManager: ConfigManager,
-    public eventSubService: EventSubService,
-    public commandService: CommandService
-  ) {}
 
   ngOnInit(): void {
     this.config = this.configManager.getConfig();
