@@ -1,5 +1,5 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
@@ -22,6 +22,7 @@ import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-s
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class GameComponent implements OnInit {

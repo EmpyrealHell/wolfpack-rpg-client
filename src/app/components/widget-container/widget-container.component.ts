@@ -3,6 +3,7 @@ import {
   ComponentFactory,
   ComponentFactoryResolver,
   OnInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Config } from 'src/app/services/data/config-data';
 import { ConfigManager } from 'src/app/services/data/config-manager';
@@ -20,6 +21,7 @@ import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-s
 @Component({
   selector: 'app-widget-container',
   templateUrl: './widget-container.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class WidgetContainerComponent implements OnInit {

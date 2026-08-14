@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatTableDataSource } from '@angular/material/table';
@@ -13,6 +13,7 @@ import { CatchData, LineStatus, Tournament } from './model/fish';
 @Component({
   selector: 'app-fishing-widget',
   templateUrl: './fishing.widget.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class FishingWidgetComponent extends AbstractWidgetComponent {

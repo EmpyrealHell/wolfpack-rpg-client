@@ -1,4 +1,10 @@
-import { Component, Inject, Input, ViewChild } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Input,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,6 +17,7 @@ import { Item, ItemQuality, ItemSlot, ItemType } from './model/item';
 @Component({
   selector: 'app-inventory-widget',
   templateUrl: './inventory.widget.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class InventoryWidgetComponent extends AbstractWidgetComponent {

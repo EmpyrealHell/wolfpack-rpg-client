@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -20,6 +20,7 @@ import * as authConfig from './auth.component.json';
 @Component({
   selector: 'app-auth',
   template: 'Authenticating...',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class AuthComponent implements OnInit {

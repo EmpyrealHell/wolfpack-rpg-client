@@ -1,4 +1,9 @@
-import { Component, inject, Inject } from '@angular/core';
+import {
+  Component,
+  inject,
+  Inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -17,6 +22,7 @@ import { CharacterClass } from './model/character';
   selector: 'select-class-dialog',
   templateUrl: './select.class.dialog.html',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatFormFieldModule,
     MatInputModule,

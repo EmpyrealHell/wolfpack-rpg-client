@@ -1,4 +1,10 @@
-import { Component, Inject, Input, ViewChild } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Input,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { Pet, Rarity, Stable } from './model/pet';
@@ -14,6 +20,7 @@ import { MatRipple } from '@angular/material/core';
 @Component({
   selector: 'app-pet-widget',
   templateUrl: './pet.widget.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class PetWidgetComponent extends AbstractWidgetComponent {

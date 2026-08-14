@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { Character, CharacterClass } from './model/character';
@@ -13,6 +13,7 @@ import { SelectClassDialog } from './select.class.dialog';
 @Component({
   selector: 'app-character-widget',
   templateUrl: './character.widget.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CharacterWidgetComponent extends AbstractWidgetComponent {

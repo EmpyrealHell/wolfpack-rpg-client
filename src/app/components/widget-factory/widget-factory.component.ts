@@ -5,6 +5,7 @@ import {
   Input,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
@@ -20,6 +21,7 @@ import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-s
 @Component({
   selector: 'app-widget-factory',
   template: '<ng-template appWidgetContainer></ng-template>',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class WidgetFactoryComponent implements OnInit {

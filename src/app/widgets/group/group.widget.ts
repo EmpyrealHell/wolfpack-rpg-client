@@ -1,4 +1,10 @@
-import { Component, Inject, Input, ViewChild } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Input,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,6 +19,7 @@ import { Dungeon } from './model/dungeon';
 @Component({
   selector: 'app-group-widget',
   templateUrl: './group.widget.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class GroupWidgetComponent extends AbstractWidgetComponent {

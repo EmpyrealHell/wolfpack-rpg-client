@@ -1,4 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
@@ -17,6 +22,7 @@ import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-s
 @Component({
   selector: 'app-console-widget',
   templateUrl: './console.widget.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ConsoleWidgetComponent implements WidgetComponent {
