@@ -65,26 +65,25 @@ const commandServiceSpy = TestUtils.spyOnClass(CommandService);
 describe('WidgetContainerComponent', () => {
   beforeEach(waitForAsync(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatIconModule, MatCardModule],
-      declarations: [WidgetContainerComponent, WidgetFactoryComponent],
-      providers: [
+    imports: [MatIconModule, MatCardModule, WidgetContainerComponent, WidgetFactoryComponent],
+    providers: [
         {
-          provide: ClientDataService,
-          useValue: clientDataServiceSpy,
+            provide: ClientDataService,
+            useValue: clientDataServiceSpy,
         },
         {
-          provide: WidgetService,
-          useValue: widgetServiceSpy,
+            provide: WidgetService,
+            useValue: widgetServiceSpy,
         },
         { provide: ConfigManager, useValue: configManagerSpy },
         { provide: CommandService, useValue: commandServiceSpy },
         { provide: EventSubService, useValue: eventSubServiceSpy },
         {
-          provide: ComponentFactoryResolver,
-          useValue: componentFactoryResolverSpy,
+            provide: ComponentFactoryResolver,
+            useValue: componentFactoryResolverSpy,
         },
-      ],
-    }).compileComponents();
+    ],
+}).compileComponents();
     configManagerSpy.getConfig.and.returnValue({
       layout: ['First', 'Second'],
     } as Partial<Config>);

@@ -4,15 +4,22 @@ import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Item, ItemQuality, ItemSlot, ItemType } from './model/item';
+import { MatCardContent } from '@angular/material/card';
+import { MatRipple } from '@angular/material/core';
+import { MatButton } from '@angular/material/button';
 
 /**
  * Widget used to display pet data.
  */
 @Component({
-  selector: 'app-inventory-widget',
-  templateUrl: './inventory.widget.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+    selector: 'app-inventory-widget',
+    templateUrl: './inventory.widget.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        MatCardContent,
+        MatRipple,
+        MatButton,
+    ],
 })
 export class InventoryWidgetComponent extends AbstractWidgetComponent {
   dialog = inject(MatDialog);

@@ -9,16 +9,33 @@ import {
 } from 'src/app/services/eventsub/eventsub.service';
 import { ClientDataService } from 'src/app/services/client-data/client-data-service';
 import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
+import { MatCardContent, MatCardFooter } from '@angular/material/card';
+import { MatFormField, MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { ShowLastDirective } from '../../directives/show-last.directive';
+import { MatToolbar } from '@angular/material/toolbar';
+import { FocusOnLoadDirective } from '../../directives/focus-on-load.directive';
+import { MatButton } from '@angular/material/button';
 
 /**
  * Widget that provides direct access to the communication channel between the
  * authenticated user and the target account.
  */
 @Component({
-  selector: 'app-console-widget',
-  templateUrl: './console.widget.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+    selector: 'app-console-widget',
+    templateUrl: './console.widget.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        MatCardContent,
+        MatFormField,
+        MatInput,
+        FormsModule,
+        ShowLastDirective,
+        MatCardFooter,
+        MatToolbar,
+        FocusOnLoadDirective,
+        MatButton,
+    ],
 })
 export class ConsoleWidgetComponent implements WidgetComponent {
   private static maxHistory = 100;

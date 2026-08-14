@@ -20,14 +20,13 @@ spyContainer.createComponent.and.returnValue({
 });
 
 @Directive({
-  selector: '[appWidgetContainer]',
-  providers: [
-    {
-      provide: WidgetContainerDirective,
-      useClass: WidgetContainerStubDirective,
-    },
-  ],
-  standalone: false,
+    selector: '[appWidgetContainer]',
+    providers: [
+        {
+            provide: WidgetContainerDirective,
+            useClass: WidgetContainerStubDirective,
+        },
+    ],
 })
 export class WidgetContainerStubDirective {
   viewContainerRef: ViewContainerRef;
@@ -39,8 +38,8 @@ export class WidgetContainerStubDirective {
 describe('WidgetContainerComponent', () => {
   beforeEach(waitForAsync(async () => {
     await TestBed.configureTestingModule({
-      declarations: [WidgetFactoryComponent, WidgetContainerStubDirective],
-    }).compileComponents();
+    imports: [WidgetFactoryComponent, WidgetContainerStubDirective],
+}).compileComponents();
   }));
 
   it('should create a widget instance', async () => {

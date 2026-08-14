@@ -6,15 +6,25 @@ import { Item, ItemQuality, ItemSlot, ItemType } from '../inventory/model/item';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SelectClassDialog } from './select.class.dialog';
+import { MatCardContent } from '@angular/material/card';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatButton } from '@angular/material/button';
+import { MatList, MatListItem } from '@angular/material/list';
 
 /**
  * Widget used to display character data.
  */
 @Component({
-  selector: 'app-character-widget',
-  templateUrl: './character.widget.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+    selector: 'app-character-widget',
+    templateUrl: './character.widget.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        MatCardContent,
+        MatProgressBar,
+        MatButton,
+        MatList,
+        MatListItem,
+    ],
 })
 export class CharacterWidgetComponent extends AbstractWidgetComponent {
   dialog = inject(MatDialog);

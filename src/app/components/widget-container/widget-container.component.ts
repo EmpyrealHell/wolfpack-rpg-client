@@ -8,15 +8,25 @@ import { ClientDataService } from 'src/app/services/client-data/client-data-serv
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 import { WidgetService } from 'src/app/services/widget/widget.service';
 import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
+import { MatCard, MatCardTitle } from '@angular/material/card';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { WidgetFactoryComponent } from '../widget-factory/widget-factory.component';
 
 /**
  * Holds a list of widgets and renders them to the DOM, in order.
  */
 @Component({
-  selector: 'app-widget-container',
-  templateUrl: './widget-container.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+    selector: 'app-widget-container',
+    templateUrl: './widget-container.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        MatCard,
+        MatCardTitle,
+        MatIconButton,
+        MatIcon,
+        WidgetFactoryComponent,
+    ],
 })
 export class WidgetContainerComponent implements OnInit {
   private widgetService = inject(WidgetService);

@@ -12,15 +12,29 @@ import { ReleasePetDialog } from './release.pet.dialog';
 import { ErrorDialog } from 'src/app/components/error-dialog/error-dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatRipple } from '@angular/material/core';
+import { MatCardContent } from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { MatFormField, MatLabel, MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 
 /**
  * Widget used to display pet data.
  */
 @Component({
-  selector: 'app-pet-widget',
-  templateUrl: './pet.widget.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+    selector: 'app-pet-widget',
+    templateUrl: './pet.widget.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        MatCardContent,
+        MatRipple,
+        MatIcon,
+        MatButton,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        FormsModule,
+    ],
 })
 export class PetWidgetComponent extends AbstractWidgetComponent {
   dialog = inject(MatDialog);

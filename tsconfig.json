@@ -1,6 +1,8 @@
 {
-  "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "forceConsistentCasingInFileNames": true,
     "rootDir": ".",
     "paths": { "*": ["./*"] },
     "outDir": "./dist/out-tsc",
@@ -11,8 +13,14 @@
     "experimentalDecorators": true,
     "module": "es2022",
     "moduleResolution": "bundler",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "pretty": true,
     "importHelpers": true,
     "resolveJsonModule": true,
+    "stripInternal": true,
+    "strict": true,
     "target": "esnext",
     "typeRoots": ["node_modules/@types"],
     "lib": ["ESNext", "dom"]

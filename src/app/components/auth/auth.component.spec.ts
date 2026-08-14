@@ -28,15 +28,14 @@ const username = 'testuser',
 describe('AuthComponent', () => {
   beforeEach(waitForAsync(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [AuthComponent],
-      providers: [
+    imports: [RouterTestingModule, AuthComponent],
+    providers: [
         { provide: ConfigManager, useValue: configManagerSpy },
         { provide: UserService, useValue: userServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: activatedRouteSpy },
-      ],
-    }).compileComponents();
+    ],
+}).compileComponents();
     configManagerSpy.getConfig.and.returnValue({
       authentication: {
         token: 'token',

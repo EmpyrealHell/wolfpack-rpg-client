@@ -18,10 +18,9 @@ import * as authConfig from './auth.component.json';
  * assume valid authentication.
  */
 @Component({
-  selector: 'app-auth',
-  template: 'Authenticating...',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+    selector: 'app-auth',
+    template: 'Authenticating...',
+    changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class AuthComponent implements OnInit {
   configManager = inject(ConfigManager);

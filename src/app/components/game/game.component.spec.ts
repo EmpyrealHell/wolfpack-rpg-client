@@ -61,7 +61,7 @@ const dialogSpy = jasmine.createSpyObj('MatDialog', ['open']),
 describe('GameComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
+    imports: [
         RouterTestingModule,
         MatSidenavModule,
         MatDividerModule,
@@ -71,25 +71,23 @@ describe('GameComponent', () => {
         MatToolbarModule,
         MatCardModule,
         FormsModule,
-      ],
-      declarations: [
         GameComponent,
         WidgetContainerComponent,
         WidgetFactoryComponent,
-      ],
-      providers: [
+    ],
+    providers: [
         { provide: EventSubService, useValue: eventSubServiceSpy },
         { provide: ConfigManager, useValue: configManagerSpy },
         { provide: UserService, useValue: userServiceSpy },
         {
-          provide: ClientDataService,
-          useValue: clientDataServiceSpy,
+            provide: ClientDataService,
+            useValue: clientDataServiceSpy,
         },
         { provide: OverlayContainer, useValue: overlayContainerSpy },
         { provide: MatDialog, useValue: dialogSpy },
         { provide: Router, useValue: routerSpy },
-      ],
-    }).compileComponents();
+    ],
+}).compileComponents();
     waitForAsync(
       configManagerSpy.getConfig.and.returnValue({
         authentication: {

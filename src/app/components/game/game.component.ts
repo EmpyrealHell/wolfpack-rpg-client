@@ -15,15 +15,40 @@ import {
 } from 'src/app/services/eventsub/eventsub.service';
 import { WidgetService } from 'src/app/services/widget/widget.service';
 import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
+import { MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
+import { MatToolbar } from '@angular/material/toolbar';
+import { MatDivider } from '@angular/material/divider';
+import { MatButton } from '@angular/material/button';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { FormsModule } from '@angular/forms';
+import { MatSlider, MatSliderThumb } from '@angular/material/slider';
+import { WidgetContainerComponent } from '../widget-container/widget-container.component';
 
 /**
  * The main component holding the game UI.
  */
 @Component({
-  selector: 'app-game',
-  templateUrl: './game.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+    selector: 'app-game',
+    templateUrl: './game.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        MatSidenavContainer,
+        MatSidenavContent,
+        MatToolbar,
+        MatDivider,
+        MatButton,
+        MatMenuTrigger,
+        MatIcon,
+        MatMenu,
+        MatMenuItem,
+        MatSlideToggle,
+        FormsModule,
+        MatSlider,
+        MatSliderThumb,
+        WidgetContainerComponent,
+    ],
 })
 export class GameComponent implements OnInit {
   widgetService = inject(WidgetService);

@@ -1,9 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { CommandService } from 'src/app/services/command/command-service';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { Utils } from 'src/app/util/utils';
 import { CatchData, LineStatus, Tournament } from './model/fish';
+import { MatCardContent } from '@angular/material/card';
+import { MatButton } from '@angular/material/button';
+import { MatTabGroup, MatTab, MatTabContent } from '@angular/material/tabs';
 
 /**
  * Widget used to display character data.
@@ -11,10 +14,26 @@ import { CatchData, LineStatus, Tournament } from './model/fish';
  * TODO: Add paging to leaderboard and session history based on height
  */
 @Component({
-  selector: 'app-fishing-widget',
-  templateUrl: './fishing.widget.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+    selector: 'app-fishing-widget',
+    templateUrl: './fishing.widget.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        MatCardContent,
+        MatButton,
+        MatTabGroup,
+        MatTab,
+        MatTabContent,
+        MatTable,
+        MatColumnDef,
+        MatHeaderCellDef,
+        MatHeaderCell,
+        MatCellDef,
+        MatCell,
+        MatHeaderRowDef,
+        MatHeaderRow,
+        MatRowDef,
+        MatRow,
+    ],
 })
 export class FishingWidgetComponent extends AbstractWidgetComponent {
   name = 'Fishing';

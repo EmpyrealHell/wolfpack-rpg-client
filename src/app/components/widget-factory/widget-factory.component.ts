@@ -6,15 +6,16 @@ import { CommandService } from 'src/app/services/command/command-service';
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 import { ClientDataService } from 'src/app/services/client-data/client-data-service';
 import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
+import { WidgetContainerDirective as WidgetContainerDirective_1 } from '../../directives/widget-container.directive';
 
 /**
  * Component that acts as a placeholder for widgets in the widget container.
  */
 @Component({
-  selector: 'app-widget-factory',
-  template: '<ng-template appWidgetContainer></ng-template>',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+    selector: 'app-widget-factory',
+    template: '<ng-template appWidgetContainer></ng-template>',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [WidgetContainerDirective_1],
 })
 export class WidgetFactoryComponent implements OnInit {
   injector = inject(Injector);
