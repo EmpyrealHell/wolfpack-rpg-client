@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+} from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -18,9 +23,9 @@ import * as authConfig from './auth.component.json';
  * assume valid authentication.
  */
 @Component({
-    selector: 'app-auth',
-    template: 'Authenticating...',
-    changeDetection: ChangeDetectionStrategy.Eager,
+  selector: 'app-auth',
+  template: 'Authenticating...',
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class AuthComponent implements OnInit {
   configManager = inject(ConfigManager);
@@ -43,7 +48,6 @@ export class AuthComponent implements OnInit {
   async ParseAuthResponse(
     auth: ConfigAuthentication,
     configManager: ConfigManager,
-    // Tslint:disable-next-line:align
     fragmentString: string,
     userService: UserService,
     router: Router
@@ -73,7 +77,7 @@ export class AuthComponent implements OnInit {
       }
     } else {
       console.log('State was empty, reauthenticating.');
-      this.AuthenticateWithTwitch(auth, configManager);
+      //this.AuthenticateWithTwitch(auth, configManager);
     }
   }
 
@@ -88,7 +92,6 @@ export class AuthComponent implements OnInit {
   async ValidateToken(
     auth: ConfigAuthentication,
     configManager: ConfigManager,
-    // Tslint:disable-next-line:align
     userService: UserService,
     router: Router
   ): Promise<void> {
@@ -109,7 +112,7 @@ export class AuthComponent implements OnInit {
       ) {
         auth.scope = null;
         auth.state = null;
-        this.AuthenticateWithTwitch(auth, configManager);
+        //this.AuthenticateWithTwitch(auth, configManager);
       } else {
         auth.user = data.login;
         auth.scope = Utils.stringJoin(' ', data.scopes);
@@ -119,7 +122,7 @@ export class AuthComponent implements OnInit {
         void router.navigate(['/play']);
       }
     } else {
-      this.AuthenticateWithTwitch(auth, configManager);
+      //this.AuthenticateWithTwitch(auth, configManager);
     }
   }
 

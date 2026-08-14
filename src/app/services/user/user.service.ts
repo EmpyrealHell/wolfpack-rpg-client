@@ -29,6 +29,7 @@ export class UserService {
         Authorization: `Bearer ${token}`,
       },
     };
+    console.log(`Attempting to get user auth validation for token ${token}`);
     return this.http
       .get<AuthData>(UserService.tokenValidationUrl, options)
       .toPromise<AuthData>();
