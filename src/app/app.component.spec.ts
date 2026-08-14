@@ -11,8 +11,8 @@ describe('AppComponent', () => {
   }));
 
   it('should create the app', async () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
+    const fixture = TestBed.createComponent(AppComponent),
+      app = fixture.debugElement.componentInstance;
     await expect(app).toBeTruthy();
   });
 });

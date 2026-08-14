@@ -1,5 +1,5 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
@@ -63,15 +63,15 @@ export class GameComponent implements OnInit {
     const config = this.configManager.getConfig();
     this.updateOverlayTheme();
 
-    const token = config.authentication.token;
+    const { token } = config.authentication;
     if (!token) {
       void this.router.navigate(['/']);
     } else {
       const userData = await this.userService.getUserAuth(token);
       if (userData && userData.login) {
         if (this.widgets) {
-          const ids = this.widgets.map(x => x.id);
-          const validLayout = config.layout.filter(x => ids.indexOf(x) !== -1);
+          const ids = this.widgets.map(x => x.id),
+            validLayout = config.layout.filter(x => ids.indexOf(x) !== -1);
           if (config.layout.length !== validLayout.length) {
             config.layout = validLayout;
           }

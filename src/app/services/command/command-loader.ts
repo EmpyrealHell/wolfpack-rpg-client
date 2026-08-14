@@ -45,7 +45,7 @@ export class CommandLoader {
 
   private registerCommand<T>(name: string, command: T): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const responses = (command as any)['responses'];
+    const { responses } = command as any;
     for (const catKey in responses) {
       if (responses[catKey]) {
         const category = responses[catKey];
@@ -68,26 +68,24 @@ export class CommandLoader {
     if (typeof entry === 'string') {
       map.set(id, new CommandResponse(entry));
     } else if (typeof entry === 'object') {
-      const subgroupEntry = entry as unknown as SubgroupExpression;
-      const response = new CommandResponse(
-        subgroupEntry.response,
-        subgroupEntry.subGroups
-      );
+      const subgroupEntry = entry as unknown as SubgroupExpression,
+        response = new CommandResponse(
+          subgroupEntry.response,
+          subgroupEntry.subGroups
+        );
       map.set(id, response);
     }
   }
 
   private registerResponses(): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const data = CommandData;
-    const commands = data.commands as unknown;
+    const data = CommandData,
+      commands = data.commands as unknown;
     this.registerContainer('command', commands, true);
   }
 
   private registerMessages(): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const data = CommandData;
-    const messages = data.messages as unknown;
+    const data = CommandData,
+      messages = data.messages as unknown;
     this.registerContainer('message', messages);
   }
 }

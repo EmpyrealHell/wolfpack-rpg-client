@@ -3,8 +3,7 @@ import { CommandService } from './command-service';
 import { EventSubService, Message } from '../eventsub/eventsub.service';
 
 describe('CommandService', () => {
-  let eventSubService: EventSubService;
-  let service: CommandService;
+  let eventSubService: EventSubService, service: CommandService;
 
   beforeAll(async () => {
     eventSubService = TestUtils.spyOnClass(
@@ -24,9 +23,9 @@ describe('CommandService', () => {
 
   it('should call a method on a matching message', async () => {
     const callback = {
-      fn: (name: string, id: string, groups: Map<string, string>) => {},
-    };
-    const spy = spyOn(callback, 'fn');
+        fn: (name: string, id: string, groups: Map<string, string>) => {},
+      },
+      spy = spyOn(callback, 'fn');
     service.subscribeToMessage('party', 'full', 'test', spy);
     service.onIncomingWhisper(
       new Message('Your party is now full.', true, true)
@@ -36,9 +35,9 @@ describe('CommandService', () => {
 
   it('should not call a method on a non-matching message', async () => {
     const callback = {
-      fn: (name: string, id: string, groups: Map<string, string>) => {},
-    };
-    const spy = spyOn(callback, 'fn');
+        fn: (name: string, id: string, groups: Map<string, string>) => {},
+      },
+      spy = spyOn(callback, 'fn');
     service.subscribeToMessage('party', 'full', 'test', spy);
     service.onIncomingWhisper(new Message('Your party is full.', true, true));
     await expect(spy).not.toHaveBeenCalled();
@@ -46,15 +45,15 @@ describe('CommandService', () => {
 
   it('should provide the captured groups', async () => {
     const callback = {
-      fn: (
-        name: string,
-        id: string,
-        groups: Map<string, string>,
-        subGroups: Array<Map<string, string>>,
-        date: number
-      ) => {},
-    };
-    const spy = spyOn(callback, 'fn');
+        fn: (
+          name: string,
+          id: string,
+          groups: Map<string, string>,
+          subGroups: Array<Map<string, string>>,
+          date: number
+        ) => {},
+      },
+      spy = spyOn(callback, 'fn');
     service.subscribeToMessage('party', 'declined', 'test', spy);
     const now = Date.now();
     service.onIncomingWhisper(

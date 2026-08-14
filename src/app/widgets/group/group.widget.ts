@@ -1,9 +1,9 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   Inject,
   Input,
   ViewChild,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';

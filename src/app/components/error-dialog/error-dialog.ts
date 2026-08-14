@@ -1,14 +1,14 @@
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // Tslint:disable-next-line:component-selector
   selector: 'error-dialog',
   templateUrl: './error-dialog.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
-// tslint:disable-next-line:component-class-suffix
+// Tslint:disable-next-line:component-class-suffix
 export class ErrorDialog {
   constructor(
     public matDialogRef: MatDialogRef<ErrorDialog>,

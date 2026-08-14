@@ -20,10 +20,10 @@ export abstract class CommandWrapper {
     C extends keyof (typeof commandData.commands)[G],
     M extends keyof (typeof commandData.commands)[G][C],
   >(group: G, command: C, message: M): string {
-    const groupObj = commandData.commands[group];
-    const commandObj = groupObj[command];
-    const toSend = commandObj[message];
-    return '' + toSend;
+    const groupObj = commandData.commands[group],
+      commandObj = groupObj[command],
+      toSend = commandObj[message];
+    return `${toSend}`;
   }
 
   /**

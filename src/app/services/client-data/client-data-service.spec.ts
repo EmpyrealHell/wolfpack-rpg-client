@@ -4,10 +4,9 @@ import { WidgetItem } from '../widget/widget-item';
 import { ClientDataService } from './client-data-service';
 
 describe('ClientDataService', () => {
-  let commandService: jasmine.SpyObj<CommandService>;
-  let service: ClientDataService;
-
-  let roleHandler: CommandCallback;
+  let commandService: jasmine.SpyObj<CommandService>,
+    roleHandler: CommandCallback,
+    service: ClientDataService;
 
   beforeAll(async () => {
     commandService = TestUtils.spyOnClass(
@@ -25,7 +24,7 @@ describe('ClientDataService', () => {
   it('should send fetch-client-data command and register a responder', async () => {
     service.initialize();
     await expect(commandService.subscribeToCommand).toHaveBeenCalled();
-    const args = commandService.subscribeToCommand.calls.mostRecent().args;
+    const { args } = commandService.subscribeToCommand.calls.mostRecent();
     await expect(args[0]).toBe('client');
     await expect(args[1]).toBe('data');
     await expect(args[2]).toBe('responses');

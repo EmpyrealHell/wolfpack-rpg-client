@@ -1,9 +1,9 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   Inject,
   Input,
   ViewChild,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
@@ -56,14 +56,14 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
         newItem.description = sub.get('desc') ?? '';
         newItem.isEquipped = sub.get('equipped') === 'E';
         const quality = this.clientDataService?.itemQualities.get(
-          parseInt(sub.get('quality') ?? '0')
-        );
-        const slot = this.clientDataService?.itemSlots.get(
-          parseInt(sub.get('slot') ?? '0')
-        );
-        const type = this.clientDataService?.itemTypes.get(
-          parseInt(sub.get('type') ?? '0')
-        );
+            parseInt(sub.get('quality') ?? '0')
+          ),
+          slot = this.clientDataService?.itemSlots.get(
+            parseInt(sub.get('slot') ?? '0')
+          ),
+          type = this.clientDataService?.itemTypes.get(
+            parseInt(sub.get('type') ?? '0')
+          );
         newItem.quality = quality ?? ItemQuality.default;
         newItem.slot = slot ?? ItemSlot.default;
         newItem.type = type ?? ItemType.default;

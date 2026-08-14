@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { Character, CharacterClass } from './model/character';
@@ -58,14 +58,14 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
         newItem.description = sub.get('desc') ?? '';
         newItem.isEquipped = sub.get('equipped') === 'E';
         const quality = this.clientDataService?.itemQualities.get(
-          parseInt(sub.get('quality') ?? '0')
-        );
-        const slot = this.clientDataService?.itemSlots.get(
-          parseInt(sub.get('slot') ?? '0')
-        );
-        const type = this.clientDataService?.itemTypes.get(
-          parseInt(sub.get('type') ?? '0')
-        );
+            parseInt(sub.get('quality') ?? '0')
+          ),
+          slot = this.clientDataService?.itemSlots.get(
+            parseInt(sub.get('slot') ?? '0')
+          ),
+          type = this.clientDataService?.itemTypes.get(
+            parseInt(sub.get('type') ?? '0')
+          );
         newItem.quality = quality ?? ItemQuality.default;
         newItem.slot = slot ?? ItemSlot.default;
         newItem.type = type ?? ItemType.default;
@@ -304,8 +304,8 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'awards',
       id,
       (name, id, groups, subGroups, date) => {
-        let coins = parseInt(groups.get('coins') ?? '0');
-        let xp = parseInt(groups.get('xp') ?? '0');
+        let coins = parseInt(groups.get('coins') ?? '0'),
+          xp = parseInt(groups.get('xp') ?? '0');
         if (this.data.subscriber) {
           const multi = parseFloat(groups.get('multiplier') ?? '1');
           coins *= multi;
@@ -463,8 +463,8 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     const dialogRef = this.dialog.open(SelectClassDialog, {
       data: {
         isRespec: cost > 0,
-        cost: cost,
-        classes: classes,
+        cost,
+        classes,
       },
     });
     dialogRef.afterClosed().subscribe(result => {

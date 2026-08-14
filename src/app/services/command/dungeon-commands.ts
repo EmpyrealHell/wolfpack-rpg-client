@@ -22,8 +22,8 @@ export class DungeonCommands extends CommandWrapper {
    * @param id The id of the dungeon to get details for.
    */
   detail(id: string): void {
-    const raw = this.getCommandString('dungeon', 'detail', 'command');
-    const command = this.replaceProperty(raw, 'id', id);
+    const raw = this.getCommandString('dungeon', 'detail', 'command'),
+      command = this.replaceProperty(raw, 'id', id);
     this.eventSubService.send(command);
   }
 

@@ -21,10 +21,8 @@ export class Stable {
   ) {}
 }
 
-export class Rarity {
-  constructor(
-    public id: number,
-    public name: string,
-    public color: string
-  ) {}
+export interface Rarity {
+  id: number;
+  name: string;
+  color: string;
 }

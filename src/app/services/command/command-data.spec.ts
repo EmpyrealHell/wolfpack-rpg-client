@@ -18,8 +18,8 @@ describe('CommandData', () => {
   };
 
   it('should wrap parameters in commands with curly braces', async () => {
-    const commands = getAllCommands(CommandData);
-    const wrongCommands: string[] = [];
+    const commands = getAllCommands(CommandData),
+      wrongCommands: string[] = [];
     for (const command of commands) {
       const parts = command.split(' ');
       parts.splice(0, 1);

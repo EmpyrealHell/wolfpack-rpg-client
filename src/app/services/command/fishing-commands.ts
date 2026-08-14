@@ -30,8 +30,8 @@ export class FishingCommands extends CommandWrapper {
    * @param id The id of the fish to get details for.
    */
   detail(id: string): void {
-    const raw = this.getCommandString('fishing', 'detail', 'command');
-    const command = this.replaceProperty(raw, 'id', id);
+    const raw = this.getCommandString('fishing', 'detail', 'command'),
+      command = this.replaceProperty(raw, 'id', id);
     this.eventSubService.send(command);
   }
 
@@ -56,8 +56,8 @@ export class FishingCommands extends CommandWrapper {
    * @param id The id of the fish to release.
    */
   release(id: string): void {
-    const raw = this.getCommandString('fishing', 'release', 'command');
-    const command = this.replaceProperty(raw, 'id', id);
+    const raw = this.getCommandString('fishing', 'release', 'command'),
+      command = this.replaceProperty(raw, 'id', id);
     this.eventSubService.send(command);
   }
 }

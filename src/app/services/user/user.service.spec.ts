@@ -3,9 +3,8 @@ import { AuthData } from './auth.data';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
-  const cachedResponseKey = 'cachedResponse';
-
-  const httpObj = jasmine.createSpyObj('HttpClient', ['get']);
+  const cachedResponseKey = 'cachedResponse',
+    httpObj = jasmine.createSpyObj('HttpClient', ['get']);
   let userService: UserService;
 
   beforeEach(() => {
@@ -21,8 +20,8 @@ describe('UserService', () => {
 
     await userService.getUserAuth(token);
     await expect(httpObj.get).toHaveBeenCalled();
-    const call = httpObj.get.calls.mostRecent();
-    const opts = call.args[1];
+    const call = httpObj.get.calls.mostRecent(),
+      opts = call.args[1];
     await expect(opts.headers.Authorization).toContain(token);
   });
 

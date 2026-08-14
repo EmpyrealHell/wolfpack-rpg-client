@@ -14,8 +14,8 @@ export class InventoryCommands extends CommandWrapper {
    * @param id The id of the item.
    */
   detail(id: string): void {
-    const raw = this.getCommandString('inventory', 'detail', 'command');
-    const command = this.replaceProperty(raw, 'id', id);
+    const raw = this.getCommandString('inventory', 'detail', 'command'),
+      command = this.replaceProperty(raw, 'id', id);
     this.eventSubService.send(command);
   }
 
@@ -24,8 +24,8 @@ export class InventoryCommands extends CommandWrapper {
    * @param id The id of the item.
    */
   equip(id: string): void {
-    const raw = this.getCommandString('inventory', 'detail', 'command');
-    const command = this.replaceProperty(raw, 'id', id);
+    const raw = this.getCommandString('inventory', 'detail', 'command'),
+      command = this.replaceProperty(raw, 'id', id);
     this.eventSubService.send(command);
   }
 
@@ -42,8 +42,8 @@ export class InventoryCommands extends CommandWrapper {
    * @param id The id of the item.
    */
   unequip(id: string): void {
-    const raw = this.getCommandString('inventory', 'unequip', 'command');
-    const command = this.replaceProperty(raw, 'id', id);
+    const raw = this.getCommandString('inventory', 'unequip', 'command'),
+      command = this.replaceProperty(raw, 'id', id);
     this.eventSubService.send(command);
   }
 }

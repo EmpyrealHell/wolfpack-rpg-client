@@ -92,16 +92,16 @@ export class ClientDataService {
     for (const charClass of classes) {
       const parts = charClass.split('|');
       if (parts.length === 7) {
-        const id = parseInt(parts[0]);
-        const charClass = new CharacterClass(
-          id,
-          this.unescape(parts[1]),
-          this.parseWithEmpty(parts[2]),
-          this.parseWithEmpty(parts[3]),
-          this.parseWithEmpty(parts[4]),
-          this.parseWithEmpty(parts[5]),
-          this.parseWithEmpty(parts[6])
-        );
+        const id = parseInt(parts[0]),
+          charClass = new CharacterClass(
+            id,
+            this.unescape(parts[1]),
+            this.parseWithEmpty(parts[2]),
+            this.parseWithEmpty(parts[3]),
+            this.parseWithEmpty(parts[4]),
+            this.parseWithEmpty(parts[5]),
+            this.parseWithEmpty(parts[6])
+          );
         this.classes.set(id, charClass);
         this.classNames.set(charClass.name, charClass);
       }
@@ -128,10 +128,11 @@ export class ClientDataService {
       const parts = rarity.split('|');
       if (parts.length === 3) {
         const id = parseInt(parts[0]);
-        this.petRarities.set(
+        this.petRarities.set(id, {
           id,
-          new Rarity(id, this.unescape(parts[1]), parts[2])
-        );
+          name: this.unescape(parts[1]),
+          color: parts[2],
+        });
       }
     }
   }
@@ -140,8 +141,8 @@ export class ClientDataService {
     for (const mode of modes) {
       const parts = mode.split('|');
       if (parts.length === 2) {
-        const flag = parts[0];
-        const name = parts[1];
+        const flag = parts[0],
+          name = parts[1];
         this.dungeonModes.set(flag, name);
       }
     }

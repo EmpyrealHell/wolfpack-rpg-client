@@ -8,15 +8,15 @@ describe('RollingTimer', () => {
   });
 
   it('should indicate how many instances remain in the timer', async () => {
-    const max = 10;
-    const timer = new RollingTimer(1, max);
+    const max = 10,
+      timer = new RollingTimer(1, max);
     timer.addOccurrence();
     await expect(timer.availableOccurrences()).toBe(max - 1);
   });
 
   it('should roll the timer based on elapsed time', async () => {
-    const timer = new RollingTimer(0.1, 2);
-    const delay = async () => new Promise(resolve => setTimeout(resolve, 60));
+    const timer = new RollingTimer(0.1, 2),
+      delay = async () => new Promise(resolve => setTimeout(resolve, 60));
     timer.addOccurrence();
     await expect(timer.availableOccurrences()).toBe(1);
     await delay();
@@ -27,8 +27,8 @@ describe('RollingTimer', () => {
   });
 
   it('should remove lapsed occurrences', async () => {
-    const timer = new RollingTimer(0.04, 1);
-    const delay = async () => new Promise(resolve => setTimeout(resolve, 50));
+    const timer = new RollingTimer(0.04, 1),
+      delay = async () => new Promise(resolve => setTimeout(resolve, 50));
     timer.addOccurrence();
     await expect(timer.availableOccurrences()).toBe(0);
     await delay();

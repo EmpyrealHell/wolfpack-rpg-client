@@ -14,8 +14,8 @@ describe('CommandLoader', () => {
   });
 
   it('should provide access to keys', async () => {
-    const message = 'command.chat.message.success';
-    const matchGroup = loader.get(message);
+    const message = 'command.chat.message.success',
+      matchGroup = loader.get(message);
     await expect(matchGroup).not.toBeUndefined();
     if (matchGroup) {
       await expect(matchGroup.get('confirmation')).not.toBeUndefined();

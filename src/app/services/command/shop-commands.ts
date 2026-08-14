@@ -14,8 +14,8 @@ export class ShopCommands extends CommandWrapper {
    * @param value The amout to bet.
    */
   bet(value: string): void {
-    const raw = this.getCommandString('shop', 'bet', 'command');
-    const command = this.replaceProperty(raw, 'value', value);
+    const raw = this.getCommandString('shop', 'bet', 'command'),
+      command = this.replaceProperty(raw, 'value', value);
     this.eventSubService.send(command);
   }
 
@@ -65,8 +65,8 @@ export class ShopCommands extends CommandWrapper {
    * @param username The name of a user.
    */
   stats(username: string): void {
-    const raw = this.getCommandString('shop', 'stats', 'command');
-    const command = this.replaceProperty(raw, 'username', username);
+    const raw = this.getCommandString('shop', 'stats', 'command'),
+      command = this.replaceProperty(raw, 'username', username);
     this.eventSubService.send(command);
   }
 }

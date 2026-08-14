@@ -37,8 +37,8 @@ export class RollingTimer {
    * @returns Number of occurrences required to hit the limit.
    */
   availableOccurrences(): number {
-    const now = Date.now();
-    const threshold = now - this.period * 1000;
+    const now = Date.now(),
+      threshold = now - this.period * 1000;
     let toRemove = 0;
     for (let i = 0; i < this.hits.length; i++) {
       if (this.hits[i] < threshold) {

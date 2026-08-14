@@ -1,4 +1,4 @@
-import { waitForAsync, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -12,19 +12,18 @@ import { AuthData } from '../../services/user/auth.data';
 import { UserService } from '../../services/user/user.service';
 import { AuthComponent } from './auth.component';
 
-const username = 'testuser';
-const scopes = 'chat:read';
-
-const configManagerSpy = TestUtils.spyOnClass(ConfigManager);
-const userServiceSpy = TestUtils.spyOnClass(
-  UserService
-) as jasmine.SpyObj<UserService>;
-const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-const activatedRouteSpy = {
-  snapshot: {
-    fragment: 'state=test&access_token=token',
-  },
-} as ActivatedRoute;
+const username = 'testuser',
+  scopes = 'chat:read',
+  configManagerSpy = TestUtils.spyOnClass(ConfigManager),
+  userServiceSpy = TestUtils.spyOnClass(
+    UserService
+  ) as jasmine.SpyObj<UserService>,
+  routerSpy = jasmine.createSpyObj('Router', ['navigate']),
+  activatedRouteSpy = {
+    snapshot: {
+      fragment: 'state=test&access_token=token',
+    },
+  } as ActivatedRoute;
 
 describe('AuthComponent', () => {
   beforeEach(waitForAsync(async () => {
@@ -56,8 +55,8 @@ describe('AuthComponent', () => {
   }));
 
   it('should validate saved tokens', async () => {
-    const fixture = TestBed.createComponent(AuthComponent);
-    const configAuth = new ConfigAuthentication();
+    const fixture = TestBed.createComponent(AuthComponent),
+      configAuth = new ConfigAuthentication();
     configAuth.token = 'token';
 
     await fixture.componentInstance.ValidateToken(
@@ -75,9 +74,9 @@ describe('AuthComponent', () => {
   });
 
   it('should clear authentication if username changes', async () => {
-    const fixture = TestBed.createComponent(AuthComponent);
-    const configAuth = new ConfigAuthentication();
-    const authSpy = spyOn(fixture.componentInstance, 'AuthenticateWithTwitch');
+    const fixture = TestBed.createComponent(AuthComponent),
+      configAuth = new ConfigAuthentication(),
+      authSpy = spyOn(fixture.componentInstance, 'AuthenticateWithTwitch');
     configAuth.user = `Not${username}`;
     configAuth.token = 'token';
 
@@ -93,9 +92,9 @@ describe('AuthComponent', () => {
   });
 
   it('should clear authentication if scopes change', async () => {
-    const fixture = TestBed.createComponent(AuthComponent);
-    const configAuth = new ConfigAuthentication();
-    const authSpy = spyOn(fixture.componentInstance, 'AuthenticateWithTwitch');
+    const fixture = TestBed.createComponent(AuthComponent),
+      configAuth = new ConfigAuthentication(),
+      authSpy = spyOn(fixture.componentInstance, 'AuthenticateWithTwitch');
     configAuth.scope = `${scopes} test:execute`;
     configAuth.token = 'token';
 
@@ -112,8 +111,8 @@ describe('AuthComponent', () => {
   });
 
   it('should call twitch oauth', async () => {
-    const fixture = TestBed.createComponent(AuthComponent);
-    const configAuth = new ConfigAuthentication();
+    const fixture = TestBed.createComponent(AuthComponent),
+      configAuth = new ConfigAuthentication();
     configAuth.state = '';
     const redirectSpy = spyOn(fixture.componentInstance, 'Redirect');
 
@@ -133,9 +132,9 @@ describe('AuthComponent', () => {
   });
 
   it('should call twitch oauth and force verification', async () => {
-    const fixture = TestBed.createComponent(AuthComponent);
-    const configAuth = new ConfigAuthentication();
-    const redirectSpy = spyOn(fixture.componentInstance, 'Redirect');
+    const fixture = TestBed.createComponent(AuthComponent),
+      configAuth = new ConfigAuthentication(),
+      redirectSpy = spyOn(fixture.componentInstance, 'Redirect');
 
     await fixture.componentInstance.AuthenticateWithTwitch(
       configAuth,
@@ -148,8 +147,8 @@ describe('AuthComponent', () => {
   });
 
   it('should parse the twitch response on load', async () => {
-    const fixture = TestBed.createComponent(AuthComponent);
-    const parseSpy = spyOn(fixture.componentInstance, 'ParseAuthResponse');
+    const fixture = TestBed.createComponent(AuthComponent),
+      parseSpy = spyOn(fixture.componentInstance, 'ParseAuthResponse');
 
     await fixture.componentInstance.ngOnInit();
     await expect(configManagerSpy.load).toHaveBeenCalled();
@@ -158,8 +157,8 @@ describe('AuthComponent', () => {
   });
 
   it('should validate an existing token on load', async () => {
-    const fixture = TestBed.createComponent(AuthComponent);
-    const validateSpy = spyOn(fixture.componentInstance, 'ValidateToken');
+    const fixture = TestBed.createComponent(AuthComponent),
+      validateSpy = spyOn(fixture.componentInstance, 'ValidateToken');
     fixture.componentInstance.route = new ActivatedRouteSnapshot();
     fixture.componentInstance.route.fragment = '';
 
@@ -170,8 +169,8 @@ describe('AuthComponent', () => {
   });
 
   it('should begin authentication on load', async () => {
-    const fixture = TestBed.createComponent(AuthComponent);
-    const authSpy = spyOn(fixture.componentInstance, 'AuthenticateWithTwitch');
+    const fixture = TestBed.createComponent(AuthComponent),
+      authSpy = spyOn(fixture.componentInstance, 'AuthenticateWithTwitch');
     fixture.componentInstance.route = new ActivatedRouteSnapshot();
     fixture.componentInstance.route.fragment = '';
     const tokenProvider = TestUtils.spyOnClass(ConfigManager);

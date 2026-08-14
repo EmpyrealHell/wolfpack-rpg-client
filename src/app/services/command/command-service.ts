@@ -122,9 +122,9 @@ export class CommandService {
       },
       true
     );
-    // this.eventSubService.register('command-service', message => {
-    //   console.log('EventSub Message received (2):', message);
-    //   this.onIncomingWhisper(message);
+    // This.eventSubService.register('command-service', message => {
+    //   Console.log('EventSub Message received (2):', message);
+    //   This.onIncomingWhisper(message);
     // });
   }
 
@@ -309,9 +309,8 @@ export class CommandService {
       matches.push(...history.responses.map(value => ({ key, value })));
     }
     const sortedMatches = matches.sort(
-      (a: KeyMatchedResponse, b: KeyMatchedResponse): number => {
-        return a.value.line - b.value.line;
-      }
+      (a: KeyMatchedResponse, b: KeyMatchedResponse): number =>
+        a.value.line - b.value.line
     );
 
     for (const match of sortedMatches) {
@@ -356,8 +355,8 @@ export class CommandService {
     C extends keyof (typeof commandData.commands)[G],
   >(group: G, command: C, time: number): boolean {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const variants = commandData.commands[group][command] as any;
-    const commands: string[] = [];
+    const variants = commandData.commands[group][command] as any,
+      commands: string[] = [];
     if (variants.command) {
       const command = variants.command as string;
       if (command.indexOf('{') === -1) {
@@ -368,8 +367,8 @@ export class CommandService {
       const alternates = variants.alternates as string[];
       commands.push(...alternates.filter(item => item.indexOf('{') === -1));
     }
-    const lines = this.eventSubService.lines;
-    const queue = this.eventSubService.messageQueue.queuedMessages;
+    const { lines } = this.eventSubService,
+      queue = this.eventSubService.messageQueue.queuedMessages;
     for (const variant of commands) {
       if (
         lines.filter(x => x.text === variant && x.timestamp >= time).length >

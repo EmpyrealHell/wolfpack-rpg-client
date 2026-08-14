@@ -14,8 +14,8 @@ export class PetsCommands extends CommandWrapper {
    * @param id The id of the pet.
    */
   detail(id: string): void {
-    const raw = this.getCommandString('pets', 'detail', 'command');
-    const command = this.replaceProperty(raw, 'id', id);
+    const raw = this.getCommandString('pets', 'detail', 'command'),
+      command = this.replaceProperty(raw, 'id', id);
     this.eventSubService.send(command);
   }
 
@@ -24,8 +24,8 @@ export class PetsCommands extends CommandWrapper {
    * @param id The id of the pet.
    */
   dismiss(id: string): void {
-    const raw = this.getCommandString('pets', 'dismiss', 'command');
-    const command = this.replaceProperty(raw, 'id', id);
+    const raw = this.getCommandString('pets', 'dismiss', 'command'),
+      command = this.replaceProperty(raw, 'id', id);
     this.eventSubService.send(command);
   }
 
@@ -34,8 +34,8 @@ export class PetsCommands extends CommandWrapper {
    * @param id The id of the pet.
    */
   feed(id: string): void {
-    const raw = this.getCommandString('pets', 'feed', 'command');
-    const command = this.replaceProperty(raw, 'id', id);
+    const raw = this.getCommandString('pets', 'feed', 'command'),
+      command = this.replaceProperty(raw, 'id', id);
     this.eventSubService.send(command);
   }
 
@@ -60,8 +60,8 @@ export class PetsCommands extends CommandWrapper {
    * @param id The id of the pet.
    */
   release(id: string): void {
-    const raw = this.getCommandString('pets', 'release', 'command');
-    const command = this.replaceProperty(raw, 'id', id);
+    const raw = this.getCommandString('pets', 'release', 'command'),
+      command = this.replaceProperty(raw, 'id', id);
     this.eventSubService.send(command);
   }
 
@@ -71,8 +71,8 @@ export class PetsCommands extends CommandWrapper {
    * @param name The name to give the pet.
    */
   rename(id: string, name: string): void {
-    const raw = this.getCommandString('pets', 'rename', 'command');
-    const command = this.replaceProperties(raw, { id, name });
+    const raw = this.getCommandString('pets', 'rename', 'command'),
+      command = this.replaceProperties(raw, { id, name });
     this.eventSubService.send(command);
   }
 
@@ -81,8 +81,8 @@ export class PetsCommands extends CommandWrapper {
    * @param id The id of the pet.
    */
   summon(id: string): void {
-    const raw = this.getCommandString('pets', 'summon', 'command');
-    const command = this.replaceProperty(raw, 'id', id);
+    const raw = this.getCommandString('pets', 'summon', 'command'),
+      command = this.replaceProperty(raw, 'id', id);
     this.eventSubService.send(command);
   }
 }

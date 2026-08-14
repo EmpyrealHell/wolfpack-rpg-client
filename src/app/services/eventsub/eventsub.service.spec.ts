@@ -12,11 +12,11 @@ import * as eventSubConfig from './eventsub.service.json';
 import { of } from 'rxjs';
 
 describe('EventSubService', () => {
-  let service: EventSubService;
-  let configManagerSpy: ClassSpy<ConfigManager>;
-  let userServiceSpy: ClassSpy<UserService>;
-  let whisperServiceSpy: ClassSpy<WhisperService>;
-  let httpClientSpy: jasmine.SpyObj<HttpClient>;
+  let configManagerSpy: ClassSpy<ConfigManager>,
+    httpClientSpy: jasmine.SpyObj<HttpClient>,
+    service: EventSubService,
+    userServiceSpy: ClassSpy<UserService>,
+    whisperServiceSpy: ClassSpy<WhisperService>;
 
   function createWelcomeMessage(): MessageEvent {
     return {
@@ -72,24 +72,23 @@ describe('EventSubService', () => {
     message: string
   ): Promise<jasmine.SpyObj<WebSocket>> {
     const wsInstance = jasmine.createSpyObj('WebSocket', [
-      'onopen',
-      'onmessage',
-      'onclose',
-      'onerror',
-    ]);
-
-    const connectPromise = service.connectUsing(() => {
-      setTimeout(() => {
-        if (wsInstance.onopen) {
-          wsInstance.onopen({} as Event);
-        }
-        if (wsInstance.onmessage) {
-          wsInstance.onmessage(createWelcomeMessage());
-          wsInstance.onmessage(createChannelChatMessage(message));
-        }
-      }, 0);
-      return wsInstance;
-    });
+        'onopen',
+        'onmessage',
+        'onclose',
+        'onerror',
+      ]),
+      connectPromise = service.connectUsing(() => {
+        setTimeout(() => {
+          if (wsInstance.onopen) {
+            wsInstance.onopen({} as Event);
+          }
+          if (wsInstance.onmessage) {
+            wsInstance.onmessage(createWelcomeMessage());
+            wsInstance.onmessage(createChannelChatMessage(message));
+          }
+        }, 0);
+        return wsInstance;
+      });
     await connectPromise;
     return wsInstance;
   }
@@ -128,27 +127,26 @@ describe('EventSubService', () => {
   });
 
   it('should connect to EventSub', async () => {
-    const queueSpy = spyOn(service.messageQueue, 'start');
-    const sendFnSpy = spyOn(service.messageQueue, 'setSendFunction');
-    const wsInstance = jasmine.createSpyObj('WebSocket', [
-      'onopen',
-      'onmessage',
-      'onclose',
-      'onerror',
-    ]);
-    const connectPromise = service.connectUsing(() => {
-      setTimeout(() => {
-        if (wsInstance.onopen) {
-          wsInstance.onopen({} as Event);
-        }
-        if (wsInstance.onmessage) {
-          wsInstance.onmessage(createWelcomeMessage());
-        }
-      }, 0);
-      return wsInstance;
-    });
-
-    const result = await connectPromise;
+    const queueSpy = spyOn(service.messageQueue, 'start'),
+      sendFnSpy = spyOn(service.messageQueue, 'setSendFunction'),
+      wsInstance = jasmine.createSpyObj('WebSocket', [
+        'onopen',
+        'onmessage',
+        'onclose',
+        'onerror',
+      ]),
+      connectPromise = service.connectUsing(() => {
+        setTimeout(() => {
+          if (wsInstance.onopen) {
+            wsInstance.onopen({} as Event);
+          }
+          if (wsInstance.onmessage) {
+            wsInstance.onmessage(createWelcomeMessage());
+          }
+        }, 0);
+        return wsInstance;
+      }),
+      result = await connectPromise;
     await expect(result).toBe(true);
     await expect(service.isConnected).toBe(true);
     await expect(queueSpy).toHaveBeenCalled();
@@ -169,16 +167,16 @@ describe('EventSubService', () => {
   });
 
   it('should register an error handler for an id', async () => {
-    const errorHandler = (message: Message) => {};
-    const handlerKey = `test-${Date.now()}`;
+    const errorHandler = (message: Message) => {},
+      handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
-    const errorHandlers = service.errorHandlers;
+    const { errorHandlers } = service;
     await expect(errorHandlers.get(handlerKey)).toBe(errorHandler);
   });
 
   it('should remove an error handler for an id', async () => {
-    const errorHandler = (message: Message) => {};
-    const handlerKey = `test-${Date.now()}`;
+    const errorHandler = (message: Message) => {},
+      handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     await expect(service.errorHandlers.get(handlerKey)).toBe(errorHandler);
     service.unregisterForError(handlerKey);
@@ -186,25 +184,25 @@ describe('EventSubService', () => {
   });
 
   it('should call registered error handlers on error', async () => {
-    const consoleSpy = spyOn(console, 'error'); // supress expected error message in terminal
-    const errorHandlerObj = { onError: (message: Message) => {} };
-    const errorSpy = spyOn(errorHandlerObj, 'onError');
-    const handlerKey = `test-${Date.now()}`;
+    const consoleSpy = spyOn(console, 'error'), // Supress expected error message in terminal
+      errorHandlerObj = { onError: (message: Message) => {} },
+      errorSpy = spyOn(errorHandlerObj, 'onError'),
+      handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandlerObj.onError);
     const wsInstance = jasmine.createSpyObj('WebSocket', [
-      'onopen',
-      'onmessage',
-      'onclose',
-      'onerror',
-    ]);
-    const connectPromise = service.connectUsing(() => {
-      setTimeout(() => {
-        if (wsInstance.onerror) {
-          wsInstance.onerror(new Error('WebSocket Error'));
-        }
-      }, 0);
-      return wsInstance;
-    });
+        'onopen',
+        'onmessage',
+        'onclose',
+        'onerror',
+      ]),
+      connectPromise = service.connectUsing(() => {
+        setTimeout(() => {
+          if (wsInstance.onerror) {
+            wsInstance.onerror(new Error('WebSocket Error'));
+          }
+        }, 0);
+        return wsInstance;
+      });
 
     await connectPromise;
     await expect(errorSpy).toHaveBeenCalled();
@@ -212,37 +210,37 @@ describe('EventSubService', () => {
   });
 
   it('should not overwrite error handlers with the same key by default', async () => {
-    const errorHandler = (message: Message) => {};
-    const errorHandler2 = (message: Message) => {};
-    const handlerKey = `test-${Date.now()}`;
+    const errorHandler = (message: Message) => {},
+      errorHandler2 = (message: Message) => {},
+      handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     service.registerForError(handlerKey, errorHandler2);
-    const errorHandlers = service.errorHandlers;
+    const { errorHandlers } = service;
     await expect(errorHandlers.get(handlerKey)).toBe(errorHandler);
     await expect(errorHandlers.get(handlerKey)).not.toBe(errorHandler2);
   });
 
   it('should overwrite error handlers with the same key when forced', async () => {
-    const errorHandler = (message: Message) => {};
-    const errorHandler2 = (message: Message) => {};
-    const handlerKey = `test-${Date.now()}`;
+    const errorHandler = (message: Message) => {},
+      errorHandler2 = (message: Message) => {},
+      handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     service.registerForError(handlerKey, errorHandler2, true);
-    const errorHandlers = service.errorHandlers;
+    const { errorHandlers } = service;
     await expect(errorHandlers.get(handlerKey)).toBe(errorHandler2);
     await expect(errorHandlers.get(handlerKey)).not.toBe(errorHandler);
   });
 
   it('should register a whisper handler for an id', async () => {
-    const callback = (message: Message) => {};
-    const handlerKey = `test-${Date.now()}`;
+    const callback = (message: Message) => {},
+      handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     await expect(service.callbacks.get(handlerKey)).toBe(callback);
   });
 
   it('should remove a whisper handler for an id', async () => {
-    const callback = (message: Message) => {};
-    const handlerKey = `test-${Date.now()}`;
+    const callback = (message: Message) => {},
+      handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     await expect(service.callbacks.get(handlerKey)).toBe(callback);
     service.unregister(handlerKey);
@@ -250,38 +248,38 @@ describe('EventSubService', () => {
   });
 
   it('should call registered callbacks on whisper', async () => {
-    const callbackObj = { onWhisper: (message: Message) => {} };
-    const callbackSpy = spyOn(callbackObj, 'onWhisper');
-    const handlerKey = `test-${Date.now()}`;
+    const callbackObj = { onWhisper: (message: Message) => {} },
+      callbackSpy = spyOn(callbackObj, 'onWhisper'),
+      handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callbackObj.onWhisper);
     const wsInstance = jasmine.createSpyObj('WebSocket', [
-      'onopen',
-      'onmessage',
-      'onclose',
-      'onerror',
-    ]);
-    const connectPromise = service.connectUsing(() => {
-      setTimeout(() => {
-        if (wsInstance.onopen) {
-          wsInstance.onopen({} as Event);
-        }
-        if (wsInstance.onmessage) {
-          wsInstance.onmessage(createWelcomeMessage());
-          wsInstance.onmessage(
-            createWhisperMessage('test whisper', 'test-user')
-          );
-        }
-      }, 0);
-      return wsInstance;
-    });
+        'onopen',
+        'onmessage',
+        'onclose',
+        'onerror',
+      ]),
+      connectPromise = service.connectUsing(() => {
+        setTimeout(() => {
+          if (wsInstance.onopen) {
+            wsInstance.onopen({} as Event);
+          }
+          if (wsInstance.onmessage) {
+            wsInstance.onmessage(createWelcomeMessage());
+            wsInstance.onmessage(
+              createWhisperMessage('test whisper', 'test-user')
+            );
+          }
+        }, 0);
+        return wsInstance;
+      });
     await connectPromise;
     await expect(callbackSpy).toHaveBeenCalled();
   });
 
   it('should not overwrite whisper handlers with the same key by default', async () => {
-    const callback = (message: Message) => {};
-    const callback2 = (message: Message) => {};
-    const handlerKey = `test-${Date.now()}`;
+    const callback = (message: Message) => {},
+      callback2 = (message: Message) => {},
+      handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2);
     await expect(service.callbacks.get(handlerKey)).toBe(callback);
@@ -289,9 +287,9 @@ describe('EventSubService', () => {
   });
 
   it('should overwrite whisper handlers with the same key when forced', async () => {
-    const callback = (message: Message) => {};
-    const callback2 = (message: Message) => {};
-    const handlerKey = `test-${Date.now()}`;
+    const callback = (message: Message) => {},
+      callback2 = (message: Message) => {},
+      handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2, true);
     await expect(service.callbacks.get(handlerKey)).toBe(callback2);
@@ -300,26 +298,24 @@ describe('EventSubService', () => {
 
   it('should handle chat messages from the bot account', async () => {
     const wsInstance = jasmine.createSpyObj('WebSocket', [
-      'onopen',
-      'onmessage',
-      'onclose',
-      'onerror',
-    ]);
-
-    const chatMessage = `test chat message ${Date.now()}`;
-
-    const connectPromise = service.connectUsing(() => {
-      setTimeout(() => {
-        if (wsInstance.onopen) {
-          wsInstance.onopen({} as Event);
-        }
-        if (wsInstance.onmessage) {
-          wsInstance.onmessage(createWelcomeMessage());
-          wsInstance.onmessage(createChannelChatMessage(chatMessage));
-        }
-      }, 0);
-      return wsInstance;
-    });
+        'onopen',
+        'onmessage',
+        'onclose',
+        'onerror',
+      ]),
+      chatMessage = `test chat message ${Date.now()}`,
+      connectPromise = service.connectUsing(() => {
+        setTimeout(() => {
+          if (wsInstance.onopen) {
+            wsInstance.onopen({} as Event);
+          }
+          if (wsInstance.onmessage) {
+            wsInstance.onmessage(createWelcomeMessage());
+            wsInstance.onmessage(createChannelChatMessage(chatMessage));
+          }
+        }, 0);
+        return wsInstance;
+      });
 
     await connectPromise;
     await expect(
@@ -328,15 +324,14 @@ describe('EventSubService', () => {
   });
 
   it('should send queued messages', async () => {
-    const message = `test message sent at ${Date.now()}`;
-    const sendFn = {
-      send: async (message: string) => {
-        return new Promise<void>(resolve => {
-          resolve(undefined);
-        });
+    const message = `test message sent at ${Date.now()}`,
+      sendFn = {
+        send: async (message: string) =>
+          new Promise<void>(resolve => {
+            resolve(undefined);
+          }),
       },
-    };
-    const spy = spyOn(sendFn, 'send');
+      spy = spyOn(sendFn, 'send');
     service.send(message);
     service.messageQueue.setSendFunction(sendFn.send);
     await service.messageQueue.processQueue();
@@ -364,16 +359,14 @@ describe('EventSubService', () => {
     );
     spyOnProperty(wsInstance, 'onclose', 'set');
     spyOnProperty(wsInstance, 'onerror', 'set');
-    await service.connectUsing(() => {
-      return wsInstance;
-    });
+    await service.connectUsing(() => wsInstance);
     await new Promise(resolve => setTimeout(resolve, 0));
     const whispers: Message[] = [];
     service.register('test', (message: Message) => {
       whispers.push(message);
     });
-    const timestamp = Date.now().toString();
-    const userData = await userServiceSpy.getUserAuth();
+    const timestamp = Date.now().toString(),
+      userData = await userServiceSpy.getUserAuth();
     messageHandler(createWelcomeMessage());
     messageHandler(createWhisperMessage('cmd', userData.user_id));
     messageHandler(createWhisperMessage('response', 'other_user'));
@@ -414,11 +407,12 @@ describe('EventSubService', () => {
     service.register('test', (message: Message) => {
       whispers.push(message);
     });
-    service.messageQueue.setSendFunction((message: string) => {
-      return new Promise<void>(resolve => {
-        resolve(undefined);
-      });
-    });
+    service.messageQueue.setSendFunction(
+      (message: string) =>
+        new Promise<void>(resolve => {
+          resolve(undefined);
+        })
+    );
     const timestamp = Date.now().toString();
     service.messageQueue.send('cmd');
     await service.messageQueue.processQueue();

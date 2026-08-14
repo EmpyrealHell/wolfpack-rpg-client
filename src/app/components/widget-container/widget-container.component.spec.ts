@@ -3,7 +3,7 @@ import {
   ComponentFactoryResolver,
   Type,
 } from '@angular/core';
-import { waitForAsync, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
@@ -34,16 +34,10 @@ export class SecondWidget extends AbstractWidgetComponent {
   protected sendInitialCommands(commandService: CommandService): void {}
 }
 
-const firstWidgetItem = new WidgetItem(FirstWidget, 'First', 'First', 'first');
-const secondwidgetItem = new WidgetItem(
-  SecondWidget,
-  'Second',
-  'Second',
-  'second'
-);
-
-const clientDataServiceSpy = TestUtils.spyOnClass(ClientDataService);
-const widgetServiceSpy = TestUtils.spyOnClass(WidgetService);
+const firstWidgetItem = new WidgetItem(FirstWidget, 'First', 'First', 'first'),
+  secondwidgetItem = new WidgetItem(SecondWidget, 'Second', 'Second', 'second'),
+  clientDataServiceSpy = TestUtils.spyOnClass(ClientDataService),
+  widgetServiceSpy = TestUtils.spyOnClass(WidgetService);
 widgetServiceSpy.getWidgets.and.returnValue(
   new Array<WidgetItem>(firstWidgetItem, secondwidgetItem)
 );
@@ -51,11 +45,11 @@ const configManagerSpy = TestUtils.spyOnClass(ConfigManager);
 configManagerSpy.subscribe.and.callFake((delegate: () => void) => {
   delegate.call(delegate);
 });
-const eventSubServiceSpy = TestUtils.spyOnClass(EventSubService);
-const componentFactoryResolverSpy = jasmine.createSpyObj(
-  'ComponentFactoryResolver',
-  ['resolveComponentFactory']
-);
+const eventSubServiceSpy = TestUtils.spyOnClass(EventSubService),
+  componentFactoryResolverSpy = jasmine.createSpyObj(
+    'ComponentFactoryResolver',
+    ['resolveComponentFactory']
+  );
 componentFactoryResolverSpy.resolveComponentFactory.and.callFake(
   (component: Type<WidgetComponent>) => {
     if (component === FirstWidget) {
@@ -97,8 +91,8 @@ describe('WidgetContainerComponent', () => {
   }));
 
   it('should update layout on config update', async () => {
-    const fixture = TestBed.createComponent(WidgetContainerComponent);
-    const layoutSpy = spyOn(fixture.componentInstance, 'resetLayout');
+    const fixture = TestBed.createComponent(WidgetContainerComponent),
+      layoutSpy = spyOn(fixture.componentInstance, 'resetLayout');
 
     fixture.componentInstance.ngOnInit();
     await expect(configManagerSpy.getConfig).toHaveBeenCalled();
@@ -132,7 +126,7 @@ describe('WidgetContainerComponent', () => {
 
     fixture.componentInstance.ngOnInit();
     fixture.componentInstance.resetLayout();
-    const factories = fixture.componentInstance.factories;
+    const { factories } = fixture.componentInstance;
     await expect(factories.length).toBe(2);
     await expect(factories[0].componentType).toBe(FirstWidget);
     await expect(factories[1].componentType).toBe(SecondWidget);

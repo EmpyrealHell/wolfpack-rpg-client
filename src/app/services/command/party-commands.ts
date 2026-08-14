@@ -14,8 +14,8 @@ export class PartyCommands extends CommandWrapper {
    * @param username The name of the user to add.
    */
   add(username: string): void {
-    const raw = this.getCommandString('party', 'add', 'command');
-    const command = this.replaceProperty(raw, 'username', username);
+    const raw = this.getCommandString('party', 'add', 'command'),
+      command = this.replaceProperty(raw, 'username', username);
     this.eventSubService.send(command);
   }
 
@@ -40,8 +40,8 @@ export class PartyCommands extends CommandWrapper {
    * @param username The name of the user to remove.
    */
   kick(username: string): void {
-    const raw = this.getCommandString('party', 'kick', 'command');
-    const command = this.replaceProperty(raw, 'username', username);
+    const raw = this.getCommandString('party', 'kick', 'command'),
+      command = this.replaceProperty(raw, 'username', username);
     this.eventSubService.send(command);
   }
 
@@ -58,8 +58,8 @@ export class PartyCommands extends CommandWrapper {
    * @param username The name of the user to promote.
    */
   promote(username: string): void {
-    const raw = this.getCommandString('party', 'promote', 'command');
-    const command = this.replaceProperty(raw, 'username', username);
+    const raw = this.getCommandString('party', 'promote', 'command'),
+      command = this.replaceProperty(raw, 'username', username);
     this.eventSubService.send(command);
   }
 
@@ -68,8 +68,8 @@ export class PartyCommands extends CommandWrapper {
    * @param id An optional id of a specific dungeon to start.
    */
   start(id?: string): void {
-    const raw = this.getCommandString('party', 'start', 'command');
-    const command = this.replaceProperty(raw, 'id?', id ? id : '');
+    const raw = this.getCommandString('party', 'start', 'command'),
+      command = this.replaceProperty(raw, 'id?', id ? id : '');
     this.eventSubService.send(command);
   }
 

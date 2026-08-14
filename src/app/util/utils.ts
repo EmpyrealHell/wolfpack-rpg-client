@@ -112,7 +112,7 @@ export class Utils {
     const matches: RegExpExecArray[] = [];
     let globalRegex = regex;
     if (regex.flags.indexOf('g') === -1) {
-      globalRegex = new RegExp(regex.source, regex.flags + 'g');
+      globalRegex = new RegExp(regex.source, `${regex.flags}g`);
     }
     for (
       let result = globalRegex.exec(str);
@@ -150,8 +150,8 @@ export class Utils {
     let iso = date
       .toLocaleString('en-CA', { timeZone, hour12: false })
       .replace(', ', 'T');
-    iso += '.' + date.getMilliseconds().toString().padStart(3, '0');
-    const utc = new Date(iso + 'Z');
+    iso += `.${date.getMilliseconds().toString().padStart(3, '0')}`;
+    const utc = new Date(`${iso}Z`);
     return -(utc.getTime() - date.getTime()) / 60 / 1000;
   }
 
@@ -166,26 +166,26 @@ export class Utils {
     if (date) {
       const dateString = date as string;
       if (Utils.timezoneDelta === -1) {
-        const millisInMinute = 60 * 1000;
-        const now = new Date(Date.now());
-        const serverOffset =
-          this.getTimeZoneOffset(now, 'America/Chicago') * millisInMinute;
-        const localOffset = now.getTimezoneOffset() * millisInMinute;
+        const millisInMinute = 60 * 1000,
+          now = new Date(Date.now()),
+          serverOffset =
+            this.getTimeZoneOffset(now, 'America/Chicago') * millisInMinute,
+          localOffset = now.getTimezoneOffset() * millisInMinute;
         Utils.timezoneDelta = serverOffset - localOffset;
       }
 
       const parse =
-        /([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})((?: PM)?)/;
-      const values = dateString.match(parse);
+          /([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})((?: PM)?)/,
+        values = dateString.match(parse);
 
       if (values) {
-        const month = parseInt(values[1]);
-        const day = parseInt(values[2]);
-        const year = parseInt(values[3]);
+        const month = parseInt(values[1]),
+          day = parseInt(values[2]),
+          year = parseInt(values[3]);
 
         let hour = parseInt(values[4]);
-        const minute = parseInt(values[5]);
-        const second = parseInt(values[6]);
+        const minute = parseInt(values[5]),
+          second = parseInt(values[6]);
 
         if (values[7].length > 0) {
           hour += 12;

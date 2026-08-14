@@ -5,18 +5,18 @@ const storageKey = 'Config';
 
 describe('ConfigManager', () => {
   it('should return a reference to the global config data', async () => {
-    const firstRef = new ConfigManager().getConfig();
-    const secondRef = new ConfigManager().getConfig();
+    const firstRef = new ConfigManager().getConfig(),
+      secondRef = new ConfigManager().getConfig();
     firstRef.authentication.user = `TestUser${Date.now()}`;
     await expect(secondRef).toBe(firstRef);
   });
 
   it('should alert subscribers when the config is saved', async () => {
-    const manager = new ConfigManager();
-    const subscriber = {
-      alert: () => {},
-    };
-    const alertSpy = spyOn(subscriber, 'alert');
+    const manager = new ConfigManager(),
+      subscriber = {
+        alert: () => {},
+      },
+      alertSpy = spyOn(subscriber, 'alert');
     manager.subscribe(() => {
       subscriber.alert();
     });
@@ -25,8 +25,8 @@ describe('ConfigManager', () => {
   });
 
   it('should save data to local storage', async () => {
-    const manager = new ConfigManager();
-    const current = localStorage.getItem(storageKey);
+    const manager = new ConfigManager(),
+      current = localStorage.getItem(storageKey);
     try {
       const testData = manager.getConfig();
       testData.authentication.user = `TestUser${Date.now()}`;
@@ -45,8 +45,8 @@ describe('ConfigManager', () => {
   });
 
   it('should load data from local storage', async () => {
-    const manager = new ConfigManager();
-    const current = localStorage.getItem(storageKey);
+    const manager = new ConfigManager(),
+      current = localStorage.getItem(storageKey);
     try {
       const testData = new Config();
       testData.authentication.user = `TestUser${Date.now()}`;

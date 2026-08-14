@@ -1,7 +1,7 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   OnInit,
-  ChangeDetectionStrategy,
   Type,
 } from '@angular/core';
 import { Config } from 'src/app/services/data/config-data';
@@ -84,8 +84,8 @@ export class WidgetContainerComponent implements OnInit {
    * @param index Gets the name of to the icon file for a widget.
    */
   getWidgetIcon(index: number): string {
-    const id = this.config ? this.config.layout[index] : '';
-    const widget = this.widgetMap.get(id);
+    const id = this.config ? this.config.layout[index] : '',
+      widget = this.widgetMap.get(id);
     return widget ? widget.getIcon() : '';
   }
 

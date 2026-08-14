@@ -8,8 +8,8 @@ import { WhisperService } from './whisper.service';
 import * as eventSubConfig from './eventsub.service.json';
 import {
   EventSubMessage,
-  EventSubSubscription,
   EventSubMetadata,
+  EventSubSubscription,
 } from './eventsub.types';
 
 /**
@@ -169,23 +169,23 @@ export class EventSubService {
       return true;
     }
 
-    const token = this.configManager.getConfig().authentication.token;
+    const { token } = this.configManager.getConfig().authentication;
     if (!token) {
       console.log('Token not found!');
       return false;
     }
 
-    const userData = await this.userService.getUserAuth(token);
-    const botData = await this.userService.getUserId(
-      token,
-      config.connectOptions.options.clientId,
-      config.botAccount
-    );
-    const streamerData = await this.userService.getUserId(
-      token,
-      config.connectOptions.options.clientId,
-      config.streamerAccount
-    );
+    const userData = await this.userService.getUserAuth(token),
+      botData = await this.userService.getUserId(
+        token,
+        config.connectOptions.options.clientId,
+        config.botAccount
+      ),
+      streamerData = await this.userService.getUserId(
+        token,
+        config.connectOptions.options.clientId,
+        config.streamerAccount
+      );
 
     this.whisperService.setData(
       userData.user_id,
@@ -316,29 +316,28 @@ export class EventSubService {
     userId: string,
     broadcasterId: string
   ): Promise<void> {
-    const token = this.configManager.getConfig().authentication.token;
+    const { token } = this.configManager.getConfig().authentication;
     if (!token) {
       this.onError('No authentication token available');
       return;
     }
 
     const subscription: EventSubSubscription = {
-      type,
-      version: '1',
-      condition:
-        type === 'channel.chat.message'
-          ? {
-              broadcaster_user_id: broadcasterId,
-              user_id: userId,
-            }
-          : { user_id: userId },
-      transport: {
-        method: 'websocket',
-        session_id: this.sessionId,
+        type,
+        version: '1',
+        condition:
+          type === 'channel.chat.message'
+            ? {
+                broadcaster_user_id: broadcasterId,
+                user_id: userId,
+              }
+            : { user_id: userId },
+        transport: {
+          method: 'websocket',
+          session_id: this.sessionId,
+        },
       },
-    };
-
-    const config = eventSubConfig;
+      config = eventSubConfig;
     await this.http
       .post(config.urls.eventSub, subscription, {
         headers: {

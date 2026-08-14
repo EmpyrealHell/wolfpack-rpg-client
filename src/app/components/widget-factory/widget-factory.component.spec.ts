@@ -1,5 +1,5 @@
 import { ComponentFactory, Directive, ViewContainerRef } from '@angular/core';
-import { waitForAsync, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetFactoryComponent } from './widget-factory.component';
@@ -44,14 +44,14 @@ describe('WidgetContainerComponent', () => {
   }));
 
   it('should create a widget instance', async () => {
-    const fixture = TestBed.createComponent(WidgetFactoryComponent);
-    const component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(WidgetFactoryComponent),
+      component = fixture.componentInstance;
     component.factory = {} as ComponentFactory<WidgetComponent>;
     component.configManager = {} as ConfigManager;
     component.eventSubService = {} as EventSubService;
     component.name = 'componentName';
-    const internalComponent = spyContainer.createComponent(null).instance;
-    const internalSpy = spyOn(internalComponent, 'onActivate');
+    const internalComponent = spyContainer.createComponent(null).instance,
+      internalSpy = spyOn(internalComponent, 'onActivate');
 
     component.ngOnInit();
     await expect(spyContainer.clear).toHaveBeenCalled();

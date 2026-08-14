@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { CommandService } from 'src/app/services/command/command-service';
 import { MatTableDataSource } from '@angular/material/table';
@@ -59,11 +59,11 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
   ): void {
     if (id === 'compact') {
       for (const sub of subGroups) {
-        const fish = sub.get('fish') ?? 'unknown';
-        const length = Number(sub.get('length') ?? 0);
-        const weight = Number(sub.get('weight') ?? 0);
-        const user = sub.get('user') ?? 'unknown';
-        const records = this.leaderboard.filter(x => x.fish === fish);
+        const fish = sub.get('fish') ?? 'unknown',
+          length = Number(sub.get('length') ?? 0),
+          weight = Number(sub.get('weight') ?? 0),
+          user = sub.get('user') ?? 'unknown',
+          records = this.leaderboard.filter(x => x.fish === fish);
         if (records && records.length > 0) {
           records[0].user = user;
           records[0].length = length;
@@ -85,10 +85,10 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
   ): void {
     if (id === 'compact') {
       for (const sub of subGroups) {
-        const fish = sub.get('fish') ?? 'unknown';
-        const length = Number(sub.get('length') ?? 0);
-        const weight = Number(sub.get('weight') ?? 0);
-        const records = this.personalHistory.filter(x => x.fish === fish);
+        const fish = sub.get('fish') ?? 'unknown',
+          length = Number(sub.get('length') ?? 0),
+          weight = Number(sub.get('weight') ?? 0),
+          records = this.personalHistory.filter(x => x.fish === fish);
         if (records && records.length > 0) {
           records[0].length = length;
           records[0].weight = weight;
@@ -143,10 +143,10 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     } else if (id === 'confirmation') {
       this.lineStatus = LineStatus.Idle;
       this.hookMessage = undefined;
-      const fish = groups.get('fish') ?? 'mystery fish';
-      const length = Number(groups.get('length') ?? 0);
-      const weight = Number(groups.get('weight') ?? 0);
-      const catchData = new CatchData(fish, this.username, length, weight, 0);
+      const fish = groups.get('fish') ?? 'mystery fish',
+        length = Number(groups.get('length') ?? 0),
+        weight = Number(groups.get('weight') ?? 0),
+        catchData = new CatchData(fish, this.username, length, weight, 0);
       this.addSessionData(catchData);
     } else if (id === 'tournament') {
       if (!this.tournament) {
@@ -155,10 +155,10 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       }
       this.lineStatus = LineStatus.Idle;
       this.hookMessage = undefined;
-      const length = Number(groups.get('length') ?? 0);
-      const weight = Number(groups.get('weight') ?? 0);
-      const fish = groups.get('fish') ?? 'mystery fish';
-      const points = Number(groups.get('points') ?? 0);
+      const length = Number(groups.get('length') ?? 0),
+        weight = Number(groups.get('weight') ?? 0),
+        fish = groups.get('fish') ?? 'mystery fish',
+        points = Number(groups.get('points') ?? 0);
       this.tournament.rank = Number(groups.get('rank') ?? 0);
       this.tournament.userPoints = Number(groups.get('total') ?? 0);
       const catchData = new CatchData(
@@ -176,8 +176,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       }
       this.lineStatus = LineStatus.Idle;
       this.hookMessage = undefined;
-      const fish = groups.get('fish') ?? 'mystery fish';
-      const points = Number(groups.get('points') ?? 0);
+      const fish = groups.get('fish') ?? 'mystery fish',
+        points = Number(groups.get('points') ?? 0);
       this.tournament.rank = Number(groups.get('rank') ?? 0);
       this.tournament.userPoints = Number(groups.get('total') ?? 0);
       const catchData = new CatchData(fish, this.username, 0, 0, points);
@@ -223,22 +223,22 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     isReplay?: boolean
   ): void {
     if (id === 'timeLeft') {
-      const time = (groups.get('time') ?? '00:00:00').split(':');
-      const toAdd =
-        parseInt(time[0]) * 60 * 60 * 1000 +
-        parseInt(time[1]) * 60 * 1000 +
-        parseInt(time[2]) * 1000;
+      const time = (groups.get('time') ?? '00:00:00').split(':'),
+        toAdd =
+          parseInt(time[0]) * 60 * 60 * 1000 +
+          parseInt(time[1]) * 60 * 1000 +
+          parseInt(time[2]) * 1000;
       if (!this.tournament) {
         this.tournament = new Tournament();
       }
       this.tournament.endTime = new Date(date + toAdd);
       this.nextTournament = undefined;
     } else if (id === 'toNext') {
-      const time = (groups.get('time') ?? '00:00:00').split(':');
-      const toAdd =
-        parseInt(time[0]) * 60 * 60 * 1000 +
-        parseInt(time[1]) * 60 * 1000 +
-        parseInt(time[2]) * 1000;
+      const time = (groups.get('time') ?? '00:00:00').split(':'),
+        toAdd =
+          parseInt(time[0]) * 60 * 60 * 1000 +
+          parseInt(time[1]) * 60 * 1000 +
+          parseInt(time[2]) * 1000;
       if (!this.tournament) {
         this.tournament = new Tournament();
         if (!isReplay) {
@@ -492,9 +492,9 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     if (!target) {
       return 'unknown';
     }
-    const hoursInMillis = 60 * 60 * 1000;
-    const minutesInMillis = 60 * 1000;
-    const secondsInMillis = 1000;
+    const hoursInMillis = 60 * 60 * 1000,
+      minutesInMillis = 60 * 1000,
+      secondsInMillis = 1000;
     let toTarget = target.getTime() - Date.now();
     const hours = Math.floor(toTarget / hoursInMillis);
     if (hours > 0) {
@@ -508,8 +508,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       return `${minutes} minute${suffix}`;
     }
     toTarget -= minutes * minutesInMillis;
-    const seconds = Math.floor(toTarget / secondsInMillis);
-    const suffix = seconds === 1 ? '' : 's';
+    const seconds = Math.floor(toTarget / secondsInMillis),
+      suffix = seconds === 1 ? '' : 's';
     return `${seconds} second${suffix}`;
   }
 
@@ -537,10 +537,10 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
   }
 
   getTournamentHeight(): number {
-    const base = 112;
-    const headerHeight = 46;
-    const rowHeight = 31;
-    const margin = 16;
+    const base = 112,
+      headerHeight = 46,
+      margin = 16,
+      rowHeight = 31;
     let amount = base + margin;
     if (this.tournament && !this.isTournamentOver()) {
       amount += headerHeight;

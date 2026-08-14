@@ -1,11 +1,11 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   Injector,
   Input,
   OnInit,
-  ViewChild,
-  ChangeDetectionStrategy,
   Type,
+  ViewChild,
 } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';

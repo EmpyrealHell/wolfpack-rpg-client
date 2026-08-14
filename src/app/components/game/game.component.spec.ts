@@ -42,21 +42,21 @@ export class ClassList {
   }
 }
 
-const eventSubServiceSpy = TestUtils.spyOnClass(EventSubService);
-const configManagerSpy = TestUtils.spyOnClass(ConfigManager);
-const userServiceSpy = TestUtils.spyOnClass(UserService);
+const eventSubServiceSpy = TestUtils.spyOnClass(EventSubService),
+  configManagerSpy = TestUtils.spyOnClass(ConfigManager),
+  userServiceSpy = TestUtils.spyOnClass(UserService);
 userServiceSpy.getUserAuth.and.returnValue({
   login: 'userService',
 } as AuthData);
-const clientDataServiceSpy = TestUtils.spyOnClass(ClientDataService);
-const overlayContainerSpy = jasmine.createSpyObj('OverlayContainer', [
-  'getContainerElement',
-]);
+const clientDataServiceSpy = TestUtils.spyOnClass(ClientDataService),
+  overlayContainerSpy = jasmine.createSpyObj('OverlayContainer', [
+    'getContainerElement',
+  ]);
 overlayContainerSpy.getContainerElement.and.returnValue({
   classList: new ClassList(),
 });
-const dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
-const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+const dialogSpy = jasmine.createSpyObj('MatDialog', ['open']),
+  routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
 describe('GameComponent', () => {
   beforeEach(async () => {
@@ -112,8 +112,8 @@ describe('GameComponent', () => {
   });
 
   it('should redirect if not authenticated', async () => {
-    const fixture = TestBed.createComponent(GameComponent);
-    const tokenlessSpy = TestUtils.spyOnClass(ConfigManager);
+    const fixture = TestBed.createComponent(GameComponent),
+      tokenlessSpy = TestUtils.spyOnClass(ConfigManager);
     tokenlessSpy.getConfig.and.returnValue({
       authentication: {
         user: 'testuser',
@@ -127,10 +127,10 @@ describe('GameComponent', () => {
   });
 
   it('should redirect if token cannot be validated', async () => {
-    const fixture = TestBed.createComponent(GameComponent);
-    const invalidTokenSpy = TestUtils.spyOnClass(
-      UserService
-    ) as jasmine.SpyObj<UserService>;
+    const fixture = TestBed.createComponent(GameComponent),
+      invalidTokenSpy = TestUtils.spyOnClass(
+        UserService
+      ) as jasmine.SpyObj<UserService>;
     invalidTokenSpy.getUserAuth.and.returnValue(
       new Promise(resolve => {
         resolve({
@@ -154,8 +154,8 @@ describe('GameComponent', () => {
     const fixture = TestBed.createComponent(GameComponent);
 
     await fixture.componentInstance.ngOnInit();
-    const user = fixture.componentInstance.config.authentication.user;
-    const target = (await userServiceSpy.getUserAuth(null)).login;
+    const { user } = fixture.componentInstance.config.authentication,
+      target = (await userServiceSpy.getUserAuth(null)).login;
     await expect(user).toBe(target);
     await expect(configManagerSpy.save).toHaveBeenCalled();
     await expect(eventSubServiceSpy.registerForError).toHaveBeenCalled();
@@ -172,19 +172,19 @@ describe('GameComponent', () => {
   });
 
   it('should present a modal on EventSub error', async () => {
-    const fixture = TestBed.createComponent(GameComponent);
-    const errorMessage = `modal test message ${Date.now()}`;
+    const fixture = TestBed.createComponent(GameComponent),
+      errorMessage = `modal test message ${Date.now()}`;
 
     fixture.componentInstance.onError(new Message(errorMessage, false, true));
     await expect(dialogSpy.open).toHaveBeenCalled();
-    const args = dialogSpy.open.calls.mostRecent().args;
+    const { args } = dialogSpy.open.calls.mostRecent();
     await expect(args[0]).toBe(ErrorDialog);
     await expect(args[1].data.message).toContain(errorMessage);
   });
 
   it('should save settings and update the interface', async () => {
-    const fixture = TestBed.createComponent(GameComponent);
-    const overlaySpy = spyOn(fixture.componentInstance, 'updateOverlayTheme');
+    const fixture = TestBed.createComponent(GameComponent),
+      overlaySpy = spyOn(fixture.componentInstance, 'updateOverlayTheme');
 
     fixture.componentInstance.updateSettings();
     await expect(configManagerSpy.save).toHaveBeenCalled();
@@ -192,8 +192,8 @@ describe('GameComponent', () => {
   });
 
   it('should add a widget to the layout', async () => {
-    const fixture = TestBed.createComponent(GameComponent);
-    const toAdd = new WidgetItem(null, 'toAdd', 'toAdd', 'to-add');
+    const fixture = TestBed.createComponent(GameComponent),
+      toAdd = new WidgetItem(null, 'toAdd', 'toAdd', 'to-add');
 
     fixture.componentInstance.toggleWidget(toAdd);
     await expect(fixture.componentInstance.config.layout).toContain(toAdd.id);
@@ -201,8 +201,8 @@ describe('GameComponent', () => {
   });
 
   it('should remove a widget to the layout', async () => {
-    const fixture = TestBed.createComponent(GameComponent);
-    const toRemove = new WidgetItem(null, 'toRemove', 'toRemove', 'to-remove');
+    const fixture = TestBed.createComponent(GameComponent),
+      toRemove = new WidgetItem(null, 'toRemove', 'toRemove', 'to-remove');
 
     fixture.componentInstance.config.layout.push(toRemove.id);
     fixture.componentInstance.toggleWidget(toRemove);

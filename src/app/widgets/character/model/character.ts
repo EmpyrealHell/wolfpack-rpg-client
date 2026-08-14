@@ -34,7 +34,7 @@ export class Character {
   inventory: Item[] = [];
 
   public minForLevel(level: number): number {
-    return 4 * Math.pow(level, 3) + 50;
+    return 4 * level ** 3 + 50;
   }
 
   public levelFromXp(xp: number): number {
@@ -60,8 +60,8 @@ export class Character {
    * @returns The player's progress through the current level as a number from 0 to 1.
    */
   public xpProgress(): number {
-    const total = this.xpNeeded();
-    const amount = this.xpAmount();
+    const total = this.xpNeeded(),
+      amount = this.xpAmount();
     return amount / total;
   }
 }

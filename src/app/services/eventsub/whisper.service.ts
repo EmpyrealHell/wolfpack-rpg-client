@@ -43,7 +43,7 @@ export class WhisperService {
       const response = await this.http
         .post<string>(
           `${WhisperService.whisperUrl}?from_user_id=${this.userId}&to_user_id=${this.botId}`,
-          { message: message },
+          { message },
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
