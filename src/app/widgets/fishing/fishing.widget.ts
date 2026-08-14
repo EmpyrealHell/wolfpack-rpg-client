@@ -430,12 +430,18 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     return undefined;
   }
 
-  getPersonal(fish: string): CatchData | undefined {
+  getPersonal(fish?: string): CatchData {
     const current = this.personalHistory.filter(value => value.fish === fish);
     if (current && current.length > 0) {
       return current[0];
     }
-    return undefined;
+    return {
+      fish: fish ?? 'unknown',
+      user: this.username,
+      length: 0,
+      weight: 0,
+      points: 0,
+    };
   }
 
   getCastIcon(): string {

@@ -1,6 +1,6 @@
 {
   "name": "wolfpack-rpg-client",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "license": "GPL-3.0-or-later",
   "scripts": {
     "ng": "ng",
@@ -21,12 +21,12 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^22.1.2",
-    "@angular/cdk": "^21.2.14",
+    "@angular/cdk": "^22.1.2",
     "@angular/common": "^22.1.2",
     "@angular/compiler": "^22.1.2",
     "@angular/core": "^22.1.2",
     "@angular/forms": "^22.1.2",
-    "@angular/material": "^21.2.14",
+    "@angular/material": "^22.1.2",
     "@angular/platform-browser": "^22.1.2",
     "@angular/platform-browser-dynamic": "^22.1.2",
     "@angular/router": "^22.1.2",

@@ -1,11 +1,11 @@
 import {
   Component,
-  ComponentFactory,
   Injector,
   Input,
   OnInit,
   ViewChild,
   ChangeDetectionStrategy,
+  Type,
 } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
@@ -29,7 +29,7 @@ export class WidgetFactoryComponent implements OnInit {
    * Component factory used to create the internal widget component.
    */
   @Input()
-  factory: ComponentFactory<WidgetComponent> | undefined;
+  factory: Type<WidgetComponent> | undefined;
 
   /***
    * Reference to the audio player service

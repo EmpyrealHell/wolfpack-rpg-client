@@ -1,9 +1,8 @@
 import {
   Component,
-  ComponentFactory,
-  ComponentFactoryResolver,
   OnInit,
   ChangeDetectionStrategy,
+  Type,
 } from '@angular/core';
 import { Config } from 'src/app/services/data/config-data';
 import { ConfigManager } from 'src/app/services/data/config-manager';
@@ -50,7 +49,7 @@ export class WidgetContainerComponent implements OnInit {
   /**
    * List of factories used to create and attach the widgets.
    */
-  factories = new Array<ComponentFactory<WidgetComponent>>();
+  factories = new Array<Type<WidgetComponent>>();
 
   constructor(
     private widgetService: WidgetService,
@@ -58,8 +57,7 @@ export class WidgetContainerComponent implements OnInit {
     public clientDataService: ClientDataService,
     public configManager: ConfigManager,
     public eventSubService: EventSubService,
-    public commandService: CommandService,
-    private componentFactoryResolver: ComponentFactoryResolver
+    public commandService: CommandService
   ) {}
 
   ngOnInit(): void {
@@ -129,17 +127,10 @@ export class WidgetContainerComponent implements OnInit {
     return '';
   }
 
-  private loadWidget(id: string): ComponentFactory<WidgetComponent> | null {
+  private loadWidget(id: string): Type<WidgetComponent> | null {
     const widget = this.widgetMap.get(id);
     if (widget) {
-      const widgetComponent = widget.component;
-      if (widgetComponent) {
-        const factory =
-          this.componentFactoryResolver.resolveComponentFactory(
-            widgetComponent
-          );
-        return factory;
-      }
+      return widget.component;
     }
     return null;
   }
