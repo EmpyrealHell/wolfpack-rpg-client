@@ -1,4 +1,3 @@
-import { TestUtils } from 'src/test/test-utils';
 import { CommandLoader } from './command-loader';
 
 describe('CommandLoader', () => {

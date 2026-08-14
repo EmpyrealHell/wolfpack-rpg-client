@@ -11,6 +11,4 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
-export class AppComponent {
-  constructor() {}
-}
+export class AppComponent {}

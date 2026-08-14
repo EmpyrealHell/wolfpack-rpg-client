@@ -28,7 +28,7 @@ export type CommandCallback = (
   name: string,
   id: string,
   groups: Map<string, string>,
-  subGroups: Array<Map<string, string>>,
+  subGroups: Map<string, string>[],
   date: number,
   isReplay?: boolean
 ) => void;
@@ -208,7 +208,7 @@ export class CommandService {
    * @param message The message the client received.
    */
   onIncomingWhisper(message: Message): void {
-    for (const [subscriber, callbacks] of this.callbacks) {
+    for (const [_subscriber, callbacks] of this.callbacks) {
       for (const [key, callback] of callbacks) {
         let history = this.matches.get(key);
         if (!history) {
@@ -250,7 +250,7 @@ export class CommandService {
   >(
     group: G,
     command: C,
-    responses: R,
+    _responses: R,
     result: S,
     subscriber: string,
     callback: CommandCallback
@@ -301,7 +301,7 @@ export class CommandService {
       return;
     }
     const matches = new Array<KeyMatchedResponse>();
-    for (const [key, callback] of callbacks) {
+    for (const [key, _callback] of callbacks) {
       const history = this.updateHistory(key);
       if (!history) {
         continue;

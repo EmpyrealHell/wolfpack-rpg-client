@@ -172,7 +172,7 @@ export class ConsoleWidgetComponent implements WidgetComponent {
    * Click event for the send button.
    * @param event Mouse event passed in by the browser.
    */
-  onSendClick(event: MouseEvent): void {
+  onSendClick(_event: MouseEvent): void {
     this.sendCommand();
   }
 }

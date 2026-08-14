@@ -6,7 +6,6 @@ import { FishingWidgetComponent } from 'src/app/widgets/fishing/fishing.widget';
 import { PetWidgetComponent } from 'src/app/widgets/pet/pet.widget';
 import { InfoWidgetComponent } from 'src/app/widgets/info/info.widget';
 import { InventoryWidgetComponent } from 'src/app/widgets/inventory/inventory.widget';
-import { GroupWidgetComponent } from 'src/app/widgets/group/group.widget';
 
 /**
  * Service containing the list of all available widgets.
@@ -36,8 +35,6 @@ export class WidgetService {
     new WidgetItem(InfoWidgetComponent, 'Info', 'info', 'info'),
     new WidgetItem(ConsoleWidgetComponent, 'Console', 'console', 'console')
   );
-
-  constructor() {}
 
   /**
    * Returns a collection of all available widgets.

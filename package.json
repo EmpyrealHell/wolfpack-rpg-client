@@ -14,7 +14,7 @@
     "clean": "gts clean",
     "compile": "tsc -p .",
     "fix": "gts fix",
-    ".prepare": "npm.cmd run compile",
+    "prepare": "npm.cmd run compile",
     "pretest": "npm.cmd run compile",
     "posttest": "npm.cmd run lint"
   },
@@ -41,12 +41,13 @@
     "@angular/cli": "^22.1.4",
     "@angular/compiler-cli": "^22.1.2",
     "@angular/language-service": "^22.1.2",
+    "@eslint/js": "^10.0.1",
     "@types/jasmine": "^5.1.5",
     "@types/jasminewd2": "^2.0.13",
     "@types/node": "^26.2.0",
     "@types/tmi.js": "^1.8.6",
-    "eslint": "^10.8.1",
-    "gts": "^7.0.0",
+    "angular-eslint": "22.1.0",
+    "eslint": "^10.6.0",
     "istanbul-lib-instrument": "^6.0.3",
     "jasmine-core": "^5.5.0",
     "jasmine-spec-reporter": "^7.0.0",
@@ -56,7 +57,8 @@
     "karma-jasmine": "^5.1.0",
     "karma-jasmine-html-reporter": "^2.1.0",
     "ts-node": "^10.9.2",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "8.62.1"
   },
   "overrides": {
     "inquirer": "^14.0.2",

@@ -21,17 +21,17 @@ import { WidgetService } from 'src/app/services/widget/widget.service';
 
 export class FirstWidget extends AbstractWidgetComponent {
   protected subscribeToResponses(
-    id: string,
-    commandService: CommandService
+    _id: string,
+    _commandService: CommandService
   ): void {}
-  protected sendInitialCommands(commandService: CommandService): void {}
+  protected sendInitialCommands(_commandService: CommandService): void {}
 }
 export class SecondWidget extends AbstractWidgetComponent {
   protected subscribeToResponses(
-    id: string,
-    commandService: CommandService
+    _id: string,
+    _commandService: CommandService
   ): void {}
-  protected sendInitialCommands(commandService: CommandService): void {}
+  protected sendInitialCommands(_commandService: CommandService): void {}
 }
 
 const firstWidgetItem = new WidgetItem(FirstWidget, 'First', 'First', 'first'),
@@ -128,8 +128,8 @@ describe('WidgetContainerComponent', () => {
     fixture.componentInstance.resetLayout();
     const { factories } = fixture.componentInstance;
     await expect(factories.length).toBe(2);
-    await expect(factories[0].componentType).toBe(FirstWidget);
-    await expect(factories[1].componentType).toBe(SecondWidget);
+    await expect(factories[0]).toBe(FirstWidget);
+    await expect(factories[1]).toBe(SecondWidget);
     await expect(fixture.componentInstance.gridlayout).toBe('"a0 a1"');
   });
 });

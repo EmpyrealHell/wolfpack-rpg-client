@@ -32,7 +32,8 @@ export class ShopCommands extends CommandWrapper {
    * @param id The id of the fish type to gloat about.
    */
   gloatFish(id: string): void {
-    const command = this.getCommandString('shop', 'gloat', 'command');
+    const raw = this.getCommandString('shop', 'gloat', 'command');
+    const command = this.replaceProperty(raw, 'id', id);
     this.eventSubService.send(command);
   }
 

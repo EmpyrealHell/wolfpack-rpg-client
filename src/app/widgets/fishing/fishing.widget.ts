@@ -51,11 +51,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
   }
 
   private handleLeaderboard(
-    name: string,
     id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
+    subGroups: Map<string, string>[]
   ): void {
     if (id === 'compact') {
       for (const sub of subGroups) {
@@ -76,13 +73,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleDetail(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleDetail(id: string, subGroups: Map<string, string>[]): void {
     if (id === 'compact') {
       for (const sub of subGroups) {
         const fish = sub.get('fish') ?? 'unknown',
@@ -102,26 +93,14 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleCast(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleCast(id: string): void {
     if (id === 'confirmation') {
       this.lineStatus = LineStatus.InWater;
       this.hookMessage = undefined;
     }
   }
 
-  private handleCastError(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleCastError(id: string): void {
     if (id === 'alreadyCast') {
       this.lineStatus = LineStatus.InWater;
       this.hookMessage = undefined;
@@ -131,13 +110,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleCatch(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleCatch(id: string, groups: Map<string, string>): void {
     if (id === 'newRecord') {
       this.newPersonalBest = true;
     } else if (id === 'confirmation') {
@@ -185,13 +158,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleHooked(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleHooked(groups: Map<string, string>): void {
     this.lineStatus = LineStatus.FishHooked;
     this.hookMessage =
       groups.get('message') ?? FishingWidgetComponent.defaultHookMessage;
@@ -200,13 +167,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleGotAway(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleGotAway(): void {
     this.lineStatus = LineStatus.Idle;
     this.hookMessage = 'The fish got away';
     setTimeout(() => {
@@ -215,10 +176,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
   }
 
   private handleNext(
-    name: string,
     id: string,
     groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
     date: number,
     isReplay?: boolean
   ): void {
@@ -250,13 +209,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleResults(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleResults(groups: Map<string, string>): void {
     if (!this.tournament) {
       this.tournament = new Tournament();
     }
@@ -268,26 +221,14 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     this.tournament.userPoints = Number(groups.get('userPoints') ?? 0);
   }
 
-  private handleTournamentStart(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleTournamentStart(groups: Map<string, string>): void {
     this.tournament = new Tournament();
     const duration = Number(groups.get('duration') ?? 0);
     this.tournament.endTime = new Date(Date.now() + duration * 60 * 1000);
     this.audioPlayerService?.play('effect-tournament-start');
   }
 
-  private handleTournamentEnd(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleTournamentEnd(id: string, groups: Map<string, string>): void {
     if (!this.tournament) {
       this.tournament = new Tournament();
       this.tournament.endTime = new Date(Date.now());
@@ -311,8 +252,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleLeaderboard(name, id, groups, subGroups, date)
+      (_name, id, _groups, subGroups, _date) =>
+        this.handleLeaderboard(id, subGroups)
     );
 
     commandService.subscribeToCommand(
@@ -321,8 +262,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleDetail(name, id, groups, subGroups, date)
+      (_name, id, _groups, subGroups, _date) => this.handleDetail(id, subGroups)
     );
 
     commandService.subscribeToCommand(
@@ -331,8 +271,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleCast(name, id, groups, subGroups, date)
+      (_name, id, _groups, _subGroups, _date) => this.handleCast(id)
     );
 
     commandService.subscribeToCommand(
@@ -341,8 +280,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'error',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleCastError(name, id, groups, subGroups, date)
+      (_name, id, _groups, _subGroups, _date) => this.handleCastError(id)
     );
 
     commandService.subscribeToCommand(
@@ -351,8 +289,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleCatch(name, id, groups, subGroups, date)
+      (_name, id, groups, _subGroups, _date) => this.handleCatch(id, groups)
     );
 
     commandService.subscribeToCommand(
@@ -361,8 +298,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date, isReplay) =>
-        this.handleNext(name, id, groups, subGroups, date, isReplay)
+      (_name, id, groups, _subGroups, date, isReplay) =>
+        this.handleNext(id, groups, date, isReplay)
     );
 
     commandService.subscribeToCommand(
@@ -371,48 +308,45 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleResults(name, id, groups, subGroups, date)
+      (_name, _id, groups, _subGroups, _date) => this.handleResults(groups)
     );
 
     commandService.subscribeToMessage(
       'fishing',
       'fishHooked',
       'fishingWidget',
-      (name, id, groups, subGroups, date) =>
-        this.handleHooked(name, id, groups, subGroups, date)
+      (_name, _id, groups, _subGroups, _date) => this.handleHooked(groups)
     );
 
     commandService.subscribeToMessage(
       'fishing',
       'gotAway',
       'fishingWidget',
-      (name, id, groups, subGroups, date) =>
-        this.handleGotAway(name, id, groups, subGroups, date)
+      (_name, _id, _groups, _subGroups, _date) => this.handleGotAway()
     );
 
     commandService.subscribeToMessage(
       'fishing',
       'tournamentStart',
       'fishingWidget',
-      (name, id, groups, subGroups, date) =>
-        this.handleTournamentStart(name, id, groups, subGroups, date)
+      (_name, _id, groups, _subGroups, _date) =>
+        this.handleTournamentStart(groups)
     );
 
     commandService.subscribeToMessage(
       'fishing',
       'tournamentEnd',
       'fishingWidget',
-      (name, id, groups, subGroups, date) =>
-        this.handleTournamentEnd(name, id, groups, subGroups, date)
+      (_name, id, groups, _subGroups, _date) =>
+        this.handleTournamentEnd(id, groups)
     );
 
     commandService.subscribeToMessage(
       'fishing',
       'tournamentEndEmpty',
       'fishingWidget',
-      (name, id, groups, subGroups, date) =>
-        this.handleTournamentEnd(name, id, groups, subGroups, date)
+      (_name, id, groups, _subGroups, _date) =>
+        this.handleTournamentEnd(id, groups)
     );
   }
 

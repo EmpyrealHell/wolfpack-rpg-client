@@ -33,7 +33,7 @@ describe('MessageQueue', async () => {
   it('should not allow more than 3 messages each second', async () => {
     const message = `test message sent at ${Date.now()}`,
       sendFn = {
-        send: (message: string): Promise<void> =>
+        send: (_message: string): Promise<void> =>
           new Promise(resolve => {
             resolve(undefined);
           }),
@@ -52,7 +52,7 @@ describe('MessageQueue', async () => {
   it('should send a fourth message after 1 second', async () => {
     const message = `test message sent at ${Date.now()}`,
       sendFn = {
-        send: (message: string): Promise<void> =>
+        send: (_message: string): Promise<void> =>
           new Promise(resolve => {
             resolve(undefined);
           }),
@@ -71,7 +71,7 @@ describe('MessageQueue', async () => {
   it('should not send more than 100 messages each minute', async () => {
     const message = `test message sent at ${Date.now()}`,
       sendFn = {
-        send: (message: string): Promise<void> =>
+        send: (_message: string): Promise<void> =>
           new Promise(resolve => {
             resolve(undefined);
           }),
@@ -90,7 +90,7 @@ describe('MessageQueue', async () => {
   it('should send a 101st message after 1 minute', async () => {
     const message = `test message sent at ${Date.now()}`,
       sendFn = {
-        send: (message: string): Promise<void> =>
+        send: (_message: string): Promise<void> =>
           new Promise(resolve => {
             resolve(undefined);
           }),
@@ -109,7 +109,7 @@ describe('MessageQueue', async () => {
   it('should call registered callbacks when message is sent', async () => {
     const message = `test message sent at ${Date.now()}`,
       sendFn = {
-        send: (message: string): Promise<void> =>
+        send: (_message: string): Promise<void> =>
           new Promise(resolve => {
             resolve(undefined);
           }),
@@ -117,7 +117,7 @@ describe('MessageQueue', async () => {
       queue = new MessageQueue('spec-test', 100);
     queue.setSendFunction(sendFn.send);
     const callbackFn = {
-        callback: (message: string): void => {},
+        callback: (_message: string): void => {},
       },
       spy = spyOn(callbackFn, 'callback');
     queue.registerSendCallback('spec-test', callbackFn.callback);

@@ -41,10 +41,7 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
     return undefined;
   }
 
-  private handleInventory(
-    id: string,
-    subGroups: Array<Map<string, string>>
-  ): void {
+  private handleInventory(id: string, subGroups: Map<string, string>[]): void {
     if (id === 'compact') {
       for (const sub of subGroups) {
         const newItem = new Item();
@@ -114,7 +111,7 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, _groups, subGroups, _date) => {
         this.handleInventory(id, subGroups);
       }
     );
@@ -124,7 +121,7 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         this.handleEquip(id, groups);
       }
     );
@@ -134,7 +131,7 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         this.handleUnequip(id, groups);
       }
     );
@@ -142,7 +139,7 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
       'dungeon',
       'completeLoot',
       id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, _id, _groups, _subGroups, date, _isReplay) => {
         this.handleLoot(date);
       }
     );

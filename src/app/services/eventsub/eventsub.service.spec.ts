@@ -167,7 +167,7 @@ describe('EventSubService', () => {
   });
 
   it('should register an error handler for an id', async () => {
-    const errorHandler = (message: Message) => {},
+    const errorHandler = (_message: Message) => {},
       handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     const { errorHandlers } = service;
@@ -175,7 +175,7 @@ describe('EventSubService', () => {
   });
 
   it('should remove an error handler for an id', async () => {
-    const errorHandler = (message: Message) => {},
+    const errorHandler = (_message: Message) => {},
       handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     await expect(service.errorHandlers.get(handlerKey)).toBe(errorHandler);
@@ -185,7 +185,7 @@ describe('EventSubService', () => {
 
   it('should call registered error handlers on error', async () => {
     const consoleSpy = spyOn(console, 'error'), // Supress expected error message in terminal
-      errorHandlerObj = { onError: (message: Message) => {} },
+      errorHandlerObj = { onError: (_message: Message) => {} },
       errorSpy = spyOn(errorHandlerObj, 'onError'),
       handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandlerObj.onError);
@@ -210,8 +210,8 @@ describe('EventSubService', () => {
   });
 
   it('should not overwrite error handlers with the same key by default', async () => {
-    const errorHandler = (message: Message) => {},
-      errorHandler2 = (message: Message) => {},
+    const errorHandler = (_message: Message) => {},
+      errorHandler2 = (_message: Message) => {},
       handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     service.registerForError(handlerKey, errorHandler2);
@@ -221,8 +221,8 @@ describe('EventSubService', () => {
   });
 
   it('should overwrite error handlers with the same key when forced', async () => {
-    const errorHandler = (message: Message) => {},
-      errorHandler2 = (message: Message) => {},
+    const errorHandler = (_message: Message) => {},
+      errorHandler2 = (_message: Message) => {},
       handlerKey = `test-${Date.now()}`;
     service.registerForError(handlerKey, errorHandler);
     service.registerForError(handlerKey, errorHandler2, true);
@@ -232,14 +232,14 @@ describe('EventSubService', () => {
   });
 
   it('should register a whisper handler for an id', async () => {
-    const callback = (message: Message) => {},
+    const callback = (_message: Message) => {},
       handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     await expect(service.callbacks.get(handlerKey)).toBe(callback);
   });
 
   it('should remove a whisper handler for an id', async () => {
-    const callback = (message: Message) => {},
+    const callback = (_message: Message) => {},
       handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     await expect(service.callbacks.get(handlerKey)).toBe(callback);
@@ -248,7 +248,7 @@ describe('EventSubService', () => {
   });
 
   it('should call registered callbacks on whisper', async () => {
-    const callbackObj = { onWhisper: (message: Message) => {} },
+    const callbackObj = { onWhisper: (_message: Message) => {} },
       callbackSpy = spyOn(callbackObj, 'onWhisper'),
       handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callbackObj.onWhisper);
@@ -277,8 +277,8 @@ describe('EventSubService', () => {
   });
 
   it('should not overwrite whisper handlers with the same key by default', async () => {
-    const callback = (message: Message) => {},
-      callback2 = (message: Message) => {},
+    const callback = (_message: Message) => {},
+      callback2 = (_message: Message) => {},
       handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2);
@@ -287,8 +287,8 @@ describe('EventSubService', () => {
   });
 
   it('should overwrite whisper handlers with the same key when forced', async () => {
-    const callback = (message: Message) => {},
-      callback2 = (message: Message) => {},
+    const callback = (_message: Message) => {},
+      callback2 = (_message: Message) => {},
       handlerKey = `test-${Date.now()}`;
     service.register(handlerKey, callback);
     service.register(handlerKey, callback2, true);
@@ -326,7 +326,7 @@ describe('EventSubService', () => {
   it('should send queued messages', async () => {
     const message = `test message sent at ${Date.now()}`,
       sendFn = {
-        send: async (message: string) =>
+        send: async (_message: string) =>
           new Promise<void>(resolve => {
             resolve(undefined);
           }),
@@ -386,7 +386,7 @@ describe('EventSubService', () => {
 
   it('should handle sends from the message queue', async () => {
     const wsInstance = new WebSocket('');
-    let messageCallback: Function = () => {};
+    let messageCallback = (event: MessageEvent) => {};
     spyOnProperty(wsInstance, 'onmessage', 'set').and.callFake(
       (callback: ((this: WebSocket, ev: MessageEvent) => unknown) | null) => {
         if (callback) {
@@ -408,7 +408,7 @@ describe('EventSubService', () => {
       whispers.push(message);
     });
     service.messageQueue.setSendFunction(
-      (message: string) =>
+      (_message: string) =>
         new Promise<void>(resolve => {
           resolve(undefined);
         })

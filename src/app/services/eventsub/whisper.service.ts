@@ -16,7 +16,7 @@ export class WhisperService {
   private clientId = '';
 
   private restricted = false;
-  private onError: SendCallback = (message: string) => {};
+  private onError: SendCallback = (_message: string) => {};
 
   constructor(private http: HttpClient) {}
 

@@ -67,7 +67,7 @@ export class EventSubService {
 
   private broadcastMessage(message: Message): void {
     this.lines.push(message);
-    for (const [key, value] of this.callbacks) {
+    for (const [_key, value] of this.callbacks) {
       value.call(value, message);
     }
   }
@@ -82,12 +82,12 @@ export class EventSubService {
 
   private onError(message: string): void {
     const messageObj = new Message(message, false);
-    for (const [key, value] of this.errorHandlers) {
+    for (const [_key, value] of this.errorHandlers) {
       value.call(value, messageObj);
     }
   }
 
-  private async reconnect(reason: string): Promise<void> {
+  private async reconnect(_reason: string): Promise<void> {
     this.isConnected = false;
     await this.connect();
   }
@@ -294,7 +294,7 @@ export class EventSubService {
           }
         };
 
-        this.connection.onclose = async event => {
+        this.connection.onclose = async () => {
           this.isConnected = false;
           await this.reconnect('WebSocket Closed');
         };

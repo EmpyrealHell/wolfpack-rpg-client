@@ -10,8 +10,6 @@ import { ConfigManager } from '../data/config-manager';
 export class AudioPlayerService {
   constructor(private configManager: ConfigManager) {}
 
-  initialize(): void {}
-
   play(name: string): void {
     const config = this.configManager?.getConfig();
     if (config && config.settings.playSounds) {

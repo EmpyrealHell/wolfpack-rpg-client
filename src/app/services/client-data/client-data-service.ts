@@ -7,7 +7,6 @@ import {
   ItemType,
 } from 'src/app/widgets/inventory/model/item';
 import { CharacterClass } from 'src/app/widgets/character/model/character';
-import { DungeonMode } from 'src/app/widgets/group/model/dungeon';
 
 /**
  * Service containing the feature management system.
@@ -30,10 +29,7 @@ export class ClientDataService {
     string,
     CharacterClass
   >();
-  public equippables: Map<number, Array<number>> = new Map<
-    number,
-    Array<number>
-  >();
+  public equippables: Map<number, number[]> = new Map<number, number[]>();
   public petRarities: Map<number, Rarity> = new Map<number, Rarity>();
   public dungeonModes: Map<string, string> = new Map<string, string>();
 
@@ -149,10 +145,10 @@ export class ClientDataService {
   }
 
   private handleClientDataUpdate(
-    name: string,
-    id: string,
+    _name: string,
+    _id: string,
     group: Map<string, string>,
-    subGroups: Array<Map<string, string>>
+    _subGroups: Map<string, string>[]
   ): void {
     const data = group.get('data');
     if (data) {
@@ -178,7 +174,7 @@ export class ClientDataService {
       'responses',
       'success',
       'client-data',
-      (name, id, groups, subGroups, date) => {
+      (name, id, groups, subGroups, _date) => {
         this.handleClientDataUpdate(name, id, groups, subGroups);
       }
     );

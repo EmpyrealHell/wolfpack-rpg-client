@@ -40,10 +40,10 @@ export class RollingTimer {
     const now = Date.now(),
       threshold = now - this.period * 1000;
     let toRemove = 0;
-    for (let i = 0; i < this.hits.length; i++) {
-      if (this.hits[i] < threshold) {
+    for (const hit of this.hits) {
+      if (hit < threshold) {
         toRemove++;
-      } else if (this.hits[i] >= threshold) {
+      } else if (hit >= threshold) {
         break;
       }
     }

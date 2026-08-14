@@ -23,7 +23,7 @@ describe('CommandService', () => {
 
   it('should call a method on a matching message', async () => {
     const callback = {
-        fn: (name: string, id: string, groups: Map<string, string>) => {},
+        fn: (_name: string, _id: string, _groups: Map<string, string>) => {},
       },
       spy = spyOn(callback, 'fn');
     service.subscribeToMessage('party', 'full', 'test', spy);
@@ -35,7 +35,7 @@ describe('CommandService', () => {
 
   it('should not call a method on a non-matching message', async () => {
     const callback = {
-        fn: (name: string, id: string, groups: Map<string, string>) => {},
+        fn: (_name: string, _id: string, _groups: Map<string, string>) => {},
       },
       spy = spyOn(callback, 'fn');
     service.subscribeToMessage('party', 'full', 'test', spy);
@@ -46,11 +46,11 @@ describe('CommandService', () => {
   it('should provide the captured groups', async () => {
     const callback = {
         fn: (
-          name: string,
-          id: string,
-          groups: Map<string, string>,
-          subGroups: Array<Map<string, string>>,
-          date: number
+          _name: string,
+          _id: string,
+          _groups: Map<string, string>,
+          _subGroups: Map<string, string>[],
+          _date: number
         ) => {},
       },
       spy = spyOn(callback, 'fn');

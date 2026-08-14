@@ -66,10 +66,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     return undefined;
   }
 
-  private handleStable(
-    id: string,
-    subGroups: Array<Map<string, string>>
-  ): void {
+  private handleStable(id: string, subGroups: Map<string, string>[]): void {
     if (id === 'compact') {
       for (const sub of subGroups) {
         const id = parseInt(sub.get('id') ?? '0'),
@@ -116,7 +113,6 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
   }
 
   private handleFeedSuccess(
-    name: string,
     id: string,
     groups: Map<string, string>,
     isReplay: boolean | undefined
@@ -320,7 +316,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       responseId,
-      (name, id, groups, subGroups, date) => this.handleStable(id, subGroups)
+      (_name, id, _groups, subGroups, _date) => this.handleStable(id, subGroups)
     );
     commandService.subscribeToCommand(
       'pets',
@@ -328,8 +324,8 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       responseId,
-      (name, id, groups, subGroups, date, isReplay) => {
-        this.handleFeedSuccess(name, id, groups, isReplay);
+      (_name, id, groups, _subGroups, _date, isReplay) => {
+        this.handleFeedSuccess(id, groups, isReplay);
       }
     );
     commandService.subscribeToCommand(
@@ -338,7 +334,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'error',
       responseId,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, id, groups, _subGroups, _date, isReplay) => {
         if (!isReplay) {
           this.handleFeedError(id, groups);
         }
@@ -350,7 +346,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'error',
       responseId,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, id, _groups, _subGroups, _date, isReplay) => {
         if (!isReplay) {
           this.handleGloatError(id);
         }
@@ -362,7 +358,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       responseId,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         this.handleRenameSuccess(id, groups);
       }
     );
@@ -372,7 +368,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       responseId,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         this.handleSummonSuccess(id, groups);
       }
     );
@@ -382,7 +378,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       responseId,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         this.handleDismissSuccess(id, groups);
       }
     );
@@ -392,7 +388,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'pending',
       responseId,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, id, _groups, _subGroups, _date, isReplay) => {
         if (!isReplay) {
           this.handlePendingRelease(id);
         }
@@ -404,7 +400,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       responseId,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         this.handleReleaseSuccess(id, groups);
       }
     );
@@ -412,7 +408,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'pets',
       'hungerWarning',
       responseId,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, _id, groups, _subGroups, _date, isReplay) => {
         if (!isReplay) {
           this.handleHungerWarning(groups, false);
         }
@@ -422,7 +418,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'pets',
       'hungerCritical',
       responseId,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, _id, groups, _subGroups, _date, isReplay) => {
         if (!isReplay) {
           this.handleHungerWarning(groups, true);
         }
@@ -432,7 +428,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'pets',
       'hungerDeath',
       responseId,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, _id, groups, _subGroups, _date, isReplay) => {
         this.handleHungerDeath(groups, isReplay ?? false);
       }
     );
@@ -440,7 +436,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'pets',
       'dungeonFound',
       responseId,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, _id, _groups, _subGroups, date, _isReplay) => {
         this.handlePetFound(date);
       }
     );

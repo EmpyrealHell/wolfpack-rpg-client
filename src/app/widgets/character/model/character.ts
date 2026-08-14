@@ -37,10 +37,6 @@ export class Character {
     return 4 * level ** 3 + 50;
   }
 
-  public levelFromXp(xp: number): number {
-    return 0;
-  }
-
   /**
    * @returns The amount of experience the player has earned in the current level.
    */

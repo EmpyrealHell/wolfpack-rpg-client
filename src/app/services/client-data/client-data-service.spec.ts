@@ -1,6 +1,5 @@
 import { TestUtils } from 'src/test/test-utils';
 import { CommandCallback, CommandService } from '../command/command-service';
-import { WidgetItem } from '../widget/widget-item';
 import { ClientDataService } from './client-data-service';
 
 describe('ClientDataService', () => {
@@ -13,7 +12,7 @@ describe('ClientDataService', () => {
       CommandService
     ) as unknown as jasmine.SpyObj<CommandService>;
     commandService.subscribeToCommand.and.callFake(
-      (group, command, response, result, subscriber, callback) => {
+      (_group, _command, _response, _result, _subscriber, callback) => {
         roleHandler = callback;
         return '';
       }
