@@ -1,7 +1,7 @@
 <div fxFlex fxLayout="column" fxLayoutGap="10px" style="min-height: 100vh">
   <div fxLayout="row wrap" style="height: 100%">
+    @for (factory of factories; track factory.name; let i = $index) {
     <div
-      *ngFor="let factory of factories; index as i"
       [fxFlex]="factories.length === 1 ? 100 : factories.length <= 4 ? 50 : 33"
       fxFlex.md="50"
       fxFlex.lt-md="100"
@@ -39,5 +39,6 @@
         </app-widget-factory>
       </mat-card>
     </div>
+    }
   </div>
 </div>

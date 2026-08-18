@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit, Type, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  Type,
+  inject,
+} from '@angular/core';
 import { Config } from 'src/app/services/data/config-data';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetItem } from '../../services/widget/widget-item';
@@ -17,16 +23,16 @@ import { WidgetFactoryComponent } from '../widget-factory/widget-factory.compone
  * Holds a list of widgets and renders them to the DOM, in order.
  */
 @Component({
-    selector: 'app-widget-container',
-    templateUrl: './widget-container.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [
-        MatCard,
-        MatCardTitle,
-        MatIconButton,
-        MatIcon,
-        WidgetFactoryComponent,
-    ],
+  selector: 'app-widget-container',
+  templateUrl: './widget-container.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatIconButton,
+    MatIcon,
+    WidgetFactoryComponent,
+  ],
 })
 export class WidgetContainerComponent implements OnInit {
   private widgetService = inject(WidgetService);
