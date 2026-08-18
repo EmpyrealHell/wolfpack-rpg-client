@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetComponent } from 'src/app/components/widget-factory/widget.component';
 import { CommandService } from 'src/app/services/command/command-service';
@@ -9,15 +9,33 @@ import {
 } from 'src/app/services/eventsub/eventsub.service';
 import { ClientDataService } from 'src/app/services/client-data/client-data-service';
 import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
+import { MatCardContent, MatCardFooter } from '@angular/material/card';
+import { MatFormField, MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { ShowLastDirective } from '../../directives/show-last.directive';
+import { MatToolbar } from '@angular/material/toolbar';
+import { FocusOnLoadDirective } from '../../directives/focus-on-load.directive';
+import { MatButton } from '@angular/material/button';
 
 /**
  * Widget that provides direct access to the communication channel between the
  * authenticated user and the target account.
  */
 @Component({
-  selector: 'app-console-widget',
-  templateUrl: './console.widget.html',
-  standalone: false,
+    selector: 'app-console-widget',
+    templateUrl: './console.widget.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        MatCardContent,
+        MatFormField,
+        MatInput,
+        FormsModule,
+        ShowLastDirective,
+        MatCardFooter,
+        MatToolbar,
+        FocusOnLoadDirective,
+        MatButton,
+    ],
 })
 export class ConsoleWidgetComponent implements WidgetComponent {
   private static maxHistory = 100;
@@ -79,13 +97,11 @@ export class ConsoleWidgetComponent implements WidgetComponent {
 
   private onWhisper(message: Message): void {
     if (message.whisper) {
-      const newLine = this.consoleData.length === 0 ? '' : '\n';
-      const prefixedMessage = message.self
-        ? `>> ${message.text}`
-        : message.text;
-      const fullMessage = message.self
-        ? `${newLine}${prefixedMessage}`
-        : prefixedMessage;
+      const newLine = this.consoleData.length === 0 ? '' : '\n',
+        prefixedMessage = message.self ? `>> ${message.text}` : message.text,
+        fullMessage = message.self
+          ? `${newLine}${prefixedMessage}`
+          : prefixedMessage;
       this.consoleData += `${fullMessage}\n`;
     }
   }
@@ -96,7 +112,7 @@ export class ConsoleWidgetComponent implements WidgetComponent {
       this.command = '';
       this.eventSubService.send(message);
 
-      const history = this.configManager.getConfig().history;
+      const { history } = this.configManager.getConfig();
       history.push(message);
       if (history.length > ConsoleWidgetComponent.maxHistory) {
         history.splice(0, 1);
@@ -116,19 +132,18 @@ export class ConsoleWidgetComponent implements WidgetComponent {
         index,
       };
     }
-    const history = this.configManager.getConfig().history;
-    const clampedIndex = Math.max(Math.min(index, history.length - 1), -1);
+    const { history } = this.configManager.getConfig(),
+      clampedIndex = Math.max(Math.min(index, history.length - 1), -1);
     if (clampedIndex < 0) {
       return {
         message: '',
         index: -1,
       };
-    } else {
-      return {
-        message: history[history.length - clampedIndex - 1],
-        index: clampedIndex,
-      };
     }
+    return {
+      message: history[history.length - clampedIndex - 1],
+      index: clampedIndex,
+    };
   }
 
   onActivate(): void {
@@ -169,7 +184,7 @@ export class ConsoleWidgetComponent implements WidgetComponent {
    * Click event for the send button.
    * @param event Mouse event passed in by the browser.
    */
-  onSendClick(event: MouseEvent): void {
+  onSendClick(_event: MouseEvent): void {
     this.sendCommand();
   }
 }

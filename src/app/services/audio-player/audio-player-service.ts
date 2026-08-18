@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ConfigManager } from '../data/config-manager';
 
 /**
@@ -8,9 +8,8 @@ import { ConfigManager } from '../data/config-manager';
   providedIn: 'root',
 })
 export class AudioPlayerService {
-  constructor(private configManager: ConfigManager) {}
+  private configManager = inject(ConfigManager);
 
-  initialize(): void {}
 
   play(name: string): void {
     const config = this.configManager?.getConfig();

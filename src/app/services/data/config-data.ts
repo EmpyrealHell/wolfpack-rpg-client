@@ -1,4 +1,4 @@
-// tslint:disable: variable-name
+// Tslint:disable: variable-name
 
 /**
  * Class representing the user's config data. An instance is not used as a

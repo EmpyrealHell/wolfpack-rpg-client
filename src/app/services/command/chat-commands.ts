@@ -14,8 +14,8 @@ export class ChatCommands extends CommandWrapper {
    * @param message The message to send.
    */
   message(message: string): void {
-    const raw = this.getCommandString('chat', 'message', 'command');
-    const command = this.replaceProperty(raw, 'message', message);
+    const raw = this.getCommandString('chat', 'message', 'command'),
+      command = this.replaceProperty(raw, 'message', message);
     this.eventSubService.send(command);
   }
 }

@@ -1,18 +1,26 @@
-import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatButton } from '@angular/material/button';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'error-dialog',
-  templateUrl: './error-dialog.html',
-  standalone: false,
+    // Tslint:disable-next-line:component-selector
+    selector: 'error-dialog',
+    templateUrl: './error-dialog.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        MatDialogTitle,
+        CdkScrollable,
+        MatDialogContent,
+        MatDialogActions,
+        MatButton,
+        MatDialogClose,
+    ],
 })
-// tslint:disable-next-line:component-class-suffix
-export class ErrorDialog {
-  constructor(
-    public matDialogRef: MatDialogRef<ErrorDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: ErrorDialogData
-  ) {}
+// Tslint:disable-next-line:component-class-suffix
+export class ErrorDialog {  matDialogRef = inject<MatDialogRef<ErrorDialog>>(MatDialogRef);
+  data = inject<ErrorDialogData>(MAT_DIALOG_DATA);
+
 }
 
 export interface ErrorDialogData {

@@ -1,30 +1,38 @@
 <mat-card-content height="100%" class="flex-column">
   <div>
     <span style="display: block; width: 50%; margin: auto; text-align: center">
-      <div *ngIf="tournament && !isTournamentOver()">
+      @if (tournament && !isTournamentOver()) {
+      <div>
         <h2>
           Tournament Time Remaining: {{getTimeString(tournament.endTime)}}
         </h2>
-        <p *ngIf="tournament.rank > 0">
+        @if (tournament.rank > 0) {
+        <p>
           Current Rank: {{toOrdinal(tournament.rank)}}
           ({{tournament.userPoints}} points)
         </p>
+        }
       </div>
-      <div *ngIf="tournament && isTournamentOver()">
-        <h2 *ngIf="nextTournament">
-          Next Tournament: {{getTimeString(nextTournament)}}
-        </h2>
-        <p *ngIf="tournament.winner">
+      } @if (tournament && isTournamentOver()) {
+      <div>
+        @if (nextTournament) {
+        <h2>Next Tournament: {{getTimeString(nextTournament)}}</h2>
+        } @if (tournament.winner) {
+        <p>
           Winner: {{tournament.winner}} ({{tournament.winnerPoints}} points)
         </p>
-        <p *ngIf="tournament.rank > 0">
+        } @if (tournament.rank > 0) {
+        <p>
           You: {{toOrdinal(tournament.rank)}} of {{tournament.participants}}
           ({{tournament.userPoints}} points)
         </p>
+        }
       </div>
-      <div *ngIf="!tournament && !nextTournament">
+      } @if (!tournament && !nextTournament) {
+      <div>
         <p>Fetching tournament data...</p>
       </div>
+      }
     </span>
   </div>
   <div>
@@ -38,7 +46,11 @@
             gap: 8px;
           "
         >
-          <img src="./assets/button-{{getCastIcon()}}.svg" width="48px" />
+          <img
+            src="./assets/button-{{getCastIcon()}}.svg"
+            width="48px"
+            alt="Cast or Reel in"
+          />
           <span>{{getCastMessage()}}</span>
         </div>
       </button>
@@ -69,23 +81,23 @@
           <ng-container matColumnDef="length">
             <th mat-header-cell *matHeaderCellDef>Length (in)</th>
             <td mat-cell *matCellDef="let record">
-              {{record.length}}
-              <span
-                *ngIf="getPersonal(record.fish)?.length < record.length"
-                style="color: red"
+              {{record.length}} @if (record && record.fish &&
+              getPersonal(record.fish)?.length < record.length) {
+              <span style="color: red"
                 >(-{{getPersonal(record.fish)?.length - record.length}})</span
               >
+              }
             </td>
           </ng-container>
           <ng-container matColumnDef="weight">
             <th mat-header-cell *matHeaderCellDef>Weight (lbs)</th>
             <td mat-cell *matCellDef="let record">
-              {{record.weight}}
-              <span
-                *ngIf="getPersonal(record.fish)?.weight < record.weight"
-                style="color: red"
+              {{record.weight}} @if (getPersonal(record.fish)?.weight <
+              record.weight) {
+              <span style="color: red"
                 >(-{{getPersonal(record.fish)?.weight - record.weight}})</span
               >
+              }
             </td>
           </ng-container>
           <ng-container matColumnDef="recordHolder">

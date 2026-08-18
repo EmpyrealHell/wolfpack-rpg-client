@@ -1,4 +1,4 @@
-// tslint:disable: variable-name
+// Tslint:disable: variable-name
 export interface UserData {
   data: UserDatum[];
 }

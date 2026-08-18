@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+} from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -20,9 +25,13 @@ import * as authConfig from './auth.component.json';
 @Component({
   selector: 'app-auth',
   template: 'Authenticating...',
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class AuthComponent implements OnInit {
+  configManager = inject(ConfigManager);
+  userService = inject(UserService);
+  private router = inject(Router);
+
   route: ActivatedRouteSnapshot;
   retryCount = 3;
 
@@ -39,15 +48,14 @@ export class AuthComponent implements OnInit {
   async ParseAuthResponse(
     auth: ConfigAuthentication,
     configManager: ConfigManager,
-    // tslint:disable-next-line:align
     fragmentString: string,
     userService: UserService,
     router: Router
   ): Promise<void> {
     if (auth.state) {
-      const fragmentMap = Utils.createMap('&', '=', fragmentString);
-      const state = fragmentMap.get('state');
-      const token = fragmentMap.get('access_token');
+      const fragmentMap = Utils.createMap('&', '=', fragmentString),
+        state = fragmentMap.get('state'),
+        token = fragmentMap.get('access_token');
       if (state === auth.state && token) {
         auth.token = token;
         if (state !== auth.state) {
@@ -84,7 +92,6 @@ export class AuthComponent implements OnInit {
   async ValidateToken(
     auth: ConfigAuthentication,
     configManager: ConfigManager,
-    // tslint:disable-next-line:align
     userService: UserService,
     router: Router
   ): Promise<void> {
@@ -139,11 +146,12 @@ export class AuthComponent implements OnInit {
     auth.token = null;
     configManager.save();
 
-    const url =
-      `${authConfig.url}?client_id=${authConfig.clientId}` +
-      `&redirect_uri=${environment.redirectUri}&state=${auth.state}` +
-      (forceVerify ? '&force_verify=true' : '') +
-      `&response_type=token&scope=${authConfig.scope}`;
+    const config = authConfig,
+      url =
+        `${config.url}?client_id=${config.clientId}` +
+        `&redirect_uri=${environment.redirectUri}&state=${auth.state}${
+          forceVerify ? '&force_verify=true' : ''
+        }&response_type=token&scope=${config.scope}`;
     this.Redirect(url);
   }
 
@@ -155,13 +163,9 @@ export class AuthComponent implements OnInit {
     window.location.href = url;
   }
 
-  constructor(
-    public configManager: ConfigManager,
-    public userService: UserService,
-    // tslint:disable-next-line:align
-    private router: Router,
-    route: ActivatedRoute
-  ) {
+  constructor() {
+    const route = inject(ActivatedRoute);
+
     this.route = route.snapshot;
   }
 

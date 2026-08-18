@@ -17,9 +17,9 @@ describe('CommandData', () => {
     return arr;
   };
 
-  it('should wrap parameters in commands with curly braces', () => {
-    const commands = getAllCommands(CommandData);
-    const wrongCommands: string[] = [];
+  it('should wrap parameters in commands with curly braces', async () => {
+    const commands = getAllCommands(CommandData),
+      wrongCommands: string[] = [];
     for (const command of commands) {
       const parts = command.split(' ');
       parts.splice(0, 1);
@@ -35,6 +35,6 @@ describe('CommandData', () => {
       }
     }
     const wrongList = Utils.stringJoin(', ', wrongCommands);
-    expect(wrongList).toBe('');
+    await expect(wrongList).toBe('');
   });
 });

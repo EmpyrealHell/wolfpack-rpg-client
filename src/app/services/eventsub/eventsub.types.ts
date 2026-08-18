@@ -31,13 +31,13 @@ export interface EventSubMessage {
       chatter_user_login?: string;
       message?: {
         text: string;
-        fragments?: Array<{
+        fragments?: {
           type: string;
           text: string;
           cheermote?: unknown;
           emote?: unknown;
           mention?: unknown;
-        }>;
+        }[];
       };
       from_user_id?: string;
       whisper?: {

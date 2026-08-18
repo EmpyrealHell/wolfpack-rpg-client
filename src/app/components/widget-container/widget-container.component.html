@@ -2,35 +2,40 @@
   [style.grid-template-areas]="gridlayout"
   style="display: grid !important; height: 100%"
 >
-  <div
-    *ngFor="let factory of factories; index as i"
-    [style.grid-area]="'a' + i"
-    [style.display]="'flex'"
-    style="height: 100%; overflow: hidden"
-  >
-    <mat-card class="flex-column">
-      <mat-card-title>
-        <div class="widget-header-content">
-          <div class="widget-title-section">
-            <img src="./assets/{{ getWidgetIcon(i) }}" width="32px" />
-            <span>{{ getWidgetName(i) }}</span>
+  @for (factory of factories; track factory; let i = $index) {
+    <div
+      [style.grid-area]="'a' + i"
+      [style.display]="'flex'"
+      style="height: 100%; overflow: hidden"
+    >
+      <mat-card class="flex-column">
+        <mat-card-title>
+          <div class="widget-header-content">
+            <div class="widget-title-section">
+              <img
+                src="./assets/{{ getWidgetIcon(i) }}"
+                width="32px"
+                alt="{{ getWidgetName(i) }}"
+              />
+              <span>{{ getWidgetName(i) }}</span>
+            </div>
+            <span class="fill-space"></span>
+            <button mat-icon-button color="warn" (click)="closeWidget(i)">
+              <mat-icon>close</mat-icon>
+            </button>
           </div>
-          <span class="fill-space"></span>
-          <button mat-icon-button color="warn" (click)="closeWidget(i)">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-      </mat-card-title>
-      <app-widget-factory
-        [factory]="factory"
-        [audioPlayerService]="audioPlayerService"
-        [clientDataService]="clientDataService"
-        [eventSubService]="eventSubService"
-        [configManager]="configManager"
-        [commandService]="commandService"
-        [name]="getWidgetName(i)"
-      >
-      </app-widget-factory>
-    </mat-card>
-  </div>
+        </mat-card-title>
+        <app-widget-factory
+          [factory]="factory"
+          [audioPlayerService]="audioPlayerService"
+          [clientDataService]="clientDataService"
+          [eventSubService]="eventSubService"
+          [configManager]="configManager"
+          [commandService]="commandService"
+          [name]="getWidgetName(i)"
+        >
+        </app-widget-factory>
+      </mat-card>
+    </div>
+  }
 </div>

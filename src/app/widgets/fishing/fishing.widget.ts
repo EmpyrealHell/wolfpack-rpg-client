@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { CommandService } from 'src/app/services/command/command-service';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { Utils } from 'src/app/util/utils';
 import { CatchData, LineStatus, Tournament } from './model/fish';
+import { MatCardContent } from '@angular/material/card';
+import { MatButton } from '@angular/material/button';
+import { MatTabGroup, MatTab, MatTabContent } from '@angular/material/tabs';
 
 /**
  * Widget used to display character data.
@@ -11,9 +14,26 @@ import { CatchData, LineStatus, Tournament } from './model/fish';
  * TODO: Add paging to leaderboard and session history based on height
  */
 @Component({
-  selector: 'app-fishing-widget',
-  templateUrl: './fishing.widget.html',
-  standalone: false,
+    selector: 'app-fishing-widget',
+    templateUrl: './fishing.widget.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        MatCardContent,
+        MatButton,
+        MatTabGroup,
+        MatTab,
+        MatTabContent,
+        MatTable,
+        MatColumnDef,
+        MatHeaderCellDef,
+        MatHeaderCell,
+        MatCellDef,
+        MatCell,
+        MatHeaderRowDef,
+        MatHeaderRow,
+        MatRowDef,
+        MatRow,
+    ],
 })
 export class FishingWidgetComponent extends AbstractWidgetComponent {
   name = 'Fishing';
@@ -50,19 +70,16 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
   }
 
   private handleLeaderboard(
-    name: string,
     id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
+    subGroups: Map<string, string>[]
   ): void {
     if (id === 'compact') {
       for (const sub of subGroups) {
-        const fish = sub.get('fish') ?? 'unknown';
-        const length = Number(sub.get('length') ?? 0);
-        const weight = Number(sub.get('weight') ?? 0);
-        const user = sub.get('user') ?? 'unknown';
-        const records = this.leaderboard.filter(x => x.fish === fish);
+        const fish = sub.get('fish') ?? 'unknown',
+          length = Number(sub.get('length') ?? 0),
+          weight = Number(sub.get('weight') ?? 0),
+          user = sub.get('user') ?? 'unknown',
+          records = this.leaderboard.filter(x => x.fish === fish);
         if (records && records.length > 0) {
           records[0].user = user;
           records[0].length = length;
@@ -75,19 +92,13 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleDetail(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleDetail(id: string, subGroups: Map<string, string>[]): void {
     if (id === 'compact') {
       for (const sub of subGroups) {
-        const fish = sub.get('fish') ?? 'unknown';
-        const length = Number(sub.get('length') ?? 0);
-        const weight = Number(sub.get('weight') ?? 0);
-        const records = this.personalHistory.filter(x => x.fish === fish);
+        const fish = sub.get('fish') ?? 'unknown',
+          length = Number(sub.get('length') ?? 0),
+          weight = Number(sub.get('weight') ?? 0),
+          records = this.personalHistory.filter(x => x.fish === fish);
         if (records && records.length > 0) {
           records[0].length = length;
           records[0].weight = weight;
@@ -101,26 +112,14 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleCast(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleCast(id: string): void {
     if (id === 'confirmation') {
       this.lineStatus = LineStatus.InWater;
       this.hookMessage = undefined;
     }
   }
 
-  private handleCastError(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleCastError(id: string): void {
     if (id === 'alreadyCast') {
       this.lineStatus = LineStatus.InWater;
       this.hookMessage = undefined;
@@ -130,22 +129,16 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleCatch(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleCatch(id: string, groups: Map<string, string>): void {
     if (id === 'newRecord') {
       this.newPersonalBest = true;
     } else if (id === 'confirmation') {
       this.lineStatus = LineStatus.Idle;
       this.hookMessage = undefined;
-      const fish = groups.get('fish') ?? 'mystery fish';
-      const length = Number(groups.get('length') ?? 0);
-      const weight = Number(groups.get('weight') ?? 0);
-      const catchData = new CatchData(fish, this.username, length, weight, 0);
+      const fish = groups.get('fish') ?? 'mystery fish',
+        length = Number(groups.get('length') ?? 0),
+        weight = Number(groups.get('weight') ?? 0),
+        catchData = new CatchData(fish, this.username, length, weight, 0);
       this.addSessionData(catchData);
     } else if (id === 'tournament') {
       if (!this.tournament) {
@@ -154,10 +147,10 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       }
       this.lineStatus = LineStatus.Idle;
       this.hookMessage = undefined;
-      const length = Number(groups.get('length') ?? 0);
-      const weight = Number(groups.get('weight') ?? 0);
-      const fish = groups.get('fish') ?? 'mystery fish';
-      const points = Number(groups.get('points') ?? 0);
+      const length = Number(groups.get('length') ?? 0),
+        weight = Number(groups.get('weight') ?? 0),
+        fish = groups.get('fish') ?? 'mystery fish',
+        points = Number(groups.get('points') ?? 0);
       this.tournament.rank = Number(groups.get('rank') ?? 0);
       this.tournament.userPoints = Number(groups.get('total') ?? 0);
       const catchData = new CatchData(
@@ -175,8 +168,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       }
       this.lineStatus = LineStatus.Idle;
       this.hookMessage = undefined;
-      const fish = groups.get('fish') ?? 'mystery fish';
-      const points = Number(groups.get('points') ?? 0);
+      const fish = groups.get('fish') ?? 'mystery fish',
+        points = Number(groups.get('points') ?? 0);
       this.tournament.rank = Number(groups.get('rank') ?? 0);
       this.tournament.userPoints = Number(groups.get('total') ?? 0);
       const catchData = new CatchData(fish, this.username, 0, 0, points);
@@ -184,13 +177,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleHooked(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleHooked(groups: Map<string, string>): void {
     this.lineStatus = LineStatus.FishHooked;
     this.hookMessage =
       groups.get('message') ?? FishingWidgetComponent.defaultHookMessage;
@@ -199,13 +186,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleGotAway(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleGotAway(): void {
     this.lineStatus = LineStatus.Idle;
     this.hookMessage = 'The fish got away';
     setTimeout(() => {
@@ -214,30 +195,28 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
   }
 
   private handleNext(
-    name: string,
     id: string,
     groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
     date: number,
     isReplay?: boolean
   ): void {
     if (id === 'timeLeft') {
-      const time = (groups.get('time') ?? '00:00:00').split(':');
-      const toAdd =
-        parseInt(time[0]) * 60 * 60 * 1000 +
-        parseInt(time[1]) * 60 * 1000 +
-        parseInt(time[2]) * 1000;
+      const time = (groups.get('time') ?? '00:00:00').split(':'),
+        toAdd =
+          parseInt(time[0]) * 60 * 60 * 1000 +
+          parseInt(time[1]) * 60 * 1000 +
+          parseInt(time[2]) * 1000;
       if (!this.tournament) {
         this.tournament = new Tournament();
       }
       this.tournament.endTime = new Date(date + toAdd);
       this.nextTournament = undefined;
     } else if (id === 'toNext') {
-      const time = (groups.get('time') ?? '00:00:00').split(':');
-      const toAdd =
-        parseInt(time[0]) * 60 * 60 * 1000 +
-        parseInt(time[1]) * 60 * 1000 +
-        parseInt(time[2]) * 1000;
+      const time = (groups.get('time') ?? '00:00:00').split(':'),
+        toAdd =
+          parseInt(time[0]) * 60 * 60 * 1000 +
+          parseInt(time[1]) * 60 * 1000 +
+          parseInt(time[2]) * 1000;
       if (!this.tournament) {
         this.tournament = new Tournament();
         if (!isReplay) {
@@ -249,13 +228,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleResults(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleResults(groups: Map<string, string>): void {
     if (!this.tournament) {
       this.tournament = new Tournament();
     }
@@ -267,26 +240,14 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     this.tournament.userPoints = Number(groups.get('userPoints') ?? 0);
   }
 
-  private handleTournamentStart(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleTournamentStart(groups: Map<string, string>): void {
     this.tournament = new Tournament();
     const duration = Number(groups.get('duration') ?? 0);
     this.tournament.endTime = new Date(Date.now() + duration * 60 * 1000);
     this.audioPlayerService?.play('effect-tournament-start');
   }
 
-  private handleTournamentEnd(
-    name: string,
-    id: string,
-    groups: Map<string, string>,
-    subGroups: Array<Map<string, string>>,
-    date: number
-  ): void {
+  private handleTournamentEnd(id: string, groups: Map<string, string>): void {
     if (!this.tournament) {
       this.tournament = new Tournament();
       this.tournament.endTime = new Date(Date.now());
@@ -310,8 +271,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleLeaderboard(name, id, groups, subGroups, date)
+      (_name, id, _groups, subGroups, _date) =>
+        this.handleLeaderboard(id, subGroups)
     );
 
     commandService.subscribeToCommand(
@@ -320,8 +281,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleDetail(name, id, groups, subGroups, date)
+      (_name, id, _groups, subGroups, _date) => this.handleDetail(id, subGroups)
     );
 
     commandService.subscribeToCommand(
@@ -330,8 +290,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleCast(name, id, groups, subGroups, date)
+      (_name, id, _groups, _subGroups, _date) => this.handleCast(id)
     );
 
     commandService.subscribeToCommand(
@@ -340,8 +299,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'error',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleCastError(name, id, groups, subGroups, date)
+      (_name, id, _groups, _subGroups, _date) => this.handleCastError(id)
     );
 
     commandService.subscribeToCommand(
@@ -350,8 +308,7 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleCatch(name, id, groups, subGroups, date)
+      (_name, id, groups, _subGroups, _date) => this.handleCatch(id, groups)
     );
 
     commandService.subscribeToCommand(
@@ -360,8 +317,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date, isReplay) =>
-        this.handleNext(name, id, groups, subGroups, date, isReplay)
+      (_name, id, groups, _subGroups, date, isReplay) =>
+        this.handleNext(id, groups, date, isReplay)
     );
 
     commandService.subscribeToCommand(
@@ -370,48 +327,45 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) =>
-        this.handleResults(name, id, groups, subGroups, date)
+      (_name, _id, groups, _subGroups, _date) => this.handleResults(groups)
     );
 
     commandService.subscribeToMessage(
       'fishing',
       'fishHooked',
       'fishingWidget',
-      (name, id, groups, subGroups, date) =>
-        this.handleHooked(name, id, groups, subGroups, date)
+      (_name, _id, groups, _subGroups, _date) => this.handleHooked(groups)
     );
 
     commandService.subscribeToMessage(
       'fishing',
       'gotAway',
       'fishingWidget',
-      (name, id, groups, subGroups, date) =>
-        this.handleGotAway(name, id, groups, subGroups, date)
+      (_name, _id, _groups, _subGroups, _date) => this.handleGotAway()
     );
 
     commandService.subscribeToMessage(
       'fishing',
       'tournamentStart',
       'fishingWidget',
-      (name, id, groups, subGroups, date) =>
-        this.handleTournamentStart(name, id, groups, subGroups, date)
+      (_name, _id, groups, _subGroups, _date) =>
+        this.handleTournamentStart(groups)
     );
 
     commandService.subscribeToMessage(
       'fishing',
       'tournamentEnd',
       'fishingWidget',
-      (name, id, groups, subGroups, date) =>
-        this.handleTournamentEnd(name, id, groups, subGroups, date)
+      (_name, id, groups, _subGroups, _date) =>
+        this.handleTournamentEnd(id, groups)
     );
 
     commandService.subscribeToMessage(
       'fishing',
       'tournamentEndEmpty',
       'fishingWidget',
-      (name, id, groups, subGroups, date) =>
-        this.handleTournamentEnd(name, id, groups, subGroups, date)
+      (_name, id, groups, _subGroups, _date) =>
+        this.handleTournamentEnd(id, groups)
     );
   }
 
@@ -429,12 +383,18 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     return undefined;
   }
 
-  getPersonal(fish: string): CatchData | undefined {
+  getPersonal(fish?: string): CatchData {
     const current = this.personalHistory.filter(value => value.fish === fish);
     if (current && current.length > 0) {
       return current[0];
     }
-    return undefined;
+    return {
+      fish: fish ?? 'unknown',
+      user: this.username,
+      length: 0,
+      weight: 0,
+      points: 0,
+    };
   }
 
   getCastIcon(): string {
@@ -485,9 +445,9 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
     if (!target) {
       return 'unknown';
     }
-    const hoursInMillis = 60 * 60 * 1000;
-    const minutesInMillis = 60 * 1000;
-    const secondsInMillis = 1000;
+    const hoursInMillis = 60 * 60 * 1000,
+      minutesInMillis = 60 * 1000,
+      secondsInMillis = 1000;
     let toTarget = target.getTime() - Date.now();
     const hours = Math.floor(toTarget / hoursInMillis);
     if (hours > 0) {
@@ -501,8 +461,8 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
       return `${minutes} minute${suffix}`;
     }
     toTarget -= minutes * minutesInMillis;
-    const seconds = Math.floor(toTarget / secondsInMillis);
-    const suffix = seconds === 1 ? '' : 's';
+    const seconds = Math.floor(toTarget / secondsInMillis),
+      suffix = seconds === 1 ? '' : 's';
     return `${seconds} second${suffix}`;
   }
 
@@ -530,10 +490,10 @@ export class FishingWidgetComponent extends AbstractWidgetComponent {
   }
 
   getTournamentHeight(): number {
-    const base = 112;
-    const headerHeight = 46;
-    const rowHeight = 31;
-    const margin = 16;
+    const base = 112,
+      headerHeight = 46,
+      margin = 16,
+      rowHeight = 31;
     let amount = base + margin;
     if (this.tournament && !this.isTournamentOver()) {
       amount += headerHeight;

@@ -14,8 +14,8 @@ export class InfoCommands extends CommandWrapper {
    * @param message The text of the bug report.
    */
   bugReport(message: string): void {
-    const raw = this.getCommandString('info', 'bugReport', 'command');
-    const command = this.replaceProperty(raw, 'message', message);
+    const raw = this.getCommandString('info', 'bugReport', 'command'),
+      command = this.replaceProperty(raw, 'message', message);
     this.eventSubService.send(command);
   }
 

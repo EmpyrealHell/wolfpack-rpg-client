@@ -55,7 +55,7 @@ export class MessageQueue {
   }
 
   private broadcastSend(message: string): void {
-    for (const [key, value] of this.sendCallbacks) {
+    for (const [_key, value] of this.sendCallbacks) {
       value.call(value, message);
     }
   }

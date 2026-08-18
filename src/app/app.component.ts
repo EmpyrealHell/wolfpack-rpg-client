@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 /**
  * Component that handles loading the app and making sure the user is
@@ -6,10 +7,9 @@ import { Component } from '@angular/core';
  * assume valid authentication.
  */
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  standalone: false,
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [RouterOutlet],
 })
-export class AppComponent {
-  constructor() {}
-}
+export class AppComponent {}

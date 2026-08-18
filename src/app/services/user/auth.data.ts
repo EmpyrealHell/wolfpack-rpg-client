@@ -1,4 +1,4 @@
-// tslint:disable: variable-name
+// Tslint:disable: variable-name
 /**
  * Response interface from the Twitch token validation service.
  */

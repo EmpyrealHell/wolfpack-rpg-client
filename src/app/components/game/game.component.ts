@@ -1,5 +1,10 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
@@ -14,7 +19,19 @@ import {
   Message,
 } from 'src/app/services/eventsub/eventsub.service';
 import { WidgetService } from 'src/app/services/widget/widget.service';
-import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
+import {
+  MatSidenavContainer,
+  MatSidenavContent,
+} from '@angular/material/sidenav';
+import { MatToolbar } from '@angular/material/toolbar';
+import { MatDivider } from '@angular/material/divider';
+import { MatButton } from '@angular/material/button';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { FormsModule } from '@angular/forms';
+import { MatSlider, MatSliderThumb } from '@angular/material/slider';
+import { WidgetContainerComponent } from '../widget-container/widget-container.component';
 
 /**
  * The main component holding the game UI.
@@ -22,9 +39,34 @@ import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-s
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    MatSidenavContainer,
+    MatSidenavContent,
+    MatToolbar,
+    MatDivider,
+    MatButton,
+    MatMenuTrigger,
+    MatIcon,
+    MatMenu,
+    MatMenuItem,
+    MatSlideToggle,
+    FormsModule,
+    MatSlider,
+    MatSliderThumb,
+    WidgetContainerComponent,
+  ],
 })
 export class GameComponent implements OnInit {
+  widgetService = inject(WidgetService);
+  eventSubService = inject(EventSubService);
+  configManager = inject(ConfigManager);
+  userService = inject(UserService);
+  clientDataService = inject(ClientDataService);
+  overlayContainer = inject(OverlayContainer);
+  dialog = inject(MatDialog);
+  router = inject(Router);
+
   /**
    * Reference to the user config object.
    */
@@ -40,18 +82,12 @@ export class GameComponent implements OnInit {
   /**
    * The current version of the app.
    */
-  version = PackageJson.version;
+  version = '';
 
-  constructor(
-    public widgetService: WidgetService,
-    public eventSubService: EventSubService,
-    public configManager: ConfigManager,
-    public userService: UserService,
-    public clientDataService: ClientDataService,
-    public overlayContainer: OverlayContainer,
-    public dialog: MatDialog,
-    public router: Router
-  ) {}
+  constructor() {
+    const config = PackageJson;
+    this.version = config.version;
+  }
 
   async ngOnInit(): Promise<void> {
     this.clientDataService.initialize();
@@ -59,15 +95,15 @@ export class GameComponent implements OnInit {
     const config = this.configManager.getConfig();
     this.updateOverlayTheme();
 
-    const token = config.authentication.token;
+    const { token } = config.authentication;
     if (!token) {
       void this.router.navigate(['/']);
     } else {
       const userData = await this.userService.getUserAuth(token);
       if (userData && userData.login) {
         if (this.widgets) {
-          const ids = this.widgets.map(x => x.id);
-          const validLayout = config.layout.filter(x => ids.indexOf(x) !== -1);
+          const ids = this.widgets.map(x => x.id),
+            validLayout = config.layout.filter(x => ids.indexOf(x) !== -1);
           if (config.layout.length !== validLayout.length) {
             config.layout = validLayout;
           }

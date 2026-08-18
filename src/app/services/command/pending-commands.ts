@@ -40,8 +40,8 @@ export class PendingCommands extends CommandWrapper {
    * @param id The id of the pet.
    */
   setClass(id: '1' | '2' | '3' | '4' | '5'): void {
-    const raw = this.getCommandString('pending', 'setClass', 'command');
-    const command = this.replaceProperty(raw, 'id', id);
+    const raw = this.getCommandString('pending', 'setClass', 'command'),
+      command = this.replaceProperty(raw, 'id', id);
     this.eventSubService.send(command);
   }
 }

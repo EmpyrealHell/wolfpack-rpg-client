@@ -14,105 +14,106 @@
             Report a Bug
           </button>
         </span>
-        <span *ngIf="eventSubService.isConnected; else usernameLoggedOut">
-          <button mat-button [matMenuTriggerFor]="userMenu">
-            {{ config.authentication.user
-            }}<mat-icon>arrow_drop_down </mat-icon>
-          </button>
-          <mat-menu #userMenu="matMenu">
-            <button mat-menu-item>
-              <mat-slide-toggle
-                (click)="$event.stopPropagation()"
-                color="accent"
-                [(ngModel)]="config.settings.useDarkTheme"
-                (change)="updateSettings()"
-                >Dark Theme</mat-slide-toggle
-              >
+        @if (eventSubService.isConnected) {
+          <span>
+            <button mat-button [matMenuTriggerFor]="userMenu">
+              {{ config.authentication.user
+              }}<mat-icon>arrow_drop_down </mat-icon>
             </button>
-            <button mat-menu-item>
-              <mat-slide-toggle
-                (click)="$event.stopPropagation()"
-                color="accent"
-                [(ngModel)]="config.settings.toolbarNames"
-                (change)="updateSettings()"
-                >Toolbar Names</mat-slide-toggle
-              >
-            </button>
-            <button mat-menu-item>
-              <mat-slide-toggle
-                (click)="$event.stopPropagation()"
-                color="accent"
-                [(ngModel)]="config.settings.toolbarIcons"
-                (change)="updateSettings()"
-                >Toolbar Icons</mat-slide-toggle
-              >
-            </button>
-            <button mat-menu-item>
-              <mat-slide-toggle
-                (click)="$event.stopPropagation()"
-                color="accent"
-                [(ngModel)]="config.settings.playSounds"
-                (change)="updateSettings()"
-                >Play Sounds</mat-slide-toggle
-              >
-            </button>
-            <span mat-menu-item
-              >Volume
-              <mat-slider
-                min="0"
-                max="1"
-                step="0.1"
-                [disabled]="!config.settings.playSounds"
-              >
-                <input
+            <mat-menu #userMenu="matMenu">
+              <button mat-menu-item>
+                <mat-slide-toggle
                   (click)="$event.stopPropagation()"
-                  matSliderThumb
-                  [(ngModel)]="config.settings.soundVolume"
-                />
-              </mat-slider>
-            </span>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="openPage('releases')">
-              Changelog
-            </button>
-            <button mat-menu-item (click)="openPage('issues/new')">
-              Report a Bug
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="logOut()">Logout</button>
-          </mat-menu>
-        </span>
-        <ng-template #usernameLoggedOut>
+                  color="accent"
+                  [(ngModel)]="config.settings.useDarkTheme"
+                  (change)="updateSettings()"
+                  >Dark Theme</mat-slide-toggle
+                >
+              </button>
+              <button mat-menu-item>
+                <mat-slide-toggle
+                  (click)="$event.stopPropagation()"
+                  color="accent"
+                  [(ngModel)]="config.settings.toolbarNames"
+                  (change)="updateSettings()"
+                  >Toolbar Names</mat-slide-toggle
+                >
+              </button>
+              <button mat-menu-item>
+                <mat-slide-toggle
+                  (click)="$event.stopPropagation()"
+                  color="accent"
+                  [(ngModel)]="config.settings.toolbarIcons"
+                  (change)="updateSettings()"
+                  >Toolbar Icons</mat-slide-toggle
+                >
+              </button>
+              <button mat-menu-item>
+                <mat-slide-toggle
+                  (click)="$event.stopPropagation()"
+                  color="accent"
+                  [(ngModel)]="config.settings.playSounds"
+                  (change)="updateSettings()"
+                  >Play Sounds</mat-slide-toggle
+                >
+              </button>
+              <span mat-menu-item
+                >Volume
+                <mat-slider
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  [disabled]="!config.settings.playSounds"
+                >
+                  <input
+                    (click)="$event.stopPropagation()"
+                    matSliderThumb
+                    [(ngModel)]="config.settings.soundVolume"
+                  />
+                </mat-slider>
+              </span>
+              <mat-divider></mat-divider>
+              <button mat-menu-item (click)="openPage('releases')">
+                Changelog
+              </button>
+              <button mat-menu-item (click)="openPage('issues/new')">
+                Report a Bug
+              </button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item (click)="logOut()">Logout</button>
+            </mat-menu>
+          </span>
+        } @else {
           <span>
             <button mat-button (click)="router.navigate(['/'])">Log In</button>
           </span>
-        </ng-template>
+        }
       </mat-toolbar>
       <mat-divider></mat-divider>
       <mat-toolbar>
-        <ng-container *ngFor="let widget of widgets">
+        @for (widget of widgets; track widget) {
           <button mat-button (click)="toggleWidget(widget)">
             <div class="toolbar-button-content">
-              <img
-                *ngIf="config.settings.toolbarIcons"
-                src="./assets/{{ widget.getIcon() }}"
-                width="32px"
-              />
-              <span
-                *ngIf="
-                  config.settings.toolbarNames || !config.settings.toolbarIcons
-                "
-              >
-                {{ widget.name }}
-              </span>
+              @if (config.settings.toolbarIcons) {
+                <img
+                  src="./assets/{{ widget.getIcon() }}"
+                  width="32px"
+                  alt="{{ widget.name }}"
+                />
+              }
+              @if (
+                config.settings.toolbarNames || !config.settings.toolbarIcons
+              ) {
+                <span>
+                  {{ widget.name }}
+                </span>
+              }
             </div>
           </button>
-          <mat-divider
-            *ngIf="!widget.name"
-            [vertical]="true"
-            class="accent-divider"
-          ></mat-divider>
-        </ng-container>
+          @if (!widget.name) {
+            <mat-divider [vertical]="true" class="accent-divider"></mat-divider>
+          }
+        }
       </mat-toolbar>
       <div class="flex-row">
         <app-widget-container></app-widget-container>

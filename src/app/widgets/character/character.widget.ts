@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { Character, CharacterClass } from './model/character';
@@ -6,28 +6,35 @@ import { Item, ItemQuality, ItemSlot, ItemType } from '../inventory/model/item';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SelectClassDialog } from './select.class.dialog';
+import { MatCardContent } from '@angular/material/card';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatButton } from '@angular/material/button';
+import { MatList, MatListItem } from '@angular/material/list';
 
 /**
  * Widget used to display character data.
  */
 @Component({
-  selector: 'app-character-widget',
-  templateUrl: './character.widget.html',
-  standalone: false,
+    selector: 'app-character-widget',
+    templateUrl: './character.widget.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        MatCardContent,
+        MatProgressBar,
+        MatButton,
+        MatList,
+        MatListItem,
+    ],
 })
 export class CharacterWidgetComponent extends AbstractWidgetComponent {
+  dialog = inject(MatDialog);
+  snackbar = inject(MatSnackBar);
+
   name = 'Character';
   /**
    * The character data to display.
    */
   data = new Character();
-
-  constructor(
-    public dialog: MatDialog,
-    public snackbar: MatSnackBar
-  ) {
-    super();
-  }
 
   private handleStats(id: string, groups: Map<string, string>): void {
     if (id === 'compact') {
@@ -42,10 +49,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  private handleInventory(
-    id: string,
-    subGroups: Array<Map<string, string>>
-  ): void {
+  private handleInventory(id: string, subGroups: Map<string, string>[]): void {
     if (id === 'compact') {
       for (const sub of subGroups) {
         const newItem = new Item();
@@ -57,14 +61,14 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
         newItem.description = sub.get('desc') ?? '';
         newItem.isEquipped = sub.get('equipped') === 'E';
         const quality = this.clientDataService?.itemQualities.get(
-          parseInt(sub.get('quality') ?? '0')
-        );
-        const slot = this.clientDataService?.itemSlots.get(
-          parseInt(sub.get('slot') ?? '0')
-        );
-        const type = this.clientDataService?.itemTypes.get(
-          parseInt(sub.get('type') ?? '0')
-        );
+            parseInt(sub.get('quality') ?? '0')
+          ),
+          slot = this.clientDataService?.itemSlots.get(
+            parseInt(sub.get('slot') ?? '0')
+          ),
+          type = this.clientDataService?.itemTypes.get(
+            parseInt(sub.get('type') ?? '0')
+          );
         newItem.quality = quality ?? ItemQuality.default;
         newItem.slot = slot ?? ItemSlot.default;
         newItem.type = type ?? ItemType.default;
@@ -110,7 +114,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         this.handleStats(id, groups);
       }
     );
@@ -120,7 +124,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, _groups, subGroups, _date) => {
         this.handleInventory(id, subGroups);
       }
     );
@@ -130,7 +134,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         this.handleEquip(id, groups);
       }
     );
@@ -140,7 +144,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         this.handleUnequip(id, groups);
       }
     );
@@ -150,7 +154,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         if (id === 'confirmation') {
           this.data.class =
             this.clientDataService?.classNames.get(groups.get('class') ?? '') ??
@@ -165,7 +169,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'pending',
       id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, _id, groups, _subGroups, _date, isReplay) => {
         if (!isReplay) {
           console.log('Respec detected!');
           this.openClassSelect(parseInt(groups.get('cost') ?? '0'));
@@ -178,7 +182,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'error',
       id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, id, groups, _subGroups, _date, isReplay) => {
         if (!isReplay) {
           if (id === 'inParty') {
             this.snackbar.open(
@@ -211,7 +215,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         if (id === 'confirmation') {
           this.data.class =
             this.clientDataService?.classNames.get(groups.get('class') ?? '') ??
@@ -225,7 +229,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         if (id === 'cost') {
           this.data.coins -= parseInt(groups.get('cost') ?? '0');
         }
@@ -237,7 +241,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         if (id === 'confirmation') {
           this.data.coins -= parseInt(groups.get('cost') ?? '0');
         }
@@ -249,7 +253,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'error',
       id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, id, groups, _subGroups, _date, isReplay) => {
         if (id === 'insufficientFunds') {
           if (!isReplay) {
             const cost = groups.get('cost') ?? '0';
@@ -268,7 +272,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'public',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         if (id === 'gloat') {
           this.data.coins -= parseInt(groups.get('cost') ?? '0');
         }
@@ -280,7 +284,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         if (id === 'confirmation') {
           this.data.coins -= parseInt(groups.get('coins') ?? '0');
         }
@@ -292,7 +296,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         if (id === 'confirmation') {
           this.data.coins -= parseInt(groups.get('coins') ?? '0');
         }
@@ -302,9 +306,9 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'player',
       'awards',
       id,
-      (name, id, groups, subGroups, date) => {
-        let coins = parseInt(groups.get('coins') ?? '0');
-        let xp = parseInt(groups.get('xp') ?? '0');
+      (_name, _id, groups, _subGroups, _date) => {
+        let coins = parseInt(groups.get('coins') ?? '0'),
+          xp = parseInt(groups.get('xp') ?? '0');
         if (this.data.subscriber) {
           const multi = parseFloat(groups.get('multiplier') ?? '1');
           coins *= multi;
@@ -318,7 +322,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'player',
       'levelUp',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, _id, groups, _subGroups, _date) => {
         this.data.level = parseInt(
           groups.get('level') ?? this.data.level.toString()
         );
@@ -328,7 +332,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'player',
       'prestige',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, _id, groups, _subGroups, _date) => {
         this.data.prestige = parseInt(
           groups.get('prestige') ?? this.data.prestige.toString()
         );
@@ -341,7 +345,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'player',
       'selectClass',
       id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, _id, _groups, _subGroups, _date, isReplay) => {
         if (!isReplay) {
           this.openClassSelect(0);
         }
@@ -351,7 +355,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'dungeon',
       'completeAwards',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, _id, groups, _subGroups, _date) => {
         this.data.experience += parseInt(groups.get('xp') ?? '0');
         this.data.coins += parseInt(groups.get('coins') ?? '0');
       }
@@ -360,7 +364,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'dungeon',
       'death',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, _id, groups, _subGroups, _date) => {
         this.data.experience -= parseInt(groups.get('xp') ?? '0');
         this.data.coins -= parseInt(groups.get('coins') ?? '0');
       }
@@ -369,7 +373,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'dungeon',
       'start',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, _id, groups, _subGroups, _date) => {
         this.data.coins -= parseInt(groups.get('coins') ?? '0');
         const balance = parseInt(
           groups.get('balance') ?? this.data.coins.toString()
@@ -383,7 +387,7 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
       'dungeon',
       'completeLoot',
       id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, _id, _groups, _subGroups, date, _isReplay) => {
         this.data.inventory = [];
         this.commandService?.sendResponseCommand('inventory', 'list', date);
       }
@@ -462,8 +466,8 @@ export class CharacterWidgetComponent extends AbstractWidgetComponent {
     const dialogRef = this.dialog.open(SelectClassDialog, {
       data: {
         isRespec: cost > 0,
-        cost: cost,
-        classes: classes,
+        cost,
+        classes,
       },
     });
     dialogRef.afterClosed().subscribe(result => {

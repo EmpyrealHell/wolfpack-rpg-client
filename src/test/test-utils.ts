@@ -6,13 +6,14 @@ export type ClassSpy<T> = {
 
 export class TestUtils {
   static spyOnClass<T>(classType: Type<T>): ClassSpy<T> {
-    const prototype = classType.prototype;
-    const methods = Object.getOwnPropertyNames(prototype)
-      .map(name => [name, Object.getOwnPropertyDescriptor(prototype, name)])
-      .filter(([name, descriptor]) => {
-        return (descriptor as PropertyDescriptor).value instanceof Function;
-      })
-      .map(([name]) => name);
+    const { prototype } = classType,
+      methods = Object.getOwnPropertyNames(prototype)
+        .map(name => [name, Object.getOwnPropertyDescriptor(prototype, name)])
+        .filter(
+          ([_name, descriptor]) =>
+            (descriptor as PropertyDescriptor).value instanceof Function
+        )
+        .map(([name]) => name);
     return jasmine.createSpyObj(`spyFor${classType.name}`, [...methods]);
   }
 }

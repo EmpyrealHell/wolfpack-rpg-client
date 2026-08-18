@@ -1,133 +1,128 @@
 import { MessageQueue } from './message-queue';
 
-describe('MessageQueue', () => {
-  it('should queue messages to send', () => {
-    const message = `test${Date.now()}`;
-    const queue = new MessageQueue('spec-test', 100);
+describe('MessageQueue', async () => {
+  it('should queue messages to send', async () => {
+    const message = `test${Date.now()}`,
+      queue = new MessageQueue('spec-test', 100);
     queue.send(message);
     const queueCopy = queue.queuedMessages;
-    expect(queueCopy).toContain(message);
-    expect(queueCopy.length).toBe(1);
+    await expect(queueCopy).toContain(message);
+    await expect(queueCopy.length).toBe(1);
   });
 
-  it('should not queue duplicate messages', () => {
-    const message = `test${Date.now()}`;
-    const queue = new MessageQueue('spec-test', 100);
+  it('should not queue duplicate messages', async () => {
+    const message = `test${Date.now()}`,
+      queue = new MessageQueue('spec-test', 100);
     queue.send(message);
     queue.send(message);
     const queueCopy = queue.queuedMessages;
-    expect(queueCopy.length).toBe(1);
+    await expect(queueCopy.length).toBe(1);
   });
 
-  it('should return a copy of the queued messages', () => {
-    const message = `test message at ${Date.now()}`;
-    const queue = new MessageQueue('spec-test', 100);
+  it('should return a copy of the queued messages', async () => {
+    const message = `test message at ${Date.now()}`,
+      queue = new MessageQueue('spec-test', 100);
     queue.send(message);
     let queueCopy = queue.queuedMessages;
-    expect(queueCopy).toContain(message);
+    await expect(queueCopy).toContain(message);
     queueCopy.length = 0;
     queueCopy = queue.queuedMessages;
-    expect(queueCopy).toContain(message);
+    await expect(queueCopy).toContain(message);
   });
 
   it('should not allow more than 3 messages each second', async () => {
-    const message = `test message sent at ${Date.now()}`;
-    const sendFn = {
-      send: (message: string): Promise<void> => {
-        return new Promise(resolve => {
-          resolve(undefined);
-        });
+    const message = `test message sent at ${Date.now()}`,
+      sendFn = {
+        send: (_message: string): Promise<void> =>
+          new Promise(resolve => {
+            resolve(undefined);
+          }),
       },
-    };
-    const spy = spyOn(sendFn, 'send');
-    const queue = new MessageQueue('spec-test', 100);
+      spy = spyOn(sendFn, 'send'),
+      queue = new MessageQueue('spec-test', 100);
     queue.setSendFunction(sendFn.send);
     for (let i = 0; i < 3; i++) {
       queue.addSent(Date.now() - 999);
     }
     queue.send(message);
     await queue.processQueue();
-    expect(spy).not.toHaveBeenCalled();
+    await expect(spy).not.toHaveBeenCalled();
   });
 
   it('should send a fourth message after 1 second', async () => {
-    const message = `test message sent at ${Date.now()}`;
-    const sendFn = {
-      send: (message: string): Promise<void> => {
-        return new Promise(resolve => {
-          resolve(undefined);
-        });
+    const message = `test message sent at ${Date.now()}`,
+      sendFn = {
+        send: (_message: string): Promise<void> =>
+          new Promise(resolve => {
+            resolve(undefined);
+          }),
       },
-    };
-    const spy = spyOn(sendFn, 'send');
-    const queue = new MessageQueue('spec-test', 100);
+      spy = spyOn(sendFn, 'send'),
+      queue = new MessageQueue('spec-test', 100);
     queue.setSendFunction(sendFn.send);
     for (let i = 0; i < 3; i++) {
       queue.addSent(Date.now() - 1001);
     }
     queue.send(message);
     await queue.processQueue();
-    expect(spy).toHaveBeenCalled();
+    await expect(spy).toHaveBeenCalled();
   });
 
   it('should not send more than 100 messages each minute', async () => {
-    const message = `test message sent at ${Date.now()}`;
-    const sendFn = {
-      send: (message: string): Promise<void> => {
-        return new Promise(resolve => {
-          resolve(undefined);
-        });
+    const message = `test message sent at ${Date.now()}`,
+      sendFn = {
+        send: (_message: string): Promise<void> =>
+          new Promise(resolve => {
+            resolve(undefined);
+          }),
       },
-    };
-    const spy = spyOn(sendFn, 'send');
-    const queue = new MessageQueue('spec-test', 100);
+      spy = spyOn(sendFn, 'send'),
+      queue = new MessageQueue('spec-test', 100);
     queue.setSendFunction(sendFn.send);
     for (let i = 0; i < 100; i++) {
       queue.addSent(Date.now() - 59999);
     }
     queue.send(message);
     await queue.processQueue();
-    expect(spy).not.toHaveBeenCalled();
+    await expect(spy).not.toHaveBeenCalled();
   });
 
   it('should send a 101st message after 1 minute', async () => {
-    const message = `test message sent at ${Date.now()}`;
-    const sendFn = {
-      send: (message: string): Promise<void> => {
-        return new Promise(resolve => {
-          resolve(undefined);
-        });
+    const message = `test message sent at ${Date.now()}`,
+      sendFn = {
+        send: (_message: string): Promise<void> =>
+          new Promise(resolve => {
+            resolve(undefined);
+          }),
       },
-    };
-    const spy = spyOn(sendFn, 'send');
-    const queue = new MessageQueue('spec-test', 100);
+      spy = spyOn(sendFn, 'send'),
+      queue = new MessageQueue('spec-test', 100);
     queue.setSendFunction(sendFn.send);
     for (let i = 0; i < 100; i++) {
       queue.addSent(Date.now() - 60001);
     }
     queue.send(message);
     await queue.processQueue();
-    expect(spy).toHaveBeenCalled();
+    await expect(spy).toHaveBeenCalled();
   });
 
   it('should call registered callbacks when message is sent', async () => {
-    const message = `test message sent at ${Date.now()}`;
-    const sendFn = {
-      send: (message: string): Promise<void> => {
-        return new Promise(resolve => {
-          resolve(undefined);
-        });
+    const message = `test message sent at ${Date.now()}`,
+      sendFn = {
+        send: (_message: string): Promise<void> =>
+          new Promise(resolve => {
+            resolve(undefined);
+          }),
       },
-    };
-    const queue = new MessageQueue('spec-test', 100);
+      queue = new MessageQueue('spec-test', 100);
     queue.setSendFunction(sendFn.send);
     const callbackFn = {
-      callback: (message: string): void => {},
-    };
-    const spy = spyOn(callbackFn, 'callback');
+        callback: (_message: string): void => {},
+      },
+      spy = spyOn(callbackFn, 'callback');
     queue.registerSendCallback('spec-test', callbackFn.callback);
     queue.send(message);
     await queue.processQueue();
-    expect(spy).toHaveBeenCalled();
+    await expect(spy).toHaveBeenCalled();
   });
 });

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { CommandService } from '../command/command-service';
 import { Rarity } from 'src/app/widgets/pet/model/pet';
 import {
@@ -7,7 +7,6 @@ import {
   ItemType,
 } from 'src/app/widgets/inventory/model/item';
 import { CharacterClass } from 'src/app/widgets/character/model/character';
-import { DungeonMode } from 'src/app/widgets/group/model/dungeon';
 
 /**
  * Service containing the feature management system.
@@ -16,6 +15,8 @@ import { DungeonMode } from 'src/app/widgets/group/model/dungeon';
   providedIn: 'root',
 })
 export class ClientDataService {
+  private commandService = inject(CommandService);
+
   public itemTypes: Map<number, ItemType> = new Map<number, ItemType>();
   public itemSlots: Map<number, ItemSlot> = new Map<number, ItemSlot>();
   public itemQualities: Map<number, ItemQuality> = new Map<
@@ -30,10 +31,7 @@ export class ClientDataService {
     string,
     CharacterClass
   >();
-  public equippables: Map<number, Array<number>> = new Map<
-    number,
-    Array<number>
-  >();
+  public equippables: Map<number, number[]> = new Map<number, number[]>();
   public petRarities: Map<number, Rarity> = new Map<number, Rarity>();
   public dungeonModes: Map<string, string> = new Map<string, string>();
 
@@ -92,16 +90,16 @@ export class ClientDataService {
     for (const charClass of classes) {
       const parts = charClass.split('|');
       if (parts.length === 7) {
-        const id = parseInt(parts[0]);
-        const charClass = new CharacterClass(
-          id,
-          this.unescape(parts[1]),
-          this.parseWithEmpty(parts[2]),
-          this.parseWithEmpty(parts[3]),
-          this.parseWithEmpty(parts[4]),
-          this.parseWithEmpty(parts[5]),
-          this.parseWithEmpty(parts[6])
-        );
+        const id = parseInt(parts[0]),
+          charClass = new CharacterClass(
+            id,
+            this.unescape(parts[1]),
+            this.parseWithEmpty(parts[2]),
+            this.parseWithEmpty(parts[3]),
+            this.parseWithEmpty(parts[4]),
+            this.parseWithEmpty(parts[5]),
+            this.parseWithEmpty(parts[6])
+          );
         this.classes.set(id, charClass);
         this.classNames.set(charClass.name, charClass);
       }
@@ -128,10 +126,11 @@ export class ClientDataService {
       const parts = rarity.split('|');
       if (parts.length === 3) {
         const id = parseInt(parts[0]);
-        this.petRarities.set(
+        this.petRarities.set(id, {
           id,
-          new Rarity(id, this.unescape(parts[1]), parts[2])
-        );
+          name: this.unescape(parts[1]),
+          color: parts[2],
+        });
       }
     }
   }
@@ -140,18 +139,18 @@ export class ClientDataService {
     for (const mode of modes) {
       const parts = mode.split('|');
       if (parts.length === 2) {
-        const flag = parts[0];
-        const name = parts[1];
+        const flag = parts[0],
+          name = parts[1];
         this.dungeonModes.set(flag, name);
       }
     }
   }
 
   private handleClientDataUpdate(
-    name: string,
-    id: string,
+    _name: string,
+    _id: string,
     group: Map<string, string>,
-    subGroups: Array<Map<string, string>>
+    _subGroups: Map<string, string>[]
   ): void {
     const data = group.get('data');
     if (data) {
@@ -168,8 +167,6 @@ export class ClientDataService {
     }
   }
 
-  constructor(private commandService: CommandService) {}
-
   initialize(): void {
     this.commandService.subscribeToCommand(
       'client',
@@ -177,7 +174,7 @@ export class ClientDataService {
       'responses',
       'success',
       'client-data',
-      (name, id, groups, subGroups, date) => {
+      (name, id, groups, subGroups, _date) => {
         this.handleClientDataUpdate(name, id, groups, subGroups);
       }
     );

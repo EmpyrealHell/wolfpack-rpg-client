@@ -1,44 +1,54 @@
 import { TestUtils } from 'src/test/test-utils';
 import { CommandCallback, CommandService } from '../command/command-service';
-import { WidgetItem } from '../widget/widget-item';
 import { ClientDataService } from './client-data-service';
+import { TestBed } from '@angular/core/testing';
 
 describe('ClientDataService', () => {
-  let commandService: jasmine.SpyObj<CommandService>;
-  let service: ClientDataService;
-
-  let roleHandler: CommandCallback;
+  let commandService: jasmine.SpyObj<CommandService>,
+    roleHandler: CommandCallback,
+    service: ClientDataService;
 
   beforeAll(async () => {
     commandService = TestUtils.spyOnClass(
       CommandService
     ) as unknown as jasmine.SpyObj<CommandService>;
     commandService.subscribeToCommand.and.callFake(
-      (group, command, response, result, subscriber, callback) => {
+      (_group, _command, _response, _result, _subscriber, callback) => {
         roleHandler = callback;
         return '';
       }
     );
-    service = new ClientDataService(commandService);
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: ClientDataService,
+        },
+        {
+          provide: CommandService,
+          useFactory: () => commandService,
+        },
+      ],
+    });
+    service = TestBed.inject(ClientDataService);
   });
 
-  it('should send fetch-client-data command and register a responder', () => {
+  it('should send fetch-client-data command and register a responder', async () => {
     service.initialize();
-    expect(commandService.subscribeToCommand).toHaveBeenCalled();
-    const args = commandService.subscribeToCommand.calls.mostRecent().args;
-    expect(args[0]).toBe('client');
-    expect(args[1]).toBe('data');
-    expect(args[2]).toBe('responses');
-    expect(args[3]).toBe('success');
-    expect(args[4]).toBe('client-data');
-    expect(roleHandler).not.toBeUndefined();
-    expect(commandService.sendCommand).toHaveBeenCalledWith(
+    await expect(commandService.subscribeToCommand).toHaveBeenCalled();
+    const { args } = commandService.subscribeToCommand.calls.mostRecent();
+    await expect(args[0]).toBe('client');
+    await expect(args[1]).toBe('data');
+    await expect(args[2]).toBe('responses');
+    await expect(args[3]).toBe('success');
+    await expect(args[4]).toBe('client-data');
+    await expect(roleHandler).not.toBeUndefined();
+    await expect(commandService.sendCommand).toHaveBeenCalledWith(
       'client',
       'data' as never
     );
   });
 
-  it('should update client data in response to fetch-client-data command', () => {
+  it('should update client data in response to fetch-client-data command', async () => {
     service.initialize();
     roleHandler(
       '',
@@ -52,12 +62,12 @@ describe('ClientDataService', () => {
       [new Map<string, string>()],
       Date.now()
     );
-    expect(service.itemQualities.size).toBe(4);
-    expect(service.itemTypes.size).toBe(5);
-    expect(service.itemSlots.size).toBe(4);
-    expect(service.classes.size).toBe(5);
-    expect(service.equippables.size).toBe(5);
-    expect(service.petRarities.size).toBe(5);
-    expect(service.dungeonModes.size).toBe(2);
+    await expect(service.itemQualities.size).toBe(4);
+    await expect(service.itemTypes.size).toBe(5);
+    await expect(service.itemSlots.size).toBe(4);
+    await expect(service.classes.size).toBe(5);
+    await expect(service.equippables.size).toBe(5);
+    await expect(service.petRarities.size).toBe(5);
+    await expect(service.dungeonModes.size).toBe(2);
   });
 });

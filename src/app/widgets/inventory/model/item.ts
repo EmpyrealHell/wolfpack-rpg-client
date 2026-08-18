@@ -44,9 +44,9 @@ export class ItemQuality {
    * @returns The color to use as a text shadow for this color.
    */
   getShadowColor(color: string): string {
-    const red = Math.round(parseInt(color.substring(1, 3), 16) / 2);
-    const green = Math.round(parseInt(color.substring(3, 5), 16) / 2);
-    const blue = Math.round(parseInt(color.substring(5, 7), 16) / 2);
+    const red = Math.round(parseInt(color.substring(1, 3), 16) / 2),
+      green = Math.round(parseInt(color.substring(3, 5), 16) / 2),
+      blue = Math.round(parseInt(color.substring(5, 7), 16) / 2);
     return `#${red.toString(16)}${green.toString(16)}${blue.toString(16)}`;
   }
 }

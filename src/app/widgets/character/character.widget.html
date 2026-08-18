@@ -1,12 +1,14 @@
 <mat-card-content height="100%" class="flex-column">
   <div style="font-size: 18pt" class="flex-row-short">
     <span
-      ><img src="./assets/class-{{data.class.id}}.svg" width="22px" /> Level
-      {{data.level}}
-      <sup *ngIf="data.prestige > 0" style="font-size: 10pt">
-        ({{data.prestige}})
-      </sup>
-      {{data.class.name}}</span
+      ><img
+        src="./assets/class-{{data.class.id}}.svg"
+        width="22px"
+        alt="{{data.class.name}}"
+      />
+      Level {{data.level}} @if (data.prestige > 0) {
+      <sup style="font-size: 10pt"> ({{data.prestige}}) </sup>
+      } {{data.class.name}}</span
     >
     <span class="fill-space"></span>
     <span>{{data.xpAmount()}} / {{data.xpNeeded()}} XP</span>
@@ -23,8 +25,8 @@
     class="flex-row-short"
     style="display: block; width: 50%; margin: auto; text-align: center"
   >
+    @if (data.class.id > 0) {
     <button
-      *ngIf="data.class.id > 0"
       mat-raised-button
       (click)="gloat()"
       color="accent"
@@ -32,22 +34,19 @@
     >
       Gloat
     </button>
-    <button
-      *ngIf="data.class.id > 0"
-      mat-raised-button
-      (click)="respec()"
-      style="margin: 2px"
-    >
+    } @if (data.class.id > 0) {
+    <button mat-raised-button (click)="respec()" style="margin: 2px">
       Respec
     </button>
+    } @if (data.class.id === 0 && data.level >= 3) {
     <button
-      *ngIf="data.class.id === 0 && data.level >= 3"
       mat-raised-button
       (click)="selectClass()"
       style="margin: 2px 0px 2px 2px"
     >
       Select Class
     </button>
+    }
   </div>
   <div class="flex-row-short">
     <div class="flex-column">
@@ -65,12 +64,14 @@
       </mat-list>
     </div>
     <div class="flex-column">
-      <div *ngFor="let slot of getSlots()">
+      @for (slot of getSlots(); track slot) {
+      <div>
         <div>
           <span style="font-size: 18pt">{{slot.name}}:</span>
         </div>
         <mat-list>
-          <mat-list-item *ngFor="let item of getItemsInSlot(slot)">
+          @for (item of getItemsInSlot(slot); track item) {
+          <mat-list-item>
             <span
               [style.color]="item.quality.color"
               [style.textShadow]="item.quality.shadow + ' 1px 1px 2px'"
@@ -93,8 +94,10 @@
               {{item.name}}</span
             >
           </mat-list-item>
+          }
         </mat-list>
       </div>
+      }
     </div>
   </div>
 </mat-card-content>

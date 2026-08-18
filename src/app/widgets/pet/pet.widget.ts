@@ -1,22 +1,45 @@
-import { Component, Inject, Input, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
-import { Pet, Rarity, Stable } from './model/pet';
+import { Pet, Stable } from './model/pet';
 import { MatDialog } from '@angular/material/dialog';
 import { ReleasePetDialog } from './release.pet.dialog';
 import { ErrorDialog } from 'src/app/components/error-dialog/error-dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatRipple } from '@angular/material/core';
+import { MatCardContent } from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { MatFormField, MatLabel, MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 
 /**
  * Widget used to display pet data.
  */
 @Component({
-  selector: 'app-pet-widget',
-  templateUrl: './pet.widget.html',
-  standalone: false,
+    selector: 'app-pet-widget',
+    templateUrl: './pet.widget.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        MatCardContent,
+        MatRipple,
+        MatIcon,
+        MatButton,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        FormsModule,
+    ],
 })
 export class PetWidgetComponent extends AbstractWidgetComponent {
+  dialog = inject(MatDialog);
+  snackbar = inject(MatSnackBar);
+
   name = 'Pets';
   private static pets = new Map<number, Pet>();
 
@@ -29,13 +52,6 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
 
   @ViewChild(MatRipple)
   ripple: MatRipple | undefined;
-
-  constructor(
-    public dialog: MatDialog,
-    public snackbar: MatSnackBar
-  ) {
-    super();
-  }
 
   private getPetByName(name: string): Stable | undefined {
     const matches = this.stable.filter(x => x.name === name);
@@ -59,19 +75,18 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     return undefined;
   }
 
-  private handleStable(
-    id: string,
-    subGroups: Array<Map<string, string>>
-  ): void {
+  private handleStable(id: string, subGroups: Map<string, string>[]): void {
     if (id === 'compact') {
       for (const sub of subGroups) {
-        const id = parseInt(sub.get('id') ?? '0');
-        const petType = sub.get('type') ?? 'unknown';
-        const description = sub.get('description') ?? '';
-        const rarityId = parseInt(sub.get('rarity') ?? '0');
-        const rarity =
-          this.clientDataService?.petRarities.get(rarityId) ??
-          new Rarity(rarityId, 'unknown', '#ffffff');
+        const id = parseInt(sub.get('id') ?? '0'),
+          petType = sub.get('type') ?? 'unknown',
+          description = sub.get('description') ?? '',
+          rarityId = parseInt(sub.get('rarity') ?? '0'),
+          rarity = this.clientDataService?.petRarities.get(rarityId) ?? {
+            id: rarityId,
+            name: 'unknown',
+            color: '#ffffff',
+          };
         let pet: Pet;
         if (!PetWidgetComponent.pets.has(id)) {
           pet = new Pet(id, petType, rarity, description);
@@ -80,15 +95,14 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
           pet =
             PetWidgetComponent.pets.get(id) ?? new Pet(id, petType, rarity, '');
         }
-        const name = sub.get('name') ?? '';
-        const sparkly = sub.get('sparkly') === 'S';
-        const level = parseInt(sub.get('level') ?? '0');
-        const xp = parseInt(sub.get('xp') ?? '0');
-        const affection = parseInt(sub.get('affection') ?? '0');
-        const hunger = parseInt(sub.get('hunger') ?? '0');
-        const active = sub.get('active') === 'A';
-
-        const index = this.stable.length + 1;
+        const name = sub.get('name') ?? '',
+          sparkly = sub.get('sparkly') === 'S',
+          level = parseInt(sub.get('level') ?? '0'),
+          xp = parseInt(sub.get('xp') ?? '0'),
+          affection = parseInt(sub.get('affection') ?? '0'),
+          hunger = parseInt(sub.get('hunger') ?? '0'),
+          active = sub.get('active') === 'A',
+          index = this.stable.length + 1;
 
         this.stable.push(
           new Stable(
@@ -108,7 +122,6 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
   }
 
   private handleFeedSuccess(
-    name: string,
     id: string,
     groups: Map<string, string>,
     isReplay: boolean | undefined
@@ -128,11 +141,11 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
         this.lastFed.level = parseInt(level);
       }
     } else if (id === 'confirmation') {
-      const cost = parseInt(groups.get('cost') ?? '0');
-      const petName = groups.get('name') ?? '';
-      const sparkly = groups.get('sparkly') ? true : false;
-      const type = groups.get('pet') ?? '';
-      const pet = this.getPetByAll(petName, type, sparkly);
+      const cost = parseInt(groups.get('cost') ?? '0'),
+        petName = groups.get('name') ?? '',
+        sparkly = Boolean(groups.get('sparkly')),
+        type = groups.get('pet') ?? '',
+        pet = this.getPetByAll(petName, type, sparkly);
       if (pet) {
         this.lastFed = pet;
         pet.hunger = 100;
@@ -175,11 +188,11 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
 
   private handleRenameSuccess(id: string, groups: Map<string, string>): void {
     if (id === 'confirmation') {
-      const oldName = groups.get('oldName') ?? '';
-      const type = groups.get('pet') ?? '';
-      const sparkly = groups.get('sparkly') ? true : false;
-      const newName = groups.get('name') ?? '';
-      const pet = this.getPetByAll(oldName, type, sparkly);
+      const oldName = groups.get('oldName') ?? '',
+        type = groups.get('pet') ?? '',
+        sparkly = Boolean(groups.get('sparkly')),
+        newName = groups.get('name') ?? '',
+        pet = this.getPetByAll(oldName, type, sparkly);
       if (pet) {
         pet.name = newName;
       }
@@ -190,21 +203,17 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
 
   private handleSummonSuccess(id: string, groups: Map<string, string>): void {
     if (id === 'confirmation') {
-      const summoned = groups.get('summoned') ?? '';
-      const summonSparkly = groups.get('summonSparkly') ? true : false;
-      const summonType = groups.get('summonPet') ?? '';
-      const toSummon = this.getPetByAll(summoned, summonType, summonSparkly);
+      const summoned = groups.get('summoned') ?? '',
+        summonSparkly = Boolean(groups.get('summonSparkly')),
+        summonType = groups.get('summonPet') ?? '',
+        toSummon = this.getPetByAll(summoned, summonType, summonSparkly);
       if (toSummon) {
         toSummon.active = true;
       }
-      const dismissed = groups.get('dismissed') ?? '';
-      const dismissSparkly = groups.get('dismissSparkly') ? true : false;
-      const dismissType = groups.get('dismissPet') ?? '';
-      const toDismiss = this.getPetByAll(
-        dismissed,
-        dismissType,
-        dismissSparkly
-      );
+      const dismissed = groups.get('dismissed') ?? '',
+        dismissSparkly = Boolean(groups.get('dismissSparkly')),
+        dismissType = groups.get('dismissPet') ?? '',
+        toDismiss = this.getPetByAll(dismissed, dismissType, dismissSparkly);
       if (toDismiss) {
         toDismiss.active = false;
       }
@@ -213,10 +222,10 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
 
   private handleDismissSuccess(id: string, groups: Map<string, string>): void {
     if (id === 'confirmation') {
-      const dismissed = groups.get('name') ?? '';
-      const sparkly = groups.get('sparkly') ? true : false;
-      const type = groups.get('pet') ?? '';
-      const toDismiss = this.getPetByAll(dismissed, type, sparkly);
+      const dismissed = groups.get('name') ?? '',
+        sparkly = Boolean(groups.get('sparkly')),
+        type = groups.get('pet') ?? '',
+        toDismiss = this.getPetByAll(dismissed, type, sparkly);
       if (toDismiss) {
         toDismiss.active = false;
       }
@@ -242,8 +251,8 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
 
   private handleReleaseSuccess(id: string, groups: Map<string, string>): void {
     if (id === 'confirmation') {
-      const petName = groups.get('name') ?? '';
-      const pet = this.getPetByName(petName);
+      const petName = groups.get('name') ?? '',
+        pet = this.getPetByName(petName);
       if (pet) {
         this.snackbar.open(`Goodbye ${petName}!`, undefined, {
           duration: 5000,
@@ -260,10 +269,10 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     groups: Map<string, string>,
     isCritical: boolean
   ): void {
-    const petName = groups.get('name') ?? '';
-    const sparkly = groups.get('sparkly') ? true : false;
-    const type = groups.get('pet') ?? '';
-    const pet = this.getPetByAll(petName, type, sparkly);
+    const petName = groups.get('name') ?? '',
+      sparkly = Boolean(groups.get('sparkly')),
+      type = groups.get('pet') ?? '',
+      pet = this.getPetByAll(petName, type, sparkly);
     if (pet) {
       pet.hunger = isCritical ? 10 : 25;
       const hunger = isCritical ? 'starving' : 'hungry';
@@ -281,10 +290,10 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     groups: Map<string, string>,
     isReplay: boolean
   ): void {
-    const petName = groups.get('name') ?? '';
-    const sparkly = groups.get('sparkly') ? true : false;
-    const type = groups.get('pet') ?? '';
-    const pet = this.getPetByAll(petName, type, sparkly);
+    const petName = groups.get('name') ?? '',
+      sparkly = Boolean(groups.get('sparkly')),
+      type = groups.get('pet') ?? '',
+      pet = this.getPetByAll(petName, type, sparkly);
     if (pet) {
       if (!isReplay) {
         this.dialog.open(ErrorDialog, {
@@ -307,7 +316,7 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
   }
 
   protected subscribeToResponses(
-    id: string,
+    responseId: string,
     commandService: CommandService
   ): void {
     commandService.subscribeToCommand(
@@ -315,17 +324,17 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'list',
       'responses',
       'success',
-      id,
-      (name, id, groups, subGroups, date) => this.handleStable(id, subGroups)
+      responseId,
+      (_name, id, _groups, subGroups, _date) => this.handleStable(id, subGroups)
     );
     commandService.subscribeToCommand(
       'pets',
       'feed',
       'responses',
       'success',
-      id,
-      (name, id, groups, subGroups, date, isReplay) => {
-        this.handleFeedSuccess(name, id, groups, isReplay);
+      responseId,
+      (_name, id, groups, _subGroups, _date, isReplay) => {
+        this.handleFeedSuccess(id, groups, isReplay);
       }
     );
     commandService.subscribeToCommand(
@@ -333,8 +342,8 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'feed',
       'responses',
       'error',
-      id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      responseId,
+      (_name, id, groups, _subGroups, _date, isReplay) => {
         if (!isReplay) {
           this.handleFeedError(id, groups);
         }
@@ -345,8 +354,8 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'gloatPet',
       'responses',
       'error',
-      id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      responseId,
+      (_name, id, _groups, _subGroups, _date, isReplay) => {
         if (!isReplay) {
           this.handleGloatError(id);
         }
@@ -357,8 +366,8 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'rename',
       'responses',
       'success',
-      id,
-      (name, id, groups, subGroups, date) => {
+      responseId,
+      (_name, id, groups, _subGroups, _date) => {
         this.handleRenameSuccess(id, groups);
       }
     );
@@ -367,8 +376,8 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'summon',
       'responses',
       'success',
-      id,
-      (name, id, groups, subGroups, date) => {
+      responseId,
+      (_name, id, groups, _subGroups, _date) => {
         this.handleSummonSuccess(id, groups);
       }
     );
@@ -377,8 +386,8 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'dismiss',
       'responses',
       'success',
-      id,
-      (name, id, groups, subGroups, date) => {
+      responseId,
+      (_name, id, groups, _subGroups, _date) => {
         this.handleDismissSuccess(id, groups);
       }
     );
@@ -387,8 +396,8 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'release',
       'responses',
       'pending',
-      id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      responseId,
+      (_name, id, _groups, _subGroups, _date, isReplay) => {
         if (!isReplay) {
           this.handlePendingRelease(id);
         }
@@ -399,16 +408,16 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
       'release',
       'responses',
       'success',
-      id,
-      (name, id, groups, subGroups, date) => {
+      responseId,
+      (_name, id, groups, _subGroups, _date) => {
         this.handleReleaseSuccess(id, groups);
       }
     );
     commandService.subscribeToMessage(
       'pets',
       'hungerWarning',
-      id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      responseId,
+      (_name, _id, groups, _subGroups, _date, isReplay) => {
         if (!isReplay) {
           this.handleHungerWarning(groups, false);
         }
@@ -417,8 +426,8 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     commandService.subscribeToMessage(
       'pets',
       'hungerCritical',
-      id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      responseId,
+      (_name, _id, groups, _subGroups, _date, isReplay) => {
         if (!isReplay) {
           this.handleHungerWarning(groups, true);
         }
@@ -427,16 +436,16 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     commandService.subscribeToMessage(
       'pets',
       'hungerDeath',
-      id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      responseId,
+      (_name, _id, groups, _subGroups, _date, isReplay) => {
         this.handleHungerDeath(groups, isReplay ?? false);
       }
     );
     commandService.subscribeToMessage(
       'pets',
       'dungeonFound',
-      id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      responseId,
+      (_name, _id, _groups, _subGroups, date, _isReplay) => {
         this.handlePetFound(date);
       }
     );
@@ -507,11 +516,11 @@ export class PetWidgetComponent extends AbstractWidgetComponent {
     }
   }
 
-  public onRenameClick(event: MouseEvent): void {
+  public onRenameClick(_event: MouseEvent): void {
     this.confirmRename();
   }
 
-  public onCancelClick(event: MouseEvent): void {
+  public onCancelClick(_event: MouseEvent): void {
     this.cancelRename();
   }
 

@@ -1,8 +1,9 @@
 import {
+  ChangeDetectionStrategy,
   Component,
-  ComponentFactory,
-  ComponentFactoryResolver,
   OnInit,
+  Type,
+  inject,
 } from '@angular/core';
 import { Config } from 'src/app/services/data/config-data';
 import { ConfigManager } from 'src/app/services/data/config-manager';
@@ -13,6 +14,10 @@ import { ClientDataService } from 'src/app/services/client-data/client-data-serv
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 import { WidgetService } from 'src/app/services/widget/widget.service';
 import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
+import { MatCard, MatCardTitle } from '@angular/material/card';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { WidgetFactoryComponent } from '../widget-factory/widget-factory.component';
 
 /**
  * Holds a list of widgets and renders them to the DOM, in order.
@@ -20,9 +25,23 @@ import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-s
 @Component({
   selector: 'app-widget-container',
   templateUrl: './widget-container.component.html',
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatIconButton,
+    MatIcon,
+    WidgetFactoryComponent,
+  ],
 })
 export class WidgetContainerComponent implements OnInit {
+  private widgetService = inject(WidgetService);
+  audioPlayerService = inject(AudioPlayerService);
+  clientDataService = inject(ClientDataService);
+  configManager = inject(ConfigManager);
+  eventSubService = inject(EventSubService);
+  commandService = inject(CommandService);
+
   private static layouts = [
     '',
     '"a0"',
@@ -48,17 +67,7 @@ export class WidgetContainerComponent implements OnInit {
   /**
    * List of factories used to create and attach the widgets.
    */
-  factories = new Array<ComponentFactory<WidgetComponent>>();
-
-  constructor(
-    private widgetService: WidgetService,
-    public audioPlayerService: AudioPlayerService,
-    public clientDataService: ClientDataService,
-    public configManager: ConfigManager,
-    public eventSubService: EventSubService,
-    public commandService: CommandService,
-    private componentFactoryResolver: ComponentFactoryResolver
-  ) {}
+  factories = new Array<Type<WidgetComponent>>();
 
   ngOnInit(): void {
     this.config = this.configManager.getConfig();
@@ -84,8 +93,8 @@ export class WidgetContainerComponent implements OnInit {
    * @param index Gets the name of to the icon file for a widget.
    */
   getWidgetIcon(index: number): string {
-    const id = this.config ? this.config.layout[index] : '';
-    const widget = this.widgetMap.get(id);
+    const id = this.config ? this.config.layout[index] : '',
+      widget = this.widgetMap.get(id);
     return widget ? widget.getIcon() : '';
   }
 
@@ -127,17 +136,10 @@ export class WidgetContainerComponent implements OnInit {
     return '';
   }
 
-  private loadWidget(id: string): ComponentFactory<WidgetComponent> | null {
+  private loadWidget(id: string): Type<WidgetComponent> | null {
     const widget = this.widgetMap.get(id);
     if (widget) {
-      const widgetComponent = widget.component;
-      if (widgetComponent) {
-        const factory =
-          this.componentFactoryResolver.resolveComponentFactory(
-            widgetComponent
-          );
-        return factory;
-      }
+      return widget.component;
     }
     return null;
   }

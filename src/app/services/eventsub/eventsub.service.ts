@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Utils } from 'src/app/util/utils';
 import { ConfigManager } from '../data/config-manager';
 import { UserService } from '../user/user.service';
@@ -8,8 +8,8 @@ import { WhisperService } from './whisper.service';
 import * as eventSubConfig from './eventsub.service.json';
 import {
   EventSubMessage,
-  EventSubSubscription,
   EventSubMetadata,
+  EventSubSubscription,
 } from './eventsub.types';
 
 /**
@@ -25,6 +25,11 @@ export type WhisperCallback = (message: Message) => void;
   providedIn: 'root',
 })
 export class EventSubService {
+  private http = inject(HttpClient);
+  private configManager = inject(ConfigManager);
+  private userService = inject(UserService);
+  private whisperService = inject(WhisperService);
+
   /**
    * The WebSocket connection that handles the EventSub connection.
    */
@@ -49,22 +54,20 @@ export class EventSubService {
   /**
    * The message queue that handles rate limits on messages sent.
    */
-  messageQueue = new MessageQueue(eventSubConfig.botAccount, 50);
+  messageQueue: MessageQueue;
   /**
    * Whether or not the EventSub client is connected.
    */
   isConnected = false;
 
-  constructor(
-    private http: HttpClient,
-    private configManager: ConfigManager,
-    private userService: UserService,
-    private whisperService: WhisperService
-  ) {}
+  constructor() {
+    const config = eventSubConfig;
+    this.messageQueue = new MessageQueue(config.botAccount, 50);
+  }
 
   private broadcastMessage(message: Message): void {
     this.lines.push(message);
-    for (const [key, value] of this.callbacks) {
+    for (const [_key, value] of this.callbacks) {
       value.call(value, message);
     }
   }
@@ -79,12 +82,12 @@ export class EventSubService {
 
   private onError(message: string): void {
     const messageObj = new Message(message, false);
-    for (const [key, value] of this.errorHandlers) {
+    for (const [_key, value] of this.errorHandlers) {
       value.call(value, messageObj);
     }
   }
 
-  private async reconnect(reason: string): Promise<void> {
+  private async reconnect(_reason: string): Promise<void> {
     this.isConnected = false;
     await this.connect();
   }
@@ -152,9 +155,8 @@ export class EventSubService {
    * succeed if the config data contains a valid token.
    */
   async connect(): Promise<boolean> {
-    return this.connectUsing(
-      () => new WebSocket(eventSubConfig.urls.websocket)
-    );
+    const config = eventSubConfig;
+    return this.connectUsing(() => new WebSocket(config.urls.websocket));
   }
 
   /**
@@ -162,33 +164,34 @@ export class EventSubService {
    * will only succeed if the config data contains a valid token.
    */
   async connectUsing(clientConstructor: () => WebSocket): Promise<boolean> {
+    const config = eventSubConfig;
     if (this.isConnected) {
       return true;
     }
 
-    const token = this.configManager.getConfig().authentication.token;
+    const { token } = this.configManager.getConfig().authentication;
     if (!token) {
       console.log('Token not found!');
       return false;
     }
 
-    const userData = await this.userService.getUserAuth(token);
-    const botData = await this.userService.getUserId(
-      token,
-      eventSubConfig.connectOptions.options.clientId,
-      eventSubConfig.botAccount
-    );
-    const streamerData = await this.userService.getUserId(
-      token,
-      eventSubConfig.connectOptions.options.clientId,
-      eventSubConfig.streamerAccount
-    );
+    const userData = await this.userService.getUserAuth(token),
+      botData = await this.userService.getUserId(
+        token,
+        config.connectOptions.options.clientId,
+        config.botAccount
+      ),
+      streamerData = await this.userService.getUserId(
+        token,
+        config.connectOptions.options.clientId,
+        config.streamerAccount
+      );
 
     this.whisperService.setData(
       userData.user_id,
       botData.data[0].id,
       token,
-      eventSubConfig.connectOptions.options.clientId,
+      config.connectOptions.options.clientId,
       (error: string) => this.onError(error)
     );
 
@@ -264,9 +267,8 @@ export class EventSubService {
               }
               if (
                 data.payload.event.broadcaster_user_login ===
-                  eventSubConfig.streamerAccount &&
-                data.payload.event.chatter_user_login ===
-                  eventSubConfig.botAccount
+                  config.streamerAccount &&
+                data.payload.event.chatter_user_login === config.botAccount
               ) {
                 this.onMessage(data.payload.event.message.text);
               }
@@ -292,7 +294,7 @@ export class EventSubService {
           }
         };
 
-        this.connection.onclose = async event => {
+        this.connection.onclose = async () => {
           this.isConnected = false;
           await this.reconnect('WebSocket Closed');
         };
@@ -314,32 +316,32 @@ export class EventSubService {
     userId: string,
     broadcasterId: string
   ): Promise<void> {
-    const token = this.configManager.getConfig().authentication.token;
+    const { token } = this.configManager.getConfig().authentication;
     if (!token) {
       this.onError('No authentication token available');
       return;
     }
 
     const subscription: EventSubSubscription = {
-      type,
-      version: '1',
-      condition:
-        type === 'channel.chat.message'
-          ? {
-              broadcaster_user_id: broadcasterId,
-              user_id: userId,
-            }
-          : { user_id: userId },
-      transport: {
-        method: 'websocket',
-        session_id: this.sessionId,
+        type,
+        version: '1',
+        condition:
+          type === 'channel.chat.message'
+            ? {
+                broadcaster_user_id: broadcasterId,
+                user_id: userId,
+              }
+            : { user_id: userId },
+        transport: {
+          method: 'websocket',
+          session_id: this.sessionId,
+        },
       },
-    };
-
+      config = eventSubConfig;
     await this.http
-      .post(eventSubConfig.urls.eventSub, subscription, {
+      .post(config.urls.eventSub, subscription, {
         headers: {
-          'Client-Id': eventSubConfig.connectOptions.options.clientId,
+          'Client-Id': config.connectOptions.options.clientId,
           Authorization: `Bearer ${token}`,
         },
       })

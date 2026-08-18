@@ -1,10 +1,12 @@
 import {
+  ChangeDetectionStrategy,
   Component,
-  ComponentFactory,
   Injector,
   Input,
   OnInit,
+  Type,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
@@ -13,6 +15,7 @@ import { CommandService } from 'src/app/services/command/command-service';
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
 import { ClientDataService } from 'src/app/services/client-data/client-data-service';
 import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
+import { WidgetContainerDirective as WidgetContainerDirective_1 } from '../../directives/widget-container.directive';
 
 /**
  * Component that acts as a placeholder for widgets in the widget container.
@@ -20,14 +23,17 @@ import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-s
 @Component({
   selector: 'app-widget-factory',
   template: '<ng-template appWidgetContainer></ng-template>',
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [WidgetContainerDirective_1],
 })
 export class WidgetFactoryComponent implements OnInit {
+  injector = inject(Injector);
+
   /**
    * Component factory used to create the internal widget component.
    */
   @Input()
-  factory: ComponentFactory<WidgetComponent> | undefined;
+  factory: Type<WidgetComponent> | undefined;
 
   /***
    * Reference to the audio player service
@@ -69,8 +75,6 @@ export class WidgetFactoryComponent implements OnInit {
    */
   @ViewChild(WidgetContainerDirective, { static: true })
   container: WidgetContainerDirective | undefined;
-
-  constructor(public injector: Injector) {}
 
   ngOnInit(): void {
     if (this.factory && this.container) {

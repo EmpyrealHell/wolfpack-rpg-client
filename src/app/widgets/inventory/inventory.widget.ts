@@ -1,30 +1,34 @@
-import { Component, Inject, Input, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommandService } from 'src/app/services/command/command-service';
 import { AbstractWidgetComponent } from '../abstract/abstract-widget';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Item, ItemQuality, ItemSlot, ItemType } from './model/item';
+import { MatCardContent } from '@angular/material/card';
+import { MatRipple } from '@angular/material/core';
+import { MatButton } from '@angular/material/button';
 
 /**
  * Widget used to display pet data.
  */
 @Component({
-  selector: 'app-inventory-widget',
-  templateUrl: './inventory.widget.html',
-  standalone: false,
+    selector: 'app-inventory-widget',
+    templateUrl: './inventory.widget.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        MatCardContent,
+        MatRipple,
+        MatButton,
+    ],
 })
 export class InventoryWidgetComponent extends AbstractWidgetComponent {
+  dialog = inject(MatDialog);
+  snackbar = inject(MatSnackBar);
+
   name = 'Inventory';
 
   inventory: Item[] = [];
   selected: Item | undefined;
-
-  constructor(
-    public dialog: MatDialog,
-    public snackbar: MatSnackBar
-  ) {
-    super();
-  }
 
   private getItemByName(name: string): Item | undefined {
     const matches = this.inventory.filter(x => x.name === name);
@@ -34,10 +38,7 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
     return undefined;
   }
 
-  private handleInventory(
-    id: string,
-    subGroups: Array<Map<string, string>>
-  ): void {
+  private handleInventory(id: string, subGroups: Map<string, string>[]): void {
     if (id === 'compact') {
       for (const sub of subGroups) {
         const newItem = new Item();
@@ -49,14 +50,14 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
         newItem.description = sub.get('desc') ?? '';
         newItem.isEquipped = sub.get('equipped') === 'E';
         const quality = this.clientDataService?.itemQualities.get(
-          parseInt(sub.get('quality') ?? '0')
-        );
-        const slot = this.clientDataService?.itemSlots.get(
-          parseInt(sub.get('slot') ?? '0')
-        );
-        const type = this.clientDataService?.itemTypes.get(
-          parseInt(sub.get('type') ?? '0')
-        );
+            parseInt(sub.get('quality') ?? '0')
+          ),
+          slot = this.clientDataService?.itemSlots.get(
+            parseInt(sub.get('slot') ?? '0')
+          ),
+          type = this.clientDataService?.itemTypes.get(
+            parseInt(sub.get('type') ?? '0')
+          );
         newItem.quality = quality ?? ItemQuality.default;
         newItem.slot = slot ?? ItemSlot.default;
         newItem.type = type ?? ItemType.default;
@@ -107,7 +108,7 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, _groups, subGroups, _date) => {
         this.handleInventory(id, subGroups);
       }
     );
@@ -117,7 +118,7 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         this.handleEquip(id, groups);
       }
     );
@@ -127,7 +128,7 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
       'responses',
       'success',
       id,
-      (name, id, groups, subGroups, date) => {
+      (_name, id, groups, _subGroups, _date) => {
         this.handleUnequip(id, groups);
       }
     );
@@ -135,7 +136,7 @@ export class InventoryWidgetComponent extends AbstractWidgetComponent {
       'dungeon',
       'completeLoot',
       id,
-      (name, id, groups, subGroups, date, isReplay) => {
+      (_name, _id, _groups, _subGroups, date, _isReplay) => {
         this.handleLoot(date);
       }
     );

@@ -1,37 +1,38 @@
 import { RollingTimer } from './rolling-timer';
+import {} from 'jasmine';
 
 describe('RollingTimer', () => {
-  it('should indicate when the limit is reached', () => {
+  it('should indicate when the limit is reached', async () => {
     const timer = new RollingTimer(1, 1);
     timer.addOccurrence();
-    expect(timer.availableOccurrences()).toBe(0);
+    await expect(timer.availableOccurrences()).toBe(0);
   });
 
-  it('should indicate how many instances remain in the timer', () => {
-    const max = 10;
-    const timer = new RollingTimer(1, max);
+  it('should indicate how many instances remain in the timer', async () => {
+    const max = 10,
+      timer = new RollingTimer(1, max);
     timer.addOccurrence();
-    expect(timer.availableOccurrences()).toBe(max - 1);
+    await expect(timer.availableOccurrences()).toBe(max - 1);
   });
 
   it('should roll the timer based on elapsed time', async () => {
-    const timer = new RollingTimer(0.1, 2);
-    const delay = async () => new Promise(resolve => setTimeout(resolve, 60));
+    const timer = new RollingTimer(0.1, 2),
+      delay = async () => new Promise(resolve => setTimeout(resolve, 60));
     timer.addOccurrence();
-    expect(timer.availableOccurrences()).toBe(1);
+    await expect(timer.availableOccurrences()).toBe(1);
     await delay();
     timer.addOccurrence();
-    expect(timer.availableOccurrences()).toBe(0);
+    await expect(timer.availableOccurrences()).toBe(0);
     await delay();
-    expect(timer.availableOccurrences()).toBe(1);
+    await expect(timer.availableOccurrences()).toBe(1);
   });
 
   it('should remove lapsed occurrences', async () => {
-    const timer = new RollingTimer(0.04, 1);
-    const delay = async () => new Promise(resolve => setTimeout(resolve, 50));
+    const timer = new RollingTimer(0.04, 1),
+      delay = async () => new Promise(resolve => setTimeout(resolve, 50));
     timer.addOccurrence();
-    expect(timer.availableOccurrences()).toBe(0);
+    await expect(timer.availableOccurrences()).toBe(0);
     await delay();
-    expect(timer.availableOccurrences()).toBe(1);
+    await expect(timer.availableOccurrences()).toBe(1);
   });
 });

@@ -1,14 +1,14 @@
-import { Component, Inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
-  MatDialogTitle,
-  MatDialogContent,
+  MAT_DIALOG_DATA,
   MatDialogActions,
   MatDialogClose,
+  MatDialogContent,
   MatDialogRef,
-  MAT_DIALOG_DATA,
+  MatDialogTitle,
 } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Stable } from './model/pet';
@@ -17,6 +17,7 @@ import { Stable } from './model/pet';
   selector: 'release-pet-dialog',
   templateUrl: './release.pet.dialog.html',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatFormFieldModule,
     MatInputModule,
@@ -28,9 +29,7 @@ import { Stable } from './model/pet';
     MatDialogClose,
   ],
 })
-export class ReleasePetDialog {
-  constructor(
-    public dialogRef: MatDialogRef<ReleasePetDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: Stable
-  ) {}
+export class ReleasePetDialog {  dialogRef = inject<MatDialogRef<ReleasePetDialog>>(MatDialogRef);
+  data = inject<Stable>(MAT_DIALOG_DATA);
+
 }
