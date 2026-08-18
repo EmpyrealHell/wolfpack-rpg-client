@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { AuthData } from './auth.data';
 import { UserService } from './user.service';
+import { TestBed } from '@angular/core/testing';
+import {} from 'jasmine';
 
 describe('UserService', () => {
   const cachedResponseKey = 'cachedResponse',
@@ -8,7 +10,18 @@ describe('UserService', () => {
   let userService: UserService;
 
   beforeEach(() => {
-    userService = new UserService(httpObj as jasmine.SpyObj<HttpClient>);
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: UserService,
+        },
+        {
+          provide: HttpClient,
+          useFactory: () => httpObj as jasmine.SpyObj<HttpClient>,
+        },
+      ],
+    });
+    userService = TestBed.inject(UserService);
   });
 
   it('should call the twitch oauth validation service', async () => {

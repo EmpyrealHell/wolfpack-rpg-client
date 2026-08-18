@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, Injector, Input, OnInit, Type, ViewChild, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Injector,
+  Input,
+  OnInit,
+  Type,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
 import { WidgetComponent } from './widget.component';
@@ -12,10 +21,10 @@ import { WidgetContainerDirective as WidgetContainerDirective_1 } from '../../di
  * Component that acts as a placeholder for widgets in the widget container.
  */
 @Component({
-    selector: 'app-widget-factory',
-    template: '<ng-template appWidgetContainer></ng-template>',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [WidgetContainerDirective_1],
+  selector: 'app-widget-factory',
+  template: '<ng-template appWidgetContainer></ng-template>',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [WidgetContainerDirective_1],
 })
 export class WidgetFactoryComponent implements OnInit {
   injector = inject(Injector);

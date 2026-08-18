@@ -77,7 +77,7 @@ export class AuthComponent implements OnInit {
       }
     } else {
       console.log('State was empty, reauthenticating.');
-      //this.AuthenticateWithTwitch(auth, configManager);
+      this.AuthenticateWithTwitch(auth, configManager);
     }
   }
 
@@ -112,7 +112,7 @@ export class AuthComponent implements OnInit {
       ) {
         auth.scope = null;
         auth.state = null;
-        //this.AuthenticateWithTwitch(auth, configManager);
+        this.AuthenticateWithTwitch(auth, configManager);
       } else {
         auth.user = data.login;
         auth.scope = Utils.stringJoin(' ', data.scopes);
@@ -122,7 +122,7 @@ export class AuthComponent implements OnInit {
         void router.navigate(['/play']);
       }
     } else {
-      //this.AuthenticateWithTwitch(auth, configManager);
+      this.AuthenticateWithTwitch(auth, configManager);
     }
   }
 

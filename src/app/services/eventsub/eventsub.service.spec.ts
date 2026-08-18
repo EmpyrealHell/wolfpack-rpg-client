@@ -10,6 +10,8 @@ import { Message } from './eventsub.service';
 import { WhisperService } from './whisper.service';
 import * as eventSubConfig from './eventsub.service.json';
 import { of } from 'rxjs';
+import { TestBed } from '@angular/core/testing';
+import {} from 'jasmine';
 
 describe('EventSubService', () => {
   let configManagerSpy: ClassSpy<ConfigManager>,
@@ -118,12 +120,30 @@ describe('EventSubService', () => {
     whisperServiceSpy = TestUtils.spyOnClass(WhisperService);
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['post']);
     httpClientSpy.post.and.returnValue(of({}));
-    service = new EventSubService(
-      httpClientSpy,
-      configManagerSpy,
-      userServiceSpy as jasmine.SpyObj<UserService>,
-      whisperServiceSpy as jasmine.SpyObj<WhisperService>
-    );
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: EventSubService,
+        },
+        {
+          provide: HttpClient,
+          useFactory: () => httpClientSpy,
+        },
+        {
+          provide: ConfigManager,
+          useFactory: () => configManagerSpy,
+        },
+        {
+          provide: UserService,
+          useFactory: () => userServiceSpy as jasmine.SpyObj<UserService>,
+        },
+        {
+          provide: WhisperService,
+          useFactory: () => whisperServiceSpy as jasmine.SpyObj<WhisperService>,
+        },
+      ],
+    });
+    service = TestBed.inject(EventSubService);
   });
 
   it('should connect to EventSub', async () => {

@@ -1,6 +1,7 @@
 import { TestUtils } from 'src/test/test-utils';
 import { CommandCallback, CommandService } from '../command/command-service';
 import { ClientDataService } from './client-data-service';
+import { TestBed } from '@angular/core/testing';
 
 describe('ClientDataService', () => {
   let commandService: jasmine.SpyObj<CommandService>,
@@ -17,7 +18,18 @@ describe('ClientDataService', () => {
         return '';
       }
     );
-    service = new ClientDataService(commandService);
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: ClientDataService,
+        },
+        {
+          provide: CommandService,
+          useFactory: () => commandService,
+        },
+      ],
+    });
+    service = TestBed.inject(ClientDataService);
   });
 
   it('should send fetch-client-data command and register a responder', async () => {

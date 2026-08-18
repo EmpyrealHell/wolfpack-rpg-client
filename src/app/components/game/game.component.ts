@@ -1,5 +1,10 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { WidgetItem } from 'src/app/services/widget/widget-item';
@@ -14,8 +19,10 @@ import {
   Message,
 } from 'src/app/services/eventsub/eventsub.service';
 import { WidgetService } from 'src/app/services/widget/widget.service';
-import { AudioPlayerService } from 'src/app/services/audio-player/audio-player-service';
-import { MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
+import {
+  MatSidenavContainer,
+  MatSidenavContent,
+} from '@angular/material/sidenav';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatDivider } from '@angular/material/divider';
 import { MatButton } from '@angular/material/button';
@@ -30,25 +37,25 @@ import { WidgetContainerComponent } from '../widget-container/widget-container.c
  * The main component holding the game UI.
  */
 @Component({
-    selector: 'app-game',
-    templateUrl: './game.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [
-        MatSidenavContainer,
-        MatSidenavContent,
-        MatToolbar,
-        MatDivider,
-        MatButton,
-        MatMenuTrigger,
-        MatIcon,
-        MatMenu,
-        MatMenuItem,
-        MatSlideToggle,
-        FormsModule,
-        MatSlider,
-        MatSliderThumb,
-        WidgetContainerComponent,
-    ],
+  selector: 'app-game',
+  templateUrl: './game.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    MatSidenavContainer,
+    MatSidenavContent,
+    MatToolbar,
+    MatDivider,
+    MatButton,
+    MatMenuTrigger,
+    MatIcon,
+    MatMenu,
+    MatMenuItem,
+    MatSlideToggle,
+    FormsModule,
+    MatSlider,
+    MatSliderThumb,
+    WidgetContainerComponent,
+  ],
 })
 export class GameComponent implements OnInit {
   widgetService = inject(WidgetService);

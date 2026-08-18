@@ -1,7 +1,10 @@
-
-import { enableProdMode, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
+import {
+  enableProdMode,
+  provideZoneChangeDetection,
+  importProvidersFrom,
+} from '@angular/core';
 import { environment } from './environments/environment';
-import { platformBrowser, BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { ClientDataService } from './app/services/client-data/client-data-service';
 import { CommandService } from './app/services/command/command-service';
 import { EventSubService } from './app/services/eventsub/eventsub.service';
@@ -38,14 +41,40 @@ if (environment.production) {
 }
 
 bootstrapApplication(AppComponent, {
-    providers: [
-        importProvidersFrom(AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule, LayoutModule, ScrollingModule, MatButtonModule, MatCardModule, MatDialogModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule, MatProgressBarModule, MatRippleModule, MatSidenavModule, MatSlideToggleModule, MatTableModule, MatTabsModule, MatToolbarModule, MatSliderModule, MatSnackBarModule),
-        ClientDataService,
-        CommandService,
-        EventSubService,
-        AudioPlayerService,
-        provideZoneChangeDetection({ eventCoalescing: true }),
-    ]
-})
-   
-  .catch(err => console.error(err));
+  providers: [
+    importProvidersFrom(
+      AppRoutingModule,
+      BrowserAnimationsModule,
+      BrowserModule,
+      FormsModule,
+      ReactiveFormsModule,
+      HttpClientModule,
+      LayoutModule,
+      ScrollingModule,
+      MatButtonModule,
+      MatCardModule,
+      MatDialogModule,
+      MatDividerModule,
+      MatGridListModule,
+      MatIconModule,
+      MatInputModule,
+      MatListModule,
+      MatMenuModule,
+      MatPaginatorModule,
+      MatProgressBarModule,
+      MatRippleModule,
+      MatSidenavModule,
+      MatSlideToggleModule,
+      MatTableModule,
+      MatTabsModule,
+      MatToolbarModule,
+      MatSliderModule,
+      MatSnackBarModule
+    ),
+    ClientDataService,
+    CommandService,
+    EventSubService,
+    AudioPlayerService,
+    provideZoneChangeDetection({ eventCoalescing: true }),
+  ],
+}).catch(err => console.error(err));

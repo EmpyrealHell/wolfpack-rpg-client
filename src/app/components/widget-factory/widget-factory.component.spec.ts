@@ -1,32 +1,27 @@
-import { ComponentFactory, Directive, ViewContainerRef } from '@angular/core';
+import { Directive, Type, ViewContainerRef } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { WidgetContainerDirective } from 'src/app/directives/widget-container.directive';
 import { ConfigManager } from 'src/app/services/data/config-manager';
 import { WidgetFactoryComponent } from './widget-factory.component';
-import { WidgetComponent } from './widget.component';
 import { EventSubService } from 'src/app/services/eventsub/eventsub.service';
+import { ConsoleWidgetComponent } from 'src/app/widgets/console/console.widget';
 
 const spyContainer = jasmine.createSpyObj('viewContainerRef', [
   'clear',
   'createComponent',
 ]);
 spyContainer.createComponent.and.returnValue({
-  instance: {
-    configManager: undefined,
-    eventSubService: undefined,
-    name: '',
-    onActivate: () => {},
-  } as WidgetComponent,
+  instance: new ConsoleWidgetComponent(),
 });
 
 @Directive({
-    selector: '[appWidgetContainer]',
-    providers: [
-        {
-            provide: WidgetContainerDirective,
-            useClass: WidgetContainerStubDirective,
-        },
-    ],
+  selector: '[appWidgetContainer]',
+  providers: [
+    {
+      provide: WidgetContainerDirective,
+      useClass: WidgetContainerStubDirective,
+    },
+  ],
 })
 export class WidgetContainerStubDirective {
   viewContainerRef: ViewContainerRef;
@@ -38,18 +33,26 @@ export class WidgetContainerStubDirective {
 describe('WidgetContainerComponent', () => {
   beforeEach(waitForAsync(async () => {
     await TestBed.configureTestingModule({
-    imports: [WidgetFactoryComponent, WidgetContainerStubDirective],
-}).compileComponents();
+      imports: [WidgetContainerStubDirective, ConsoleWidgetComponent],
+      providers: [
+        {
+          provide: WidgetFactoryComponent,
+        },
+      ],
+    }).compileComponents();
   }));
 
   it('should create a widget instance', async () => {
-    const fixture = TestBed.createComponent(WidgetFactoryComponent),
-      component = fixture.componentInstance;
-    component.factory = {} as ComponentFactory<WidgetComponent>;
+    const fixture = TestBed.inject(WidgetFactoryComponent),
+      component = fixture;
+    component.factory = {} as Type<ConsoleWidgetComponent>;
     component.configManager = {} as ConfigManager;
     component.eventSubService = {} as EventSubService;
-    component.name = 'componentName';
-    const internalComponent = spyContainer.createComponent(null).instance,
+    component.name = 'Console';
+    component.container = new WidgetContainerStubDirective();
+    const internalComponent = spyContainer.createComponent(
+        component.factory
+      ).instance,
       internalSpy = spyOn(internalComponent, 'onActivate');
 
     component.ngOnInit();

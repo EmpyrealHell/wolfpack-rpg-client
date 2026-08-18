@@ -1,8 +1,3 @@
-import {
-  ComponentFactory,
-  ComponentFactoryResolver,
-  Type,
-} from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,7 +6,6 @@ import { AbstractWidgetComponent } from 'src/app/widgets/abstract/abstract-widge
 import { TestUtils } from 'src/test/test-utils';
 import { ConfigManager } from '../../services/data/config-manager';
 import { WidgetFactoryComponent } from '../widget-factory/widget-factory.component';
-import { WidgetComponent } from '../widget-factory/widget.component';
 import { WidgetContainerComponent } from './widget-container.component';
 import { Config } from 'src/app/services/data/config-data';
 import { CommandService } from 'src/app/services/command/command-service';
@@ -45,45 +39,32 @@ const configManagerSpy = TestUtils.spyOnClass(ConfigManager);
 configManagerSpy.subscribe.and.callFake((delegate: () => void) => {
   delegate.call(delegate);
 });
-const eventSubServiceSpy = TestUtils.spyOnClass(EventSubService),
-  componentFactoryResolverSpy = jasmine.createSpyObj(
-    'ComponentFactoryResolver',
-    ['resolveComponentFactory']
-  );
-componentFactoryResolverSpy.resolveComponentFactory.and.callFake(
-  (component: Type<WidgetComponent>) => {
-    if (component === FirstWidget) {
-      return { componentType: FirstWidget } as ComponentFactory<FirstWidget>;
-    } else if (component === SecondWidget) {
-      return { componentType: SecondWidget } as ComponentFactory<SecondWidget>;
-    }
-    return null;
-  }
-);
+const eventSubServiceSpy = TestUtils.spyOnClass(EventSubService);
 const commandServiceSpy = TestUtils.spyOnClass(CommandService);
 
 describe('WidgetContainerComponent', () => {
   beforeEach(waitForAsync(async () => {
     await TestBed.configureTestingModule({
-    imports: [MatIconModule, MatCardModule, WidgetContainerComponent, WidgetFactoryComponent],
-    providers: [
+      imports: [
+        MatIconModule,
+        MatCardModule,
+        WidgetContainerComponent,
+        WidgetFactoryComponent,
+      ],
+      providers: [
         {
-            provide: ClientDataService,
-            useValue: clientDataServiceSpy,
+          provide: ClientDataService,
+          useValue: clientDataServiceSpy,
         },
         {
-            provide: WidgetService,
-            useValue: widgetServiceSpy,
+          provide: WidgetService,
+          useValue: widgetServiceSpy,
         },
         { provide: ConfigManager, useValue: configManagerSpy },
         { provide: CommandService, useValue: commandServiceSpy },
         { provide: EventSubService, useValue: eventSubServiceSpy },
-        {
-            provide: ComponentFactoryResolver,
-            useValue: componentFactoryResolverSpy,
-        },
-    ],
-}).compileComponents();
+      ],
+    }).compileComponents();
     configManagerSpy.getConfig.and.returnValue({
       layout: ['First', 'Second'],
     } as Partial<Config>);

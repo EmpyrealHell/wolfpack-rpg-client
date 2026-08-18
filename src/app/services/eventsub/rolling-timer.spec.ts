@@ -1,4 +1,5 @@
 import { RollingTimer } from './rolling-timer';
+import {} from 'jasmine';
 
 describe('RollingTimer', () => {
   it('should indicate when the limit is reached', async () => {

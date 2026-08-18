@@ -1,6 +1,7 @@
 import { TestUtils } from 'src/test/test-utils';
 import { CommandService } from './command-service';
 import { EventSubService, Message } from '../eventsub/eventsub.service';
+import { TestBed } from '@angular/core/testing';
 
 describe('CommandService', () => {
   let eventSubService: EventSubService, service: CommandService;
@@ -9,7 +10,18 @@ describe('CommandService', () => {
     eventSubService = TestUtils.spyOnClass(
       EventSubService
     ) as unknown as jasmine.SpyObj<EventSubService>;
-    service = new CommandService(eventSubService);
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: CommandService,
+        },
+        {
+          provide: EventSubService,
+          useFactory: () => eventSubService,
+        },
+      ],
+    });
+    service = TestBed.inject(CommandService);
     service.initialize();
   });
 
